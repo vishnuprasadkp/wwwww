@@ -21,7 +21,7 @@ async function load(slug: string) {
   return compileMDX<Omit<CaseMeta, "slug">>({
     source,
     components: mdxComponents,
-    options: { parseFrontmatter: true },
+    options: { parseFrontmatter: true, blockJS: false },
   });
 }
 

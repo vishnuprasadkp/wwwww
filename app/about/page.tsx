@@ -15,7 +15,7 @@ export default async function About() {
   const { content } = await compileMDX({
     source,
     components: mdxComponents,
-    options: { parseFrontmatter: true },
+    options: { parseFrontmatter: true, blockJS: false },
   });
 
   return (
