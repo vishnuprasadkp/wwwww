@@ -1,0 +1,492 @@
+{
+  "paper-1": {
+    "url": "https://framerusercontent.com/images/cUG3nIYub5u5fP0YIEBwjb0J5o.png",
+    "file": "/images/site/paper-1.png",
+    "w": 3456,
+    "h": 3456,
+    "alt": ""
+  },
+  "paper-2": {
+    "url": "https://framerusercontent.com/images/8NryQP1TKI5Mf8mFBs81Nr6oo18.png",
+    "file": "/images/site/paper-2.png",
+    "w": 3456,
+    "h": 3456,
+    "alt": ""
+  },
+  "footer-bg": {
+    "url": "https://framerusercontent.com/images/SIeZgkzZFCBDEPjD5Ai0a8Yjw.png",
+    "file": "/images/site/footer-bg.png",
+    "w": 3456,
+    "h": 1800,
+    "alt": ""
+  },
+  "og-default": {
+    "url": "https://framerusercontent.com/images/PYLe1guqzDYWInejQCJx7ci1emc.png",
+    "file": "/images/site/og-default.png",
+    "w": 2400,
+    "h": 1260,
+    "alt": ""
+  },
+  "home-preview": {
+    "url": "https://framerusercontent.com/images/ueyRJGwh9nhNy9QnfPoU3jHLeM.png",
+    "file": "/images/site/home-preview.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": ""
+  },
+  "logo-01": {
+    "url": "https://framerusercontent.com/images/5EkvxG3PctHcQL9VCPyUfRhINzQ.png",
+    "file": "/images/logos/logo-01.png",
+    "w": 398,
+    "h": 98,
+    "alt": "Client logo"
+  },
+  "logo-02": {
+    "url": "https://framerusercontent.com/images/VkM5AQdghb043bocFuBY4c9fHg.png",
+    "file": "/images/logos/logo-02.png",
+    "w": 696,
+    "h": 200,
+    "alt": "Client logo"
+  },
+  "logo-03": {
+    "url": "https://framerusercontent.com/images/UFJTXrdSNnZYd0tZiJ7q2HVQo.png",
+    "file": "/images/logos/logo-03.png",
+    "w": 872,
+    "h": 144,
+    "alt": "Client logo"
+  },
+  "logo-04": {
+    "url": "https://framerusercontent.com/images/w2TRKACIbSbFSDBx9aYUREmpXEI.png",
+    "file": "/images/logos/logo-04.png",
+    "w": 508,
+    "h": 200,
+    "alt": "Client logo"
+  },
+  "logo-05": {
+    "url": "https://framerusercontent.com/images/A1c6lAkKojQbyF0vDbCcNba4tm4.png",
+    "file": "/images/logos/logo-05.png",
+    "w": 836,
+    "h": 200,
+    "alt": "Client logo"
+  },
+  "logo-06": {
+    "url": "https://framerusercontent.com/images/4xOcbAbXN2o8w5a6m6CmgVxXWw.png",
+    "file": "/images/logos/logo-06.png",
+    "w": 928,
+    "h": 200,
+    "alt": "Client logo"
+  },
+  "logo-07": {
+    "url": "https://framerusercontent.com/images/wuwjYgeHwhE2F2vJbXSWN4Tj8.png",
+    "file": "/images/logos/logo-07.png",
+    "w": 200,
+    "h": 200,
+    "alt": "Client logo"
+  },
+  "logo-08": {
+    "url": "https://framerusercontent.com/images/TPzEhRltJnab7mesopKokttjrzU.png",
+    "file": "/images/logos/logo-08.png",
+    "w": 680,
+    "h": 200,
+    "alt": "Client logo"
+  },
+  "logo-09": {
+    "url": "https://framerusercontent.com/images/aixerH0y3kmzosI1garay9bw.png",
+    "file": "/images/logos/logo-09.png",
+    "w": 572,
+    "h": 172,
+    "alt": "Client logo"
+  },
+  "logo-10": {
+    "url": "https://framerusercontent.com/images/7oFeIIqzoyl3zmSjnJAufaRQ.png",
+    "file": "/images/logos/logo-10.png",
+    "w": 1780,
+    "h": 200,
+    "alt": "Client logo"
+  },
+  "logo-11": {
+    "url": "https://framerusercontent.com/images/JEcchdF1oiO6fwk2h4ghUx0E3OA.png",
+    "file": "/images/logos/logo-11.png",
+    "w": 396,
+    "h": 200,
+    "alt": "Client logo"
+  },
+  "painting-01": {
+    "url": "https://framerusercontent.com/images/EK5atnaQ92LOv7Y7uENevLmrgw.png",
+    "file": "/images/paintings/painting-01.png",
+    "w": 472,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-02": {
+    "url": "https://framerusercontent.com/images/zYEn8EHnr4h7V0UtsRDhc86bTVk.png",
+    "file": "/images/paintings/painting-02.png",
+    "w": 508,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-03": {
+    "url": "https://framerusercontent.com/images/ZaYo5shDs3qrjgH7atpbV3yjGrg.png",
+    "file": "/images/paintings/painting-03.png",
+    "w": 475,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-04": {
+    "url": "https://framerusercontent.com/images/7KR88Qo5Nx2CqoP2MWFRDiJSss.png",
+    "file": "/images/paintings/painting-04.png",
+    "w": 562,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-05": {
+    "url": "https://framerusercontent.com/images/4y0gdtlNwnUlwR2ChtEPme3YBSU.png",
+    "file": "/images/paintings/painting-05.png",
+    "w": 538,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-06": {
+    "url": "https://framerusercontent.com/images/CYngfBvYq4T6vnLZVowM4ZOJcA0.png",
+    "file": "/images/paintings/painting-06.png",
+    "w": 472,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-07": {
+    "url": "https://framerusercontent.com/images/hP6EgkT56Wd9S4r4oBSpv0MdlcA.png",
+    "file": "/images/paintings/painting-07.png",
+    "w": 541,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-08": {
+    "url": "https://framerusercontent.com/images/xVMul4DYGbozfCdHmBTOOw30.png",
+    "file": "/images/paintings/painting-08.png",
+    "w": 538,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-09": {
+    "url": "https://framerusercontent.com/images/zRFh5slvJ1B8C5qNgcEh7yiTavc.png",
+    "file": "/images/paintings/painting-09.png",
+    "w": 500,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-10": {
+    "url": "https://framerusercontent.com/images/VLaeRI4poLxS3KyGoGMCYVXlVa0.png",
+    "file": "/images/paintings/painting-10.png",
+    "w": 564,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-11": {
+    "url": "https://framerusercontent.com/images/FWFC96RbzCTMQS1ZWczwyy2w1U.png",
+    "file": "/images/paintings/painting-11.png",
+    "w": 758,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-12": {
+    "url": "https://framerusercontent.com/images/gPMvqnFeEx7ldfNJWWVDZs550.png",
+    "file": "/images/paintings/painting-12.png",
+    "w": 514,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-13": {
+    "url": "https://framerusercontent.com/images/1jgTbfY67Bt93kItmLMoFb8hmo.png",
+    "file": "/images/paintings/painting-13.png",
+    "w": 566,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-14": {
+    "url": "https://framerusercontent.com/images/Fsc8fwR6u49OfU4jOF7ZJm0sDi8.png",
+    "file": "/images/paintings/painting-14.png",
+    "w": 706,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "painting-15": {
+    "url": "https://framerusercontent.com/images/8XC9BtKt3LNJ8CNITG4hyYTVBoY.png",
+    "file": "/images/paintings/painting-15.png",
+    "w": 514,
+    "h": 750,
+    "alt": "Watercolour painting by Vishnu"
+  },
+  "es-hero": {
+    "url": "https://framerusercontent.com/images/4Qc20cpX3GdK9jafaMcgEPbYoOQ.png",
+    "file": "/images/enterprise-search/hero.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Enterprise search platform overview"
+  },
+  "es-discovery": {
+    "url": "https://framerusercontent.com/images/tO0l3vtJBvllmVEUdqgT60wfog.png",
+    "file": "/images/enterprise-search/discovery.png",
+    "w": 1654,
+    "h": 1200,
+    "alt": "Roles and expectations map"
+  },
+  "es-connect-1": {
+    "url": "https://framerusercontent.com/images/NrLYaZKfWnBx4daU1A0IxsyKwM.png",
+    "file": "/images/enterprise-search/connect-1.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Connect applications screen"
+  },
+  "es-connect-2": {
+    "url": "https://framerusercontent.com/images/r4h9DixRoQL2DMBcjMJnpjOgskM.png",
+    "file": "/images/enterprise-search/connect-2.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Connector setup screen"
+  },
+  "es-manage-1": {
+    "url": "https://framerusercontent.com/images/7mNyl2xnyjEcd4aE4pSMDxr2A.png",
+    "file": "/images/enterprise-search/manage-1.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Manage connections screen"
+  },
+  "es-manage-2": {
+    "url": "https://framerusercontent.com/images/q2zjr5uvnogy3kvcZXoGBLU1eo.png",
+    "file": "/images/enterprise-search/manage-2.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Sync health and filters"
+  },
+  "es-results": {
+    "url": "https://framerusercontent.com/images/7Ik0q2tVw8TFAsm1FmGcoADE0A.png",
+    "file": "/images/enterprise-search/results.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Personalised answer with sources"
+  },
+  "es-customise-1": {
+    "url": "https://framerusercontent.com/images/dDq5pCIYvRWpIPmCftEXhgvoVs.png",
+    "file": "/images/enterprise-search/customise-1.png",
+    "w": 3340,
+    "h": 1600,
+    "alt": "Search customisation settings"
+  },
+  "es-customise-2": {
+    "url": "https://framerusercontent.com/images/ZBSAS09daVlL6rVkzjmI3OEZRUw.png",
+    "file": "/images/enterprise-search/customise-2.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Branding settings"
+  },
+  "es-customise-3": {
+    "url": "https://framerusercontent.com/images/xGVQTy5OR4YCeh3vR6Djmk0O8.png",
+    "file": "/images/enterprise-search/customise-3.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "AI model settings"
+  },
+  "es-marketplace": {
+    "url": "https://framerusercontent.com/images/Im3byQPdgjvGDAjWuzudSw7XcE.png",
+    "file": "/images/enterprise-search/marketplace.png",
+    "w": 3340,
+    "h": 1600,
+    "alt": "Agent marketplace"
+  },
+  "es-closing": {
+    "url": "https://framerusercontent.com/images/WwkKX0Cq8mg6Kq6jqx8a69CCJHY.png",
+    "file": "/images/enterprise-search/closing.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Enterprise search platform"
+  },
+  "adeo-hero": {
+    "url": "https://framerusercontent.com/images/kc965X4dSIhGPOCEWyVcm4grHU.png",
+    "file": "/images/adeo/hero.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Committee board application overview"
+  },
+  "adeo-agenda": {
+    "url": "https://framerusercontent.com/images/cY00fmltj9our1EcqmtuOQR7vg.png",
+    "file": "/images/adeo/agenda.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Session agenda"
+  },
+  "adeo-analysis-1": {
+    "url": "https://framerusercontent.com/images/tMGzPJqmdUuYIM3t7g2YuinhU0.png",
+    "file": "/images/adeo/analysis-1.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "AI analysis of a proposal"
+  },
+  "adeo-analysis-2": {
+    "url": "https://framerusercontent.com/images/kDPRgnCvYWRxgmVk2Ly0i4ho8Q.png",
+    "file": "/images/adeo/analysis-2.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Session briefing"
+  },
+  "adeo-assistant": {
+    "url": "https://framerusercontent.com/images/u7Y3IWbBU5vJqadhXFZMpMfb54.png",
+    "file": "/images/adeo/assistant.png",
+    "w": 3340,
+    "h": 1600,
+    "alt": "AI assistant in the session view"
+  },
+  "adeo-voting-1": {
+    "url": "https://framerusercontent.com/images/PvmLuixRgLLreoBMBctGTTXHb0.png",
+    "file": "/images/adeo/voting-1.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Voting modal"
+  },
+  "adeo-voting-2": {
+    "url": "https://framerusercontent.com/images/dEyJgARljae6N0CCW2vrzgAII.png",
+    "file": "/images/adeo/voting-2.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Vote rationale"
+  },
+  "adeo-voting-3": {
+    "url": "https://framerusercontent.com/images/9xKgrYA2nBRawdHCH8n4yomCW0.png",
+    "file": "/images/adeo/voting-3.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Survey"
+  },
+  "adeo-voting-4": {
+    "url": "https://framerusercontent.com/images/r4HEq1VQck9AeUU2002wNcKSVI.png",
+    "file": "/images/adeo/voting-4.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Async participation"
+  },
+  "adeo-closing": {
+    "url": "https://framerusercontent.com/images/wkDIYEVGQlWuS1ApQDQBm4hLgY0.png",
+    "file": "/images/adeo/closing.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Committee board application"
+  },
+  "agent-hero": {
+    "url": "https://framerusercontent.com/images/PXTfvEeG7TUrE89wgZbpFviZQ.png",
+    "file": "/images/ai-agent/hero.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Agent workforce platform overview"
+  },
+  "agent-discovery": {
+    "url": "https://framerusercontent.com/images/JG1rhEJIhtcYAfmM0Oeh9NEWgg.png",
+    "file": "/images/ai-agent/discovery.png",
+    "w": 1654,
+    "h": 1436,
+    "alt": "Roles map"
+  },
+  "agent-simple": {
+    "url": "https://framerusercontent.com/images/LOceUx2mSI0lgIWE6zEz2wePc.png",
+    "file": "/images/ai-agent/simple.png",
+    "w": 3340,
+    "h": 1600,
+    "alt": "Simple agent builder"
+  },
+  "agent-workflow": {
+    "url": "https://framerusercontent.com/images/Ys8JrvYQ4SexupbwLpP4TEpckQ.png",
+    "file": "/images/ai-agent/workflow.png",
+    "w": 3340,
+    "h": 1600,
+    "alt": "Workflow agent canvas"
+  },
+  "agent-advanced": {
+    "url": "https://framerusercontent.com/images/ldC6g2Ta1D9zpr1QyBwYLLoAky0.png",
+    "file": "/images/ai-agent/advanced.png",
+    "w": 3340,
+    "h": 1600,
+    "alt": "Advanced agent configuration"
+  },
+  "agent-guardrails": {
+    "url": "https://framerusercontent.com/images/qB1w7Nn4TyWWjHxOAL6Rfydv2JI.png",
+    "file": "/images/ai-agent/guardrails.png",
+    "w": 3340,
+    "h": 1600,
+    "alt": "Guardrails and trace view"
+  },
+  "agent-skills": {
+    "url": "https://framerusercontent.com/images/HJAVJVrh9Sgm9ZboEy1PjBoKy4w.png",
+    "file": "/images/ai-agent/skills.png",
+    "w": 1654,
+    "h": 1600,
+    "alt": "Reusable skills library"
+  },
+  "agent-closing": {
+    "url": "https://framerusercontent.com/images/ClKOW67L3AkUuaYyhrxH3VgaWQ.png",
+    "file": "/images/ai-agent/closing.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Agent workforce platform"
+  },
+  "hdfc-hero": {
+    "url": "https://framerusercontent.com/images/AbDec81Vu4mPkkUM1DzeSeQxEyQ.png",
+    "file": "/images/hdfc/hero.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Consent management platform overview"
+  },
+  "hdfc-overview": {
+    "url": "https://framerusercontent.com/images/zH4IKQtFRtATSQKfto2Z5w2Ec.png",
+    "file": "/images/hdfc/overview.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Customer consent portal and operator console"
+  },
+  "hdfc-closing": {
+    "url": "https://framerusercontent.com/images/cwWUwKkZfAdkzNRQ64dX9yqkG0.png",
+    "file": "/images/hdfc/closing.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Consent management platform"
+  },
+  "sony-hero": {
+    "url": "https://framerusercontent.com/images/HYw5jiGzIpb1Yqp4Oh0lb6pB4NQ.png",
+    "file": "/images/sony/hero.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Sony enterprise platforms overview"
+  },
+  "sony-clm": {
+    "url": "https://framerusercontent.com/images/FyV2lNKZv7yRSxMROS4RjTe0I.png",
+    "file": "/images/sony/clm.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Contract lifecycle platform"
+  },
+  "sony-governance": {
+    "url": "https://framerusercontent.com/images/8x0vSZp8E3BIbmPyAUdpjtrwVkc.png",
+    "file": "/images/sony/governance.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Corporate secretarial governance platform"
+  },
+  "sony-sports": {
+    "url": "https://framerusercontent.com/images/VnN2bRxhUWU81Sknh4ECRiQapM.png",
+    "file": "/images/sony/sports.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Broadcast planning platform"
+  },
+  "sony-social": {
+    "url": "https://framerusercontent.com/images/GX9MEi2d35js86BMjsCdZCcK7RQ.png",
+    "file": "/images/sony/social.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Social intelligence command"
+  },
+  "sony-closing": {
+    "url": "https://framerusercontent.com/images/stKmtkVkeGKygb8iMfj4wwmqzkU.png",
+    "file": "/images/sony/closing.png",
+    "w": 3340,
+    "h": 1800,
+    "alt": "Sony enterprise platforms"
+  }
+}

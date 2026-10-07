@@ -1,0 +1,118 @@
+---
+order: 3
+title: Agent Workforce Platform
+summary: A platform for building and deploying AI assistants and automated workflows across enterprise products. Whether it's an internal solution or a client product, the platform provides a flexible foundation for adding intelligence, automation, and governance at scale.
+tags: [Agent Workflow, Product Design, System Thinking]
+cardTags: [UnifyApps, Agent Workflow, System Thinking]
+client: UnifyApps
+platform: Web & Mobile
+timeline: 2025 - Present
+role: Lead Product Designer
+hero: agent-hero
+closing: agent-closing
+---
+
+<Section label="Engagement" title="Built for products that run on agents.">
+
+We designed the Agent Workforce Platform from concept to final developer handoff, partnering with UnifyApps to create an enterprise product that could scale across large organizations. The platform supports three ways of building AI agents—Simple, Workflow, and Advanced—each designed for different levels of complexity while sharing a consistent experience through a unified design system. Throughout the project, the focus was on making powerful AI capabilities easy to adopt, govern, and scale across different user roles.
+
+</Section>
+
+<Section label="The Problem" title="Good intentions. Broken handoffs.">
+
+Teams knew what they wanted to build, but getting from an idea to a working AI agent involved too many disconnected steps. Configuration, knowledge, compliance, and testing were spread across different people and tools, creating delays, rework, and uncertainty. These weren't isolated issues—they were structural problems that made deployment difficult.
+
+<Points>
+  <Point title="Product teams depended on engineering to build AI agents.">Product managers could define the use case, but they couldn't configure or launch an agent themselves. Every change relied on engineering, slowing down delivery and creating unnecessary handoffs.</Point>
+  <Point title="Workflows were difficult to manage and maintain.">Automation logic was documented in separate files instead of being built into the product. As workflows changed, documentation and implementation quickly became out of sync.</Point>
+  <Point title="Compliance happened too late in the process.">Security rules and governance checks were often added after development. When issues were found, teams had to revisit completed work, leading to delays and costly rework.</Point>
+  <Point title="Knowledge was scattered across different systems.">The information AI agents relied on lived in multiple tools. Without a single place to manage knowledge, it was difficult to control data quality or know when information had become outdated.</Point>
+  <Point title="Teams couldn't measure quality before deployment.">There was no clear way to evaluate an agent before it went live. Without benchmarks or testing, teams relied on assumptions until problems appeared in production.</Point>
+</Points>
+
+</Section>
+
+<Section stack label="Discovery" title="Three roles. One successful deployment.">
+
+The product team defined the roles and led the research. The brief gave us three working roles — we turned those findings into clear design decisions for each.
+
+<Points>
+  <Point title="Product managers knew the goal, but couldn't build it.">Product managers understood the business problem and how the AI should behave. But they relied on engineering to configure every agent, creating delays and slowing product delivery.</Point>
+  <Point title="Engineers needed clarity, not complexity.">Engineers required precise controls for prompts, models, and testing. Instead of navigating scattered settings, they needed a focused workspace that made advanced configuration efficient and easy to manage.</Point>
+  <Point title="Compliance teams needed visibility before approval.">Compliance reviewers had to understand how an AI agent worked before it could be deployed. Clear governance, audit history, and security controls gave them the confidence to approve with fewer delays.</Point>
+</Points>
+
+Together, these insights shaped the product strategy: design for each role's needs while creating a workflow that connects them seamlessly.
+
+<Img id="agent-discovery" />
+
+</Section>
+
+<Section label="Design Strategy" title="One surface. Every role covered.">
+
+Our design strategy was to create a single platform that could support users with different levels of expertise. Instead of building separate products, we designed three connected experiences that share the same design system, governance, and AI capabilities. As users grow from simple tasks to advanced workflows, they can continue using the same platform without starting over.
+
+<Pillars>
+  <Pillar title="Configure">Role, goal, knowledge. Built for someone who thinks in outcomes, not parameters.</Pillar>
+  <Pillar title="Orchestrate">Build multi-step workflows by connecting triggers, conditions, and actions. Designed for teams that need structured automation with clear visibility and review before deployment.</Pillar>
+  <Pillar title="Tune">Fine-tune models, retrieval, guardrails, and evaluations with greater control. Designed for technical users who need precision, experimentation, and measurable AI performance.</Pillar>
+</Pillars>
+
+<Feature title="Simple Agent" lead="Configure an assistant the way you'd brief a colleague" images={["agent-simple"]}>
+
+Client leads and product managers know exactly what an assistant should do — but no platform had let them build one without engineering. Simple mode closes that gap. Role, goal, and knowledge are written in plain language — no model selection, no prompt engineering, nothing that requires a technical handoff. A hidden control still has to be explained eventually. A removed one never does. The cost is honest: an engineer who lands here will find nothing for them. That is why Advanced exists.
+
+</Feature>
+
+<Feature title="Workflow Agent" lead="The canvas where automation becomes something anyone can read and review." images={["agent-workflow"]}>
+
+Automation breaks down when it lives in documents. Workflow Agents replace those documents with a visual canvas — a connected sequence of triggers, prompts, branches, and actions that anyone on the team can read, review, and validate before it goes live. Every decision the agent makes is surfaced as an execution trace, so non-engineers and client teams can verify the logic without reading code.
+
+</Feature>
+
+<Feature title="Advanced Agent" lead="Full control over every layer of agent behaviour" images={["agent-advanced"]}>
+
+Not every product needs the same level of control — but some need more than a working assistant. They need one that can be proven to work. Advanced mode gives engineers full control over how an agent thinks, what it knows, and what it is allowed to do. Every configuration decision is isolated, measurable, and testable before anything reaches a client. The cost: this depth is intentionally not for someone who doesn't need it. That is why Simple exists.
+
+</Feature>
+
+<Feature title="Guardrails & Observability" lead="Real-time visibility into every decision an assistant makes" images={["agent-guardrails"]}>
+
+An assistant that works is not the same as one a compliance team will approve. Guardrails and PII rules are set during configuration, not added afterward — so a reviewer is checking a documented decision, not auditing a finished product. Every interaction is captured as a trace: every tool call, every retrieval, every model decision behind a single response. It is not built for debugging after something breaks. It is built so teams and client stakeholders can understand exactly what happened and why before issues reach anyone. Showing gaps makes the product look less polished. We accepted that — an assistant that hides what it cannot do will answer confidently and be wrong.
+
+</Feature>
+
+<Feature title="Reusable Skills" lead="Build a capability once, use it across every project" images={["agent-skills"]}>
+
+Every time a team starts a new client project, they shouldn't have to rebuild the same capabilities from scratch. Skills pull shared capabilities — web search, file analysis, compliance checks, API actions — into a library any agent mode can call. Each thing built on the platform raises the baseline for the next project, rather than resetting it. The cost: a shared skill has to work across contexts it wasn't built for, which is harder to maintain than something purpose-built. That is the right trade-off.
+
+</Feature>
+
+</Section>
+
+<Section label="Outcomes" title="Real client outcomes built on this platform.">
+
+These are UnifyApps' published figures from a large financial institution's consent and communications deployment, built on this platform's automation and governance layer. We did not measure them. The configuration, governance, and review flows shown above are what made the timeline possible.
+
+<Stats>
+  <Stat value="$5.5M">Projected annual cost savings from replacing fragmented, manual consent processes with automated, governed workflows.</Stat>
+  <Stat value="800K+">Consumer consents captured in the first two weeks of deployment.</Stat>
+  <Stat value="90% faster">Time-to-market — traditional builds of this kind take 12 to 18 months; this shipped in two weeks.</Stat>
+  <Stat value="37%">Improvement in message delivery rates after consolidating 27+ messaging systems into one governed channel.</Stat>
+</Stats>
+
+<Source href="https://www.unifyapps.com/resources/customer-story" linkLabel="unifyapps.com/resources/customer-story">Published in UnifyApps' customer story for this engagement.</Source>
+
+</Section>
+
+<Section label="Reflections" title="In enterprise agent products, trust is the product.">
+
+This project taught me that designing enterprise AI isn't about removing complexity—it's about placing it where it belongs. Different users have different goals, and a successful product helps each role complete their work without being overwhelmed by someone else's needs.
+
+<Points>
+  <Point title="Simplicity means giving each user what they need.">Making a product simpler doesn't always mean removing features. It means showing the right level of complexity to the right user. Different experiences for different roles make the product easier to use without reducing its capability.</Point>
+  <Point title="Governance should be part of the workflow.">Governance works best when it's built into the product from the beginning. Including approvals, permissions, and compliance checks within the workflow makes the process smoother and easier to trust.</Point>
+  <Point title="One experience doesn't fit every user.">Engineers, product managers, and reviewers all have different priorities. Designing role-specific experiences helps each user focus on what matters most, making the product more efficient and easier to adopt.</Point>
+</Points>
+
+</Section>

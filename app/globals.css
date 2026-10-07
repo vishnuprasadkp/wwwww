@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sand: #ebe8e6;
+  --color-sand-deep: #e2dedb;
+  --color-sand-light: #f2f0ee;
+  --color-pigment: #393636;
+  --color-pigment-soft: #83685f;
+  --color-rule: #cfcfcf;
+
+  --font-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --container-prose: 42rem;
+  --container-page: 90rem;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-gallery: gallery 17.7s linear infinite;
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+  @keyframes gallery {
+    to { transform: translateX(calc(-50% - 5px)); }
+  }
+}
+
+@layer base {
+  html {
+    background: #fff;
+    color: var(--color-pigment);
+    scroll-behavior: smooth;
+  }
+  body {
+    background: transparent;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-pigment);
+    color: var(--color-sand);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-pigment);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* Case-study / about body: a two-column grid. Lead text left, supporting blocks right. */
+.case-grid { display: grid; row-gap: 26px; }
+.case-grid > p { font-size: 1rem; line-height: 26px; }
+.case-grid > p:first-of-type { font-size: 1.25rem; line-height: 30px; }
+.case-grid.lead-lg > p:first-of-type { font-size: 1.5rem; line-height: 36px; }
+.case-grid.statement > p:nth-of-type(2) { font-size: 1.625rem; line-height: 40px; }
+.case-grid > figure { margin: 0; }
+.case-grid.big .rc, .case-grid.big .rc dd, .case-grid.big .rc div, .case-grid.big > p.src { font-size: 1.125rem; line-height: 28px; }
+.case-grid.big .rc dt { font-size: 1.75rem; line-height: 42px; }
+.case-grid > p.cap { font-size: 1rem; line-height: 26px; }
+.case-grid > article { margin-top: 70px; }
+@media (min-width: 768px) {
+  .case-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+  .case-grid > p { grid-column: 2; }
+  .case-grid > p:first-of-type, .case-grid > p.src { grid-column: 1; }
+  .case-grid > .rc { grid-column: 2; }
+  .case-grid > figure, .case-grid > article { grid-column: 1 / -1; }
+  .case-grid > article { margin-top: 213px; }
+  .case-grid > p:first-of-type, .case-grid > p { max-width: 40rem; }
+  .case-grid > p.cap { grid-column: 2; grid-row: 1; }
+  .case-grid.sub { grid-template-rows: auto 1fr; }
+  .case-grid.sub > p:first-of-type { grid-row: 1 / span 2; }
+  .case-grid.sub > .rc { margin-top: 8px; }
+  .case-grid:has(> p.src) { grid-template-rows: auto 1fr; }
+  .case-grid:has(> p.src) > .rc { grid-row: 1 / span 2; }
+  .case-grid > p.src { grid-row: 2; }
+  .case-grid.stack > * { grid-column: 1; }
+  .case-grid.stack > figure { grid-column: 2; grid-row: 1 / span 3; }
+}
+
+/* Fixed paper texture behind every page (matches the Framer layer: 120vw square, 90% opacity). */
+.paper-bg {
+  position: fixed;
+  top: 0;
+  left: -10vw;
+  width: 120vw;
+  height: 120vw;
+  z-index: -1;
+  opacity: 0.9;
+  pointer-events: none;
+  background: url("/images/site/paper-1.png") center / 100% 100% no-repeat;
+}
+
+/* Custom cursor: hide the native one on mouse/trackpad devices only. */
+@media (hover: hover) and (pointer: fine) {
+  html, body, a, button { cursor: none; }
+}
