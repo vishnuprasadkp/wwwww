@@ -14,8 +14,8 @@ export default function NextProjects({ closing, next }: { closing: string; next:
           <h2 className="font-serif text-[1.625rem] leading-[34px] md:text-4xl md:leading-[46px]">Next project</h2>
         </div>
         <ul className="mt-8 grid gap-x-4 gap-y-12 px-5 md:grid-cols-2 md:px-8">
-          {next.map((c) => (
-            <li key={c.slug}>
+          {next.map((c, i) => (
+            <li key={c.slug} className={i > 0 ? "hidden lg:block" : ""}>
               <Link href={`/work/${c.slug}`} data-cursor="view" className="group block">
                 <div className="relative aspect-[680/411] w-full overflow-hidden">
                   <Image

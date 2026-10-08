@@ -14,8 +14,8 @@ const THUMBS: Record<string, { src: string; w: number; h: number }> = {
 /** Two-column case grid: thumbnail, title, then the tags in mono. */
 export default function CaseList({ cases }: { cases: CaseMeta[] }) {
   return (
-    <section id="cases" className="pt-[120px] md:pt-[200px]">
-      <h2 className="border-b border-rule px-5 pb-5 pt-[21px] font-serif text-[1.625rem] leading-[34px] md:pb-[23px] md:pt-8 md:px-8 md:text-4xl md:leading-[46px]">Cases</h2>
+    <section className="pt-[120px] md:pt-[200px]">
+      <h2 id="cases" className="border-b border-rule px-5 pb-5 pt-[21px] font-serif text-[1.625rem] leading-[34px] md:pb-[23px] md:pt-8 md:px-8 md:text-4xl md:leading-[46px]">Cases</h2>
       <ul className="grid items-start gap-x-4 mt-[31px] gap-y-12 px-5 md:grid-cols-2 md:gap-y-[85px] md:px-8">
         {cases.map((c) => {
           const t = THUMBS[c.slug];
@@ -34,7 +34,7 @@ export default function CaseList({ cases }: { cases: CaseMeta[] }) {
                   />
                 )}
                 <h3 className="mt-4 text-lg leading-[28px] md:text-xl md:leading-[1.5]">{c.title}</h3>
-                <p className="font-mono text-base leading-[1.625] text-pigment-soft">{c.cardTags.join(" / ")}</p>
+                <p className="mt-1 font-mono text-base leading-[1.625] text-pigment-soft md:mt-0">{c.cardTags.join(" / ")}</p>
               </Link>
             </li>
           );

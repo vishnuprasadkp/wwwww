@@ -69,7 +69,6 @@ shared keep working.
 
 ## Open TODOs
 
-- `lib/site.ts`: final domain and LinkedIn URL.
 - `content/cases/enterprise-search.mdx`: "Personalised Results" needs its own body copy.
 - `content/cases/adeo.mdx`: pick one of the two voting paragraphs (alternate is in a comment).
 - `site/home-preview` asset is downloaded but unused — it was on the Framer homepage; place it or delete it.

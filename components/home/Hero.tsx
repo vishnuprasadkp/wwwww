@@ -2,7 +2,7 @@ import LogoMarquee from "./LogoMarquee";
 
 export default function Hero() {
   return (
-    <section className="flex min-h-[666px] flex-col md:min-h-[calc(100svh-26px)]">
+    <section className="flex min-h-[max(560px,calc(100svh-57px))] flex-col">
       <div className="flex flex-1 items-center px-5 py-16 md:px-8">
         <div>
           <h1 className="font-serif text-[1.875rem] leading-[40px] md:text-[2.5rem] md:leading-[1.35]">I’m Vishnu.</h1>

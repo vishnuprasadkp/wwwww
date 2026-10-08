@@ -1,6 +1,6 @@
 export const site = {
   name: "vishnuprasad.design",
-  url: "https://vishnuprasad.design", // TODO: set to your final domain
+  url: "https://vishnuprasad.me",
   description:
     "Hi, I'm Vishnu, a Product Designer with over 5 years of experience. I design experiences for the complex systems that run real work.",
   email: "vishnuprasadkp98@gmail.com",

@@ -4,8 +4,8 @@ import sharp from "sharp";
 import fs from "node:fs/promises";
 
 const src = "public/images/site/paper-1.png";
-for (const [file, width] of [["paper.webp", 2400], ["paper-sm.webp", 1400]]) {
-  const buf = await sharp(src).resize(width).flatten({ background: "#ffffff" }).webp({ quality: 85, effort: 6 }).toBuffer();
+for (const [file, width, quality] of [["paper.webp", 3456, 80], ["paper-sm.webp", 2400, 85]]) {
+  const buf = await sharp(src).resize(width).flatten({ background: "#ffffff" }).webp({ quality, effort: 6 }).toBuffer();
   await fs.writeFile(`public/images/site/${file}`, buf);
   console.log(file, Math.round(buf.length / 1024), "KB");
 }

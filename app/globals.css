@@ -93,12 +93,14 @@
   pointer-events: none;
   background: #e8e5e4 url("/images/site/paper-sm.webp") center top / cover no-repeat;
 }
+@media (min-width: 768px) {
+  .paper-bg { background-image: url("/images/site/paper.webp"); }
+}
 @media (min-width: 1024px) {
   .paper-bg {
     left: 50%;
     width: max(100vw, 1728px);
     transform: translateX(-50%);
-    background-image: url("/images/site/paper.webp");
   }
 }
 
