@@ -6,7 +6,7 @@ import Img from "@/components/ui/Img";
  */
 export function Gallery({ rows }: { rows: string[][] }) {
   return (
-    <div className="-mx-5 mt-12 overflow-hidden md:-mx-8 md:mt-[76px]">
+    <div className="full -mx-5 mt-8 overflow-hidden md:-mx-8 md:mt-[14px]">
       <div className="flex w-max animate-gallery gap-[10px] md:-ml-[10px]">
         {[0, 1].map((copy) => (
           <div key={copy} className="flex flex-col gap-[10px]" aria-hidden={copy === 1 || undefined}>

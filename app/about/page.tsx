@@ -4,6 +4,7 @@ import path from "node:path";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { mdxComponents } from "@/components/mdx";
 import { site } from "@/lib/site";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 
 export const metadata: Metadata = {
   title: "About",
@@ -26,12 +27,9 @@ export default async function About() {
           <p className="font-serif text-[2rem] leading-[46px] md:max-w-[40rem]">
             Let’s connect. Open to good conversations and interesting ideas.
           </p>
-          <a
-            href={`mailto:${site.email}`}
-            className="self-start font-mono leading-[25px] text-pigment-soft underline-offset-4 hover:underline md:pt-[61px]"
-          >
-            Get in touch
-          </a>
+          <div className="self-start md:pt-[61px]">
+            <ArrowLink href={site.gmail}>Get in touch</ArrowLink>
+          </div>
         </div>
       </section>
     </>

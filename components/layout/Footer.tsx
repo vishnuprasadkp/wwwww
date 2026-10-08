@@ -20,7 +20,7 @@ export default function Footer() {
       <div className={`flex flex-col justify-between gap-1 ${pathname === "/" ? "" : "border-t border-rule"} px-5 pb-[27px] pt-[26px] font-mono text-base leading-[26px] text-pigment-soft sm:flex-row md:px-8`}>
         <p>
           Lets Connect{" "}
-          <a href={`mailto:${site.email}`} className="break-all hover:underline underline-offset-4">
+          <a href={site.gmail} target="_blank" rel="noopener noreferrer" className="break-all hover:text-pigment">
             {site.email}
           </a>
         </p>

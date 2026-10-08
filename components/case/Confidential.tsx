@@ -1,4 +1,5 @@
 import { site } from "@/lib/site";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 
 /** "Get in touch" block for NDA projects: ruled top and bottom, text left, link right. */
 export default function Confidential() {
@@ -8,12 +9,9 @@ export default function Confidential() {
         <h4 className="font-serif text-[2rem] font-normal leading-[50px] text-pigment-soft md:max-w-[648px]">
           Further details of this project are confidential. If you&apos;d like to know more, get in touch.
         </h4>
-        <a
-          href={`mailto:${site.email}`}
-          className="self-start font-mono leading-[25px] transition-opacity hover:opacity-60 md:pt-[118px]"
-        >
-          Get in touch
-        </a>
+        <div className="self-start md:pt-[118px]">
+          <ArrowLink href={site.gmail}>Get in touch</ArrowLink>
+        </div>
       </div>
     </aside>
   );

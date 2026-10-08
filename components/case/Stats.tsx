@@ -1,3 +1,5 @@
+import { SourceLink } from "@/components/ui/ArrowLink";
+
 export function Stats({ children }: { children: React.ReactNode }) {
   return <dl className="rc flex flex-col gap-[26px] md:max-w-[40rem]">{children}</dl>;
 }
@@ -19,14 +21,10 @@ export function Source({ href, linkLabel, children }: { href?: string; linkLabel
     <p className="src">
       {children}
       {href && (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-1 block text-lg leading-[18px] text-pigment-soft hover:underline underline-offset-4"
-        >
-          {linkLabel ?? href}
-        </a>
+        <>
+          <br />
+          <SourceLink href={href}>{linkLabel ?? href}</SourceLink>
+        </>
       )}
     </p>
   );

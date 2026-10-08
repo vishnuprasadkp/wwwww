@@ -12,11 +12,11 @@ export default function CaseHero({ meta }: { meta: CaseMeta }) {
   return (
     <header>
       <div className="grid gap-4 border-b border-rule px-5 pb-[27px] pt-[74px] md:grid-cols-2 md:px-8">
-        <div>
+        <div className="md:self-start">
           <p className="font-mono text-base leading-[26px] text-pigment-soft md:max-w-[40rem]">{meta.tags.join(" / ")}</p>
           <h1 className="mt-2.5 font-serif text-[2.5rem] leading-[54px] md:max-w-[40rem]">{meta.title}</h1>
         </div>
-        <p className="text-base leading-[26px] md:mt-[60px] md:max-w-[40rem]">{meta.summary}</p>
+        <p className="text-base leading-[26px] md:max-w-[40rem] md:self-end md:pb-[6px]">{meta.summary}</p>
       </div>
 
       <figure className="mt-8 px-5 md:px-8">

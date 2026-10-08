@@ -64,7 +64,7 @@
   .case-grid > p { grid-column: 2; }
   .case-grid > p:first-of-type, .case-grid > p.src { grid-column: 1; }
   .case-grid > .rc { grid-column: 2; }
-  .case-grid > figure, .case-grid > article { grid-column: 1 / -1; }
+  .case-grid > figure, .case-grid > article, .case-grid > .full { grid-column: 1 / -1; }
   .case-grid > article { margin-top: 213px; }
   .case-grid > p:first-of-type, .case-grid > p { max-width: 40rem; }
   .case-grid > p.cap { grid-column: 2; grid-row: 1; }
