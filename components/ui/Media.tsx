@@ -5,7 +5,8 @@ import { getAsset, isWide } from "@/lib/assets";
 export default function Media({ ids }: { ids: string[] }) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {ids.map((id) => {
+      {ids.map((id, i) => {
+        if (!id) return <div key={`gap-${i}`} aria-hidden className="hidden md:block" />;
         const wide = isWide(getAsset(id));
         return (
           <figure key={id} className={wide ? "md:col-span-2" : ""}>

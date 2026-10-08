@@ -12,7 +12,7 @@ export function ContactLinks() {
     <ul className="flex flex-wrap gap-x-10 gap-y-1">
       {links.map((l) => (
         <li key={l.label}>
-          <ArrowLink href={l.href}>{l.label}</ArrowLink>
+          <ArrowLink href={l.href} diagonal>{l.label}</ArrowLink>
         </li>
       ))}
     </ul>

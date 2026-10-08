@@ -2,7 +2,7 @@
  * Framer "View All Button": mono text + right arrow. On hover the arrow slides
  * in (17px -> 8px gap), 4px side padding appears and a 2px dark underline draws.
  */
-export function ArrowLink({ href, children, className = "" }: { href: string; children: React.ReactNode; className?: string }) {
+export function ArrowLink({ href, children, className = "", diagonal = false }: { href: string; children: React.ReactNode; className?: string; diagonal?: boolean }) {
   const external = /^https?:/.test(href);
   return (
     <a
@@ -13,7 +13,11 @@ export function ArrowLink({ href, children, className = "" }: { href: string; ch
       <span className="flex items-center gap-[17px] transition-[gap] duration-200 group-hover:gap-2">
         <span>{children}</span>
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.73" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M 1.154 7.212 L 13.269 7.212 M 7.212 13.269 L 13.269 7.212 L 7.212 1.154" />
+          {diagonal ? (
+            <path d="M 0 6.058 L 12.115 6.058 M 6.058 12.115 L 12.115 6.058 L 6.058 0" transform="translate(1.154 1.154) rotate(-45 6 6)" />
+          ) : (
+            <path d="M 1.154 7.212 L 13.269 7.212 M 7.212 13.269 L 13.269 7.212 L 7.212 1.154" />
+          )}
         </svg>
       </span>
     </a>

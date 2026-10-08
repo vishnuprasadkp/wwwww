@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { CaseMeta } from "@/lib/cases";
+import { blurFor } from "@/lib/blur";
 
 // Home-page thumbnails (1654px wide), keyed by case slug.
 const THUMBS: Record<string, { src: string; w: number; h: number }> = {
@@ -28,7 +29,10 @@ export default function CaseList({ cases }: { cases: CaseMeta[] }) {
                     width={t.w}
                     height={t.h}
                     alt=""
-                    sizes="(min-width: 768px) 50vw, 100vw"
+                    sizes="(min-width: 768px) calc(50vw - 24px), 100vw"
+                    quality={90}
+                    placeholder="blur"
+                    blurDataURL={blurFor(t.src)}
                     className="h-auto w-full"
                   />
                 )}

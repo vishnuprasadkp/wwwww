@@ -22,20 +22,24 @@ export default function Nav() {
         aria-label="Main"
         className="grid h-[56px] grid-cols-2 pt-[3px] items-center gap-4 px-5 font-mono text-base leading-[19px] text-pigment-soft md:px-8"
       >
-        <Link href="/" className="flex items-center gap-3 justify-self-start transition-colors duration-300 hover:text-pigment" aria-label={isHome ? "Home" : "Back to home"}>
-          {isHome ? (
+        {isHome ? (
+          <Link href="/" aria-label="Home" className="justify-self-start transition-colors duration-300 hover:text-pigment">
             <svg width="29" height="32" viewBox="0 0 29 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" aria-hidden="true">
               <path d={LOGO_PATH} />
             </svg>
-          ) : (
-            <>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-                <path d="M16 10H4M9 5l-5 5 5 5" />
-              </svg>
-              <span className="-ml-1">Back</span>
-            </>
-          )}
-        </Link>
+          </Link>
+        ) : (
+          <Link
+            href="/"
+            aria-label="Back to home"
+            className="flex w-min items-center gap-[10px] justify-self-start px-0 transition-[gap,padding,color] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:gap-1 hover:px-[3px] hover:text-pigment"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M 14.25 9 L 3.75 9 M 9 14.25 L 3.75 9 L 9 3.75" />
+            </svg>
+            <span>Back</span>
+          </Link>
+        )}
 
         <div className="hidden items-center md:flex">
           <ul className="flex items-center gap-6">

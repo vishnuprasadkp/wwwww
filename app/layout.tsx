@@ -6,6 +6,7 @@ import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 import Cursor from "@/components/layout/Cursor";
 import ScrollUp from "@/components/layout/ScrollUp";
+import { preload } from "react-dom";
 import "./globals.css";
 
 // next/font downloads these at build time and serves them from your own domain.
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  preload("/images/site/paper.webp", { as: "image", fetchPriority: "high" });
   return (
     <html lang="en" className={`${serif.variable} ${geist.variable} ${mono.variable}`}>
       <body className="min-h-dvh flex flex-col">
