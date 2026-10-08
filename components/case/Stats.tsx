@@ -8,7 +8,7 @@ export function Stats({ children }: { children: React.ReactNode }) {
 export function Stat({ value, label, children }: { value: string; label?: string; children?: React.ReactNode }) {
   return (
     <div>
-      <dt className="text-[1.75rem] leading-[42px]">{value}</dt>
+      <dt className="text-2xl leading-[32px] md:text-[1.75rem] md:leading-[42px]">{value}</dt>
       {label && <dd className="text-base leading-[26px]">{label}</dd>}
       {children && <dd className="text-base leading-[26px]">{children}</dd>}
     </div>

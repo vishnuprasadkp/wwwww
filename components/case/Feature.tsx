@@ -16,11 +16,11 @@ export default function Feature({ title, lead, note, images = [], children }: Pr
   return (
     <article>
       <div className="-mx-5 border-b border-rule px-5 pb-[23px] pt-[21px] md:-mx-8 md:px-8">
-        <h3 className="font-serif text-[2rem] leading-[50px]">{title}</h3>
+        <h3 className="font-serif text-2xl leading-[32px] md:text-[2rem] md:leading-[50px]">{title}</h3>
       </div>
       <div className="mt-8 grid gap-[26px] md:grid-cols-2 md:gap-x-4">
         <div className="md:max-w-[40rem]">
-          <p className="text-xl leading-[30px]">{lead}</p>
+          <p className="text-lg leading-[28px] md:text-xl md:leading-[30px]">{lead}</p>
           {children && <div className="mt-1.5 space-y-[26px] text-base leading-[26px]">{children}</div>}
         </div>
         {side ? <Img id={images[0]} sizes="(min-width: 768px) 50vw, 100vw" /> : note && <p className="text-xl leading-[30px] md:max-w-[40rem]">{note}</p>}

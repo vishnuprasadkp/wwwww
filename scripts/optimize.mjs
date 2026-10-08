@@ -1,24 +1,11 @@
-// One-off: builds the web-optimised paper texture and tiny blur placeholders for every image.
-// Run: node scripts/optimize.mjs
+// One-off: builds the web-optimised paper textures. Run: node scripts/optimize.mjs
+// The source PNG is mostly alpha grain; flattened onto white it compresses well and looks identical.
 import sharp from "sharp";
 import fs from "node:fs/promises";
-import path from "node:path";
 
-const root = "public/images";
-const walk = async (d) =>
-  (await Promise.all((await fs.readdir(d, { withFileTypes: true })).map((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : path.join(d, e.name))))).flat();
-
-// Paper texture: displayed at ~120vw, so 2000px is plenty. The PNG is mostly alpha noise; flattened onto white it is ~130KB.
-const flat = () => sharp(`${root}/site/paper-1.png`).resize(2000).flatten({ background: "#ffffff" });
-const paper = await flat().webp({ quality: 72, effort: 6 }).toBuffer();
-await fs.writeFile(`${root}/site/paper.webp`, paper);
-const { channels } = await sharp(paper).resize(64).stats();
-console.log("paper.webp", Math.round(paper.length / 1024), "KB; mean rgb", channels.map((c) => Math.round(c.mean)).join(","));
-
-const blur = {};
-for (const f of (await walk(root)).filter((f) => f.endsWith(".png") && !f.includes("/logos/") && !f.includes("paper"))) {
-  const buf = await sharp(f).resize(28).blur(1).webp({ quality: 40 }).toBuffer();
-  blur["/" + f.replace(/^public\//, "")] = `data:image/webp;base64,${buf.toString("base64")}`;
+const src = "public/images/site/paper-1.png";
+for (const [file, width] of [["paper.webp", 2400], ["paper-sm.webp", 1400]]) {
+  const buf = await sharp(src).resize(width).flatten({ background: "#ffffff" }).webp({ quality: 85, effort: 6 }).toBuffer();
+  await fs.writeFile(`public/images/site/${file}`, buf);
+  console.log(file, Math.round(buf.length / 1024), "KB");
 }
-await fs.writeFile("content/blur.json", JSON.stringify(blur));
-console.log("blur placeholders:", Object.keys(blur).length);

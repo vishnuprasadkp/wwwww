@@ -23,7 +23,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  preload("/images/site/paper.webp", { as: "image", fetchPriority: "high" });
+  preload("/images/site/paper.webp", { as: "image", fetchPriority: "high", media: "(min-width: 1024px)" });
+  preload("/images/site/paper-sm.webp", { as: "image", fetchPriority: "high", media: "(max-width: 1023.98px)" });
   return (
     <html lang="en" className={`${serif.variable} ${geist.variable} ${mono.variable}`}>
       <body className="min-h-dvh flex flex-col">

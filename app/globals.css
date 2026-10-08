@@ -51,8 +51,8 @@
 /* Case-study / about body: a two-column grid. Lead text left, supporting blocks right. */
 .case-grid { display: grid; row-gap: 26px; }
 .case-grid > p { font-size: 1rem; line-height: 26px; }
-.case-grid > p:first-of-type { font-size: 1.25rem; line-height: 30px; }
-.case-grid.lead-lg > p:first-of-type { font-size: 1.5rem; line-height: 36px; }
+.case-grid > p:first-of-type { font-size: 1.125rem; line-height: 28px; }
+.case-grid.lead-lg > p:first-of-type { font-size: 1.25rem; line-height: 30px; }
 .case-grid.statement > p:nth-of-type(2) { font-size: 1.625rem; line-height: 40px; }
 .case-grid > figure { margin: 0; }
 .case-grid.big .rc, .case-grid.big .rc dd, .case-grid.big .rc div, .case-grid.big > p.src { font-size: 1.125rem; line-height: 28px; }
@@ -60,6 +60,8 @@
 .case-grid > p.cap { font-size: 1rem; line-height: 26px; }
 .case-grid > article { margin-top: 70px; }
 @media (min-width: 768px) {
+  .case-grid > p:first-of-type { font-size: 1.25rem; line-height: 30px; }
+  .case-grid.lead-lg > p:first-of-type { font-size: 1.5rem; line-height: 36px; }
   .case-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
   .case-grid > p { grid-column: 2; }
   .case-grid > p:first-of-type, .case-grid > p.src { grid-column: 1; }
@@ -78,17 +80,26 @@
   .case-grid.stack > figure { grid-column: 2; grid-row: 1 / span 3; }
 }
 
-/* Fixed paper texture behind every page (matches the Framer layer: 120vw square, 90% opacity). */
+/* Fixed paper texture behind every page. Framer: a 1654px-tall layer (1728px wide on desktop, viewport wide on
+   tablet/mobile), image cover-fit, 90% opacity over white. */
 .paper-bg {
   position: fixed;
   top: 0;
-  left: -10vw;
-  width: 120vw;
-  height: 120vw;
+  left: 0;
+  width: 100vw;
+  height: max(1654px, 100lvh);
   z-index: -1;
   opacity: 0.9;
   pointer-events: none;
-  background: #e8e5e4 url("/images/site/paper.webp") center / 100% 100% no-repeat;
+  background: #e8e5e4 url("/images/site/paper-sm.webp") center top / cover no-repeat;
+}
+@media (min-width: 1024px) {
+  .paper-bg {
+    left: 50%;
+    width: max(100vw, 1728px);
+    transform: translateX(-50%);
+    background-image: url("/images/site/paper.webp");
+  }
 }
 
 /* Custom cursor: hide the native one on mouse/trackpad devices only. */

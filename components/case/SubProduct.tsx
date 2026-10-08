@@ -8,7 +8,7 @@ export default function SubProduct({
     <article>
       <div className="-mx-5 border-b border-rule px-5 pb-[23px] pt-[21px] md:-mx-8 md:px-8">
         <p className="font-mono text-base leading-[26px] text-pigment-soft">Product {index}</p>
-        <h3 className="mt-2.5 font-serif text-4xl leading-[46px] md:max-w-[40rem]">{title}</h3>
+        <h3 className="mt-2.5 font-serif text-[1.625rem] leading-[34px] md:max-w-[40rem] md:text-4xl md:leading-[46px]">{title}</h3>
       </div>
       <div className="case-grid sub mt-8 md:mt-10">
         {children}

@@ -17,10 +17,10 @@ export default function Nav() {
   useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <header id="header" className="relative z-40 border-b border-rule">
+    <header id="header" className="relative z-40">
       <nav
         aria-label="Main"
-        className="grid h-[56px] grid-cols-2 pt-[3px] items-center gap-4 px-5 font-mono text-base leading-[19px] text-pigment-soft md:px-8"
+        className="grid h-[57px] grid-cols-2 border-b border-rule pt-[3px] items-center gap-4 px-5 font-mono text-base leading-[19px] text-pigment-soft md:px-8"
       >
         {isHome ? (
           <Link href="/" aria-label="Home" className="justify-self-start transition-colors duration-300 hover:text-pigment">
@@ -63,10 +63,10 @@ export default function Nav() {
       </nav>
 
       {open && (
-        <ul id="mobile-menu" className="border-t border-rule px-5 pb-6 font-mono md:hidden">
+        <ul id="mobile-menu" className="font-mono text-pigment-soft md:hidden">
           {nav.map((item) => (
-            <li key={item.label} className="border-b border-rule/60">
-              <NavLink {...item} active={pathname === item.href} className="block py-4 text-base" />
+            <li key={item.label} className="border-b border-rule">
+              <NavLink {...item} active={pathname === item.href} className="block px-5 py-4 text-base" />
             </li>
           ))}
         </ul>
