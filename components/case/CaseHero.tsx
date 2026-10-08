@@ -19,7 +19,7 @@ export default function CaseHero({ meta }: { meta: CaseMeta }) {
         <p className="text-base leading-[26px] md:max-w-[40rem] md:self-end md:pb-[6px]">{meta.summary}</p>
       </div>
 
-      <figure className="mt-8 px-5 md:px-8">
+      <figure className="mt-5 px-5 md:mt-8 md:px-8">
         <Img id={meta.hero} priority />
       </figure>
 

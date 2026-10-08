@@ -38,7 +38,7 @@ export default function Section({ label, title, large, intro, stack, statement, 
         {label && <p className={`font-mono text-base ${large ? "leading-8" : "leading-[26px]"} text-pigment-soft`}>{label}</p>}
         {title && <h2 className={`font-serif ${h} ${label ? "mt-2.5" : ""} md:max-w-[min(40rem,calc(50%-8px))]`}>{title}</h2>}
       </div>
-      <div className={`${grid} mt-8 px-5 md:px-8`}>{children}</div>
+      <div className={`${grid} mt-5 px-5 md:mt-8 md:px-8`}>{children}</div>
     </section>
   );
 }

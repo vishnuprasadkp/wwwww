@@ -18,7 +18,7 @@ export default function Feature({ title, lead, note, images = [], children }: Pr
       <div className="-mx-5 border-b border-rule px-5 pb-[23px] pt-[21px] md:-mx-8 md:px-8">
         <h3 className={`font-serif text-2xl leading-[32px] md:text-[2rem] md:leading-[50px] md:max-w-[min(40rem,calc(50%-8px))]`}>{title}</h3>
       </div>
-      <div className="mt-8 grid gap-[26px] md:grid-cols-2 md:gap-x-4">
+      <div className="mt-5 grid gap-[26px] md:mt-8 md:grid-cols-2 md:gap-x-4">
         <div className="md:max-w-[40rem]">
           <p className="text-lg leading-[28px] md:text-xl md:leading-[30px]">{lead}</p>
           {children && <div className="mt-1.5 space-y-[26px] text-base leading-[26px]">{children}</div>}

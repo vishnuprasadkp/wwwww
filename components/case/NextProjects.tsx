@@ -13,7 +13,7 @@ export default function NextProjects({ closing, next }: { closing: string; next:
         <div className="border-b border-rule px-5 pb-[22px] pt-[21px] md:px-8">
           <h2 className="font-serif text-[1.625rem] leading-[34px] md:text-4xl md:leading-[46px]">Next project</h2>
         </div>
-        <ul className="mt-8 grid gap-x-4 gap-y-12 px-5 lg:grid-cols-2 md:px-8">
+        <ul className="mt-5 grid md:mt-8 gap-x-4 gap-y-12 px-5 lg:grid-cols-2 md:px-8">
           {next.map((c, i) => (
             <li key={c.slug} className={i > 0 ? "hidden lg:block" : ""}>
               <Link href={`/work/${c.slug}`} data-cursor="view" className="group block">

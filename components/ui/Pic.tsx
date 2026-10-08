@@ -1,10 +1,11 @@
 import variants from "@/content/variants.json";
 
-type V = { w: number; h: number; widths: number[] };
+type V = { w: number; h: number; avif: number[]; webp: number[] };
 const table = variants as Record<string, V>;
 
-/** Static, pre-built WebP variant for a master image (see scripts/optimize.mjs). */
-const optPath = (file: string, w: number) => `/images/_opt/${file.replace(/^\/images\//, "").replace(/\.png$/, "")}-${w}.webp`;
+/** Static pre-built file for a master image (see scripts/optimize.mjs). */
+const optPath = (file: string, w: number, ext: "avif" | "webp") =>
+  `/images/_opt/${file.replace(/^\/images\//, "").replace(/\.png$/, "")}-${w}.${ext}`;
 
 type Props = {
   file: string;       // master path, e.g. "/images/adeo/hero.png"
@@ -15,23 +16,29 @@ type Props = {
   className?: string;
 };
 
-/** Plain <img> with a responsive srcset of pre-compressed WebP files: no on-demand processing, no placeholder. */
+/**
+ * <picture> with AVIF (about half the weight of WebP at the same look) and a WebP fallback.
+ * Plain static files: no on-demand processing, no placeholder.
+ */
 export default function Pic({ file, sizes, alt = "", priority, fill, className = "" }: Props) {
   const v = table[file];
   if (!v) throw new Error(`No optimised variants for ${file} — run: node scripts/optimize.mjs`);
-  const srcSet = v.widths.map((w) => `${optPath(file, w)} ${w}w`).join(", ");
+  const set = (list: number[], ext: "avif" | "webp") => list.map((w) => `${optPath(file, w, ext)} ${w}w`).join(", ");
   return (
-    <img
-      src={optPath(file, v.widths[v.widths.length - 1])}
-      srcSet={srcSet}
-      sizes={sizes}
-      width={v.w}
-      height={v.h}
-      alt={alt}
-      loading={priority ? "eager" : "lazy"}
-      decoding="async"
-      {...(priority ? { fetchPriority: "high" as const } : {})}
-      className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : className}
-    />
+    <picture className="contents">
+      <source type="image/avif" srcSet={set(v.avif, "avif")} sizes={sizes} />
+      <img
+        src={optPath(file, v.webp[v.webp.length - 1], "webp")}
+        srcSet={set(v.webp, "webp")}
+        sizes={sizes}
+        width={v.w}
+        height={v.h}
+        alt={alt}
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
+        {...(priority ? { fetchPriority: "high" as const } : {})}
+        className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : className}
+      />
+    </picture>
   );
 }

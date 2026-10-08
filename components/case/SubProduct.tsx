@@ -10,7 +10,7 @@ export default function SubProduct({
         <p className="font-mono text-base leading-[26px] text-pigment-soft">Product {index}</p>
         <h3 className="mt-2.5 font-serif text-[1.625rem] leading-[34px] md:max-w-[min(40rem,calc(50%-8px))] md:text-4xl md:leading-[46px]">{title}</h3>
       </div>
-      <div className="case-grid sub mt-8 md:mt-10">
+      <div className="case-grid sub mt-5 md:mt-8">
         {children}
         <p className="cap">{capabilities}</p>
       </div>

@@ -16,24 +16,33 @@ for (const [file, width, quality] of [["paper.webp", 3456, 80], ["paper-sm.webp"
   console.log(file, Math.round(buf.length / 1024), "KB");
 }
 
-const WIDTHS = [480, 800, 1200, 1800, 2560];
+// AVIF (primary, ~50% smaller than WebP at the same look) + a small WebP fallback set.
+const AVIF_WIDTHS = [480, 720, 1080, 1376, 1920, 2560];
+const WEBP_WIDTHS = [640, 1376]; // fallback only (browsers without AVIF)
+const pick = (list, width) => [...list.filter((w) => w < width), Math.min(width, 2560)].filter((w, i, a) => a.indexOf(w) === i);
+await fs.rm(`${root}/_opt`, { recursive: true, force: true });
 const variants = {};
 const files = (await walk(root)).filter((f) => f.endsWith(".png") && !/\/(logos|_opt)\//.test(f) && !/paper|home-preview|og-default/.test(f));
 let bytes = 0;
 for (const f of files) {
   const rel = "/" + f.replace(/^public\//, "");
   const { width, height } = await sharp(f).metadata();
-  const widths = [...WIDTHS.filter((w) => w < width), Math.min(width, 2560)].filter((w, i, a) => a.indexOf(w) === i);
+  const avif = pick(AVIF_WIDTHS, width);
+  const webp = pick(WEBP_WIDTHS, Math.min(width, 1376));
   const base = rel.replace(/^\/images\//, "").replace(/\.png$/, "");
   await fs.mkdir(path.dirname(`${root}/_opt/${base}`), { recursive: true });
-  await Promise.all(
-    widths.map(async (w) => {
-      const buf = await sharp(f).resize(w).webp({ quality: 86, effort: 4 }).toBuffer();
+  await Promise.all([
+    ...avif.map(async (w) => {
+      const buf = await sharp(f).resize(w).avif({ quality: 62, effort: 5 }).toBuffer();
       bytes += buf.length;
+      await fs.writeFile(`${root}/_opt/${base}-${w}.avif`, buf);
+    }),
+    ...webp.map(async (w) => {
+      const buf = await sharp(f).resize(w).webp({ quality: 86, effort: 4 }).toBuffer();
       await fs.writeFile(`${root}/_opt/${base}-${w}.webp`, buf);
     }),
-  );
-  variants[rel] = { w: width, h: height, widths };
+  ]);
+  variants[rel] = { w: width, h: height, avif, webp };
 }
 await fs.writeFile("content/variants.json", JSON.stringify(variants));
-console.log(files.length, "images,", Math.round(bytes / 1048576), "MB of variants");
+console.log(files.length, "images;", Math.round(bytes / 1048576), "MB of AVIF variants");

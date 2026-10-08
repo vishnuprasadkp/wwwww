@@ -16,7 +16,7 @@ export default function CaseList({ cases }: { cases: CaseMeta[] }) {
   return (
     <section className="pt-[120px] md:pt-[160px] lg:pt-[200px]">
       <h2 id="cases" className="border-b border-rule px-5 pb-5 pt-[21px] font-serif text-[1.625rem] leading-[34px] md:pb-[23px] md:pt-8 md:px-8 md:text-4xl md:leading-[46px]">Cases</h2>
-      <ul className="grid items-start gap-x-4 mt-[31px] gap-y-12 px-5 md:grid-cols-2 md:gap-y-[85px] md:px-8">
+      <ul className="grid items-start gap-x-4 mt-[19px] gap-y-12 md:mt-[31px] px-5 md:grid-cols-2 md:gap-y-[85px] md:px-8">
         {cases.map((c) => {
           const t = THUMBS[c.slug];
           return (
