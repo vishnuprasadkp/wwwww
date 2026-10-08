@@ -58,7 +58,7 @@
 .case-grid.big .rc, .case-grid.big .rc dd, .case-grid.big .rc div, .case-grid.big > p.src { font-size: 1.125rem; line-height: 28px; }
 .case-grid.big .rc dt { font-size: 1.75rem; line-height: 42px; }
 .case-grid > p.cap { font-size: 1rem; line-height: 26px; }
-.case-grid > article { margin-top: 70px; }
+.case-grid > article { margin-top: 56px; }
 @media (min-width: 768px) {
   .case-grid > p:first-of-type { font-size: 1.25rem; line-height: 30px; }
   .case-grid.lead-lg > p:first-of-type { font-size: 1.5rem; line-height: 36px; }
@@ -67,7 +67,7 @@
   .case-grid > p:first-of-type, .case-grid > p.src { grid-column: 1; }
   .case-grid > .rc { grid-column: 2; }
   .case-grid > figure, .case-grid > article, .case-grid > .full { grid-column: 1 / -1; }
-  .case-grid > article { margin-top: 213px; }
+  .case-grid > article { margin-top: 114px; }
   .case-grid > p:first-of-type, .case-grid > p { max-width: 40rem; }
   .case-grid > p.cap { grid-column: 2; grid-row: 1; }
   .case-grid.sub { grid-template-rows: auto 1fr; }
@@ -97,6 +97,7 @@
   .paper-bg { background-image: url("/images/site/paper.webp"); }
 }
 @media (min-width: 1024px) {
+  .case-grid > article { margin-top: 213px; }
   .paper-bg {
     left: 50%;
     width: max(100vw, 1728px);

@@ -6,7 +6,7 @@ export function Points({ children }: { children: React.ReactNode }) {
 export function Point({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
     <div className="text-base leading-[26px]">
-      <h3>{title}</h3>
+      <h3 className="font-medium">{title}</h3>
       {children && <div className="mt-0.5">{children}</div>}
     </div>
   );
@@ -20,7 +20,7 @@ export function Pillars({ children }: { children: React.ReactNode }) {
 export function Pillar({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="text-base leading-[26px]">
-      <h3>{title}</h3>
+      <h3 className="font-medium">{title}</h3>
       <div className="mt-0.5">{children}</div>
     </div>
   );

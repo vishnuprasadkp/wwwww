@@ -22,9 +22,9 @@ export default function Section({ label, title, large, intro, stack, statement, 
 
   if (intro) {
     return (
-      <section className="px-5 pt-32 md:px-8 md:pt-[200px]">
+      <section className="px-5 pt-24 md:px-8 md:pt-[150px] lg:pt-[200px]">
         <div className="grid gap-4 md:grid-cols-2">
-          <h1 className={`font-serif ${h}`}>{title}</h1>
+          <h1 className={`font-serif md:pr-10 ${h}`}>{title}</h1>
           <div className="space-y-7 text-base leading-[26px] md:max-w-[40rem] md:pt-1.5 [&>ul]:!mt-[17px]">{children}</div>
         </div>
       </section>
@@ -33,10 +33,10 @@ export default function Section({ label, title, large, intro, stack, statement, 
 
   const pad = large ? (label ? "pt-6 pb-[23px]" : "pt-[34px] pb-[25px]") : "pt-[21px] pb-[23px]";
   return (
-    <section id={id ? slug(id) : undefined} className="pt-24 md:pt-[241px]">
+    <section id={id ? slug(id) : undefined} className="pt-16 md:pt-[140px] lg:pt-[241px]">
       <div className={`border-b border-rule px-5 md:px-8 ${pad}`}>
         {label && <p className={`font-mono text-base ${large ? "leading-8" : "leading-[26px]"} text-pigment-soft`}>{label}</p>}
-        {title && <h2 className={`font-serif ${h} ${label ? "mt-2.5" : ""} md:max-w-[40rem]`}>{title}</h2>}
+        {title && <h2 className={`font-serif ${h} ${label ? "mt-2.5" : ""} md:max-w-[min(40rem,calc(50%-8px))]`}>{title}</h2>}
       </div>
       <div className={`${grid} mt-8 px-5 md:px-8`}>{children}</div>
     </section>
