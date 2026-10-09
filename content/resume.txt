@@ -1,0 +1,40 @@
+VISHNU PRASAD K P
+Portfolio • LinkedIn • vishnuprasadkp98@gmail.com • +91 9656 976 712
+PROFESSIONAL SUMMARY
+Product designer with 5 years of experience across enterprise SaaS, AI, and data-heavy platforms. I take complex, high-stakes systems
+from discovery to launch — working closely with product, engineering, and executive stakeholders. Comfortable owning ambiguous
+problems, building design systems that cut delivery time, and shipping products used by millions.
+EXPERIENCE
+Senior Product Designer   Oct 2024 – Present
+Itu Chaudhuri Design (embedded at UnifyApps)
+• Drove product design across 60+ enterprise deployments for HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development
+Authority, DGE Abu Dhabi, and more.
+• Designed consent and communication management products under India's DPDP Act — enabling 30M+ customers, 400M+ consent
+records, and 3M+ daily communications for HDFC Bank.
+• Owned and scaled the UnifyApps design system across AI, Data Quality, Governance, and Workflow Automation — reused across 60+
+deployments to cut delivery time.
+• Ran 3 enterprise product initiatives in parallel, balancing stakeholder priorities, engineering constraints, and timelines.
+• Set up design-to-engineering handoff and review workflows that reduced back-and-forth and implementation inconsistencies.
+• Mentored 6 junior designers — running critiques, guiding growth, and holding WCAG 2.1 accessibility across products.
+Senior UI/UX Designer   Oct 2023 – Sep 2024
+Brane Enterprises
+• Led UX for 20+ client projects across e-commerce, finance, healthcare, and education on Brane's low-code platform.
+• Turned messy business and technical requirements into scalable workflows, working shoulder to shoulder with product and engineering.
+• Shipped responsive products with clean developer handoff, keeping design consistent across parallel projects.
+Senior UI/UX Designer   Nov 2021 – Oct 2023
+Kocha Technologies
+• Designed Nextdecentrum end-to-end — an NFT marketplace — covering onboarding, discovery, bidding, and wallet integration.
+• Translated requirements into wireframes, flows, and high-fidelity interfaces with a distributed engineering team.
+• Improved usability across core platform workflows through iterative design and steady stakeholder feedback.
+SKILLS
+Design & Research:   Product Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems,
+Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS
+Strategy & Systems: Product Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design
+Leadership, DesignOps, Data Visualization
+AI & Tools:   Claude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping, Figma, Figma AI, FigJam,
+Miro, Framer, Google AI Studio, Adobe Creative Suite
+EDUCATION
+Bachelor of Planning & Architecture   Aug 2017 – May 2021
+NIT Bhopal, Madhya Pradesh, India
+LANGUAGES
+English (Professional) • Hindi (Conversational) • Malayalam (Native) • Tamil (Conversational)

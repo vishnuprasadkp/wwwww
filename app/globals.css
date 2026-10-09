@@ -33,7 +33,7 @@
   }
   body {
     padding-right: var(--rangaa, 0px);
-    transition: padding-right var(--rangaa-dur, 0.4s) cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: padding-right 0.4s cubic-bezier(0.32, 0.72, 0, 1);
     background: transparent;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -114,7 +114,7 @@
 
 /* Rangaa copilot */
 @keyframes rangaa-orb { 0%, 100% { transform: scale(0.55); opacity: 0.5; } 50% { transform: scale(1.35); opacity: 1; } }
-@keyframes rangaa-dot { 0%, 100% { opacity: 0.25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+@keyframes rangaa-dot { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
 @keyframes rangaa-pulse { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(1.5); opacity: 0; } }
 /* Mobile panel is full-screen, so it repeats the page's paper layer with identical geometry (seamless).
    From 768px up the panel is transparent and the page's own fixed texture shows straight through. */

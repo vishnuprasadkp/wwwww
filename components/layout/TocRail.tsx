@@ -99,9 +99,9 @@ export default function TocRail() {
                   {/* hairline at rest, bullet when open */}
                   <span
                     aria-hidden
-                    className={`block shrink-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] h-[2px] w-4 ${here ? "bg-pigment" : "bg-pigment/25"} group-hover:h-[6px] group-hover:w-[6px] group-focus-within:h-[6px] group-focus-within:w-[6px] ${on ? "group-hover:bg-[#C44419] group-focus-within:bg-[#C44419]" : "group-hover:bg-transparent group-focus-within:bg-transparent"}`}
+                    className={`block shrink-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] h-[2px] w-4 ${here ? "bg-pigment" : "bg-pigment/25"} group-hover:h-[2px] group-hover:w-0 group-hover:opacity-0 group-focus-within:h-[2px] group-focus-within:w-0 group-focus-within:opacity-0`}
                   />
-                  <span className={`flex h-0 w-0 items-baseline gap-2.5 overflow-hidden whitespace-nowrap opacity-0 transition-[width,height,opacity,margin,color] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:ml-3 group-hover:h-[22px] group-hover:w-[250px] ${open} group-focus-within:ml-3 group-focus-within:h-[22px] group-focus-within:w-[250px] ${on ? "text-[#C44419]" : "text-pigment hover:text-[#C44419]"}`}>
+                  <span className={`flex h-0 w-0 items-baseline gap-2.5 overflow-hidden whitespace-nowrap opacity-0 transition-[width,height,opacity,margin,color] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:h-[22px] group-hover:w-[256px] ${open} group-focus-within:h-[22px] group-focus-within:w-[256px] ${on ? "text-[#C44419]" : "text-pigment hover:text-[#C44419]"}`}>
                     <span className="shrink-0 font-mono text-[12px] text-pigment-soft">{String(n).padStart(2, "0")}</span>
                     <span className="truncate text-[15px] leading-[22px]">{it.title}</span>
                   </span>
@@ -110,7 +110,7 @@ export default function TocRail() {
             );
           }
           return (
-            <li key={`${i}-${it.title}`} className="w-full max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:max-h-[32px] group-hover:opacity-100 group-focus-within:max-h-[32px] group-focus-within:opacity-100">
+            <li key={`${i}-${it.title}`} className="w-full max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:max-h-[34px] group-hover:opacity-100 group-focus-within:max-h-[34px] group-focus-within:opacity-100">
               <a
                 href="#"
                 onClick={(e) => {
@@ -119,10 +119,10 @@ export default function TocRail() {
                 }}
                 aria-current={on ? "location" : undefined}
                 tabIndex={-1}
-                className={`flex items-center gap-2 py-[3px] pl-[27px] font-mono text-[13px] leading-[20px] transition-colors ${on ? "text-[#C44419]" : "text-pigment-soft hover:text-pigment"}`}
+                className={`flex items-center gap-2 py-[3px] pl-[27px] text-[15px] leading-[22px] transition-colors ${on ? "text-[#C44419]" : "text-pigment-soft hover:text-pigment"}`}
               >
                 <span aria-hidden className="shrink-0">↳</span>
-                <span className="block w-[225px] truncate">{it.title}</span>
+                <span className="block w-[216px] truncate">{it.title}</span>
               </a>
             </li>
           );

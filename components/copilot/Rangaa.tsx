@@ -11,7 +11,7 @@ const RangaaCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () 
 export const useRangaa = () => useContext(RangaaCtx);
 
 const ACCENT = "#e4572e";
-const PROMPTS = ["Where should I start?", "What does Vishnu do?", "Is he open to roles?"];
+const PROMPTS = ["What makes your design approach unique?", "What projects have you worked on?", "Tell me about your design process"];
 
 /** Splits a streamed reply into the visible text and the trailing "NEXT: a | b | c" suggestions. */
 function parseReply(raw: string) {
@@ -38,7 +38,6 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
   useLayoutEffect(() => {
     const apply = () => {
       const wide = window.matchMedia("(min-width: 768px)").matches;
-      document.documentElement.style.setProperty("--rangaa-dur", open ? "0.4s" : "0s"); // smooth in, instant out
       document.documentElement.style.setProperty("--rangaa", open && wide ? "min(29vw, 440px)" : "0px");
     };
     apply();
@@ -80,7 +79,7 @@ export function RangaaButton({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={open ? "Close Rangaa" : "Ask Rangaa"}
       aria-expanded={open}
-      className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-colors duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible" : "visible"} ${className}`}
+      className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
       <Sparkle size={17} />
       <span>Rangaa</span>
@@ -162,7 +161,12 @@ function RangaaIntro() {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
       </button>
       <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
-        Hey! Rangaa here — Vishnu’s assistant and unofficial tour guide. Tap <span className="text-pigment-soft">✦ Rangaa</span> above to start.
+        I’m Rangaa, Vishnu’s assistant and unofficial tour guide. Ask me anything. Click{" "}
+        <span className="whitespace-nowrap font-mono text-pigment-soft">
+          <Sparkle size={13} className="mr-1 inline-block align-[-1px]" />
+          Rangaa
+        </span>{" "}
+        above.
       </p>
     </div>
   );
@@ -437,7 +441,7 @@ function RangaaPanel() {
     <aside
       aria-label="Rangaa, Vishnu's AI assistant"
       aria-hidden={!open}
-      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-hidden border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] ${open ? "translate-x-0 transition-transform duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]" : "translate-x-full transition-none"}`}
+      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-hidden border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
     >
       <div aria-hidden className="rangaa-paper pointer-events-none md:hidden" />
 
@@ -490,9 +494,9 @@ function RangaaPanel() {
                       </p>
                     ))
                   ) : (
-                    <span className="inline-flex gap-1.5 py-2" aria-label="Rangaa is thinking">
+                    <span className="inline-flex items-center gap-1 py-2" aria-label="Rangaa is thinking">
                       {[0, 1, 2].map((d) => (
-                        <span key={d} className="h-1.5 w-1.5 rounded-full bg-pigment-soft" style={{ animation: `rangaa-dot 1s ${d * 0.15}s ease-in-out infinite` }} />
+                        <span key={d} className="h-1 w-1 rounded-full" style={{ background: ACCENT, animation: `rangaa-dot 1s ${d * 0.15}s ease-in-out infinite` }} />
                       ))}
                     </span>
                   )}
