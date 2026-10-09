@@ -77,7 +77,7 @@ export function RangaaButton({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={open ? "Close Rangaa" : "Ask Rangaa"}
       aria-expanded={open}
-      className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none opacity-0" : "opacity-100"} ${className}`}
+      className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-colors duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible" : "visible"} ${className}`}
     >
       <Sparkle size={17} />
       <span>Rangaa</span>
@@ -134,6 +134,56 @@ type SR = {
   onend: (() => void) | null; onerror: (() => void) | null;
 };
 
+/** Live microphone loudness (0-1) sampled ~14x/second while `active`; drives the recording waveform. */
+function useLevels(active: boolean, n = 44) {
+  const [levels, setLevels] = useState<number[]>(() => Array(n).fill(0));
+  useEffect(() => {
+    if (!active) {
+      setLevels(Array(n).fill(0));
+      return;
+    }
+    let stream: MediaStream | undefined;
+    let ctx: AudioContext | undefined;
+    let raf = 0;
+    let idle = 0;
+    let stopped = false;
+    const push = (v: number) => setLevels((l) => [...l.slice(1), v]);
+    (async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (stopped) return stream.getTracks().forEach((t) => t.stop());
+        const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        ctx = new AC();
+        const an = ctx.createAnalyser();
+        an.fftSize = 512;
+        ctx.createMediaStreamSource(stream).connect(an);
+        const buf = new Uint8Array(an.fftSize);
+        let last = 0;
+        const tick = (t: number) => {
+          raf = requestAnimationFrame(tick);
+          if (t - last < 70) return;
+          last = t;
+          an.getByteTimeDomainData(buf);
+          let sum = 0;
+          for (const v of buf) sum += ((v - 128) / 128) ** 2;
+          push(Math.min(1, Math.sqrt(sum / buf.length) * 4.5));
+        };
+        raf = requestAnimationFrame(tick);
+      } catch {
+        idle = window.setInterval(() => push(Math.random() * 0.35), 90); // mic level unavailable: gentle idle motion
+      }
+    })();
+    return () => {
+      stopped = true;
+      cancelAnimationFrame(raf);
+      clearInterval(idle);
+      stream?.getTracks().forEach((t) => t.stop());
+      ctx?.close();
+    };
+  }, [active, n]);
+  return levels;
+}
+
 const plain = (t: string) => t.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*/g, "");
 const stopSpeaking = () => typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.cancel();
 
@@ -147,6 +197,8 @@ function RangaaPanel() {
   const [seconds, setSeconds] = useState(0);
   const [speaking, setSpeaking] = useState<number | null>(null);
   const cancelled = useRef(false);
+  const mode = useRef<"send" | "keep" | "cancel">("keep");
+  const levels = useLevels(listening);
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const abort = useRef<AbortController | null>(null);
@@ -257,28 +309,28 @@ function RangaaPanel() {
     setListening(false);
   };
 
-  const cancelRecording = () => {
-    cancelled.current = true;
-    heard.current = "";
-    rec.current?.abort();
-    setListening(false);
-    setDraft("");
+  const stopRecording = (m: "send" | "keep" | "cancel") => {
+    mode.current = m;
+    if (m === "cancel") {
+      heard.current = "";
+      setDraft("");
+      rec.current?.abort();
+      setListening(false);
+    } else rec.current?.stop();
   };
 
   const toggleMic = () => {
-    if (listening) {
-      rec.current?.stop();
-      return;
-    }
+    if (listening) return stopRecording("keep");
     const w = window as unknown as { SpeechRecognition?: new () => SR; webkitSpeechRecognition?: new () => SR };
     const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
     if (!Ctor) return;
     const r = new Ctor();
     r.lang = navigator.language || "en-US";
     r.interimResults = true;
-    r.continuous = false;
+    r.continuous = true;
     heard.current = "";
     cancelled.current = false;
+    mode.current = "keep";
     r.onresult = (e) => {
       let t = "";
       for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
@@ -288,7 +340,8 @@ function RangaaPanel() {
     r.onend = () => {
       setListening(false);
       const t = heard.current.trim();
-      if (t && !cancelled.current) send(t);
+      if (mode.current === "send" && t) send(t);
+      else if (mode.current === "keep" && t) setDraft(t);
       else setDraft("");
     };
     r.onerror = () => setListening(false);
@@ -364,7 +417,7 @@ function RangaaPanel() {
                     </span>
                   )}
                   {m.content && !(busy && i === messages.length - 1) && (
-                    <div className="mt-3 flex items-center gap-1 text-pigment-soft">
+                    <div className="-ml-2 mt-1 flex items-center text-pigment-soft">
                       <button
                         type="button"
                         onClick={() => speak(i, m.content)}
@@ -414,25 +467,33 @@ function RangaaPanel() {
         className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-0"}`}
       >
         {listening ? (
-          <div className="flex items-center gap-3 border border-[#e4572e] bg-white/45 py-2 pl-2 pr-2">
-            <button type="button" onClick={cancelRecording} aria-label="Cancel recording" className="grid h-9 w-9 shrink-0 place-items-center text-pigment-soft transition-colors hover:text-[#C44419]">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
-            </button>
-            <div className="flex h-9 min-w-0 flex-1 items-center justify-center gap-[3px] overflow-hidden" aria-hidden="true">
-              {Array.from({ length: 36 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="w-[2px] shrink-0 rounded-full bg-pigment-soft"
-                  style={{ height: 22, animation: `rangaa-wave ${0.7 + ((i * 7) % 5) * 0.12}s ${((i * 13) % 9) * 0.08}s ease-in-out infinite` }}
-                />
-              ))}
+          <div className="border border-pigment bg-white/45 px-3 pb-3 pt-3">
+            <p className="min-h-[24px] px-1 text-[15px] leading-[24px] text-pigment">
+              {draft || <span className="text-pigment-soft/80">Listening…</span>}
+            </p>
+            <div className="mt-3 flex items-center gap-2">
+              <button type="button" onClick={() => stopRecording("cancel")} aria-label="Cancel recording" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-black/[0.07] text-pigment transition-colors hover:bg-black/[0.12]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+              </button>
+              <div className="flex h-10 min-w-0 flex-1 items-center justify-end gap-[3px] overflow-hidden px-1" aria-hidden="true">
+                {levels.map((v, i) =>
+                  v < 0.07 ? (
+                    <span key={i} className="h-[3px] w-[3px] shrink-0 rounded-full bg-pigment/70" />
+                  ) : (
+                    <span key={i} className="w-[3px] shrink-0 rounded-full bg-pigment" style={{ height: 6 + v * 26 }} />
+                  ),
+                )}
+              </div>
+              <span className="shrink-0 font-mono text-xs tabular-nums text-pigment-soft" aria-live="off">
+                {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+              </span>
+              <button type="button" onClick={() => stopRecording("keep")} aria-label="Stop recording" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-black/[0.07] text-pigment transition-colors hover:bg-black/[0.12]">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
+              </button>
+              <button type="button" onClick={() => stopRecording("send")} aria-label="Send" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-pigment text-white transition-colors hover:bg-black">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+              </button>
             </div>
-            <span className="shrink-0 font-mono text-sm tabular-nums text-pigment" aria-live="off">
-              {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
-            </span>
-            <button type="button" onClick={toggleMic} aria-label="Finish and send" className="grid h-9 w-9 shrink-0 place-items-center bg-pigment text-white transition-colors hover:bg-[#C44419]">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
-            </button>
           </div>
         ) : (
         <div className={`flex items-center gap-2 border bg-white/45 py-2 pl-2 pr-3 transition-colors ${listening ? "border-[#e4572e]" : "border-rule focus-within:border-pigment-soft"}`}>
