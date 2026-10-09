@@ -588,7 +588,7 @@ function RangaaPanel() {
             </div>
           </div>
         ) : (
-        <div className="border border-rule bg-white/45 transition-colors focus-within:border-pigment-soft">
+        <div className="border border-rule bg-white/45 transition-colors focus-within:border-[#b8b2af]">
           {/* the text wraps and the box grows, so everything you type stays visible */}
           <textarea
             ref={input}
@@ -606,9 +606,8 @@ function RangaaPanel() {
             maxLength={600}
             className="block max-h-40 w-full resize-none bg-transparent px-4 pb-1 pt-3 text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80"
           />
-          <div className="flex items-center justify-between px-2 pb-2 pt-1">
-            <span className="hidden whitespace-nowrap pl-2 font-mono text-[11px] text-pigment-soft/70 md:block">↵ send · ⇧↵ new line</span>
-            <span className="ml-auto flex items-center gap-1">
+          <div className="flex items-center justify-end px-2 pb-2 pt-1">
+            <span className="flex items-center gap-1">
               {canSpeak && (
                 <button
                   type="button"
