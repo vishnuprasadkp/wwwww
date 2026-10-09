@@ -10,6 +10,7 @@ export function ArrowLink({
   className = "",
   diagonal = false,
   down = false,
+  icon,
 }: {
   href?: string;
   onClick?: () => void;
@@ -18,11 +19,14 @@ export function ArrowLink({
   className?: string;
   diagonal?: boolean;
   down?: boolean;
+  /** Replaces the arrow (e.g. a printer or download glyph). */
+  icon?: React.ReactNode;
 }) {
   const cls = `group relative inline-flex h-[30px] w-max items-center px-0 font-mono text-base leading-[25px] text-pigment transition-[padding] duration-200 after:pointer-events-none after:absolute after:inset-0 after:border-b-2 after:border-transparent after:transition-colors after:duration-200 hover:px-1 hover:after:border-pigment ${className}`;
   const inner = (
     <span className="flex items-center gap-[17px] transition-[gap] duration-200 group-hover:gap-2">
       <span>{children}</span>
+      {icon ?? (
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.73" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={down ? "rotate-90" : ""}>
         {diagonal ? (
           <path d="M 0 6.058 L 12.115 6.058 M 6.058 12.115 L 12.115 6.058 L 6.058 0" transform="translate(1.154 1.154) rotate(-45 6 6)" />
@@ -30,6 +34,7 @@ export function ArrowLink({
           <path d="M 1.154 7.212 L 13.269 7.212 M 7.212 13.269 L 13.269 7.212 L 7.212 1.154" />
         )}
       </svg>
+      )}
     </span>
   );
   if (!href) {
