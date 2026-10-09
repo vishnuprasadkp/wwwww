@@ -68,7 +68,7 @@ export function Sparkle({ size = 18, className = "" }: { size?: number; classNam
   );
 }
 
-/** Header trigger: a soft round button with the Rangaa sparkle. */
+/** Header trigger: orange sparkle + "Rangaa" in the nav's mono style. */
 export function RangaaButton({ className = "" }: { className?: string }) {
   const { open, toggle } = useRangaa();
   return (
@@ -77,36 +77,24 @@ export function RangaaButton({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={open ? "Close Rangaa" : "Ask Rangaa"}
       aria-expanded={open}
-      className={`grid h-9 w-9 place-items-center rounded-full transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:scale-110 ${className}`}
-      style={{ background: "rgba(228, 87, 46, 0.12)" }}
+      className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-colors duration-300 hover:text-[#C44419] ${open ? "text-[#C44419]" : ""} ${className}`}
     >
       <Sparkle size={17} />
+      <span>Rangaa</span>
     </button>
   );
 }
 
-/** Dot-matrix orb: still when idle, rippling while listening. */
-function Orb({ listening }: { listening: boolean }) {
-  const dots: { x: number; y: number; r: number; d: number }[] = [];
-  for (let y = 0; y < 5; y++)
-    for (let x = 0; x < 5; x++) {
-      const dist = Math.hypot(x - 2, y - 2);
-      if (dist > 2.3) continue;
-      dots.push({ x: 3 + x * 4.5, y: 3 + y * 4.5, r: 1.7 - dist * 0.28, d: dist * 0.16 });
-    }
+/** Standard microphone icon; turns orange and pulses while listening. */
+function MicIcon({ listening }: { listening: boolean }) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-      {dots.map((d, i) => (
-        <circle
-          key={i}
-          cx={d.x}
-          cy={d.y}
-          r={d.r}
-          fill={listening ? ACCENT : "currentColor"}
-          style={listening ? { animation: `rangaa-orb 0.9s ${d.d}s ease-in-out infinite`, transformOrigin: `${d.x}px ${d.y}px` } : undefined}
-        />
-      ))}
-    </svg>
+    <span className="relative grid place-items-center">
+      {listening && <span className="absolute h-8 w-8 rounded-full" style={{ background: "rgba(228,87,46,0.18)", animation: "rangaa-pulse 1.2s ease-out infinite" }} />}
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={listening ? ACCENT : "currentColor"} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="relative">
+        <rect x="9" y="3" width="6" height="11" rx="3" />
+        <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" />
+      </svg>
+    </span>
   );
 }
 
@@ -259,10 +247,12 @@ function RangaaPanel() {
     <aside
       aria-label="Rangaa, Vishnu's AI assistant"
       aria-hidden={!open}
-      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-rule bg-[#eeecea] transition-transform duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] md:w-[min(29vw,440px)] ${open ? "translate-x-0" : "translate-x-full"}`}
+      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-rule bg-white transition-transform duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] md:w-[min(29vw,440px)] ${open ? "translate-x-0" : "translate-x-full"}`}
     >
+      <div aria-hidden className="rangaa-paper pointer-events-none absolute inset-0 -z-0" />
+
       {/* header */}
-      <div className="flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-sm text-pigment">
+      <div className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-sm text-pigment">
         <span className="flex items-center gap-2.5">
           <Sparkle size={16} />
           Rangaa
@@ -278,15 +268,15 @@ function RangaaPanel() {
       </div>
 
       {/* conversation */}
-      <div ref={scroller} className="flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [scrollbar-width:thin]">
+      <div ref={scroller} className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [scrollbar-width:thin]">
         {empty ? (
           <div className="mt-auto">
             <p className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
-            <p className="mt-2 text-[15px] leading-[24px] text-pigment-soft">I&apos;m Rangaa, Vishnu&apos;s AI assistant. Type, or tap the orb and just say it.</p>
-            <ul className="mt-5 space-y-3">
+            <p className="mt-2 text-[15px] leading-[24px] text-pigment-soft">I&apos;m Rangaa, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</p>
+            <ul className="mt-10 space-y-3">
               {PROMPTS.map((p) => (
                 <li key={p}>
-                  <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[15px] leading-[22px] text-pigment-soft transition-colors hover:text-pigment">
+                  <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[15px] leading-[22px] text-pigment-soft transition-colors hover:text-[#C44419]">
                     <span aria-hidden>↳</span>
                     {p}
                   </button>
@@ -299,7 +289,7 @@ function RangaaPanel() {
             {messages.map((m, i) =>
               m.role === "user" ? (
                 <div key={i} className="flex justify-end">
-                  <p className="max-w-[85%] rounded-[4px] border border-rule bg-white/60 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
+                  <p className="max-w-[85%] border border-rule bg-white/60 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
                 </div>
               ) : (
                 <div key={i} className="text-[15px] leading-[24px]">
@@ -321,7 +311,7 @@ function RangaaPanel() {
                       <ul className="space-y-3">
                         {m.next.map((n) => (
                           <li key={n}>
-                            <button type="button" onClick={() => send(n)} className="flex items-start gap-2 text-left text-[14px] leading-[20px] text-pigment-soft transition-colors hover:text-pigment">
+                            <button type="button" onClick={() => send(n)} className="flex items-start gap-2 text-left text-[14px] leading-[20px] text-pigment-soft transition-colors hover:text-[#C44419]">
                               <span aria-hidden>↳</span>
                               {n}
                             </button>
@@ -343,9 +333,9 @@ function RangaaPanel() {
           e.preventDefault();
           send(draft);
         }}
-        className="shrink-0 px-5 pb-5"
+        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-10" : "pt-0"}`}
       >
-        <div className={`flex items-center gap-2 rounded-[4px] border bg-white/60 py-2 pl-2 pr-3 transition-colors ${listening ? "border-[#e4572e]" : "border-rule focus-within:border-pigment-soft"}`}>
+        <div className={`flex items-center gap-2 border bg-white/60 py-2 pl-2 pr-3 transition-colors ${listening ? "border-[#e4572e]" : "border-rule focus-within:border-pigment-soft"}`}>
           {canSpeak && (
             <button
               type="button"
@@ -354,7 +344,7 @@ function RangaaPanel() {
               aria-pressed={listening}
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
             >
-              <Orb listening={listening} />
+              <MicIcon listening={listening} />
             </button>
           )}
           <input
