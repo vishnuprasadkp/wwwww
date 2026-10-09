@@ -6,6 +6,7 @@ import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 import Cursor from "@/components/layout/Cursor";
 import ScrollUp from "@/components/layout/ScrollUp";
+import TocRail from "@/components/layout/TocRail";
 import { RangaaProvider } from "@/components/copilot/Rangaa";
 import { preload } from "react-dom";
 import "./globals.css";
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="paper-bg" aria-hidden />
         <Cursor />
         <ScrollUp />
+        <TocRail />
         </RangaaProvider>
       </body>
     </html>

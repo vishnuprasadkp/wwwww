@@ -158,17 +158,11 @@ function RangaaIntro() {
       className={`fixed right-5 top-[68px] z-[45] w-[calc(100vw-40px)] max-w-[320px] border border-rule bg-[#efedeb] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:right-8 ${ready ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
     >
       <span aria-hidden className="absolute -top-[7px] right-[106px] h-3 w-3 rotate-45 border-l border-t border-rule bg-[#efedeb] md:right-[42px]" />
-      <div className="flex items-center justify-between px-4 pt-3 font-mono text-base leading-[19px] text-pigment-soft">
-        <span className="flex items-center gap-2">
-          <Sparkle size={17} />
-          Rangaa
-        </span>
-        <button type="button" onClick={dismiss} aria-label="Close" className="text-pigment-soft transition-colors hover:text-[#C44419]">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
-        </button>
-      </div>
-      <p className="px-4 pb-4 pt-3 text-[15px] leading-[24px] text-pigment">
-        Hey! Rangaa here — Vishnu’s assistant and unofficial tour guide. Where should we start?
+      <button type="button" onClick={dismiss} aria-label="Close" className="absolute right-3 top-3 text-pigment-soft transition-colors hover:text-[#C44419]">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
+      </button>
+      <p className="px-4 pb-4 pt-4 pr-10 text-[15px] leading-[24px] text-pigment">
+        Hey! Rangaa here — Vishnu’s assistant and unofficial tour guide.
       </p>
       <button
         type="button"
@@ -178,7 +172,10 @@ function RangaaIntro() {
         }}
         className="flex w-full items-center justify-between border-t border-rule px-4 py-3 font-mono text-base leading-[25px] text-pigment transition-colors hover:bg-black/[0.04] hover:text-[#C44419]"
       >
-        Let&apos;s start
+        <span className="flex items-center gap-2.5">
+          <Sparkle size={15} />
+          Show me around
+        </span>
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.73" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M 1.154 7.212 L 13.269 7.212 M 7.212 13.269 L 13.269 7.212 L 7.212 1.154" />
         </svg>
