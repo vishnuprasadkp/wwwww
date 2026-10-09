@@ -154,7 +154,7 @@ function RangaaIntro() {
     <div
       role="dialog"
       aria-label="Rangaa says hello"
-      className={`fixed right-5 top-[68px] z-[45] w-[calc(100vw-40px)] max-w-[320px] border border-rule bg-[#efedeb] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:right-8 ${ready ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
+      className={`absolute right-5 top-[68px] z-[45] w-[calc(100vw-40px)] max-w-[320px] border border-rule bg-[#efedeb] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:right-8 ${ready ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
     >
       <span aria-hidden className="absolute -top-[7px] right-[106px] h-3 w-3 rotate-45 border-l border-t border-rule bg-[#efedeb] md:right-[42px]" />
       <button type="button" onClick={dismiss} aria-label="Close" className="absolute right-3 top-3 text-pigment-soft transition-colors hover:text-[#C44419]">
@@ -264,7 +264,7 @@ function RangaaPanel() {
   const speakRef = useRef<((i: number, t: string) => void) | null>(null);
   const levels = useLevels(listening);
   const scroller = useRef<HTMLDivElement>(null);
-  const input = useRef<HTMLInputElement>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
   const abort = useRef<AbortController | null>(null);
   const rec = useRef<SR | null>(null);
   const heard = useRef("");
@@ -291,6 +291,14 @@ function RangaaPanel() {
     const t = setInterval(() => setSeconds((n) => n + 1), 1000);
     return () => clearInterval(t);
   }, [listening]);
+
+  // grow the composer with its text (up to ~6 lines, then it scrolls)
+  useEffect(() => {
+    const el = input.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+  }, [draft, listening]);
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
@@ -580,35 +588,47 @@ function RangaaPanel() {
             </div>
           </div>
         ) : (
-        <div className={`flex items-center gap-2 border bg-white/45 py-2 pl-2 pr-3 transition-colors ${listening ? "border-[#e4572e]" : "border-rule focus-within:border-pigment-soft"}`}>
-          {canSpeak && (
-            <button
-              type="button"
-              onClick={() => toggleMic()}
-              aria-label={listening ? "Stop listening" : "Speak to Rangaa"}
-              aria-pressed={listening}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
-            >
-              <MicIcon listening={listening} />
-            </button>
-          )}
-          <input
+        <div className="border border-rule bg-white/45 transition-colors focus-within:border-pigment-soft">
+          {/* the text wraps and the box grows, so everything you type stays visible */}
+          <textarea
             ref={input}
             value={draft}
+            rows={1}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder={listening ? "Listening…" : "Ask about Vishnu…"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                e.preventDefault();
+                send(draft);
+              }
+            }}
+            placeholder="Ask about Vishnu…"
             aria-label="Ask Rangaa"
-            maxLength={400}
-            className="min-w-0 flex-1 bg-transparent py-1 text-[15px] outline-none placeholder:text-pigment-soft/80"
+            maxLength={600}
+            className="block max-h-40 w-full resize-none bg-transparent px-4 pb-1 pt-3 text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80"
           />
-          <button
-            type="submit"
-            disabled={!draft.trim() || busy}
-            aria-label="Send"
-            className="grid h-7 w-7 place-items-center text-pigment transition-opacity disabled:opacity-30"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
-          </button>
+          <div className="flex items-center justify-between px-2 pb-2 pt-1">
+            <span className="hidden whitespace-nowrap pl-2 font-mono text-[11px] text-pigment-soft/70 md:block">↵ send · ⇧↵ new line</span>
+            <span className="ml-auto flex items-center gap-1">
+              {canSpeak && (
+                <button
+                  type="button"
+                  onClick={() => toggleMic()}
+                  aria-label="Speak to Rangaa"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
+                >
+                  <MicIcon listening={false} />
+                </button>
+              )}
+              <button
+                type="submit"
+                disabled={!draft.trim() || busy}
+                aria-label="Send"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-pigment text-white transition-[background-color,opacity] hover:bg-[#C44419] disabled:bg-black/[0.07] disabled:text-pigment/40 disabled:hover:bg-black/[0.07]"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+              </button>
+            </span>
+          </div>
         </div>
         )}
         {lastAssistant && <p className="sr-only" aria-live="polite">{lastAssistant.content}</p>}
