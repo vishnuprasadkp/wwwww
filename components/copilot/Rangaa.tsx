@@ -38,6 +38,7 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
   useLayoutEffect(() => {
     const apply = () => {
       const wide = window.matchMedia("(min-width: 768px)").matches;
+      document.documentElement.style.setProperty("--rangaa-dur", open ? "0.4s" : "0s"); // smooth in, instant out
       document.documentElement.style.setProperty("--rangaa", open && wide ? "min(29vw, 440px)" : "0px");
     };
     apply();
@@ -129,33 +130,20 @@ function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
 
 /* ------------------------------------------------------------------ intro */
 
-/** One-time hello that appears under the header trigger on a visitor's first visit. */
+/** Hello that appears under the header trigger on every fresh load, until it is closed or used. */
 function RangaaIntro() {
   const { open, show } = useRangaa();
   const [gone, setGone] = useState(true);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    let seen = false;
-    try {
-      seen = localStorage.getItem("rangaa-intro") === "1";
-    } catch {
-      /* storage blocked: show it, but only this visit */
-    }
-    if (seen) return;
     setGone(false);
     const t = setTimeout(() => setReady(true), 1400);
     return () => clearTimeout(t);
   }, []);
 
-  const dismiss = useCallback(() => {
-    setGone(true);
-    try {
-      localStorage.setItem("rangaa-intro", "1");
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  // Dismissal lives in memory only, so it comes back on the next load but not on every page change.
+  const dismiss = useCallback(() => setGone(true), []);
 
   // Opening the copilot any other way counts as having seen it.
   useEffect(() => {
@@ -468,7 +456,7 @@ function RangaaPanel() {
     <aside
       aria-label="Rangaa, Vishnu's AI assistant"
       aria-hidden={!open}
-      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-hidden border-l border-rule bg-white transition-transform md:bg-transparent duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] md:w-[min(29vw,440px)] ${open ? "translate-x-0" : "translate-x-full"}`}
+      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-hidden border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] ${open ? "translate-x-0 transition-transform duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]" : "translate-x-full transition-none"}`}
     >
       <div aria-hidden className="rangaa-paper pointer-events-none md:hidden" />
 
@@ -575,7 +563,7 @@ function RangaaPanel() {
           e.preventDefault();
           send(draft);
         }}
-        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-0"}`}
+        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-8"}`}
       >
         {listening ? (
           <div className="border border-[#bcb6b3] bg-white/45 px-3 pb-3 pt-3">

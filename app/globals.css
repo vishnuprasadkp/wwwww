@@ -33,7 +33,7 @@
   }
   body {
     padding-right: var(--rangaa, 0px);
-    transition: padding-right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: padding-right var(--rangaa-dur, 0.4s) cubic-bezier(0.2, 0.8, 0.2, 1);
     background: transparent;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;

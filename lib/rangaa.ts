@@ -33,7 +33,7 @@ export async function knowledge() {
   }
   const about = await fs.readFile(path.join(process.cwd(), "content/pages/about.mdx"), "utf8");
   parts.push(`## ABOUT VISHNU  (page: /about)\n${strip(about)}`);
-  parts.push(`## CONTACT\nEmail: ${site.email}\nResume: ${site.resume}\nLinkedIn: ${site.linkedin}\nEarlier portfolio: ${site.oldPortfolio}`);
+  parts.push(`## CONTACT\nEmail: ${site.email}\nResume: /resume (view, print or download)\nLinkedIn: ${site.linkedin}\nEarlier portfolio: ${site.oldPortfolio}`);
   cache = parts.join("\n\n");
   return cache;
 }
@@ -80,7 +80,7 @@ export async function localAnswer(question: string): Promise<string> {
     return `[${get("title")}](/work/${hit.slug}) — ${get("summary")} Vishnu's role was ${get("role").toLowerCase()} (${get("timeline")}).${NEXT("What was the hardest part?", "Show me another case study", "Is he open to roles?")}`;
   }
   if (/(hire|hiring|role|open to|available|work together|contact|email|reach|connect|resume|cv)/.test(q))
-    return `Vishnu is always glad to talk about interesting problems. The quickest way to reach him is by email at ${site.email}, and his [resume is here](${site.resume}).${NEXT("What does Vishnu do?", "Where should I start?", "Tell me about his process")}`;
+    return `Vishnu is always glad to talk about interesting problems. The quickest way to reach him is by email at ${site.email}, and his [resume is here](/resume).${NEXT("What does Vishnu do?", "Where should I start?", "Tell me about his process")}`;
   if (/(process|approach|how does he|method|research)/.test(q))
     return `Vishnu's process is research-first. He maps the full system — people, dependencies, goals and where things break — before anything goes on a screen. Then he owns the work end to end, from discovery to shipped experience, building clear flows and reusable patterns so products stay consistent.${NEXT("Which case shows this best?", "What is his background?", "How does he work with teams?")}`;
   if (/(paint|sketch|hobby|outside|football|bike|travel|art)/.test(q))

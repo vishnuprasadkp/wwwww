@@ -5,7 +5,7 @@ export function ContactLinks() {
   const links = [
     { label: "Email", href: site.gmail },
     { label: "LinkedIn", href: site.linkedin },
-    { label: "Resume", href: site.resume },
+    { label: "Resume", href: "/resume" },
     { label: "Portfolio 2023", href: site.oldPortfolio },
   ];
   return (

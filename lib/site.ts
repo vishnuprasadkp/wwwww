@@ -14,5 +14,5 @@ export const site = {
 export const nav = [
   { label: "Cases", href: "/#cases" },
   { label: "About", href: "/about" },
-  { label: "Resume", href: site.resume, external: true },
+  { label: "Resume", href: "/resume" },
 ];
