@@ -77,7 +77,7 @@ export function RangaaButton({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={open ? "Close Rangaa" : "Ask Rangaa"}
       aria-expanded={open}
-      className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-colors duration-300 hover:text-[#C44419] ${open ? "text-[#C44419]" : ""} ${className}`}
+      className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none opacity-0" : "opacity-100"} ${className}`}
     >
       <Sparkle size={17} />
       <span>Rangaa</span>
@@ -247,14 +247,14 @@ function RangaaPanel() {
     <aside
       aria-label="Rangaa, Vishnu's AI assistant"
       aria-hidden={!open}
-      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-rule bg-white transition-transform duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] md:w-[min(29vw,440px)] ${open ? "translate-x-0" : "translate-x-full"}`}
+      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-hidden border-l border-rule bg-white transition-transform md:bg-transparent duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] md:w-[min(29vw,440px)] ${open ? "translate-x-0" : "translate-x-full"}`}
     >
-      <div aria-hidden className="rangaa-paper pointer-events-none absolute inset-0 -z-0" />
+      <div aria-hidden className="rangaa-paper pointer-events-none md:hidden" />
 
       {/* header */}
-      <div className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-sm text-pigment">
-        <span className="flex items-center gap-2.5">
-          <Sparkle size={16} />
+      <div className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-base leading-[19px] text-pigment-soft">
+        <span className="flex items-center gap-2">
+          <Sparkle size={17} />
           Rangaa
         </span>
         <span className="flex items-center gap-4 text-pigment-soft">
@@ -272,8 +272,8 @@ function RangaaPanel() {
         {empty ? (
           <div className="mt-auto">
             <p className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
-            <p className="mt-2 text-[15px] leading-[24px] text-pigment-soft">I&apos;m Rangaa, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</p>
-            <ul className="mt-10 space-y-3">
+            <p className="mt-2 text-[15px] leading-[24px] text-pigment">I&apos;m Rangaa, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</p>
+            <ul className="mt-7 space-y-3">
               {PROMPTS.map((p) => (
                 <li key={p}>
                   <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[15px] leading-[22px] text-pigment-soft transition-colors hover:text-[#C44419]">
@@ -289,7 +289,7 @@ function RangaaPanel() {
             {messages.map((m, i) =>
               m.role === "user" ? (
                 <div key={i} className="flex justify-end">
-                  <p className="max-w-[85%] border border-rule bg-white/60 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
+                  <p className="max-w-[85%] border border-rule bg-white/20 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
                 </div>
               ) : (
                 <div key={i} className="text-[15px] leading-[24px]">
@@ -333,9 +333,9 @@ function RangaaPanel() {
           e.preventDefault();
           send(draft);
         }}
-        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-10" : "pt-0"}`}
+        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-7" : "pt-0"}`}
       >
-        <div className={`flex items-center gap-2 border bg-white/60 py-2 pl-2 pr-3 transition-colors ${listening ? "border-[#e4572e]" : "border-rule focus-within:border-pigment-soft"}`}>
+        <div className={`flex items-center gap-2 border bg-white/20 py-2 pl-2 pr-3 transition-colors ${listening ? "border-[#e4572e]" : "border-rule focus-within:border-pigment-soft"}`}>
           {canSpeak && (
             <button
               type="button"

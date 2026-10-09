@@ -116,6 +116,6 @@
 @keyframes rangaa-orb { 0%, 100% { transform: scale(0.55); opacity: 0.5; } 50% { transform: scale(1.35); opacity: 1; } }
 @keyframes rangaa-dot { 0%, 100% { opacity: 0.25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
 @keyframes rangaa-pulse { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(1.5); opacity: 0; } }
-/* Same paper texture as the page, drawn inside the panel (90% over white, like .paper-bg). */
-.rangaa-paper { opacity: 0.9; background: #e8e5e4 url("/images/site/paper-sm.webp") center / cover no-repeat; }
-@media (min-width: 768px) { .rangaa-paper { background-image: url("/images/site/paper.webp"); } }
+/* Mobile panel is full-screen, so it repeats the page's paper layer with identical geometry (seamless).
+   From 768px up the panel is transparent and the page's own fixed texture shows straight through. */
+.rangaa-paper { position: absolute; top: 0; left: 0; width: 100%; height: max(1654px, 100lvh); opacity: 0.9; background: #e8e5e4 url("/images/site/paper-sm.webp") center top / cover no-repeat; }
