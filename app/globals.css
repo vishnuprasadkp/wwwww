@@ -32,6 +32,8 @@
     scroll-behavior: smooth;
   }
   body {
+    padding-right: var(--rangaa, 0px);
+    transition: padding-right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     background: transparent;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -109,3 +111,7 @@
 @media (hover: hover) and (pointer: fine) {
   html, body, a, button { cursor: none; }
 }
+
+/* Rangaa copilot */
+@keyframes rangaa-orb { 0%, 100% { transform: scale(0.55); opacity: 0.5; } 50% { transform: scale(1.35); opacity: 1; } }
+@keyframes rangaa-dot { 0%, 100% { opacity: 0.25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }

@@ -17,7 +17,7 @@ export default function ScrollUp() {
       href="#header"
       aria-label="Back to top"
       tabIndex={show ? 0 : -1}
-      className={`group fixed bottom-3 left-1/2 z-10 h-[60px] w-[60px] -translate-x-1/2 transition-opacity duration-300 ${show ? "opacity-100" : "pointer-events-none opacity-0"}`}
+      className={`group fixed bottom-3 left-[calc(50%-var(--rangaa,0px)/2)] z-10 h-[60px] w-[60px] -translate-x-1/2 transition-opacity duration-300 ${show ? "opacity-100" : "pointer-events-none opacity-0"}`}
     >
       <span className="absolute left-[5px] top-[5px] h-[50px] w-[50px] rounded-full bg-[#121212]" />
       <svg

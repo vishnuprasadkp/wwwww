@@ -6,6 +6,7 @@ import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 import Cursor from "@/components/layout/Cursor";
 import ScrollUp from "@/components/layout/ScrollUp";
+import { RangaaProvider } from "@/components/copilot/Rangaa";
 import { preload } from "react-dom";
 import "./globals.css";
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${serif.variable} ${geist.variable} ${mono.variable}`}>
       <body className="min-h-dvh flex flex-col">
+        <RangaaProvider>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 bg-pigment text-sand px-3 py-2 text-sm">
           Skip to content
         </a>
@@ -37,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="paper-bg" aria-hidden />
         <Cursor />
         <ScrollUp />
+        </RangaaProvider>
       </body>
     </html>
   );
