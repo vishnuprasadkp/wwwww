@@ -76,10 +76,10 @@ export default function TocRail() {
   return (
     <nav
       aria-label="On this page"
-      className="group fixed top-1/2 z-30 hidden -translate-y-1/2 lg:block"
+      className="group fixed top-1/2 z-30 hidden -translate-y-1/2 md:block"
       style={{ right: "var(--rangaa, 0px)", transition: "right 0.4s cubic-bezier(0.2,0.8,0.2,1)" }}
     >
-      <ul className="flex max-h-[78vh] flex-col items-end overflow-hidden border-y border-l border-transparent py-3 pl-3 pr-0 transition-[background-color,border-color,padding] duration-300 ease-out group-hover:border-rule group-hover:bg-[#efedeb]/95 group-hover:pl-4 group-hover:pr-4 group-focus-within:border-rule group-focus-within:bg-[#efedeb]/95 group-focus-within:pl-4 group-focus-within:pr-4 hover:overflow-y-auto">
+      <ul className="flex max-h-[78vh] flex-col items-end overflow-hidden border-y border-l border-transparent py-3 pl-3 pr-0 transition-[background-color,border-color,padding] duration-300 ease-out group-hover:border-rule group-hover:bg-[#efedeb]/95 group-hover:px-4 group-hover:py-[9px] group-focus-within:border-rule group-focus-within:bg-[#efedeb]/95 group-focus-within:px-4 group-focus-within:py-[9px] hover:overflow-y-auto">
         {items.map((it, i) => {
           const on = i === active;
           if (it.level === 1) {
@@ -110,7 +110,7 @@ export default function TocRail() {
             );
           }
           return (
-            <li key={`${i}-${it.title}`} className="w-full max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:max-h-[34px] group-hover:opacity-100 group-focus-within:max-h-[34px] group-focus-within:opacity-100">
+            <li key={`${i}-${it.title}`} className="h-0 w-0 overflow-hidden opacity-0 transition-[height,width,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:h-[28px] group-hover:w-[256px] group-hover:opacity-100 group-focus-within:h-[28px] group-focus-within:w-[256px] group-focus-within:opacity-100">
               <a
                 href="#"
                 onClick={(e) => {
@@ -119,10 +119,10 @@ export default function TocRail() {
                 }}
                 aria-current={on ? "location" : undefined}
                 tabIndex={-1}
-                className={`flex items-center gap-2 py-[3px] pl-[27px] text-[15px] leading-[22px] transition-colors ${on ? "text-[#C44419]" : "text-pigment-soft hover:text-pigment"}`}
+                className={`flex w-[256px] items-center gap-2 py-[3px] pl-[26px] text-[15px] leading-[22px] transition-colors ${on ? "text-[#C44419]" : "text-pigment-soft hover:text-pigment"}`}
               >
                 <span aria-hidden className="shrink-0">↳</span>
-                <span className="block w-[216px] truncate">{it.title}</span>
+                <span className="block min-w-0 flex-1 truncate">{it.title}</span>
               </a>
             </li>
           );
