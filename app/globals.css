@@ -119,3 +119,4 @@
 /* Mobile panel is full-screen, so it repeats the page's paper layer with identical geometry (seamless).
    From 768px up the panel is transparent and the page's own fixed texture shows straight through. */
 .rangaa-paper { position: absolute; top: 0; left: 0; width: 100%; height: max(1654px, 100lvh); opacity: 0.9; background: #e8e5e4 url("/images/site/paper-sm.webp") center top / cover no-repeat; }
+@keyframes rangaa-wave { 0%, 100% { transform: scaleY(0.18); } 50% { transform: scaleY(1); } }

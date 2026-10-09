@@ -134,6 +134,9 @@ type SR = {
   onend: (() => void) | null; onerror: (() => void) | null;
 };
 
+const plain = (t: string) => t.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*/g, "");
+const stopSpeaking = () => typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.cancel();
+
 function RangaaPanel() {
   const { open, close } = useRangaa();
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -141,6 +144,9 @@ function RangaaPanel() {
   const [busy, setBusy] = useState(false);
   const [listening, setListening] = useState(false);
   const [canSpeak, setCanSpeak] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const [speaking, setSpeaking] = useState<number | null>(null);
+  const cancelled = useRef(false);
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const abort = useRef<AbortController | null>(null);
@@ -155,59 +161,108 @@ function RangaaPanel() {
   useEffect(() => {
     if (open) setTimeout(() => input.current?.focus({ preventScroll: true }), 350);
     else {
+      cancelled.current = true;
       rec.current?.abort();
       setListening(false);
+      stopSpeaking();
     }
   }, [open]);
+
+  // recording timer (m:ss)
+  useEffect(() => {
+    if (!listening) return;
+    setSeconds(0);
+    const t = setInterval(() => setSeconds((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, [listening]);
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
+  const ask = useCallback(async (history: Msg[]) => {
+    stopSpeaking();
+    setSpeaking(null);
+    setMessages([...history, { role: "assistant", content: "" }]);
+    setBusy(true);
+    abort.current = new AbortController();
+    let raw = "";
+    try {
+      const res = await fetch("/api/rangaa", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ messages: history.map(({ role, content }) => ({ role, content })) }),
+        signal: abort.current.signal,
+      });
+      if (!res.ok || !res.body) throw new Error(await res.text());
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        raw += dec.decode(value, { stream: true });
+        setMessages([...history, { role: "assistant", content: parseReply(raw).text }]);
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") raw = raw || "I couldn't reach my brain just now — please try again in a moment.";
+    }
+    const { text: finalText, next } = parseReply(raw);
+    setMessages([...history, { role: "assistant", content: finalText, next }]);
+    setBusy(false);
+  }, []);
+
   const send = useCallback(
-    async (text: string) => {
+    (text: string) => {
       const q = text.trim();
       if (!q || busy) return;
       setDraft("");
-      const history: Msg[] = [...messages, { role: "user", content: q }];
-      setMessages([...history, { role: "assistant", content: "" }]);
-      setBusy(true);
-      abort.current = new AbortController();
-      let raw = "";
-      try {
-        const res = await fetch("/api/rangaa", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ messages: history.map(({ role, content }) => ({ role, content })) }),
-          signal: abort.current.signal,
-        });
-        if (!res.ok || !res.body) throw new Error(await res.text());
-        const reader = res.body.getReader();
-        const dec = new TextDecoder();
-        for (;;) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          raw += dec.decode(value, { stream: true });
-          const shown = parseReply(raw).text;
-          setMessages([...history, { role: "assistant", content: shown }]);
-        }
-      } catch (e) {
-        if ((e as Error).name !== "AbortError") raw = raw || "I couldn't reach my brain just now — please try again in a moment.";
-      }
-      const { text: finalText, next } = parseReply(raw);
-      setMessages([...history, { role: "assistant", content: finalText, next }]);
-      setBusy(false);
+      ask([...messages, { role: "user", content: q }]);
     },
-    [busy, messages],
+    [busy, messages, ask],
   );
+
+  /** Re-asks the last question and replaces the answer. */
+  const regenerate = () => {
+    if (busy) return;
+    const idx = messages.map((m) => m.role).lastIndexOf("user");
+    if (idx >= 0) ask(messages.slice(0, idx + 1));
+  };
+
+  /** Reads an answer aloud (tap again to stop). */
+  const speak = (i: number, text: string) => {
+    if (!("speechSynthesis" in window)) return;
+    if (speaking === i) {
+      stopSpeaking();
+      setSpeaking(null);
+      return;
+    }
+    stopSpeaking();
+    const u = new SpeechSynthesisUtterance(plain(text));
+    u.lang = navigator.language || "en-US";
+    u.onend = () => setSpeaking((c) => (c === i ? null : c));
+    u.onerror = () => setSpeaking(null);
+    setSpeaking(i);
+    window.speechSynthesis.speak(u);
+  };
 
   const reset = () => {
     abort.current?.abort();
+    cancelled.current = true;
     rec.current?.abort();
+    stopSpeaking();
+    setSpeaking(null);
     setMessages([]);
     setDraft("");
     setBusy(false);
     setListening(false);
+  };
+
+  const cancelRecording = () => {
+    cancelled.current = true;
+    heard.current = "";
+    rec.current?.abort();
+    setListening(false);
+    setDraft("");
   };
 
   const toggleMic = () => {
@@ -223,6 +278,7 @@ function RangaaPanel() {
     r.interimResults = true;
     r.continuous = false;
     heard.current = "";
+    cancelled.current = false;
     r.onresult = (e) => {
       let t = "";
       for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
@@ -232,7 +288,8 @@ function RangaaPanel() {
     r.onend = () => {
       setListening(false);
       const t = heard.current.trim();
-      if (t) send(t);
+      if (t && !cancelled.current) send(t);
+      else setDraft("");
     };
     r.onerror = () => setListening(false);
     rec.current = r;
@@ -273,7 +330,7 @@ function RangaaPanel() {
           <div className="mt-auto">
             <p className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
             <p className="mt-2 text-[15px] leading-[24px] text-pigment">I&apos;m Rangaa, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</p>
-            <ul className="mt-7 space-y-3">
+            <ul className="mt-6 space-y-3">
               {PROMPTS.map((p) => (
                 <li key={p}>
                   <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[15px] leading-[22px] text-pigment-soft transition-colors hover:text-[#C44419]">
@@ -289,7 +346,7 @@ function RangaaPanel() {
             {messages.map((m, i) =>
               m.role === "user" ? (
                 <div key={i} className="flex justify-end">
-                  <p className="max-w-[85%] border border-rule bg-white/20 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
+                  <p className="max-w-[85%] border border-rule bg-white/45 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
                 </div>
               ) : (
                 <div key={i} className="text-[15px] leading-[24px]">
@@ -306,8 +363,29 @@ function RangaaPanel() {
                       ))}
                     </span>
                   )}
+                  {m.content && !(busy && i === messages.length - 1) && (
+                    <div className="mt-3 flex items-center gap-1 text-pigment-soft">
+                      <button
+                        type="button"
+                        onClick={() => speak(i, m.content)}
+                        aria-label={speaking === i ? "Stop reading" : "Read aloud"}
+                        className="grid h-8 w-8 place-items-center transition-colors hover:text-[#C44419]"
+                      >
+                        {speaking === i ? (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="0.5" /><rect x="14" y="5" width="4" height="14" rx="0.5" /></svg>
+                        ) : (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5-12-7.5Z" /></svg>
+                        )}
+                      </button>
+                      {i === messages.length - 1 && (
+                        <button type="button" onClick={regenerate} aria-label="Regenerate answer" className="grid h-8 w-8 place-items-center transition-colors hover:text-[#C44419]">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9" /><path d="M20 4v5h-5" /></svg>
+                        </button>
+                      )}
+                    </div>
+                  )}
                   {i === messages.length - 1 && !busy && m.next && m.next.length > 0 && (
-                    <div className="mt-5 border-t border-rule pt-4">
+                    <div className="mt-5">
                       <ul className="space-y-3">
                         {m.next.map((n) => (
                           <li key={n}>
@@ -333,9 +411,31 @@ function RangaaPanel() {
           e.preventDefault();
           send(draft);
         }}
-        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-7" : "pt-0"}`}
+        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-0"}`}
       >
-        <div className={`flex items-center gap-2 border bg-white/20 py-2 pl-2 pr-3 transition-colors ${listening ? "border-[#e4572e]" : "border-rule focus-within:border-pigment-soft"}`}>
+        {listening ? (
+          <div className="flex items-center gap-3 border border-[#e4572e] bg-white/45 py-2 pl-2 pr-2">
+            <button type="button" onClick={cancelRecording} aria-label="Cancel recording" className="grid h-9 w-9 shrink-0 place-items-center text-pigment-soft transition-colors hover:text-[#C44419]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            </button>
+            <div className="flex h-9 min-w-0 flex-1 items-center justify-center gap-[3px] overflow-hidden" aria-hidden="true">
+              {Array.from({ length: 36 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="w-[2px] shrink-0 rounded-full bg-pigment-soft"
+                  style={{ height: 22, animation: `rangaa-wave ${0.7 + ((i * 7) % 5) * 0.12}s ${((i * 13) % 9) * 0.08}s ease-in-out infinite` }}
+                />
+              ))}
+            </div>
+            <span className="shrink-0 font-mono text-sm tabular-nums text-pigment" aria-live="off">
+              {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+            </span>
+            <button type="button" onClick={toggleMic} aria-label="Finish and send" className="grid h-9 w-9 shrink-0 place-items-center bg-pigment text-white transition-colors hover:bg-[#C44419]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            </button>
+          </div>
+        ) : (
+        <div className={`flex items-center gap-2 border bg-white/45 py-2 pl-2 pr-3 transition-colors ${listening ? "border-[#e4572e]" : "border-rule focus-within:border-pigment-soft"}`}>
           {canSpeak && (
             <button
               type="button"
@@ -365,6 +465,7 @@ function RangaaPanel() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
           </button>
         </div>
+        )}
         {lastAssistant && <p className="sr-only" aria-live="polite">{lastAssistant.content}</p>}
       </form>
     </aside>
