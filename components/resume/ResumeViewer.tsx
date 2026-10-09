@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 
 const FILE = "/resume/Vishnu_Prasad_Resume.pdf";
 const STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2, 3];
@@ -115,14 +116,10 @@ export default function ResumeViewer() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-4-4M8 11h6M11 8v6" /></svg>
             </button>
           </div>
-          <button type="button" onClick={print} className={btn}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2" /><rect x="7" y="14" width="10" height="6" /></svg>
-            <span className="hidden sm:inline">Print</span>
-          </button>
-          <a href={FILE} download="Vishnu_Prasad_Resume.pdf" className={btn}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" /></svg>
-            <span className="hidden sm:inline">Download</span>
-          </a>
+          <ArrowLink onClick={print}>Print</ArrowLink>
+          <ArrowLink href={FILE} download="Vishnu_Prasad_Resume.pdf" down>
+            Download
+          </ArrowLink>
         </div>
       </div>
 

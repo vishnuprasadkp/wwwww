@@ -5,7 +5,7 @@ export default function SubProduct({
   index, title, capabilities, image, children,
 }: { index: number; title: string; capabilities: string; image: string; children: React.ReactNode }) {
   return (
-    <article>
+    <article data-toc-sub={title}>
       <div className="-mx-5 border-b border-rule px-5 pb-[23px] pt-[21px] md:-mx-8 md:px-8">
         <p className="font-mono text-base leading-[26px] text-pigment-soft">Product {index}</p>
         <h3 className="mt-2.5 font-serif text-[1.625rem] leading-[34px] md:max-w-[min(40rem,calc(50%-8px))] md:text-4xl md:leading-[46px]">{title}</h3>

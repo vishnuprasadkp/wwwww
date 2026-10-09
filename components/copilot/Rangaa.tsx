@@ -132,7 +132,7 @@ function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
 
 /** Hello that appears under the header trigger on every fresh load, until it is closed or used. */
 function RangaaIntro() {
-  const { open, show } = useRangaa();
+  const { open } = useRangaa();
   const [gone, setGone] = useState(true);
   const [ready, setReady] = useState(false);
 
@@ -161,25 +161,9 @@ function RangaaIntro() {
       <button type="button" onClick={dismiss} aria-label="Close" className="absolute right-3 top-3 text-pigment-soft transition-colors hover:text-[#C44419]">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
       </button>
-      <p className="px-4 pb-4 pt-4 pr-10 text-[15px] leading-[24px] text-pigment">
-        Hey! Rangaa here — Vishnu’s assistant and unofficial tour guide.
+      <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
+        Hey! Rangaa here — Vishnu’s assistant and unofficial tour guide. Tap <span className="text-pigment-soft">✦ Rangaa</span> above to start.
       </p>
-      <button
-        type="button"
-        onClick={() => {
-          dismiss();
-          show();
-        }}
-        className="flex w-full items-center justify-between border-t border-rule px-4 py-3 font-mono text-base leading-[25px] text-pigment transition-colors hover:bg-black/[0.04] hover:text-[#C44419]"
-      >
-        <span className="flex items-center gap-2.5">
-          <Sparkle size={15} />
-          Show me around
-        </span>
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.73" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M 1.154 7.212 L 13.269 7.212 M 7.212 13.269 L 13.269 7.212 L 7.212 1.154" />
-        </svg>
-      </button>
     </div>
   );
 }
