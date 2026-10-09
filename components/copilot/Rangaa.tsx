@@ -6,40 +6,11 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 /* ------------------------------------------------------------------ state */
 
 type Msg = { role: "user" | "assistant"; content: string; next?: string[] };
-type Ctx = { open: boolean; toggle: () => void; close: () => void; armed: boolean; setArmed: (on: boolean) => void; canWake: boolean };
-const RangaaCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () => {}, armed: false, setArmed: () => {}, canWake: false });
+type Ctx = { open: boolean; toggle: () => void; close: () => void; show: () => void };
+const RangaaCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () => {}, show: () => {} });
 export const useRangaa = () => useContext(RangaaCtx);
 
 const ACCENT = "#e4572e";
-/** "Hey Rangaa" as speech recognition tends to hear it. */
-const WAKE = /\b(hey|hi|ok|okay|hello)\s*,?\s*(rang\s?a+h?|renga|ringa|ranka|rangga|ronga|ranga)\b/i;
-
-const getSR = () => {
-  const w = window as unknown as { SpeechRecognition?: new () => SR; webkitSpeechRecognition?: new () => SR };
-  return w.SpeechRecognition ?? w.webkitSpeechRecognition;
-};
-
-/** Short two-note chime, like a voice assistant waking up. */
-function chime() {
-  try {
-    const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    const ctx = new AC();
-    [660, 880].forEach((f, i) => {
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.frequency.value = f;
-      g.gain.setValueAtTime(0.0001, ctx.currentTime + i * 0.11);
-      g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + i * 0.11 + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i * 0.11 + 0.22);
-      o.connect(g).connect(ctx.destination);
-      o.start(ctx.currentTime + i * 0.11);
-      o.stop(ctx.currentTime + i * 0.11 + 0.25);
-    });
-    setTimeout(() => ctx.close(), 700);
-  } catch {
-    /* audio blocked: silent wake is fine */
-  }
-}
 const PROMPTS = ["Where should I start?", "What does Vishnu do?", "Is he open to roles?"];
 
 /** Splits a streamed reply into the visible text and the trailing "NEXT: a | b | c" suggestions. */
@@ -59,84 +30,9 @@ function parseReply(raw: string) {
 
 export function RangaaProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
-  const [armed, setArmedState] = useState(false);
-  const [canWake, setCanWake] = useState(false);
   const toggle = useCallback(() => setOpen((o) => !o), []);
   const close = useCallback(() => setOpen(false), []);
-
-  // Hands-free "Hey Rangaa": opt-in, remembered on this device.
-  useEffect(() => {
-    setCanWake(!!getSR());
-    try {
-      if (localStorage.getItem("rangaa-wake") === "1") setArmedState(true);
-    } catch {
-      /* storage blocked */
-    }
-  }, []);
-  const setArmed = useCallback(async (on: boolean) => {
-    if (on) {
-      try {
-        const st = await navigator.mediaDevices.getUserMedia({ audio: true }); // ask for the mic once, on this click
-        st.getTracks().forEach((t) => t.stop());
-      } catch {
-        return;
-      }
-    }
-    setArmedState(on);
-    try {
-      localStorage.setItem("rangaa-wake", on ? "1" : "0");
-    } catch {
-      /* storage blocked */
-    }
-  }, []);
-
-  // While the panel is closed and hands-free is on, listen in the background for the wake phrase.
-  useEffect(() => {
-    if (!armed || open) return;
-    const Ctor = getSR();
-    if (!Ctor) return;
-    let dead = false;
-    let r: SR | null = null;
-    const begin = () => {
-      if (dead) return;
-      r = new Ctor();
-      r.lang = navigator.language || "en-US";
-      r.continuous = true;
-      r.interimResults = true;
-      r.onresult = (e) => {
-        let t = "";
-        for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript + " ";
-        const m = t.match(WAKE);
-        if (!m || m.index === undefined) return;
-        dead = true;
-        r?.abort();
-        const rest = t.slice(m.index + m[0].length).replace(/^[\s,.!?-]+/, "").trim();
-        chime();
-        setOpen(true);
-        setTimeout(() => window.dispatchEvent(new CustomEvent("rangaa:wake", { detail: rest })), 450);
-      };
-      r.onend = () => {
-        if (!dead) setTimeout(begin, 300);
-      };
-      r.onerror = (ev: unknown) => {
-        const err = (ev as { error?: string })?.error;
-        if (err === "not-allowed" || err === "service-not-allowed") {
-          dead = true;
-          setArmedState(false);
-        }
-      };
-      try {
-        r.start();
-      } catch {
-        /* already started */
-      }
-    };
-    begin();
-    return () => {
-      dead = true;
-      r?.abort();
-    };
-  }, [armed, open]);
+  const show = useCallback(() => setOpen(true), []);
 
   // Docked panel pushes the page over on wide screens (--rangaa is read by body padding in globals.css).
   useLayoutEffect(() => {
@@ -156,8 +52,9 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <RangaaCtx.Provider value={{ open, toggle, close, armed, setArmed, canWake }}>
+    <RangaaCtx.Provider value={{ open, toggle, close, show }}>
       {children}
+      <RangaaIntro />
       <RangaaPanel />
     </RangaaCtx.Provider>
   );
@@ -227,6 +124,78 @@ function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
         return bold ? <strong key={i}>{bold[1]}</strong> : <span key={i}>{p}</span>;
       })}
     </>
+  );
+}
+
+/* ------------------------------------------------------------------ intro */
+
+/** One-time hello that appears under the header trigger on a visitor's first visit. */
+function RangaaIntro() {
+  const { open, show } = useRangaa();
+  const [gone, setGone] = useState(true);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let seen = false;
+    try {
+      seen = localStorage.getItem("rangaa-intro") === "1";
+    } catch {
+      /* storage blocked: show it, but only this visit */
+    }
+    if (seen) return;
+    setGone(false);
+    const t = setTimeout(() => setReady(true), 1400);
+    return () => clearTimeout(t);
+  }, []);
+
+  const dismiss = useCallback(() => {
+    setGone(true);
+    try {
+      localStorage.setItem("rangaa-intro", "1");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  // Opening the copilot any other way counts as having seen it.
+  useEffect(() => {
+    if (open && !gone) dismiss();
+  }, [open, gone, dismiss]);
+
+  if (gone) return null;
+  return (
+    <div
+      role="dialog"
+      aria-label="Rangaa says hello"
+      className={`fixed right-5 top-[68px] z-[45] w-[calc(100vw-40px)] max-w-[320px] border border-rule bg-[#efedeb] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:right-8 ${ready ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
+    >
+      <span aria-hidden className="absolute -top-[7px] right-[106px] h-3 w-3 rotate-45 border-l border-t border-rule bg-[#efedeb] md:right-[42px]" />
+      <div className="flex items-center justify-between px-4 pt-3 font-mono text-base leading-[19px] text-pigment-soft">
+        <span className="flex items-center gap-2">
+          <Sparkle size={17} />
+          Rangaa
+        </span>
+        <button type="button" onClick={dismiss} aria-label="Close" className="text-pigment-soft transition-colors hover:text-[#C44419]">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
+        </button>
+      </div>
+      <p className="px-4 pb-4 pt-3 text-[15px] leading-[24px] text-pigment">
+        Hey! Rangaa here — Vishnu’s assistant and unofficial tour guide. Where should we start?
+      </p>
+      <button
+        type="button"
+        onClick={() => {
+          dismiss();
+          show();
+        }}
+        className="flex w-full items-center justify-between border-t border-rule px-4 py-3 font-mono text-base leading-[25px] text-pigment transition-colors hover:bg-black/[0.04] hover:text-[#C44419]"
+      >
+        Let&apos;s start
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.73" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M 1.154 7.212 L 13.269 7.212 M 7.212 13.269 L 13.269 7.212 L 7.212 1.154" />
+        </svg>
+      </button>
+    </div>
   );
 }
 
@@ -318,10 +287,8 @@ function RangaaPanel() {
   const [speaking, setSpeaking] = useState<number | null>(null);
   const cancelled = useRef(false);
   const byVoice = useRef(false);
-  const { armed, setArmed, canWake } = useRangaa();
   const mode = useRef<"send" | "keep" | "cancel">("keep");
   const speakRef = useRef<((i: number, t: string) => void) | null>(null);
-  const micRef = useRef<(seed?: string) => void>(() => {});
   const levels = useLevels(listening);
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -493,14 +460,6 @@ function RangaaPanel() {
   };
 
   speakRef.current = speak;
-  micRef.current = toggleMic;
-
-  // "Hey Rangaa" woke the page: start listening, seeded with anything said right after the phrase.
-  useEffect(() => {
-    const onWake = (e: Event) => micRef.current((e as CustomEvent<string>).detail || "");
-    window.addEventListener("rangaa:wake", onWake);
-    return () => window.removeEventListener("rangaa:wake", onWake);
-  }, []);
 
   const empty = messages.length === 0;
   const lastAssistant = messages.length ? messages[messages.length - 1] : null;
@@ -678,17 +637,6 @@ function RangaaPanel() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
           </button>
         </div>
-        )}
-        {canWake && (
-          <button
-            type="button"
-            onClick={() => setArmed(!armed)}
-            aria-pressed={armed}
-            className="mt-3 flex items-center gap-2 whitespace-nowrap font-mono text-[11px] text-pigment-soft transition-colors hover:text-[#C44419]"
-          >
-            <span className={`h-1.5 w-1.5 rounded-full ${armed ? "bg-[#e4572e]" : "bg-pigment-soft/40"}`} />
-            Hands-free “Hey Rangaa” · {armed ? "on" : "off"}
-          </button>
         )}
         {lastAssistant && <p className="sr-only" aria-live="polite">{lastAssistant.content}</p>}
       </form>
