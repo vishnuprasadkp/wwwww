@@ -6,11 +6,40 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 /* ------------------------------------------------------------------ state */
 
 type Msg = { role: "user" | "assistant"; content: string; next?: string[] };
-type Ctx = { open: boolean; toggle: () => void; close: () => void };
-const RangaaCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () => {} });
+type Ctx = { open: boolean; toggle: () => void; close: () => void; armed: boolean; setArmed: (on: boolean) => void; canWake: boolean };
+const RangaaCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () => {}, armed: false, setArmed: () => {}, canWake: false });
 export const useRangaa = () => useContext(RangaaCtx);
 
 const ACCENT = "#e4572e";
+/** "Hey Rangaa" as speech recognition tends to hear it. */
+const WAKE = /\b(hey|hi|ok|okay|hello)\s*,?\s*(rang\s?a+h?|renga|ringa|ranka|rangga|ronga|ranga)\b/i;
+
+const getSR = () => {
+  const w = window as unknown as { SpeechRecognition?: new () => SR; webkitSpeechRecognition?: new () => SR };
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition;
+};
+
+/** Short two-note chime, like a voice assistant waking up. */
+function chime() {
+  try {
+    const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new AC();
+    [660, 880].forEach((f, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime + i * 0.11);
+      g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + i * 0.11 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i * 0.11 + 0.22);
+      o.connect(g).connect(ctx.destination);
+      o.start(ctx.currentTime + i * 0.11);
+      o.stop(ctx.currentTime + i * 0.11 + 0.25);
+    });
+    setTimeout(() => ctx.close(), 700);
+  } catch {
+    /* audio blocked: silent wake is fine */
+  }
+}
 const PROMPTS = ["Where should I start?", "What does Vishnu do?", "Is he open to roles?"];
 
 /** Splits a streamed reply into the visible text and the trailing "NEXT: a | b | c" suggestions. */
@@ -30,8 +59,84 @@ function parseReply(raw: string) {
 
 export function RangaaProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [armed, setArmedState] = useState(false);
+  const [canWake, setCanWake] = useState(false);
   const toggle = useCallback(() => setOpen((o) => !o), []);
   const close = useCallback(() => setOpen(false), []);
+
+  // Hands-free "Hey Rangaa": opt-in, remembered on this device.
+  useEffect(() => {
+    setCanWake(!!getSR());
+    try {
+      if (localStorage.getItem("rangaa-wake") === "1") setArmedState(true);
+    } catch {
+      /* storage blocked */
+    }
+  }, []);
+  const setArmed = useCallback(async (on: boolean) => {
+    if (on) {
+      try {
+        const st = await navigator.mediaDevices.getUserMedia({ audio: true }); // ask for the mic once, on this click
+        st.getTracks().forEach((t) => t.stop());
+      } catch {
+        return;
+      }
+    }
+    setArmedState(on);
+    try {
+      localStorage.setItem("rangaa-wake", on ? "1" : "0");
+    } catch {
+      /* storage blocked */
+    }
+  }, []);
+
+  // While the panel is closed and hands-free is on, listen in the background for the wake phrase.
+  useEffect(() => {
+    if (!armed || open) return;
+    const Ctor = getSR();
+    if (!Ctor) return;
+    let dead = false;
+    let r: SR | null = null;
+    const begin = () => {
+      if (dead) return;
+      r = new Ctor();
+      r.lang = navigator.language || "en-US";
+      r.continuous = true;
+      r.interimResults = true;
+      r.onresult = (e) => {
+        let t = "";
+        for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript + " ";
+        const m = t.match(WAKE);
+        if (!m || m.index === undefined) return;
+        dead = true;
+        r?.abort();
+        const rest = t.slice(m.index + m[0].length).replace(/^[\s,.!?-]+/, "").trim();
+        chime();
+        setOpen(true);
+        setTimeout(() => window.dispatchEvent(new CustomEvent("rangaa:wake", { detail: rest })), 450);
+      };
+      r.onend = () => {
+        if (!dead) setTimeout(begin, 300);
+      };
+      r.onerror = (ev: unknown) => {
+        const err = (ev as { error?: string })?.error;
+        if (err === "not-allowed" || err === "service-not-allowed") {
+          dead = true;
+          setArmedState(false);
+        }
+      };
+      try {
+        r.start();
+      } catch {
+        /* already started */
+      }
+    };
+    begin();
+    return () => {
+      dead = true;
+      r?.abort();
+    };
+  }, [armed, open]);
 
   // Docked panel pushes the page over on wide screens (--rangaa is read by body padding in globals.css).
   useLayoutEffect(() => {
@@ -51,7 +156,7 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <RangaaCtx.Provider value={{ open, toggle, close }}>
+    <RangaaCtx.Provider value={{ open, toggle, close, armed, setArmed, canWake }}>
       {children}
       <RangaaPanel />
     </RangaaCtx.Provider>
@@ -131,7 +236,7 @@ type SR = {
   lang: string; interimResults: boolean; continuous: boolean;
   start: () => void; stop: () => void; abort: () => void;
   onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
-  onend: (() => void) | null; onerror: (() => void) | null;
+  onend: (() => void) | null; onerror: ((e: unknown) => void) | null;
 };
 
 /** Live microphone loudness (0-1) sampled ~14x/second while `active`; drives the recording waveform. */
@@ -154,6 +259,7 @@ function useLevels(active: boolean, n = 44) {
         if (stopped) return stream.getTracks().forEach((t) => t.stop());
         const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         ctx = new AC();
+        await ctx.resume();
         const an = ctx.createAnalyser();
         an.fftSize = 512;
         ctx.createMediaStreamSource(stream).connect(an);
@@ -166,7 +272,7 @@ function useLevels(active: boolean, n = 44) {
           an.getByteTimeDomainData(buf);
           let sum = 0;
           for (const v of buf) sum += ((v - 128) / 128) ** 2;
-          push(Math.min(1, Math.sqrt(sum / buf.length) * 4.5));
+          push(Math.min(1, Math.sqrt(sum / buf.length) * 9));
         };
         raf = requestAnimationFrame(tick);
       } catch {
@@ -187,6 +293,20 @@ function useLevels(active: boolean, n = 44) {
 const plain = (t: string) => t.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*/g, "");
 const stopSpeaking = () => typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.cancel();
 
+/** Best available natural-sounding voice: Indian English first, then other English voices. */
+function pickVoice(): SpeechSynthesisVoice | undefined {
+  const score = (v: SpeechSynthesisVoice) => {
+    let n = 0;
+    if (/en[-_]IN/i.test(v.lang)) n += 6;
+    else if (/^en/i.test(v.lang)) n += 2;
+    if (/rishi|ravi|male|prabhat|hemant/i.test(v.name)) n += 3;
+    if (/google|natural|neural|premium|enhanced/i.test(v.name)) n += 2;
+    if (v.localService) n += 1;
+    return n;
+  };
+  return [...window.speechSynthesis.getVoices()].sort((a, b) => score(b) - score(a))[0];
+}
+
 function RangaaPanel() {
   const { open, close } = useRangaa();
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -197,7 +317,11 @@ function RangaaPanel() {
   const [seconds, setSeconds] = useState(0);
   const [speaking, setSpeaking] = useState<number | null>(null);
   const cancelled = useRef(false);
+  const byVoice = useRef(false);
+  const { armed, setArmed, canWake } = useRangaa();
   const mode = useRef<"send" | "keep" | "cancel">("keep");
+  const speakRef = useRef<((i: number, t: string) => void) | null>(null);
+  const micRef = useRef<(seed?: string) => void>(() => {});
   const levels = useLevels(listening);
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -261,6 +385,10 @@ function RangaaPanel() {
     const { text: finalText, next } = parseReply(raw);
     setMessages([...history, { role: "assistant", content: finalText, next }]);
     setBusy(false);
+    if (byVoice.current && finalText) {
+      byVoice.current = false;
+      speakRef.current?.(history.length, finalText);
+    }
   }, []);
 
   const send = useCallback(
@@ -289,12 +417,21 @@ function RangaaPanel() {
       return;
     }
     stopSpeaking();
-    const u = new SpeechSynthesisUtterance(plain(text));
-    u.lang = navigator.language || "en-US";
-    u.onend = () => setSpeaking((c) => (c === i ? null : c));
-    u.onerror = () => setSpeaking(null);
+    // Speak sentence by sentence: long single utterances get cut off in Chrome.
+    const parts = plain(text).split(/(?<=[.!?])\s+/).filter(Boolean);
+    const voice = pickVoice();
     setSpeaking(i);
-    window.speechSynthesis.speak(u);
+    parts.forEach((part, k) => {
+      const u = new SpeechSynthesisUtterance(part);
+      if (voice) {
+        u.voice = voice;
+        u.lang = voice.lang;
+      }
+      u.rate = 0.98;
+      u.onend = () => k === parts.length - 1 && setSpeaking((c) => (c === i ? null : c));
+      u.onerror = () => setSpeaking(null);
+      window.speechSynthesis.speak(u);
+    });
   };
 
   const reset = () => {
@@ -319,7 +456,7 @@ function RangaaPanel() {
     } else rec.current?.stop();
   };
 
-  const toggleMic = () => {
+  const toggleMic = (seed = "") => {
     if (listening) return stopRecording("keep");
     const w = window as unknown as { SpeechRecognition?: new () => SR; webkitSpeechRecognition?: new () => SR };
     const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
@@ -328,19 +465,24 @@ function RangaaPanel() {
     r.lang = navigator.language || "en-US";
     r.interimResults = true;
     r.continuous = true;
-    heard.current = "";
+    heard.current = seed;
+    if (seed) setDraft(seed);
     cancelled.current = false;
     mode.current = "keep";
     r.onresult = (e) => {
       let t = "";
       for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+      t = (seed ? seed + " " : "") + t;
       heard.current = t;
       setDraft(t);
     };
     r.onend = () => {
       setListening(false);
       const t = heard.current.trim();
-      if (mode.current === "send" && t) send(t);
+      if (mode.current === "send" && t) {
+        byVoice.current = true;
+        send(t);
+      }
       else if (mode.current === "keep" && t) setDraft(t);
       else setDraft("");
     };
@@ -349,6 +491,16 @@ function RangaaPanel() {
     setListening(true);
     r.start();
   };
+
+  speakRef.current = speak;
+  micRef.current = toggleMic;
+
+  // "Hey Rangaa" woke the page: start listening, seeded with anything said right after the phrase.
+  useEffect(() => {
+    const onWake = (e: Event) => micRef.current((e as CustomEvent<string>).detail || "");
+    window.addEventListener("rangaa:wake", onWake);
+    return () => window.removeEventListener("rangaa:wake", onWake);
+  }, []);
 
   const empty = messages.length === 0;
   const lastAssistant = messages.length ? messages[messages.length - 1] : null;
@@ -467,7 +619,7 @@ function RangaaPanel() {
         className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-0"}`}
       >
         {listening ? (
-          <div className="border border-pigment bg-white/45 px-3 pb-3 pt-3">
+          <div className="border border-[#bcb6b3] bg-white/45 px-3 pb-3 pt-3">
             <p className="min-h-[24px] px-1 text-[15px] leading-[24px] text-pigment">
               {draft || <span className="text-pigment-soft/80">Listening…</span>}
             </p>
@@ -477,7 +629,7 @@ function RangaaPanel() {
               </button>
               <div className="flex h-10 min-w-0 flex-1 items-center justify-end gap-[3px] overflow-hidden px-1" aria-hidden="true">
                 {levels.map((v, i) =>
-                  v < 0.07 ? (
+                  v < 0.05 ? (
                     <span key={i} className="h-[3px] w-[3px] shrink-0 rounded-full bg-pigment/70" />
                   ) : (
                     <span key={i} className="w-[3px] shrink-0 rounded-full bg-pigment" style={{ height: 6 + v * 26 }} />
@@ -500,7 +652,7 @@ function RangaaPanel() {
           {canSpeak && (
             <button
               type="button"
-              onClick={toggleMic}
+              onClick={() => toggleMic()}
               aria-label={listening ? "Stop listening" : "Speak to Rangaa"}
               aria-pressed={listening}
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
@@ -526,6 +678,17 @@ function RangaaPanel() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
           </button>
         </div>
+        )}
+        {canWake && (
+          <button
+            type="button"
+            onClick={() => setArmed(!armed)}
+            aria-pressed={armed}
+            className="mt-3 flex items-center gap-2 whitespace-nowrap font-mono text-[11px] text-pigment-soft transition-colors hover:text-[#C44419]"
+          >
+            <span className={`h-1.5 w-1.5 rounded-full ${armed ? "bg-[#e4572e]" : "bg-pigment-soft/40"}`} />
+            Hands-free “Hey Rangaa” · {armed ? "on" : "off"}
+          </button>
         )}
         {lastAssistant && <p className="sr-only" aria-live="polite">{lastAssistant.content}</p>}
       </form>
