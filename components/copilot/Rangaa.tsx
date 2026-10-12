@@ -619,7 +619,7 @@ function RangaaPanel() {
             type="submit"
             disabled={!draft.trim() || busy}
             aria-label="Send"
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-pigment text-white transition-[background-color,opacity] hover:bg-[#C44419] disabled:bg-black/[0.07] disabled:text-pigment/40 disabled:hover:bg-black/[0.07]"
+            className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419] disabled:text-pigment/30 disabled:hover:text-pigment/30"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 10l-5 5 5 5" /><path d="M20 4v7a4 4 0 0 1-4 4H4" /></svg>
           </button>
