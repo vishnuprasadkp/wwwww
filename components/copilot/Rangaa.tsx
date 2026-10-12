@@ -563,8 +563,8 @@ function RangaaPanel() {
             <p className="min-h-[24px] px-1 text-[15px] leading-[24px] text-pigment">
               {draft || <span className="text-pigment-soft/80">Listening…</span>}
             </p>
-            <div className="mt-3 flex items-center gap-2">
-              <button type="button" onClick={() => stopRecording("cancel")} aria-label="Cancel recording" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-black/[0.07] text-pigment transition-colors hover:bg-black/[0.12]">
+            <div className="mt-3 flex items-center gap-1">
+              <button type="button" onClick={() => stopRecording("cancel")} aria-label="Cancel recording" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
               </button>
               <div className="flex h-10 min-w-0 flex-1 items-center justify-end gap-[3px] overflow-hidden px-1" aria-hidden="true">
@@ -576,19 +576,19 @@ function RangaaPanel() {
                   ),
                 )}
               </div>
-              <span className="shrink-0 font-mono text-xs tabular-nums text-pigment-soft" aria-live="off">
+              <span className="mr-1 shrink-0 font-mono text-xs tabular-nums text-pigment-soft" aria-live="off">
                 {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
               </span>
-              <button type="button" onClick={() => stopRecording("keep")} aria-label="Stop recording" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-black/[0.07] text-pigment transition-colors hover:bg-black/[0.12]">
+              <button type="button" onClick={() => stopRecording("keep")} aria-label="Stop recording" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
               </button>
-              <button type="button" onClick={() => stopRecording("send")} aria-label="Send" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-pigment text-white transition-colors hover:bg-black">
+              <button type="button" onClick={() => stopRecording("send")} aria-label="Send" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 10l-5 5 5 5" /><path d="M20 4v7a4 4 0 0 1-4 4H4" /></svg>
               </button>
             </div>
           </div>
         ) : (
-        <div className="flex items-end gap-1 border border-rule bg-white/45 py-2 pl-2 pr-2 transition-colors focus-within:border-[#b8b2af]">
+        <div className="flex items-end border border-rule bg-white/45 py-2 pl-2 pr-1 transition-colors focus-within:border-[#b8b2af]">
           <textarea
             ref={input}
             value={draft}
@@ -603,14 +603,14 @@ function RangaaPanel() {
             placeholder="Ask about Vishnu…"
             aria-label="Ask Rangaa"
             maxLength={600}
-            className="block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80"
+            className="mr-2 block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80"
           />
           {canSpeak && (
             <button
               type="button"
               onClick={() => toggleMic()}
               aria-label="Speak to Rangaa"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
+              className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]"
             >
               <MicIcon listening={false} />
             </button>
