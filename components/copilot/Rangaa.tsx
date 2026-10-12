@@ -583,22 +583,12 @@ function RangaaPanel() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
               </button>
               <button type="button" onClick={() => stopRecording("send")} aria-label="Send" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-pigment text-white transition-colors hover:bg-black">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 10l-5 5 5 5" /><path d="M20 4v7a4 4 0 0 1-4 4H4" /></svg>
               </button>
             </div>
           </div>
         ) : (
-        <div className="flex items-end gap-1 border border-rule bg-white/45 px-2 py-2 transition-colors focus-within:border-[#b8b2af]">
-          {canSpeak && (
-            <button
-              type="button"
-              onClick={() => toggleMic()}
-              aria-label="Speak to Rangaa"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
-            >
-              <MicIcon listening={false} />
-            </button>
-          )}
+        <div className="flex items-end gap-1 border border-rule bg-white/45 py-2 pl-2 pr-2 transition-colors focus-within:border-[#b8b2af]">
           <textarea
             ref={input}
             value={draft}
@@ -613,15 +603,25 @@ function RangaaPanel() {
             placeholder="Ask about Vishnu…"
             aria-label="Ask Rangaa"
             maxLength={600}
-            className={`block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80 ${canSpeak ? "px-1" : "pl-2 pr-1"}`}
+            className="block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80"
           />
+          {canSpeak && (
+            <button
+              type="button"
+              onClick={() => toggleMic()}
+              aria-label="Speak to Rangaa"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
+            >
+              <MicIcon listening={false} />
+            </button>
+          )}
           <button
             type="submit"
             disabled={!draft.trim() || busy}
             aria-label="Send"
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-pigment text-white transition-[background-color,opacity] hover:bg-[#C44419] disabled:bg-black/[0.07] disabled:text-pigment/40 disabled:hover:bg-black/[0.07]"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 10l-5 5 5 5" /><path d="M20 4v7a4 4 0 0 1-4 4H4" /></svg>
           </button>
         </div>
         )}
