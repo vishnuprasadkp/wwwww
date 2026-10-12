@@ -21,7 +21,7 @@
     to { transform: translateX(-50%); }
   }
   @keyframes gallery {
-    to { transform: translateX(calc(-50% - 5px)); }
+    to { transform: translate3d(calc(-50% - 5px), 0, 0); }
   }
 }
 

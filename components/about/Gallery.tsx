@@ -7,14 +7,14 @@ import Img from "@/components/ui/Img";
 export function Gallery({ rows }: { rows: string[][] }) {
   return (
     <div className="full -mx-5 mt-0 overflow-hidden md:-mx-8 md:mt-[14px]">
-      <div className="flex w-max animate-gallery gap-[10px] md:-ml-[10px]">
+      <div className="flex w-max animate-gallery gap-[10px] [backface-visibility:hidden] [will-change:transform] md:-ml-[10px]">
         {[0, 1].map((copy) => (
           <div key={copy} className="flex flex-col gap-[10px]" aria-hidden={copy === 1 || undefined}>
             {rows.map((ids, r) => (
               <ul key={r} className="flex gap-[9.33px]">
                 {ids.map((id) => (
                   <li key={id} className="h-[260px] shrink-0 md:h-[375px]">
-                    <Img id={id} sizes="(min-width: 768px) 280px, 190px" className="!h-full !w-auto" />
+                    <Img id={id} eager sizes="(min-width: 768px) 400px, 260px" className="!h-full !w-auto" />
                   </li>
                 ))}
               </ul>

@@ -588,8 +588,17 @@ function RangaaPanel() {
             </div>
           </div>
         ) : (
-        <div className="border border-rule bg-white/45 transition-colors focus-within:border-[#b8b2af]">
-          {/* the text wraps and the box grows, so everything you type stays visible */}
+        <div className="flex items-end gap-1 border border-rule bg-white/45 px-2 py-2 transition-colors focus-within:border-[#b8b2af]">
+          {canSpeak && (
+            <button
+              type="button"
+              onClick={() => toggleMic()}
+              aria-label="Speak to Rangaa"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
+            >
+              <MicIcon listening={false} />
+            </button>
+          )}
           <textarea
             ref={input}
             value={draft}
@@ -604,30 +613,16 @@ function RangaaPanel() {
             placeholder="Ask about Vishnu…"
             aria-label="Ask Rangaa"
             maxLength={600}
-            className="block max-h-40 w-full resize-none bg-transparent px-4 pb-1 pt-3 text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80"
+            className={`block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80 ${canSpeak ? "px-1" : "pl-2 pr-1"}`}
           />
-          <div className="flex items-center justify-end px-2 pb-2 pt-1">
-            <span className="flex items-center gap-1">
-              {canSpeak && (
-                <button
-                  type="button"
-                  onClick={() => toggleMic()}
-                  aria-label="Speak to Rangaa"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-pigment transition-colors hover:bg-black/5"
-                >
-                  <MicIcon listening={false} />
-                </button>
-              )}
-              <button
-                type="submit"
-                disabled={!draft.trim() || busy}
-                aria-label="Send"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-pigment text-white transition-[background-color,opacity] hover:bg-[#C44419] disabled:bg-black/[0.07] disabled:text-pigment/40 disabled:hover:bg-black/[0.07]"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
-              </button>
-            </span>
-          </div>
+          <button
+            type="submit"
+            disabled={!draft.trim() || busy}
+            aria-label="Send"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-pigment text-white transition-[background-color,opacity] hover:bg-[#C44419] disabled:bg-black/[0.07] disabled:text-pigment/40 disabled:hover:bg-black/[0.07]"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+          </button>
         </div>
         )}
         {lastAssistant && <p className="sr-only" aria-live="polite">{lastAssistant.content}</p>}

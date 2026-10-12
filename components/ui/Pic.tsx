@@ -12,6 +12,7 @@ type Props = {
   sizes: string;
   alt?: string;
   priority?: boolean; // above the fold: load now, high priority
+  eager?: boolean;    // load now (normal priority) — for things that slide into view
   fill?: boolean;     // cover its (relatively positioned) parent
   className?: string;
 };
@@ -20,7 +21,7 @@ type Props = {
  * <picture> with AVIF (about half the weight of WebP at the same look) and a WebP fallback.
  * Plain static files: no on-demand processing, no placeholder.
  */
-export default function Pic({ file, sizes, alt = "", priority, fill, className = "" }: Props) {
+export default function Pic({ file, sizes, alt = "", priority, eager, fill, className = "" }: Props) {
   const v = table[file];
   if (!v) throw new Error(`No optimised variants for ${file} — run: node scripts/optimize.mjs`);
   const set = (list: number[], ext: "avif" | "webp") => list.map((w) => `${optPath(file, w, ext)} ${w}w`).join(", ");
@@ -34,7 +35,7 @@ export default function Pic({ file, sizes, alt = "", priority, fill, className =
         width={v.w}
         height={v.h}
         alt={alt}
-        loading={priority ? "eager" : "lazy"}
+        loading={priority || eager ? "eager" : "lazy"}
         decoding="async"
         {...(priority ? { fetchPriority: "high" as const } : {})}
         className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : className}
