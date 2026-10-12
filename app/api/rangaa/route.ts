@@ -15,6 +15,8 @@ const limited = (ip: string) => {
   return recent.length > 20;
 };
 
+const FALLBACK = "I'm Rangaa, Vishnu's AI assistant. Ask me about his projects, process or background.\nNEXT: What makes your design approach unique? | What projects have you worked on? | Tell me about your design process";
+
 const enc = new TextEncoder();
 const textStream = (run: (push: (s: string) => void) => Promise<void>) =>
   new Response(
@@ -51,7 +53,7 @@ export async function POST(req: Request) {
 
   // No key configured: answer from the site's own content so Rangaa still works.
   if (!key) {
-    const answer = await localAnswer(messages[messages.length - 1].content);
+    const answer = await localAnswer(messages[messages.length - 1].content).catch(() => FALLBACK);
     return textStream(async (push) => {
       for (const part of answer.match(/\S+\s*/g) ?? []) {
         push(part);
@@ -67,12 +69,12 @@ export async function POST(req: Request) {
       model: process.env.RANGAA_MODEL ?? "claude-haiku-4-5-20251001",
       max_tokens: 500,
       stream: true,
-      system: systemPrompt(await knowledge()),
+      system: systemPrompt(await knowledge().catch(() => "")),
       messages,
     }),
   });
   if (!upstream.ok || !upstream.body) {
-    const answer = await localAnswer(messages[messages.length - 1].content);
+    const answer = await localAnswer(messages[messages.length - 1].content).catch(() => FALLBACK);
     return textStream(async (push) => push(answer));
   }
 
