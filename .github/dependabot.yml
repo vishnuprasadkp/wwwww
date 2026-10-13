@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Weekly dependency PRs; security fixes (like the Next.js and next-mdx-remote alerts) arrive automatically.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
