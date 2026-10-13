@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
-    "next": "^15.5.27",
+    "next": "^16.4.0",
     "next-mdx-remote": "^6.0.0",
     "pdfjs-dist": "^6.4.299",
     "react": "19.1.1",
