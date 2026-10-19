@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UnifyApps — Workflows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g950:#071a0b; --g900:#0c2411; --g800:#143a1c; --g700:#1f5229;
+  --cream:#f4efe2; --paper:#faf7ee; --sand:#e9e0c9; --sand2:#d9ccaa;
+  --olive:#8c8a3c; --gold:#b9a35a; --ink:#16241a; --mute:#5b6a5d;
+  --line:rgba(22,36,26,.18);
+  --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;border-radius:0!important}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--olive);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:28px;height:2px;background:currentColor}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.02em;line-height:1.02}
+h2{font-size:clamp(36px,5vw,64px)}
+h2 em,h1 em{font-style:italic;color:var(--olive)}
+.lead{color:var(--mute);max-width:560px;font-size:17px}
+section{padding:120px 0;position:relative}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:64px}
+@media(max-width:860px){.sec-head{grid-template-columns:1fr}section{padding:80px 0}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:12px;padding:16px 26px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;border:2px solid var(--g900);transition:.25s;position:relative}
+.btn.solid{background:var(--g900);color:var(--cream)}
+.btn.solid:hover{background:var(--olive);border-color:var(--olive);transform:translate(-4px,-4px);box-shadow:4px 4px 0 var(--g900)}
+.btn.ghost:hover{background:var(--g900);color:var(--cream);transform:translate(-4px,-4px);box-shadow:4px 4px 0 var(--olive)}
+.btn.light{background:var(--cream);color:var(--g900);border-color:var(--cream)}
+.btn.light:hover{background:var(--gold);border-color:var(--gold);transform:translate(-4px,-4px);box-shadow:4px 4px 0 var(--cream)}
+.btn.outline-light{color:var(--cream);border-color:var(--cream)}
+.btn.outline-light:hover{background:var(--cream);color:var(--g900)}
+.btn .ar{transition:.25s}.btn:hover .ar{transform:translateX(4px)}
+
+/* announce + nav */
+.announce{background:var(--g950);color:var(--sand);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-align:center;padding:9px 16px}
+.announce b{background:var(--gold);color:var(--g950);padding:2px 8px;margin-right:10px}
+nav{position:sticky;top:0;z-index:50;background:rgba(244,239,226,.92);backdrop-filter:blur(10px);border-bottom:2px solid var(--g900)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:18px}
+.logo i{width:22px;height:22px;background:var(--g900);position:relative;display:block}
+.logo i::after{content:"";position:absolute;inset:6px;background:var(--gold)}
+.menu{display:flex;gap:34px;font-size:14px}
+.menu a{position:relative;padding:4px 0}
+.menu a::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--olive);transition:.25s}
+.menu a:hover::after{width:100%}
+@media(max-width:860px){.menu{display:none}}
+.progress{position:absolute;left:0;bottom:-2px;height:2px;background:var(--olive);width:0}
+
+/* hero */
+.hero{padding:90px 0 0;background:linear-gradient(var(--cream),var(--paper));overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(46px,7vw,96px);margin:22px 0 26px}
+.hero .cta{display:flex;gap:16px;margin-top:38px;flex-wrap:wrap}
+.hero-viz{border:2px solid var(--g900);background:var(--g900);position:relative;box-shadow:12px 12px 0 var(--sand2)}
+.hero-viz .bar{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.15);font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--sand);text-transform:uppercase}
+.hero-viz .bar span::before{content:"";display:inline-block;width:8px;height:8px;background:#6ee07f;margin-right:8px;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.2}}
+.hero-viz svg{display:block;width:100%;height:auto}
+.node rect{fill:var(--g800);stroke:var(--gold);stroke-width:1.5;transition:.2s}
+.node.human rect{fill:var(--gold);stroke:var(--gold)}
+.node text{fill:var(--cream);font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-anchor:middle}
+.node.human text{fill:var(--g950)}
+.node:hover rect{fill:var(--olive)}
+.edge{stroke:rgba(244,239,226,.35);stroke-width:1.5;fill:none;stroke-dasharray:4 5;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-18}}
+.packet{fill:#6ee07f}
+.marquee{margin-top:90px;border-top:2px solid var(--g900);border-bottom:2px solid var(--g900);background:var(--g900);color:var(--cream);overflow:hidden;white-space:nowrap;padding:16px 0}
+.marquee div{display:inline-block;animation:mq 30s linear infinite;font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.marquee span{margin:0 28px;color:var(--gold)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* idea */
+.idea-grid{display:grid;grid-template-columns:1fr 1.2fr;border:2px solid var(--g900);background:var(--paper)}
+@media(max-width:860px){.idea-grid{grid-template-columns:1fr}}
+.idea-tabs{border-right:2px solid var(--g900)}
+.idea-tab{display:grid;grid-template-columns:56px 1fr;gap:16px;padding:30px;width:100%;text-align:left;border-bottom:2px solid var(--g900);transition:.25s;position:relative}
+.idea-tab:last-child{border-bottom:0}
+.idea-tab .n{font-family:var(--mono);font-size:12px;color:var(--olive);padding-top:6px}
+.idea-tab h3{font-size:34px}
+.idea-tab p{max-height:0;overflow:hidden;color:var(--mute);font-size:15px;transition:.4s}
+.idea-tab.on{background:var(--g900);color:var(--cream)}
+.idea-tab.on p{max-height:120px;margin-top:10px;color:var(--sand)}
+.idea-tab.on .n{color:var(--gold)}
+.idea-stage{position:relative;min-height:420px;background:
+  linear-gradient(var(--line) 1px,transparent 1px) 0 0/32px 32px,
+  linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/32px 32px;display:grid;place-items:center;padding:30px}
+.stage{display:none;width:100%;max-width:420px}
+.stage.on{display:block;animation:rise .5s}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.blk{border:2px solid var(--g900);background:var(--sand);padding:14px 16px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;display:flex;justify-content:space-between;margin-bottom:-2px;transition:.3s}
+.blk.dk{background:var(--g900);color:var(--cream)}
+.blk.gd{background:var(--gold)}
+.stage.compose .blk{animation:snap .6s backwards}
+.stage.compose .blk:nth-child(2){animation-delay:.15s}.stage.compose .blk:nth-child(3){animation-delay:.3s}.stage.compose .blk:nth-child(4){animation-delay:.45s}
+@keyframes snap{from{transform:translateX(-80px);opacity:0}}
+.modgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.modgrid .blk{margin:0 -2px -2px 0;justify-content:center;padding:26px 8px;cursor:pointer}
+.modgrid .blk:hover{background:var(--olive);color:#fff;transform:translateY(-6px);z-index:2;box-shadow:0 6px 0 var(--g900)}
+.reuse-list{display:grid;gap:10px}
+.reuse-list .blk{margin:0}
+.reuse-list .tag{background:var(--g900);color:var(--cream);padding:2px 8px;font-size:10px}
+.stage .cap{font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.12em;margin-top:18px;text-transform:uppercase}
+
+/* anatomy */
+.anatomy{background:var(--g900);color:var(--cream);overflow:hidden}
+.anatomy .eyebrow{color:var(--gold)}
+.anatomy h2 em{color:var(--gold)}
+.anatomy .lead{color:var(--sand);opacity:.8}
+.tier{border:2px solid var(--cream);position:relative;margin-bottom:34px;padding:22px 24px}
+.tier::before{content:attr(data-t);position:absolute;top:-11px;left:18px;background:var(--g900);padding:0 10px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--gold)}
+.master{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;background:var(--cream);color:var(--g900)}
+.master h3{font-size:32px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips span{border:1px solid var(--g900);font-family:var(--mono);font-size:10px;padding:4px 10px;letter-spacing:.1em}
+.subs{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+@media(max-width:860px){.subs{grid-template-columns:1fr 1fr}}
+.sub{text-align:left;border:2px solid var(--sand);margin:0 -2px -2px 0;padding:22px 18px;transition:.25s;position:relative;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
+.sub small{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--gold)}
+.sub b{font-family:var(--serif);font-weight:400;font-size:25px;line-height:1.1;margin-top:10px;display:block}
+.sub .go{font-family:var(--mono);font-size:11px;margin-top:14px;opacity:.6}
+.sub:hover{background:rgba(244,239,226,.08)}
+.sub.on{background:var(--gold);color:var(--g950);border-color:var(--gold);z-index:2}
+.sub.on small{color:var(--g900)}
+.sub.on::after{content:"";position:absolute;bottom:-36px;left:50%;width:2px;height:34px;background:var(--gold)}
+.agents{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+@media(max-width:860px){.agents{grid-template-columns:1fr}}
+.ag{padding:24px;border:2px solid var(--sand);margin:0 -2px -2px 0;animation:rise .45s backwards}
+.ag:nth-child(2){animation-delay:.1s}.ag:nth-child(3){animation-delay:.2s}
+.ag .k{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;padding:3px 9px;margin-bottom:12px}
+.ag .k.agent{background:var(--cream);color:var(--g900)}
+.ag .k.app{background:var(--gold);color:var(--g950)}
+.ag h4{font-family:var(--serif);font-weight:400;font-size:26px;margin-bottom:6px}
+.ag p{font-size:14px;color:var(--sand);opacity:.8}
+.legend{display:flex;gap:26px;font-family:var(--mono);font-size:11px;color:var(--sand);flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-1px}
+
+/* executors */
+.exec-top{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:0;border:2px solid var(--g900);border-bottom:0;padding:18px 22px;background:var(--paper)}
+.switch{display:flex;border:2px solid var(--g900)}
+.switch button{padding:12px 22px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;transition:.2s}
+.switch button.on{background:var(--g900);color:var(--cream)}
+.threshold{display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+.threshold output{background:var(--g900);color:var(--gold);padding:6px 12px;min-width:56px;text-align:center}
+input[type=range]{-webkit-appearance:none;appearance:none;width:200px;height:6px;background:var(--sand2);outline:none;border:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:26px;background:var(--g900);border:0;cursor:ew-resize}
+input[type=range]::-moz-range-thumb{width:20px;height:26px;background:var(--g900);border:0}
+.exec-board{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--g900)}
+@media(max-width:860px){.exec-board{grid-template-columns:1fr}}
+.lane{padding:30px;min-height:430px;transition:.4s}
+.lane.a{background:var(--sand);border-right:2px solid var(--g900)}
+.lane.h{background:var(--paper)}
+.lane .eyebrow{margin-bottom:14px}
+.lane h3{font-size:38px;margin-bottom:8px}
+.lane>p{color:var(--mute);margin-bottom:20px;font-size:15px}
+.lane.dim{opacity:.35;filter:grayscale(.6)}
+.inv{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:2px solid var(--g900);background:var(--cream);margin-bottom:-2px;font-family:var(--mono);font-size:12px;animation:rise .35s backwards}
+.inv em{font-style:normal;background:var(--g900);color:var(--cream);padding:2px 8px;font-size:11px}
+.inv.ok em{background:var(--olive)}
+.empty{font-family:var(--mono);font-size:11px;color:var(--mute);padding:14px;border:2px dashed var(--line)}
+.meter{margin-top:22px;height:14px;border:2px solid var(--g900);background:var(--cream)}
+.meter i{display:block;height:100%;background:var(--g900);transition:width .4s}
+.meterlbl{font-family:var(--mono);font-size:11px;margin-top:8px;display:flex;justify-content:space-between}
+
+/* features */
+.features{background:linear-gradient(135deg,var(--g800),var(--g950));color:var(--cream)}
+.features .eyebrow{color:var(--gold)}
+.feat-grid{display:grid;grid-template-columns:.8fr 1.4fr;gap:0;border:2px solid var(--cream)}
+@media(max-width:960px){.feat-grid{grid-template-columns:1fr}}
+.feat-l{padding:44px;border-right:2px solid var(--cream);display:flex;flex-direction:column;justify-content:space-between;gap:40px}
+.feat-l h2 em{color:var(--gold)}
+.big{font-family:var(--serif);font-size:96px;line-height:.9;color:var(--gold)}
+.feat-r{padding:30px;background:rgba(244,239,226,.04)}
+.ctrl{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.ctrl input{flex:1;min-width:180px;background:transparent;border:2px solid var(--cream);color:var(--cream);padding:12px 14px;font-family:var(--mono);font-size:12px;outline:none}
+.ctrl input:focus{border-color:var(--gold)}
+.ctrl input::placeholder{color:rgba(244,239,226,.5)}
+.fchips{display:flex;gap:0;flex-wrap:wrap}
+.fchips button{border:2px solid var(--cream);margin-right:-2px;padding:10px 14px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.fchips button.on{background:var(--cream);color:var(--g900)}
+.conn{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0}
+.conn div{border:1px solid rgba(244,239,226,.35);margin:0 -1px -1px 0;padding:18px 12px;font-size:13px;text-align:center;transition:.2s;cursor:default;animation:rise .3s backwards}
+.conn div small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--gold);margin-top:4px}
+.conn div:hover{background:var(--gold);color:var(--g950)}
+.conn div:hover small{color:var(--g900)}
+.count{font-family:var(--mono);font-size:11px;letter-spacing:.14em;margin-top:18px;color:var(--sand)}
+
+/* benefits */
+.acc{display:flex;border:2px solid var(--g900);height:520px}
+@media(max-width:860px){.acc{flex-direction:column;height:auto}}
+.pnl{flex:1;border-right:2px solid var(--g900);padding:30px;cursor:pointer;transition:flex .6s cubic-bezier(.7,0,.2,1),background .3s;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;min-width:110px;background:var(--paper)}
+.pnl:last-child{border-right:0}
+@media(max-width:860px){.pnl{border-right:0;border-bottom:2px solid var(--g900);min-height:90px}.pnl:last-child{border-bottom:0}}
+.pnl.on{flex:3.2;background:var(--g900);color:var(--cream);cursor:default}
+.pnl .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--olive)}
+.pnl.on .lbl{color:var(--gold)}
+.pnl h3{font-size:38px;margin:12px 0;max-width:420px}
+.pnl .body{opacity:0;transform:translateY(20px);transition:.4s;pointer-events:none;height:0;overflow:hidden}
+.pnl.on .body{opacity:1;transform:none;pointer-events:auto;height:auto;transition-delay:.3s}
+.pnl .stat{font-family:var(--serif);font-size:clamp(70px,10vw,140px);line-height:.9;color:var(--gold)}
+.pnl:not(.on) .stat{font-size:54px;color:var(--olive)}
+.pnl ul{list-style:none;margin-top:18px;display:grid;gap:10px;max-width:440px}
+.pnl li{padding-left:22px;position:relative;font-size:14px;color:var(--sand)}
+.pnl li::before{content:"";position:absolute;left:0;top:8px;width:10px;height:10px;background:var(--gold)}
+.pnl .plus{position:absolute;top:24px;right:24px;font-family:var(--mono);font-size:22px}
+.pnl.on .plus{display:none}
+
+/* cta */
+.cta-sec{background:var(--g950);color:var(--cream);text-align:center;overflow:hidden;padding:140px 0}
+.cta-sec canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.7}
+.cta-sec .in{position:relative;z-index:2}
+.cta-sec h2{font-size:clamp(44px,7vw,92px)}
+.cta-sec h2 em{color:var(--gold)}
+.cta-sec p{color:var(--sand);opacity:.8;max-width:540px;margin:22px auto 40px}
+.cta-sec .row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+/* security + footer */
+.sec-sec{background:var(--g900);color:var(--cream);padding:70px 0;border-top:2px solid var(--gold)}
+.sec-sec .wrap{display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap}
+.sec-sec h3{font-size:36px}
+.sec-sec p{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--sand);opacity:.7;margin-top:6px}
+.badges{display:flex;gap:0}
+.badges div{width:92px;height:92px;border:2px solid var(--cream);margin-right:-2px;display:grid;place-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-align:center;transition:.25s}
+.badges div:hover{background:var(--gold);color:var(--g950);transform:translateY(-6px)}
+footer{background:var(--g950);color:var(--sand);padding:70px 0 30px}
+.fgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:30px;padding-bottom:50px;border-bottom:1px solid rgba(244,239,226,.2)}
+@media(max-width:860px){.fgrid{grid-template-columns:1fr 1fr}}
+.fgrid h5{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--gold);margin-bottom:16px;font-weight:500}
+.fgrid a{display:block;font-size:13px;padding:5px 0;opacity:.75;transition:.2s}
+.fgrid a:hover{opacity:1;color:var(--gold);transform:translateX(4px)}
+.fbot{display:flex;justify-content:space-between;padding-top:26px;font-family:var(--mono);font-size:11px;opacity:.6;flex-wrap:wrap;gap:12px}
+
+.rv{opacity:0;transform:translateY(34px);transition:.8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="announce"><b>NEW</b>UnifyApps raises $50M to become the Enterprise Operating System for AI · Read more →</div>
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#"><i></i>UnifyApps</a>
+    <div class="menu"><a href="#idea">Platform</a><a href="#anatomy">Solutions</a><a href="#exec">Why UnifyApps</a><a href="#features">Connectors</a><a href="#benefits">Resources</a><a href="#cta">Company</a></div>
+    <a class="btn solid" href="#cta" style="padding:11px 18px">Request a demo</a>
+  </div>
+  <div class="progress" id="prog"></div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Workflows</div>
+      <h1>Turn your business processes into workflows <em>both AI &amp; humans</em> can work with.</h1>
+      <p class="lead">Stop coupling bespoke projects and start assembling composable, modular, reusable parts: a master workflow orchestrates sub-workflows, agents run the autonomous steps, apps handle the rest to people.</p>
+      <div class="cta"><a class="btn solid" href="#cta">Get a demo <span class="ar">→</span></a><a class="btn ghost" href="#anatomy">See the anatomy</a></div>
+    </div>
+    <div class="hero-viz">
+      <div class="bar"><span>Live · vendor-invoice-to-payment</span><em style="font-style:normal">run #4821</em></div>
+      <svg viewBox="0 0 520 380" id="heroSvg">
+        <g id="edges"></g><g id="nodes"></g><g id="packets"></g>
+      </svg>
+    </div>
+  </div>
+  <div class="marquee"><div id="mq"></div></div>
+</header>
+
+<!-- IDEA -->
+<section id="idea">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><div class="eyebrow">The idea</div><h2 style="margin-top:18px">Build a workflow once, then <em>never re-build</em> it again.</h2></div>
+      <p class="lead">Pick a principle to see how it plays out. Each part is a self-contained block you can call, swap and recombine.</p>
+    </div>
+    <div class="idea-grid rv">
+      <div class="idea-tabs">
+        <button class="idea-tab on" data-s="compose"><span class="n">01</span><span><h3>Composable</h3><p>Build workflows from building blocks, and call a sub-workflow the same way you call a single step — a complete process from parts that already work.</p></span></button>
+        <button class="idea-tab" data-s="modular"><span class="n">02</span><span><h3>Modular</h3><p>Each sub-workflow has its own contract, owner and tests. Swap the model, the system or the human approver without touching anything else.</p></span></button>
+        <button class="idea-tab" data-s="reuse"><span class="n">03</span><span><h3>Reusable</h3><p>Build it once and use it everywhere. "Verify vendor details" ships once; governance, logging and error handling come along for free.</p></span></button>
+      </div>
+      <div class="idea-stage">
+        <div class="stage compose on"><div class="blk dk"><span>MASTER · invoice-to-pay</span><span>▶</span></div><div class="blk"><span>sub · capture &amp; extract</span><span>✓</span></div><div class="blk gd"><span>sub · three-way match</span><span>✓</span></div><div class="blk"><span>sub · post &amp; notify</span><span>…</span></div><div class="cap">Blocks snap together into one process</div></div>
+        <div class="stage modular"><div class="modgrid"><div class="blk">OCR</div><div class="blk dk">MATCH</div><div class="blk">POST</div><div class="blk gd">REVIEW</div><div class="blk">NOTIFY</div><div class="blk dk">AUDIT</div></div><div class="cap">Hover a module — swap any one in isolation</div></div>
+        <div class="stage reuse"><div class="reuse-list"><div class="blk">Verify vendor details <span class="tag">AP</span></div><div class="blk">Verify vendor details <span class="tag">PROCURE</span></div><div class="blk">Verify vendor details <span class="tag">LEGAL</span></div><div class="blk gd">↳ one definition · 3 callers · 1 fix updates all</div></div><div class="cap">One build, referenced everywhere</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANATOMY -->
+<section id="anatomy" class="anatomy">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><div class="eyebrow">The anatomy</div><h2 style="margin-top:18px">Run a <em>master workflow</em> that nests smaller workflows — all with atomic precision.</h2></div>
+      <p class="lead">The master owns the sequence and the state. Sub-workflows own a self-contained chunk of work. Click any sub-workflow to open it.</p>
+    </div>
+    <div class="rv">
+      <div class="tier master" data-t="TIER 1 · MASTER WORKFLOW" style="border-color:var(--cream)"><h3>Vendor invoice → payment</h3><div class="chips"><span>EMAIL</span><span>OCR</span><span>ERP</span><span>PAYMENTS</span></div></div>
+      <div class="tier" data-t="TIER 2 · SUB-WORKFLOWS"><div class="subs" id="subs"></div></div>
+      <div class="tier" data-t="TIER 3 · INSIDE THE SUB-WORKFLOW"><div class="agents" id="agents"></div></div>
+      <div class="legend"><span><i style="background:var(--cream)"></i>Agent — autonomous action</span><span><i style="background:var(--gold)"></i>App — human-in-the-loop screen</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXECUTORS -->
+<section id="exec">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><div class="eyebrow">Executors</div><h2 style="margin-top:18px">Automate the step with an agent, or hand it to a <em>person with an app.</em></h2></div>
+      <p class="lead">Same workflow, same policy. One question per step: does this need judgment a person must own? Drag the confidence threshold and watch the routing change.</p>
+    </div>
+    <div class="rv">
+      <div class="exec-top">
+        <div class="switch" id="sw"><button class="on" data-m="both">Both</button><button data-m="a">Agent</button><button data-m="h">Human</button></div>
+        <div class="threshold">CONFIDENCE THRESHOLD <input type="range" id="thr" min="50" max="99" value="80"><output id="thrv">80%</output></div>
+      </div>
+      <div class="exec-board">
+        <div class="lane a" id="laneA"><div class="eyebrow">Agentic actions</div><h3>Handled by agents</h3><p>Reason over unstructured input, call systems through a governed gateway, never past their guardrails.</p><div id="listA"></div><div class="meter"><i id="mtr"></i></div><div class="meterlbl"><span>AUTO-RESOLVED</span><span id="pct"></span></div></div>
+        <div class="lane h" id="laneH"><div class="eyebrow">Human-in-the-loop</div><h3>Routed to people</h3><p>Reviewers see the agent's evidence, approve, edit or escalate — and the decision flows back into the run.</p><div id="listH"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features">
+  <div class="wrap">
+    <div class="feat-grid rv">
+      <div class="feat-l">
+        <div><div class="eyebrow">Core features</div><h2 style="margin-top:18px">Assemble <em>production workflows</em> from parts that already work.</h2></div>
+        <div><div class="big" id="bigc">1,000+</div><p style="color:var(--sand);margin-top:10px;font-size:14px">Pull and push data across ERP, CRM, HCM, collaboration and document systems.</p></div>
+      </div>
+      <div class="feat-r">
+        <div class="ctrl"><input id="q" placeholder="SEARCH CONNECTORS…"></div>
+        <div class="fchips" id="fc"></div>
+        <div class="conn" id="conn" style="margin-top:22px"></div>
+        <div class="count" id="cnt"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section id="benefits">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><div class="eyebrow">The benefits</div><h2 style="margin-top:18px">Ship AI <em>10x faster,</em> at a fraction of the cost.</h2></div>
+      <p class="lead">Reuse what the last process built and you change three things at once: the cost of automation, the time it takes to reach production, and what you can put in front of an auditor.</p>
+    </div>
+    <div class="acc rv" id="acc">
+      <div class="pnl on"><span class="plus">+</span><div><div class="lbl">COST EFFICIENCY</div><h3>Cut the cost of every process after the first.</h3><div class="body"><ul><li>Single-vendor, per-step model routing for hard-working judgment</li><li>One platform replaces layers of point tools and glue code</li><li>Spend metered per step, not per seat</li></ul></div></div><div class="stat"><span data-n="60">0</span>%</div></div>
+      <div class="pnl"><span class="plus">+</span><div><div class="lbl">SPEED</div><h3>Assemble in days what used to be a quarter's project.</h3><div class="body"><ul><li>Change one step as a configuration, not a rebuild</li><li>Cycle times cut from months to days</li><li>Ship one sub-workflow, propagate everywhere</li></ul></div></div><div class="stat"><span data-n="10">0</span>x</div></div>
+      <div class="pnl"><span class="plus">+</span><div><div class="lbl">GOVERNANCE</div><h3>Inherit controls from the platform, not each process.</h3><div class="body"><ul><li>RBAC, PII masking and data residency on every step</li><li>Agents request access through a gateway</li><li>Versioned workflows, replayable runs</li></ul></div></div><div class="stat"><span data-n="100">0</span>%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="cta-sec">
+  <canvas id="cv"></canvas>
+  <div class="wrap in rv">
+    <div class="eyebrow" style="justify-content:center;color:var(--gold)">Get started</div>
+    <h2 style="margin-top:20px">Start with one workflow. <em>Reuse it forever.</em></h2>
+    <p>Scope one tightly defined process in one department. Everything is built to become inventory for the next.</p>
+    <div class="row"><a class="btn light" href="#">Book a technical deep dive <span class="ar">→</span></a><a class="btn outline-light" href="#">See the entire context graph</a></div>
+  </div>
+</section>
+
+<div class="sec-sec">
+  <div class="wrap rv">
+    <div><h3>Security &amp; Compliance</h3><p>INDUSTRY-LEADING SECURITY AND PRIVACY STANDARDS</p></div>
+    <div class="badges"><div>SOC 2<br>TYPE II</div><div>GDPR</div><div>HIPAA</div><div>ISO<br>27001</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div><h5>PLATFORM</h5><a href="#">Conversational AI</a><a href="#">Workflows</a><a href="#">Connectors</a><a href="#">Agents</a><a href="#">Governance</a></div>
+      <div><h5>INDUSTRIES</h5><a href="#">Banking</a><a href="#">Insurance</a><a href="#">Healthcare</a><a href="#">Telecom</a></div>
+      <div><h5>DEPARTMENTS</h5><a href="#">Finance</a><a href="#">IT Ops</a><a href="#">Support</a><a href="#">HR</a></div>
+      <div><h5>RESOURCES</h5><a href="#">White Papers</a><a href="#">Blog</a><a href="#">Documentation</a></div>
+      <div><h5>COMPANY</h5><a href="#">About us</a><a href="#">Careers</a><a href="#">Contact</a></div>
+    </div>
+    <div class="fbot"><span>© 2026 UnifyApps. All rights reserved.</span><span>PRIVACY · TERMS · SECURITY</span></div>
+  </div>
+</footer>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const NS='http://www.w3.org/2000/svg';
+
+/* scroll progress + reveal */
+addEventListener('scroll',()=>{const h=document.documentElement;$('#prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+$$('.rv').forEach(e=>io.observe(e));
+
+/* marquee */
+const words=['Composable','Modular','Reusable','Agents','Human-in-the-loop','Governed','Auditable','1,000+ connectors'];
+$('#mq').innerHTML=[...words,...words,...words,...words].map(w=>`${w}<span>■</span>`).join('');
+
+/* hero workflow graph */
+(()=>{
+  const N=[{id:'in',x:20,y:150,l:'EMAIL IN'},{id:'ocr',x:150,y:60,l:'OCR AGENT'},{id:'cls',x:150,y:240,l:'CLASSIFY'},{id:'mat',x:290,y:150,l:'3-WAY MATCH'},{id:'rev',x:420,y:60,l:'REVIEW APP',h:1},{id:'pay',x:420,y:240,l:'POST · PAY'}];
+  const E=[['in','ocr'],['in','cls'],['ocr','mat'],['cls','mat'],['mat','rev'],['mat','pay'],['rev','pay']];
+  const W=84,H=40,g=id=>N.find(n=>n.id===id);
+  const pt=(a,b)=>`M${a.x+W},${a.y+H/2} C${a.x+W+40},${a.y+H/2} ${b.x-40},${b.y+H/2} ${b.x},${b.y+H/2}`;
+  E.forEach(([a,b],i)=>{
+    const p=document.createElementNS(NS,'path');p.setAttribute('d',pt(g(a),g(b)));p.setAttribute('class','edge');p.id='e'+i;$('#edges').appendChild(p);
+    const c=document.createElementNS(NS,'rect');c.setAttribute('width',8);c.setAttribute('height',8);c.setAttribute('x',-4);c.setAttribute('y',-4);c.setAttribute('class','packet');
+    const m=document.createElementNS(NS,'animateMotion');m.setAttribute('dur',(2.6+i*.3)+'s');m.setAttribute('repeatCount','indefinite');m.setAttribute('begin',(i*.4)+'s');
+    const r=document.createElementNS(NS,'mpath');r.setAttributeNS('http://www.w3.org/1999/xlink','href','#e'+i);r.setAttribute('href','#e'+i);m.appendChild(r);c.appendChild(m);$('#packets').appendChild(c);
+  });
+  N.forEach(n=>{
+    const g_=document.createElementNS(NS,'g');g_.setAttribute('class','node'+(n.h?' human':''));
+    g_.innerHTML=`<rect x="${n.x}" y="${n.y}" width="${W}" height="${H}"/><text x="${n.x+W/2}" y="${n.y+24}">${n.l}</text>`;$('#nodes').appendChild(g_);
+  });
+})();
+
+/* idea tabs */
+$$('.idea-tab').forEach(b=>b.onclick=()=>{
+  $$('.idea-tab').forEach(x=>x.classList.toggle('on',x===b));
+  $$('.stage').forEach(s=>s.classList.toggle('on',s.classList.contains(b.dataset.s)));
+});
+
+/* anatomy */
+const SUB=[
+ {t:'Capture & extract',a:[['agent','OCR & field extraction','Reads the invoice, pulls vendor, amounts and line items into structured fields.'],['agent','Classify document type','Sorts invoice, credit note or statement — routes the odd ones out.'],['agent','Duplicate check','Compares against posted invoices and flags probable repeats.']]},
+ {t:'Three-way match',a:[['app','PO & receipt lookup','Fetches the purchase order and goods receipt from the ERP.'],['agent','Match line items','Reconciles quantity, price and terms across all three documents.'],['agent','Tolerance check','Decides if variances are within policy or need a reviewer.']]},
+ {t:'Exception review',a:[['app','Reviewer queue','A person sees the evidence and the agent’s reasoning side by side.'],['app','Approve · edit · reject','One click decision, written back to the run with an audit trail.'],['agent','Escalate on SLA','Pings the next approver when a task goes stale.']]},
+ {t:'Post & notify',a:[['app','Post to ledger','Writes the approved invoice to the general ledger.'],['app','Schedule payment','Queues the payment in the next run according to terms.'],['agent','Notify vendor','Drafts and sends the remittance advice.']]}
+];
+$('#subs').innerHTML=SUB.map((s,i)=>`<button class="sub" data-i="${i}"><div><small>SUB-WORKFLOW 0${i+1}</small><b>${s.t}</b></div><span class="go">${s.a.length} STEPS ↓</span></button>`).join('');
+function showSub(i){
+  $$('.sub').forEach((b,j)=>b.classList.toggle('on',i===j));
+  $('#agents').innerHTML=SUB[i].a.map(([k,h,p])=>`<div class="ag"><span class="k ${k}">${k==='agent'?'AGENT · AUTONOMOUS':'APP · HUMAN-IN-LOOP'}</span><h4>${h}</h4><p>${p}</p></div>`).join('');
+}
+$$('.sub').forEach(b=>b.onclick=()=>showSub(+b.dataset.i)); showSub(0);
+
+/* executors */
+const INV=[['INV-2041','Acme Supplies',97],['INV-2042','Northwind Ltd',91],['INV-2043','Globex Corp',84],['INV-2044','Initech',76],['INV-2045','Umbrella Co',68],['INV-2046','Stark Parts',58]];
+let mode='both';
+function renderExec(){
+  const t=+$('#thr').value; $('#thrv').textContent=t+'%';
+  const A=INV.filter(i=>i[2]>=t),H=INV.filter(i=>i[2]<t);
+  const row=(i,c)=>`<div class="inv ${c}"><span>${i[0]} · ${i[1]}</span><em>${i[2]}%</em></div>`;
+  $('#listA').innerHTML=A.length?A.map(i=>row(i,'ok')).join(''):'<div class="empty">NOTHING CLEARS THE THRESHOLD</div>';
+  $('#listH').innerHTML=H.length?H.map(i=>row(i,'')).join(''):'<div class="empty">NO REVIEW NEEDED — ALL AUTO-RESOLVED</div>';
+  const p=Math.round(A.length/INV.length*100);$('#mtr').style.width=p+'%';$('#pct').textContent=p+'%';
+  $('#laneA').classList.toggle('dim',mode==='h');$('#laneH').classList.toggle('dim',mode==='a');
+}
+$('#thr').oninput=renderExec;
+$$('#sw button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;$$('#sw button').forEach(x=>x.classList.toggle('on',x===b));renderExec()});
+renderExec();
+
+/* connectors */
+const CON=[['SAP','ERP'],['Oracle','ERP'],['NetSuite','ERP'],['Dynamics','ERP'],['Odoo','ERP'],['Salesforce','CRM'],['HubSpot','CRM'],['Zoho','CRM'],['Pipedrive','CRM'],['Workday','HCM'],['BambooHR','HCM'],['ADP','HCM'],['SuccessFactors','HCM'],['Slack','COLLAB'],['Teams','COLLAB'],['Zoom','COLLAB'],['Jira','COLLAB'],['Asana','COLLAB'],['Google Drive','DOCS'],['SharePoint','DOCS'],['Box','DOCS'],['Dropbox','DOCS'],['Confluence','DOCS'],['Notion','DOCS'],['Snowflake','DATA'],['BigQuery','DATA'],['Postgres','DATA'],['Databricks','DATA']];
+let cat='ALL';
+const cats=['ALL','ERP','CRM','HCM','COLLAB','DOCS','DATA'];
+$('#fc').innerHTML=cats.map(c=>`<button data-c="${c}" class="${c==='ALL'?'on':''}">${c}</button>`).join('');
+function renderConn(){
+  const q=$('#q').value.toLowerCase();
+  const list=CON.filter(c=>(cat==='ALL'||c[1]===cat)&&c[0].toLowerCase().includes(q));
+  $('#conn').innerHTML=list.map((c,i)=>`<div style="animation-delay:${i*15}ms">${c[0]}<small>${c[1]}</small></div>`).join('');
+  $('#cnt').textContent=`SHOWING ${list.length} OF 1,000+ CONNECTORS`;
+}
+$$('#fc button').forEach(b=>b.onclick=()=>{cat=b.dataset.c;$$('#fc button').forEach(x=>x.classList.toggle('on',x===b));renderConn()});
+$('#q').oninput=renderConn;renderConn();
+
+/* benefits accordion + countup */
+function count(p){const s=$('[data-n]',p);if(!s)return;const to=+s.dataset.n;let st=null;const d=1100;
+  const f=t=>{st??=t;const k=Math.min((t-st)/d,1);s.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+$$('.pnl').forEach(p=>p.onclick=()=>{if(p.classList.contains('on'))return;$$('.pnl').forEach(x=>x.classList.toggle('on',x===p));count(p)});
+const accIO=new IntersectionObserver(es=>{if(es[0].isIntersecting){count($('.pnl.on'));accIO.disconnect()}},{threshold:.4});accIO.observe($('#acc'));
+
+/* CTA canvas — rotating square spiral */
+(()=>{
+  const cv=$('#cv'),x=cv.getContext('2d');let w,h,t=0;
+  const fit=()=>{w=cv.width=cv.offsetWidth;h=cv.height=cv.offsetHeight};fit();addEventListener('resize',fit);
+  (function draw(){
+    x.clearRect(0,0,w,h);x.save();x.translate(w/2,h/2);
+    for(let i=0;i<34;i++){
+      const s=24+i*22,a=t*.0006*(i%2?1:-1)+i*.09;
+      x.save();x.rotate(a);x.strokeStyle=`rgba(185,163,90,${.5-i*.013})`;x.lineWidth=1;x.strokeRect(-s/2,-s/2,s,s);x.restore();
+    }
+    x.restore();t+=16;requestAnimationFrame(draw);
+  })();
+})();
+</script>
+</body>
+</html>

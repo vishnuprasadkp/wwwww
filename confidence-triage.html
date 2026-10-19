@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confidence Triage</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f3ec; --card:#efebe2; --tan:#e8e0cd; --line:#cfc7b0; --line2:#e0d9c6;
+  --olive:#7f7347; --olive2:#8e8a58; --ink:#14230f; --mute:#5f6657;
+  --g:#12290f; --g2:#1d3a17; --ok:#7f7347; --warn:#b3532f;
+  --serif:'Spectral',Georgia,serif; --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;border-radius:0!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+.wrap{max-width:1140px;margin:0 auto;padding:96px 28px}
+.eyebrow{font-family:var(--serif);font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--olive);text-align:center}
+h2{font-weight:400;font-size:clamp(30px,4.2vw,54px);line-height:1.15;text-align:center;max-width:960px;margin:22px auto 0;letter-spacing:-.01em}
+h2 em{color:var(--olive)}
+.sub{text-align:center;color:var(--mute);font-size:18px;max-width:800px;margin:26px auto 0;line-height:1.6}
+
+/* stage */
+.stage{margin-top:64px;border:1px solid var(--line);background:#faf8f2}
+.stage-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;padding:16px 22px;border-bottom:1px solid var(--line);font-family:var(--sans);font-size:12px}
+.ctl{display:flex;align-items:center;gap:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:500}
+.ctl output{background:var(--g);color:#efe9d6;padding:5px 10px;min-width:52px;text-align:center;letter-spacing:.04em}
+input[type=range]{-webkit-appearance:none;appearance:none;width:220px;height:3px;background:var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:24px;background:var(--g);cursor:ew-resize}
+input[type=range]::-moz-range-thumb{width:12px;height:24px;background:var(--g);border:0}
+.pause{border:1px solid var(--line);padding:8px 14px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-size:11px}
+.pause:hover{background:var(--g);color:#fff;border-color:var(--g)}
+.stats{display:flex;gap:0}
+.stat{padding:0 22px;border-left:1px solid var(--line);font-family:var(--sans)}
+.stat b{display:block;font-family:var(--serif);font-weight:400;font-size:26px;line-height:1}
+.stat span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+svg{display:block;width:100%;height:auto}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1}
+.box.dec{fill:var(--tan);stroke:#b9ae8f}
+.box.dark{fill:url(#dg);stroke:var(--g)}
+.lab{font-family:var(--serif);font-size:11px;letter-spacing:.16em;fill:var(--olive);text-anchor:middle;text-transform:uppercase}
+.ttl{font-family:var(--serif);font-size:22px;fill:var(--ink);text-anchor:middle}
+.dsc{font-family:var(--serif);font-size:13.5px;fill:var(--mute);text-anchor:middle}
+.dark .lab,.lab.l{fill:#b9b484}.ttl.l{fill:#d3cf9c;text-anchor:start}.lab.s{text-anchor:start}
+.dsc.l{fill:#e9e5cf;text-anchor:start}
+.big{font-family:var(--serif);font-size:44px;text-anchor:start}
+.pipe{stroke:#8d8363;stroke-width:1;stroke-dasharray:3 4;fill:none;animation:dash 1.4s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-14}}
+.tag{font-family:var(--sans);font-size:10px;letter-spacing:.06em;font-weight:500;text-transform:uppercase}
+.gate-bar rect.t{fill:#cfc4a4}
+.gate-bar rect.f{fill:var(--olive);transition:width .15s}
+.tok{font-family:var(--sans);font-size:10px;font-weight:500;text-anchor:middle}
+.pulse{animation:pls .6s}
+@keyframes pls{0%{opacity:1}50%{opacity:.4}}
+
+/* review */
+.review{display:grid;grid-template-columns:320px 1fr;border-top:1px solid var(--line)}
+@media(max-width:860px){.review{grid-template-columns:1fr}}
+.queue{border-right:1px solid var(--line);min-height:380px;font-family:var(--sans)}
+@media(max-width:860px){.queue{border-right:0;border-bottom:1px solid var(--line)}}
+.qh{padding:14px 18px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;font-weight:500}
+.qi{display:block;width:100%;text-align:left;padding:14px 18px;border-bottom:1px solid var(--line2);transition:background .2s;position:relative;animation:slide .4s}
+@keyframes slide{from{opacity:0;transform:translateX(-16px)}}
+.qi:hover{background:var(--card)}
+.qi.on{background:var(--g);color:#efe9d6}
+.qi.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--olive2)}
+.qi b{font-weight:500;font-size:13px}
+.qi small{display:block;font-size:12px;color:var(--mute);margin-top:3px}
+.qi.on small{color:#b9b484}
+.qi .cf{float:right;font-size:12px;color:var(--warn);font-weight:500}
+.qi.on .cf{color:#e0a07f}
+.qempty{padding:40px 18px;text-align:center;color:var(--mute);font-size:13px}
+.viewer{padding:26px 30px;font-family:var(--sans)}
+.viewer h4{font-family:var(--serif);font-weight:400;font-size:26px}
+.viewer .meta{font-size:12px;color:var(--mute);margin:6px 0 20px;letter-spacing:.04em}
+.doc{border:1px solid var(--line);background:#fff;padding:22px 24px;position:relative}
+.ln{height:7px;background:#ece8dc;margin-bottom:11px}
+.hl{border-left:3px solid var(--olive);background:#f4efd9;padding:12px 14px;margin:6px 0 16px;font-family:var(--serif);font-size:16px;line-height:1.5;position:relative;animation:glow 1.6s}
+@keyframes glow{0%{background:#e6dca0}100%{background:#f4efd9}}
+.hl .flag{display:inline-block;background:var(--warn);color:#fff;font-family:var(--sans);font-size:10px;letter-spacing:.08em;padding:2px 8px;margin-bottom:8px;text-transform:uppercase}
+.pg{position:absolute;top:8px;right:12px;font-size:10px;color:var(--mute);letter-spacing:.1em}
+.acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.b{padding:12px 20px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;border:1px solid var(--g);transition:.2s}
+.b.p{background:var(--g);color:#efe9d6}.b.p:hover{background:var(--g2)}
+.b.s:hover{background:var(--card)}
+.noview{padding:60px 20px;text-align:center;color:var(--mute);font-family:var(--serif);font-size:17px}
+
+/* bottom three */
+.three{display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;gap:0}
+@media(max-width:860px){.three{grid-template-columns:1fr}}
+.col{border-left:1px solid var(--line);padding:6px 30px 10px;transition:.3s;position:relative}
+.col::before{content:"";position:absolute;left:-1px;top:0;width:1px;height:0;background:var(--olive);transition:height .6s}
+.col.hot::before{height:100%;width:2px}
+.col h3{font-weight:400;font-size:26px;margin-bottom:10px}
+.col p{color:var(--mute);font-size:17px;line-height:1.55}
+.col .live{font-family:var(--sans);font-size:12px;margin-top:16px;color:var(--olive);letter-spacing:.04em;min-height:34px;font-weight:500}
+.log{font-family:var(--sans);font-size:11px;color:var(--mute);margin-top:14px;line-height:1.7;max-height:96px;overflow:hidden}
+.log div{border-top:1px solid var(--line2);padding-top:3px;animation:slide .4s}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Confidence triage</div>
+  <h2>Send the final 5% to an application <em>built for your experts</em> — the cases that drive outsized outcomes.</h2>
+  <p class="sub">Score every transaction automatically, post the clear ones straight through, and route only the doubtful ones to a person — with the evidence already attached.</p>
+
+  <div class="stage">
+    <div class="stage-top">
+      <div class="ctl">Confidence threshold <input type="range" id="thr" min="70" max="99" value="95"><output id="thrv">95%</output></div>
+      <div class="stats">
+        <div class="stat"><b id="sAuto">0</b><span>Auto-posted</span></div>
+        <div class="stat"><b id="sRev">0</b><span>Sent to review</span></div>
+        <div class="stat"><b id="sPct">—</b><span>Straight-through</span></div>
+        <div class="stat" style="padding-right:0"><button class="pause" id="pz">Pause</button></div>
+      </div>
+    </div>
+
+    <svg viewBox="0 0 1000 600" id="svg" aria-label="Confidence triage flow">
+      <defs>
+        <linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2c3d22"/><stop offset=".35" stop-color="#12290f"/><stop offset="1" stop-color="#0f2410"/></linearGradient>
+      </defs>
+      <!-- pipes -->
+      <path class="pipe" d="M500 120V190"/>
+      <path class="pipe" d="M500 280V320H250V380"/>
+      <path class="pipe" d="M500 320H750V380"/>
+      <circle cx="375" cy="320" r="3" fill="#7f7347"/><circle cx="625" cy="320" r="3" fill="#7f7347"/>
+
+      <g>
+        <rect class="box" x="250" y="14" width="500" height="106"/>
+        <text class="lab" x="500" y="44">Every transaction</text>
+        <text class="ttl" x="500" y="74">Replace it without fallout</text>
+        <text class="dsc" x="500" y="98">Each invoice, claim or record is graded as it moves through</text>
+      </g>
+      <g>
+        <rect class="box dec" x="250" y="190" width="500" height="90"/>
+        <text class="lab" x="500" y="216">Decision point</text>
+        <text class="ttl" x="500" y="246" id="gq">Is confidence 95% or higher?</text>
+        <g class="gate-bar" id="gbar"></g>
+        <text class="dsc" x="500" y="268" style="font-size:12px">You set the threshold per process.</text>
+      </g>
+      <g id="lA">
+        <rect class="box" x="40" y="380" width="420" height="190"/>
+        <rect x="312" y="364" width="148" height="22" fill="#7f7347"/><text class="tag" x="386" y="379" text-anchor="middle" fill="#f1ecd8" id="tagA">Yes · 95% and above</text>
+        <text class="lab s" x="64" y="418" style="fill:var(--olive)">No person needed</text>
+        <text class="ttl" x="64" y="450" style="text-anchor:start;font-size:20px">Post straight to SAP, Salesforce or your core system</text>
+        <text class="big" x="64" y="520" id="nA" fill="#14230f">0</text>
+        <text class="dsc" x="124" y="518" style="text-anchor:start;font-size:12px">posted · every call logged</text>
+        <text class="dsc" x="64" y="550" style="text-anchor:start;font-size:12px" id="lastA">Waiting for first transaction…</text>
+      </g>
+      <g id="lB">
+        <rect class="box dark" x="540" y="380" width="420" height="190"/>
+        <rect x="812" y="364" width="148" height="22" fill="#8e8a58"/><text class="tag" x="886" y="379" text-anchor="middle" fill="#fff" id="tagB">No · below 95%</text>
+        <text class="lab s l" x="564" y="418">Human in the loop</text>
+        <text class="ttl l" x="564" y="450" style="font-size:20px">Isolate and route to a review application</text>
+        <text class="big" x="564" y="520" id="nB" fill="#efe9d6">0</text>
+        <text class="dsc l" x="624" y="518" style="font-size:12px">waiting for an expert</text>
+        <text class="dsc l" x="564" y="550" style="font-size:12px">Claim, snippet and flag attached ↓</text>
+      </g>
+      <g id="toks"></g>
+    </svg>
+
+    <div class="review">
+      <div class="queue">
+        <div class="qh"><span>Review queue</span><span id="qc">0</span></div>
+        <div id="ql"></div>
+      </div>
+      <div class="viewer" id="vw"><div class="noview">Items below the threshold land here.<br>Pick one to open it on the exact clause.</div></div>
+    </div>
+  </div>
+
+  <div class="three">
+    <div class="col" id="c1"><h3>Show the claim, not the document</h3><p>Reviewers open on the exact clause or field in question, so nobody hunts through 40 pages for context.</p><div class="live" id="l1">Open a review item to see it.</div></div>
+    <div class="col" id="c2"><h3>Turn each decision into training</h3><p>Approvals and corrections write back to the knowledge base, so similar cases score higher and skip the queue.</p><div class="live" id="l2">Decisions learned: 0 · model lift +0.0 pts</div></div>
+    <div class="col" id="c3"><h3>Keep the audit trail intact</h3><p>Who decided, when, on what evidence — captured as workflow state under the platform's roles and masking.</p><div class="log" id="log"><div>— no decisions yet</div></div></div>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg';
+let thr=95,nA=0,nB=0,lift=0,learned=0,paused=false,qid=4800,sel=null;
+const queue=[];
+const T=[
+ ['Claim','Coverage clause 7.2','"Water damage resulting from gradual seepage is excluded unless sudden and accidental discharge is demonstrated."','Exclusion may apply'],
+ ['Invoice','Line 4 · unit price','"Unit price USD 1,240 per licence, a variance of 11% over the purchase order of USD 1,116."','Price variance over tolerance'],
+ ['Claim','Section 3 · deductible','"A deductible of INR 25,000 applies per event, except where the insured has endorsed rider R-14."','Rider not found'],
+ ['Record','Beneficiary name','"Name on the account reads Priya Nair-Menon; the policy lists Priya Menon."','Name mismatch'],
+ ['Invoice','Tax registration','"GSTIN 29ABCDE1234F1Z5 does not match the vendor master for Northwind Components."','Vendor ID mismatch']
+];
+const pts=(s)=>s.map(p=>p.join(',')).join(' ');
+const path=(side)=>[[500,70],[500,190],[500,235],[500,320],[side<0?250:750,320],[side<0?250:750,388]];
+const toks=[];
+function gate(){const g=$('#gbar');g.innerHTML='';}
+function setThr(v){thr=v;$('#thrv').textContent=v+'%';$('#gq').textContent=`Is confidence ${v}% or higher?`;$('#tagA').textContent=`Yes · ${v}% and above`;$('#tagB').textContent=`No · below ${v}%`;}
+$('#thr').oninput=e=>setThr(+e.target.value);
+$('#pz').onclick=e=>{paused=!paused;e.target.textContent=paused?'Resume':'Pause'};
+
+function spawn(){
+  if(paused)return;
+  let c=Math.min(99.5,Math.max(58,99.8-Math.pow(Math.random(),8)*45+lift*Math.random()*.5));
+  c=Math.round(c*10)/10;
+  const g=document.createElementNS(NS,'g');
+  g.innerHTML=`<rect x="-22" y="-11" width="44" height="22" fill="#14230f"/><text class="tok" y="4" fill="#f3efdc">${c}</text>`;
+  $('#toks').appendChild(g);
+  toks.push({g,c,seg:0,d:0,wait:0,route:null,path:null,rect:g.firstChild,id:++qid});
+}
+let last=performance.now();
+function frame(t){
+  const dt=Math.min(.05,(t-last)/1000);last=t;
+  if(!paused)for(let i=toks.length-1;i>=0;i--){
+    const k=toks[i];
+    if(!k.path){ // scoring phase down to gate
+      const P=[[500,70],[500,190]];k.cur=k.cur||{y:112};
+      k.cur.y+=110*dt;k.g.setAttribute('transform',`translate(500 ${k.cur.y})`);
+      if(k.cur.y>=180){k.cur.y=180;k.wait+=dt;if(k.wait>.45){
+        const auto=k.c>=thr;k.auto=auto;k.path=path(auto?-1:1);k.seg=2;k.pos=[500,180];
+        k.rect.setAttribute('fill',auto?'#7f7347':'#14230f');
+        k.rect.setAttribute('stroke',auto?'#7f7347':'#14230f');
+      }}
+      continue;
+    }
+    const a=k.pos,b=k.path[k.seg+1];
+    if(!b){finish(k,i);continue}
+    const dx=b[0]-a[0],dy=b[1]-a[1],dist=Math.hypot(dx,dy),step=170*dt;
+    if(step>=dist){k.pos=[...b];k.seg++}else{k.pos=[a[0]+dx/dist*step,a[1]+dy/dist*step]}
+    k.g.setAttribute('transform',`translate(${k.pos[0]} ${k.pos[1]})`);
+    k.g.style.opacity=(k.pos[0]===500&&k.pos[1]>192&&k.pos[1]<292)?0:1;
+  }
+  requestAnimationFrame(frame);
+}
+function finish(k,i){
+  k.g.remove();toks.splice(i,1);
+  if(k.auto){nA++;$('#nA').textContent=nA;$('#lastA').textContent=`Last: TXN-${k.id} · confidence ${k.c} · posted to ERP`;}
+  else{nB++;$('#nB').textContent=nB;const t=T[Math.floor(Math.random()*T.length)];
+    queue.unshift({id:'TXN-'+k.id,c:k.c,type:t[0],field:t[1],snip:t[2],flag:t[3]});if(queue.length>6)queue.pop();renderQ();}
+  const tot=nA+nB;$('#sAuto').textContent=nA;$('#sRev').textContent=nB;$('#sPct').textContent=Math.round(nA/tot*100)+'%';
+}
+function renderQ(){
+  $('#qc').textContent=queue.length;
+  $('#ql').innerHTML=queue.length?queue.map(q=>`<button class="qi ${sel===q.id?'on':''}" data-id="${q.id}"><b>${q.id}</b><span class="cf">${q.c}%</span><small>${q.type} · ${q.flag}</small></button>`).join(''):'<div class="qempty">Queue is clear</div>';
+  document.querySelectorAll('.qi').forEach(b=>b.onclick=()=>open(b.dataset.id));
+}
+function open(id){
+  const q=queue.find(x=>x.id===id);if(!q)return;sel=id;renderQ();
+  $('#vw').innerHTML=`<h4>${q.type} ${q.id}</h4><div class="meta">Confidence ${q.c}% · opened on ${q.field}</div>
+  <div class="doc"><span class="pg">PAGE 23 OF 40</span><div class="ln" style="width:60%"></div><div class="ln" style="width:92%"></div><div class="ln" style="width:78%"></div>
+  <div class="hl"><span class="flag">${q.flag}</span><br>${q.snip}</div>
+  <div class="ln" style="width:85%"></div><div class="ln" style="width:55%;margin-bottom:0"></div></div>
+  <div class="acts"><button class="b p" data-a="Approved">Approve</button><button class="b s" data-a="Corrected">Correct</button><button class="b s" data-a="Rejected">Reject</button></div>`;
+  hot('c1','Opened on '+q.field+' — page 23 of 40 skipped.');
+  document.querySelectorAll('.acts .b').forEach(b=>b.onclick=()=>decide(q,b.dataset.a));
+}
+function hot(c,msg){const e=$('#'+c);e.classList.add('hot');setTimeout(()=>e.classList.remove('hot'),1800);if(c==='c1')$('#l1').textContent=msg}
+function decide(q,a){
+  queue.splice(queue.findIndex(x=>x.id===q.id),1);sel=null;nB=Math.max(0,nB);
+  learned++;lift=Math.min(8,lift+.6);
+  renderQ();$('#vw').innerHTML='<div class="noview">Decision recorded and written back to the knowledge base.<br>Pick the next item.</div>';
+  $('#l2').textContent=`Decisions learned: ${learned} · model lift +${lift.toFixed(1)} pts`;hot('c2');
+  const lg=$('#log');if(lg.firstChild&&lg.firstChild.textContent.startsWith('—'))lg.innerHTML='';
+  const d=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  lg.insertAdjacentHTML('afterbegin',`<div>${d} · priya.n · ${a} ${q.id} · evidence p.23</div>`);hot('c3');
+  while(lg.children.length>4)lg.lastChild.remove();
+}
+setThr(95);renderQ();
+setInterval(spawn,1100);spawn();requestAnimationFrame(frame);
+</script>
+</body>
+</html>

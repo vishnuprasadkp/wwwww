@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Own Your Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f3ec;--ink:#14230f;--mute:#4d5446;--icon:#5a5a4a;--g:#12290f;--g2:#1d3a17;--dot:rgba(120,110,70,.28);--cell:#f1ede2}
+*{box-sizing:border-box;margin:0;padding:0;border-radius:0!important}
+body{background:var(--bg);font-family:'Spectral',Georgia,serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:80px 28px}
+.board{position:relative;padding:22px;background-image:radial-gradient(var(--dot) 1.5px,transparent 1.6px);background-size:18px 18px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.cell{background:var(--cell);padding:46px 46px 44px;min-height:340px;position:relative;overflow:hidden;transition:background .3s,transform .3s}
+.cell:hover{background:#ebe6d7}
+.cell svg{width:44px;height:44px;fill:var(--icon);display:block;margin-bottom:46px;transition:transform .4s,fill .3s}
+.cell:hover svg{transform:translateY(-4px);fill:var(--g)}
+.cell h3{font-weight:400;font-size:31px;line-height:1.15;letter-spacing:-.005em;margin-bottom:12px}
+.cell p{font-size:19px;line-height:1.6;color:var(--mute);max-width:420px}
+.cell::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--g);transition:width .5s}
+.cell:hover::after{width:100%}
+
+/* hero cell: dark green with light dot pattern */
+.cell.hero{background:linear-gradient(135deg,#1f3a18 0%,#12290f 55%,#0d2009 100%);color:#efe9d2}
+.cell.hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(239,233,210,.2) 1.4px,transparent 1.5px);background-size:16px 16px;
+ -webkit-mask-image:linear-gradient(135deg,transparent 15%,#000 100%);mask-image:linear-gradient(135deg,transparent 15%,#000 100%);transition:opacity .4s}
+.cell.hero:hover{background:linear-gradient(135deg,#25451d,#12290f 55%,#0d2009)}
+.cell.hero::after{background:#c7b978}
+.cell.hero h3{font-size:44px;line-height:1.15;color:#d9d6a6;margin-top:46px;position:relative}
+.cell.hero p{color:#e4dfc6;position:relative}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="board"><div class="grid">
+
+  <div class="cell hero"><h3>Own your intelligence.</h3><p>Your data, your models, your controls — inside your perimeter, under your policy.</p></div>
+
+  <div class="cell">
+    <svg viewBox="0 0 24 24"><path d="M17.5 8a4.5 4.5 0 00-4.4 3.6A4.5 4.5 0 004.5 13a4 4 0 000 8h12a5 5 0 001-9.9V11a3 3 0 00-.9-2.1A4.5 4.5 0 0017.5 8z" transform="translate(0 -3) scale(.95)"/><circle cx="18" cy="5.5" r="3.4" fill="none" stroke="#5a5a4a" stroke-width="1.6"/></svg>
+    <h3>Deploy in your cloud or on-prem</h3><p>Run entirely inside your own environment. Your data never leaves your perimeter.</p></div>
+
+  <div class="cell">
+    <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1.6 6.2a3.2 3.2 0 014.5 0l.9.9a3.2 3.2 0 010 4.5l-1.3 1.3-1.2-1.2 1.3-1.3a1.5 1.5 0 000-2.1l-.9-.9a1.5 1.5 0 00-2.1 0L10.3 10.7 9.1 9.5l1.3-1.3zm3.2 7.6a3.2 3.2 0 01-4.5 0l-.9-.9a3.2 3.2 0 010-4.5l1.3-1.3 1.2 1.2-1.3 1.3a1.5 1.5 0 000 2.1l.9.9a1.5 1.5 0 002.1 0l1.3-1.3 1.2 1.2-1.3 1.3z"/></svg>
+    <h3>Connect your existing stack</h3><p>UnifyApps has 1000+ connectors — no rip-and-replace, no migration project.</p></div>
+
+  <div class="cell">
+    <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M8 2h2v2h4V2h2v2h2a2 2 0 012 2v2h2v2h-2v4h2v2h-2v2a2 2 0 01-2 2h-2v2h-2v-2h-4v2H8v-2H6a2 2 0 01-2-2v-2H2v-2h2v-4H2V8h2V6a2 2 0 012-2h2V2zm1 6a1 1 0 00-1 1v6a1 1 0 001 1h6a1 1 0 001-1V9a1 1 0 00-1-1H9zm1.5 2.5h3v3h-3v-3z"/></svg>
+    <h3>Bring your own models</h3><p>Route each task across the foundation models you choose — no lock-in to any one vendor.</p></div>
+
+  <div class="cell">
+    <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M3 5a2 2 0 012-2h9v2H5v10.6c1.3-1.6 3.4-2.6 6-2.6s4.7 1 6 2.6V11h2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm8 3a3 3 0 100 6 3 3 0 000-6zM17 3h4v4h-2V6.4l-3.3 3.3-1.4-1.4L17.6 5H17V3z"/></svg>
+    <h3>Human approval workflows</h3><p>Keep people in the loop on every high-stakes action, with review and sign-off built in.</p></div>
+
+  <div class="cell">
+    <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5l8-3zm4.2 6.8L10.5 14.5 7.8 11.8 6.4 13.2l4.1 4.1 7.1-7.1-1.4-1.4z"/></svg>
+    <h3>Governance &amp; auditability</h3><p>Centralized policy across every initiative, with a full, exportable audit trail.</p></div>
+
+</div></div></div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confidence Triage</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--ink:#0f172a;--mute:#64748b;--line:#e2e8f0;--ok:#10b981;--ok-bg:#ecfdf5;--rev:#6366f1;--rev-bg:#eef2ff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:72px 20px}
+.pill{display:block;width:max-content;margin:0 auto;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--rev);background:var(--rev-bg);padding:6px 12px;border-radius:99px}
+h1{text-align:center;font-size:clamp(28px,4.6vw,44px);line-height:1.12;letter-spacing:-.025em;font-weight:700;margin:20px auto 0;max-width:680px}
+h1 span{color:var(--rev)}
+.sub{text-align:center;color:var(--mute);font-size:17px;line-height:1.55;max-width:540px;margin:16px auto 0}
+.card{margin-top:44px;background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 40px -12px rgba(15,23,42,.12);padding:20px 20px 24px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--mute);font-weight:500;padding:0 6px}
+.bar label{display:flex;align-items:center;gap:12px}
+.bar output{color:var(--ink);font-weight:600;min-width:34px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:150px;height:4px;border-radius:9px;background:var(--line);outline:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--ink);border:3px solid #fff;cursor:pointer}
+svg{display:block;width:100%;height:auto;margin-top:6px}
+.path{fill:none;stroke:#cbd5e1;stroke-width:1.5;stroke-dasharray:4 5;animation:d 1.2s linear infinite}
+@keyframes d{to{stroke-dashoffset:-9}}
+.node{fill:#fff;stroke:var(--line);stroke-width:1.5}
+.t1{font:600 15px Inter,sans-serif;fill:var(--ink);text-anchor:middle}
+.t2{font:500 12px Inter,sans-serif;fill:var(--mute);text-anchor:middle}
+.tk{font:600 11px Inter,sans-serif;fill:#fff;text-anchor:middle}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media(max-width:560px){.out{grid-template-columns:1fr}}
+.o{border-radius:16px;padding:18px 20px}
+.o.a{background:var(--ok-bg)}.o.b{background:var(--rev-bg)}
+.o small{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.o.a small{color:#047857}.o.b small{color:#4338ca}
+.o b{display:block;font-size:34px;letter-spacing:-.02em;margin:4px 0 2px;font-weight:700}
+.o p{font-size:14px;color:var(--mute);line-height:1.45}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="pill">Confidence triage</span>
+  <h1>Automate the clear cases. Send the final 5% to <span>your experts.</span></h1>
+  <p class="sub">Every transaction is scored. High-confidence ones post straight through; doubtful ones reach a person with the evidence attached.</p>
+
+  <div class="card">
+    <div class="bar">
+      <label>Confidence threshold <input type="range" id="thr" min="70" max="99" value="95"><output id="tv">95%</output></label>
+      <span>Straight-through: <b id="pct" style="color:var(--ink)">—</b></span>
+    </div>
+
+    <svg viewBox="0 0 800 330" aria-label="Transactions are scored, then auto-posted or routed to an expert">
+      <path class="path" d="M400 62V112"/>
+      <path class="path" d="M400 168C400 230 190 200 190 252"/>
+      <path class="path" d="M400 168C400 230 610 200 610 252"/>
+      <rect class="node" x="300" y="14" width="200" height="48" rx="24"/>
+      <text class="t1" x="400" y="43">Every transaction</text>
+      <rect class="node" x="290" y="112" width="220" height="56" rx="18" style="stroke:#0f172a"/>
+      <text class="t1" id="gq" x="400" y="136">Confidence ≥ 95%?</text>
+      <text class="t2" x="400" y="154">You set the threshold</text>
+      <rect class="node" x="70" y="252" width="240" height="64" rx="18" style="stroke:#10b981"/>
+      <text class="t1" x="190" y="278">Auto-post to your system</text>
+      <text class="t2" x="190" y="298">No person needed</text>
+      <rect class="node" x="490" y="252" width="240" height="64" rx="18" style="stroke:#6366f1"/>
+      <text class="t1" x="610" y="278">Expert review app</text>
+      <text class="t2" x="610" y="298">Claim and evidence attached</text>
+      <g id="toks"></g>
+    </svg>
+
+    <div class="out">
+      <div class="o a"><small>Auto-posted</small><b id="nA">0</b><p>Logged and posted with no manual touch.</p></div>
+      <div class="o b"><small>Sent to review</small><b id="nB">0</b><p>Opens on the exact clause in question.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg';
+const P=[...document.querySelectorAll('.path')],L=P.map(p=>p.getTotalLength());
+let thr=95,nA=0,nB=0;const toks=[];
+$('#thr').oninput=e=>{thr=+e.target.value;$('#tv').textContent=thr+'%';$('#gq').textContent=`Confidence ≥ ${thr}%?`};
+function spawn(){
+  if(document.hidden)return;
+  const c=Math.round(Math.min(99.5,Math.max(62,99.8-Math.pow(Math.random(),8)*42))*10)/10;
+  const g=document.createElementNS(NS,'g');
+  g.innerHTML=`<rect x="-20" y="-10" width="40" height="20" rx="10" fill="#0f172a"/><text class="tk" y="4">${c}</text>`;
+  $('#toks').appendChild(g);toks.push({g,c,t:0,wait:0,br:null});
+}
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  for(let i=toks.length-1;i>=0;i--){
+    const k=toks[i];let p,pt;
+    if(k.br===null){
+      k.t=Math.min(L[0],k.t+90*dt);pt=P[0].getPointAtLength(k.t);
+      if(k.t>=L[0]){k.wait+=dt;if(k.wait>.5){k.br=k.c>=thr?1:2;k.t=0;k.g.firstChild.setAttribute('fill',k.br===1?'#10b981':'#6366f1')}}
+    }else{
+      k.t+=150*dt;
+      if(k.t>=L[k.br]){
+        k.g.remove();toks.splice(i,1);
+        k.br===1?$('#nA').textContent=++nA:$('#nB').textContent=++nB;
+        $('#pct').textContent=Math.round(nA/(nA+nB)*100)+'%';continue;
+      }
+      pt=P[k.br].getPointAtLength(k.t);
+    }
+    k.g.setAttribute('transform',`translate(${pt.x} ${pt.y})`);
+  }
+  requestAnimationFrame(frame);
+}
+setInterval(spawn,1000);spawn();requestAnimationFrame(frame);
+</script>
+</body>
+</html>

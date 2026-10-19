@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AP Exception Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--ink:#0f172a;--mute:#64748b;--line:#e2e8f0;--acc:#6366f1;--acc-bg:#eef2ff;--warn:#b45309;--warn-bg:#fffbeb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:64px 20px}
+.app{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 40px -12px rgba(15,23,42,.14);overflow:hidden}
+.top{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line);font-size:14px;font-weight:600}
+.top span{font-weight:500;color:var(--mute);font-size:13px}
+.body{display:grid;grid-template-columns:250px 1fr}
+@media(max-width:700px){.body{grid-template-columns:1fr}.q{border-right:0!important;border-bottom:1px solid var(--line);display:flex;overflow-x:auto}.qi{min-width:200px}}
+.q{border-right:1px solid var(--line);padding:10px;background:#fbfcfd}
+.qi{display:block;width:100%;text-align:left;background:none;border:0;font:inherit;padding:12px 14px;border-radius:14px;cursor:pointer;transition:.2s}
+.qi:hover{background:#f1f5f9}.qi.on{background:var(--acc-bg)}
+.qi b{font-size:14px;font-weight:600;display:flex;justify-content:space-between}
+.qi b i{font-style:normal;font-size:12px;font-weight:600;color:var(--warn);background:var(--warn-bg);padding:2px 8px;border-radius:99px}
+.qi small{display:block;font-size:13px;color:var(--mute);margin-top:3px}
+.d{padding:26px 28px;min-height:330px}
+.tag{font-size:12px;font-weight:600;color:var(--acc);letter-spacing:.04em;text-transform:uppercase}
+h3{font-size:22px;letter-spacing:-.02em;margin:6px 0 18px;line-height:1.25}
+.rows{border:1px solid var(--line);border-radius:16px;padding:4px 18px}
+.r{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--mute)}
+.r:last-child{border:0}.r b{color:var(--ink);font-weight:600}
+.r b.v{background:var(--warn-bg);color:var(--warn);padding:4px 10px;border-radius:99px}
+.note{margin-top:16px;padding:12px 16px;background:var(--acc-bg);border-radius:14px;font-size:14px;line-height:1.5;color:#3730a3}
+.acts{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.b{font:600 14px Inter,sans-serif;padding:12px 20px;border-radius:12px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);transition:.2s}
+.b:hover{background:#f1f5f9}.b.p{background:var(--ink);color:#fff;border-color:var(--ink)}.b.p:hover{background:#1e293b}
+.done{text-align:center;padding:90px 0;color:var(--mute);font-size:16px}.done b{display:block;color:var(--ink);font-size:20px;margin-bottom:6px}
+.foot{padding:14px 24px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="app">
+    <div class="top">AP exception review <span>David · AP Lead</span></div>
+    <div class="body">
+      <div class="q" id="q"></div>
+      <div class="d" id="d"></div>
+    </div>
+    <div class="foot">One decision, one screen: the variance, the source snippet and two ways to close it.</div>
+  </div>
+</div>
+<script>
+const items=[
+ {id:'INV-48213',v:'Acme Components · £12,480',c:.42,t:'Quantity mismatch',h:'Invoice quantity exceeds the goods receipt',r:[['Invoice quantity','1,240 units'],['Goods received','1,200 units'],['Variance','40 units · £402',1]],n:'"Short delivery of 40 units acknowledged by carrier — remainder cancelled." — delivery note, p.2',a:'Approve adjusted amount'},
+ {id:'INV-48219',v:'Northwind Ltd · £3,905',c:.61,t:'Price variance',h:'Unit price is above the purchase order',r:[['PO unit price','£1,116'],['Invoice unit price','£1,240'],['Variance','11% · £124',1]],n:'"Price revised after freight surcharge, per quote Q-2291." — vendor email',a:'Approve at PO price'},
+ {id:'INV-48224',v:'Sterling Freight · £27,140',c:.55,t:'Vendor mismatch',h:'Tax ID does not match the vendor master',r:[['Invoice tax ID','29ABCDE1234F1Z5'],['Vendor master','29ABCDE1234F1Z9'],['Match','1 character off',1]],n:'"Registered address unchanged since last filing." — vendor record',a:'Confirm vendor'}
+];
+let sel=0;const $=s=>document.querySelector(s);
+function draw(){
+  $('#q').innerHTML=items.map((x,i)=>`<button class="qi ${i===sel?'on':''}" data-i="${i}"><b>${x.id}<i>${x.c.toFixed(2)}</i></b><small>${x.v}</small></button>`).join('');
+  document.querySelectorAll('.qi').forEach(b=>b.onclick=()=>{sel=+b.dataset.i;draw()});
+  const x=items[sel];
+  $('#d').innerHTML=x?`<div class="tag">${x.t}</div><h3>${x.h}</h3><div class="rows">${x.r.map(r=>`<div class="r">${r[0]}<b class="${r[2]?'v':''}">${r[1]}</b></div>`).join('')}</div><div class="note">${x.n}</div><div class="acts"><button class="b p" data-a>${x.a}</button><button class="b" data-a>Send back to vendor</button></div>`
+   :'<div class="done"><b>Queue clear</b>All exceptions resolved.</div>';
+  document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{items.splice(sel,1);sel=0;draw()});
+}
+draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confidence Triage Variations</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f8fa;--ink:#0f172a;--mute:#64748b;--line:#e2e8f0;--ok:#10b981;--rev:#6366f1;--okb:#ecfdf5;--revb:#eef2ff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:56px 20px 80px}
+.n{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--rev);margin-top:64px}
+.n:first-child{margin-top:0}
+h2{font-size:clamp(24px,3.6vw,34px);letter-spacing:-.02em;line-height:1.15;margin:8px 0 6px}
+.s{color:var(--mute);font-size:16px;line-height:1.5;max-width:560px}
+.card{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 40px -12px rgba(15,23,42,.12);padding:24px}
+.ctl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;font-weight:500;color:var(--mute)}
+.ctl output{color:var(--ink);font-weight:600;min-width:34px}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;min-width:140px;max-width:260px;height:4px;border-radius:9px;background:var(--line);outline:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--ink);border:3px solid #fff}
+.kpis{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+.k{flex:1;min-width:140px;border-radius:16px;padding:14px 18px}
+.k.a{background:var(--okb)}.k.b{background:var(--revb)}
+.k small{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.k.a small{color:#047857}.k.b small{color:#4338ca}
+.k b{display:block;font-size:30px;letter-spacing:-.02em;margin-top:2px}
+svg,canvas{display:block;width:100%}
+/* v2 */
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.chip{font:500 14px Inter,sans-serif;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 14px;cursor:pointer;transition:.2s;text-align:left}
+.chip small{display:block;color:var(--mute);font-size:12px;margin-top:2px}
+.chip:hover{border-color:#94a3b8}.chip.on{border-color:var(--ink);background:var(--ink);color:#fff}.chip.on small{color:#cbd5e1}
+.seg{display:inline-flex;background:#f1f5f9;border-radius:12px;padding:3px}
+.seg button{font:600 13px Inter,sans-serif;border:0;background:none;padding:7px 14px;border-radius:9px;cursor:pointer;color:var(--mute)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.verdict{margin-top:10px;border-radius:16px;padding:16px 20px;font-size:15px;line-height:1.45;transition:.3s}
+.verdict b{display:block;font-size:18px;margin-bottom:2px}
+.verdict.a{background:var(--okb);color:#065f46}.verdict.b{background:var(--revb);color:#3730a3}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="n">Variation 1</div>
+<h2>See where the line falls</h2>
+<p class="s">Every bar is a batch of transactions at that confidence. Drag the threshold and watch the work split.</p>
+<div class="card">
+  <div class="ctl">Threshold <input type="range" id="t1" min="70" max="99" value="95"><output id="o1">95%</output></div>
+  <svg id="hist" viewBox="0 0 800 220"></svg>
+  <div class="kpis">
+    <div class="k a"><small>Auto-posted</small><b id="a1">0%</b></div>
+    <div class="k b"><small>To experts, per 1,000</small><b id="b1">0</b></div>
+  </div>
+</div>
+
+<div class="n">Variation 2</div>
+<h2>Score one transaction, live</h2>
+<p class="s">Pick a transaction. The gauge scores it and the verdict shows where it goes.</p>
+<div class="card">
+  <div class="chips" id="chips"></div>
+  <svg viewBox="0 0 400 215" style="max-width:420px;margin:0 auto" id="gauge">
+    <path id="arcBg" d="M40 190A160 160 0 0 1 360 190" fill="none" stroke="#e2e8f0" stroke-width="22" stroke-linecap="round"/>
+    <path id="arcV" d="M40 190A160 160 0 0 1 360 190" fill="none" stroke="#6366f1" stroke-width="22" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100" style="transition:stroke-dasharray .9s cubic-bezier(.3,1.2,.4,1),stroke .3s"/>
+    <line id="tm" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+    <text id="gv" x="200" y="170" text-anchor="middle" font-size="44" font-weight="700" fill="#0f172a" letter-spacing="-1">–</text>
+    <text x="200" y="196" text-anchor="middle" font-size="12" font-weight="500" fill="#64748b">confidence score</text>
+  </svg>
+  <div style="text-align:center;margin-top:6px"><span class="ctl" style="justify-content:center">Threshold <span class="seg" id="seg"></span></span></div>
+  <div class="verdict b" id="vd">Select a transaction above.</div>
+</div>
+
+<div class="n">Variation 3</div>
+<h2>Watch the work sort itself</h2>
+<p class="s">Transactions fall through the gate. Confident ones land in the green bin, doubtful ones in the indigo bin.</p>
+<div class="card">
+  <div class="ctl">Threshold <input type="range" id="t3" min="70" max="99" value="95"><output id="o3">95%</output></div>
+  <canvas id="cv" width="800" height="360" style="margin-top:8px"></canvas>
+</div>
+
+</div>
+<script>
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg';
+/* V1 histogram */
+const bins=[];for(let c=60;c<100;c++){bins.push({c,n:Math.round(6+Math.exp((c-60)/7.2)*1.15)})}
+const tot=bins.reduce((s,b)=>s+b.n,0),max=Math.max(...bins.map(b=>b.n));
+const H=$('#hist');
+bins.forEach((b,i)=>{const r=document.createElementNS(NS,'rect'),h=b.n/max*170;
+  r.setAttribute('x',i*20+3);r.setAttribute('width',14);r.setAttribute('rx',4);r.setAttribute('y',190-h);r.setAttribute('height',h);
+  r.style.transition='fill .25s';b.el=r;H.appendChild(r)});
+const ln=document.createElementNS(NS,'line');ln.setAttribute('y1',4);ln.setAttribute('y2',192);ln.setAttribute('stroke','#0f172a');ln.setAttribute('stroke-width',2);ln.style.transition='all .1s';H.appendChild(ln);
+for(const c of [60,70,80,90,99]){const t=document.createElementNS(NS,'text');t.setAttribute('x',(c-60)*20+10);t.setAttribute('y',212);t.setAttribute('text-anchor','middle');t.setAttribute('font-size',12);t.setAttribute('fill','#64748b');t.textContent=c+'%';H.appendChild(t)}
+function v1(){const t=+$('#t1').value;$('#o1').textContent=t+'%';
+  let auto=0;bins.forEach(b=>{const ok=b.c>=t;b.el.setAttribute('fill',ok?'#10b981':'#6366f1');if(ok)auto+=b.n});
+  const x=(t-60)*20+1;ln.setAttribute('x1',x);ln.setAttribute('x2',x);
+  $('#a1').textContent=Math.round(auto/tot*100)+'%';$('#b1').textContent=Math.round((1-auto/tot)*1000)}
+$('#t1').oninput=v1;v1();
+
+/* V2 gauge */
+const TX=[['Invoice INV-48213','Acme Components',99.2],['Claim CL-7731','Water damage',96.4],['Invoice INV-48219','Northwind Ltd',91.1],['Record R-0092','Name mismatch',72.8]];
+let th=95,cur=null;
+const cx=200,cy=190,R=160;
+function ang(p){return Math.PI*(1-p/100)}
+function pos(p,r){return [cx+r*Math.cos(ang(p)),cy-r*Math.sin(ang(p))]}
+function gauge(){
+  const a=pos(th,R-20),b=pos(th,R+20);const tm=$('#tm');
+  tm.setAttribute('x1',a[0]);tm.setAttribute('y1',a[1]);tm.setAttribute('x2',b[0]);tm.setAttribute('y2',b[1]);
+  const vd=$('#vd');
+  if(cur===null)return;
+  const ok=TX[cur][2]>=th;
+  $('#arcV').setAttribute('stroke',ok?'#10b981':'#6366f1');
+  vd.className='verdict '+(ok?'a':'b');
+  vd.innerHTML=ok?`<b>Auto-posted</b>${TX[cur][2]}% clears the ${th}% threshold. It posts to your core system and every call is logged.`
+   :`<b>Sent to an expert</b>${TX[cur][2]}% is below ${th}%. It opens in the review app on the exact field in question.`;
+}
+function pick(i){cur=i;
+  document.querySelectorAll('.chip').forEach((c,j)=>c.classList.toggle('on',j===i));
+  $('#arcV').setAttribute('stroke-dasharray','0 100');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{$('#arcV').setAttribute('stroke-dasharray',`${TX[i][2]} 100`)}));
+  let s=0;const to=TX[i][2],t0=performance.now();
+  (function f(n){const k=Math.min(1,(n-t0)/900);$('#gv').textContent=(to*k).toFixed(1)+'%';if(k<1)requestAnimationFrame(f)})(t0);
+  gauge()}
+$('#chips').innerHTML=TX.map((t,i)=>`<button class="chip" data-i="${i}">${t[0]}<small>${t[1]}</small></button>`).join('');
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>pick(+c.dataset.i));
+$('#seg').innerHTML=[90,95,99].map(v=>`<button data-v="${v}" class="${v===95?'on':''}">${v}%</button>`).join('');
+document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{th=+b.dataset.v;document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on',x===b));gauge()});
+gauge();
+
+/* V3 sorter */
+const cv=$('#cv'),g=cv.getContext('2d');let t3=95,nA=0,nB=0;const ds=[];
+$('#t3').oninput=e=>{t3=+e.target.value;$('#o3').textContent=t3+'%'};
+const BX=[60,440],BW=300,BY=220,BH=120;
+setInterval(()=>{if(document.hidden)return;
+  const c=Math.min(99.5,Math.max(62,99.8-Math.pow(Math.random(),8)*42));
+  ds.push({c,x:400+(Math.random()-.5)*14,y:-8,vy:0,st:0})},260);
+function dot(x,y,col,r=6){g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=col;g.fill()}
+function bin(i,n,col,label,fill){const x=BX[i];
+  g.fillStyle=fill;g.beginPath();g.roundRect(x,BY,BW,BH,18);g.fill();
+  g.fillStyle=col;g.font='600 12px Inter';g.textAlign='left';g.fillText(label.toUpperCase(),x+18,BY+26);
+  g.font='700 30px Inter';g.fillText(n,x+18,BY+62);
+  const cols=Math.floor((BW-36)/14),m=Math.min(n,cols*3);
+  for(let k=0;k<m;k++)dot(x+25+(k%cols)*14,BY+BH-18-Math.floor(k/cols)*14,col,5)}
+function draw(){
+  g.clearRect(0,0,800,360);
+  g.strokeStyle='#cbd5e1';g.lineWidth=2;g.beginPath();g.moveTo(330,150);g.lineTo(470,150);g.stroke();
+  g.fillStyle='#0f172a';g.font='600 12px Inter';g.textAlign='center';g.fillText('CONFIDENCE ≥ '+t3+'%',400,135);
+  bin(0,nA,'#10b981','Auto-posted','#ecfdf5');bin(1,nB,'#6366f1','Expert review','#eef2ff');
+  for(let i=ds.length-1;i>=0;i--){const d=ds[i];
+    if(d.st===0){d.vy+=.35;d.y+=d.vy;if(d.y>=150){d.st=1;d.ok=d.c>=t3;d.tx=d.ok?210:590}}
+    else{d.x+=(d.tx-d.x)*.09;d.y+=(d.y<BY+40?7:3);
+      if(d.y>BY+30){d.ok?nA++:nB++;ds.splice(i,1);continue}}
+    dot(d.x,d.y,d.st?(d.ok?'#10b981':'#6366f1'):'#0f172a')}
+  requestAnimationFrame(draw)}
+draw();
+</script>
+</body>
+</html>

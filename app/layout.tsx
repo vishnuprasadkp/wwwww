@@ -9,6 +9,7 @@ import ScrollUp from "@/components/layout/ScrollUp";
 import TocRail from "@/components/layout/TocRail";
 import { RangaaProvider } from "@/components/copilot/Rangaa";
 import { preload } from "react-dom";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 // next/font downloads these at build time and serves them from your own domain.
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ScrollUp />
         <TocRail />
         </RangaaProvider>
+        <Analytics />
       </body>
     </html>
   );
