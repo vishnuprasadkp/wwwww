@@ -74,7 +74,6 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
       raf = requestAnimationFrame(tick);
     };
     const apply = () => {
-      window.clearTimeout(hideTimer);
       const wide = window.matchMedia("(min-width: 768px)").matches;
       document.documentElement.style.setProperty("--rangaa", open && wide ? "min(29vw, 440px)" : "0px");
       // full-screen panel on phones: freeze the page underneath so it can't show through or scroll
@@ -95,9 +94,21 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
         window.scrollTo({ top: lockedY, behavior: "instant" as ScrollBehavior });
       }
       syncViewport();
-      // hide the page only once the panel has finished sliding in (and show it again as soon as it starts to leave)
-      document.documentElement.classList.remove("rangaa-full");
-      if (lock) hideTimer = window.setTimeout(() => document.documentElement.classList.add("rangaa-full"), 420);
+      // Hide the page once the panel has finished sliding in, and keep it hidden through every resize the
+      // keyboard triggers. Show it again as soon as the panel starts to leave.
+      const root = document.documentElement.classList;
+      if (lock) {
+        if (!root.contains("rangaa-full") && !hideTimer) {
+          hideTimer = window.setTimeout(() => {
+            root.add("rangaa-full");
+            hideTimer = 0;
+          }, 420);
+        }
+      } else {
+        window.clearTimeout(hideTimer);
+        hideTimer = 0;
+        root.remove("rangaa-full");
+      }
     };
     apply();
     window.addEventListener("resize", apply);
@@ -640,13 +651,9 @@ function RangaaPanel() {
                   {i === messages.length - 1 && !busy && m.next && m.next.length > 0 && (
                     <div className="mt-5">
                       <ul className="space-y-3">
-                        {[...m.next.slice(0, 2), ...(page.key !== pageInfo(topicRef.current ?? pathname).key && page.key !== "home" ? [page.prompts[0]] : m.next.slice(2, 3))].filter(Boolean).map((n) => (
+                        {m.next.map((n) => (
                           <li key={n}>
-                            <button type="button" onClick={() => {
-                                // choosing the suggestion about the page you are looking at moves the conversation there
-                                if (page.key !== "home" && n === page.prompts[0]) topicRef.current = pageRef.current;
-                                send(n);
-                              }} className="flex items-start gap-2 text-left text-[14px] leading-[20px] text-pigment-soft transition-colors hover:text-[#C44419]">
+                            <button type="button" onClick={() => send(n)} className="flex items-start gap-2 text-left text-[14px] leading-[20px] text-pigment-soft transition-colors hover:text-[#C44419]">
                               <span aria-hidden>↳</span>
                               {n}
                             </button>

@@ -125,3 +125,9 @@
 /* Full-screen Rangaa on phones: nothing from the page may show around or under it, only the paper. */
 .rangaa-full body > :not(aside):not(.paper-bg):not(script):not(style) { visibility: hidden; }
 
+
+
+/* Phone panel: paper-coloured shadow above and below, so a one-frame lag while the keyboard moves never exposes the page. */
+@media (max-width: 767.98px) {
+  .rangaa-panel { box-shadow: 0 -160px 0 0 #eae7e6, 0 160px 0 0 #eae7e6; }
+}
