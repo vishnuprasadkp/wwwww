@@ -52,13 +52,15 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
         el.style.bottom = "auto";
         el.style.minHeight = "0";
         el.style.height = `${vv.height}px`;
-        el.style.transform = "none";
-        el.style.transform = `translateY(${vv.offsetTop - el.getBoundingClientRect().top}px)`;
+        // Move with `top`, never `transform`: the panel has a 400ms transform transition (its slide-in), and
+        // feeding it a new target every frame made it chase the keyboard and shake.
+        el.style.top = "0px";
+        el.style.top = `${vv.offsetTop - el.getBoundingClientRect().top}px`;
       } else {
         el.style.removeProperty("bottom");
         el.style.removeProperty("min-height");
         el.style.removeProperty("height");
-        el.style.removeProperty("transform");
+        el.style.removeProperty("top");
       }
     };
     // The keyboard animates for ~0.5s; follow it frame by frame instead of trusting a single event.
@@ -129,7 +131,7 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
         el.style.removeProperty("bottom");
         el.style.removeProperty("min-height");
         el.style.removeProperty("height");
-        el.style.removeProperty("transform");
+        el.style.removeProperty("top");
       }
       window.clearTimeout(hideTimer);
       document.documentElement.style.overflow = "";
