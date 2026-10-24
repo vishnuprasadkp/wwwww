@@ -36,80 +36,73 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
   const show = useCallback(() => setOpen(true), []);
 
   // Docked panel pushes the page over on wide screens (--rangaa is read by body padding in globals.css).
+  // On phones the panel is full screen: the page is hidden behind it, and the panel is sized to the part of
+  // the screen the keyboard leaves free.
+  //
+  // Deliberately NOT done: pinning the body (position: fixed) or moving the panel to follow the keyboard.
+  // Both push iOS into panning the visual viewport instead of scrolling the page, which is what made the panel
+  // jump. We leave the document scrollable (iOS then scrolls the hidden page to reveal the input and the
+  // fixed panel stays put) and only ever change the panel's height.
   useLayoutEffect(() => {
     let hideTimer = 0;
-    let lockedY = 0;
+    let savedY = 0;
+    let locked = false;
     const vv = window.visualViewport;
-    // Phones: make the panel exactly the part of the screen that is visible (above the keyboard).
-    // We measure instead of assuming how this browser positions fixed elements: after sizing it to the
-    // visual viewport, we read where it actually landed and nudge it onto the visual viewport's top edge.
     const panelEl = () => document.querySelector<HTMLElement>(".rangaa-panel");
-    const syncViewport = () => {
+    const resetPanel = () => {
       const el = panelEl();
       if (!el) return;
+      for (const prop of ["bottom", "min-height", "height", "top"]) el.style.removeProperty(prop);
+    };
+    const sizePanel = () => {
+      const el = panelEl();
       const phone = open && !window.matchMedia("(min-width: 768px)").matches && !!vv;
+      if (!el) return;
       if (phone && vv) {
+        el.style.top = "0px";
         el.style.bottom = "auto";
         el.style.minHeight = "0";
         el.style.height = `${vv.height}px`;
-        // Move with `top`, never `transform`: the panel has a 400ms transform transition (its slide-in), and
-        // feeding it a new target every frame made it chase the keyboard and shake.
-        el.style.top = "0px";
-        el.style.top = `${vv.offsetTop - el.getBoundingClientRect().top}px`;
-      } else {
-        el.style.removeProperty("bottom");
-        el.style.removeProperty("min-height");
-        el.style.removeProperty("height");
-        el.style.removeProperty("top");
-      }
+      } else resetPanel();
     };
-    // The keyboard animates for ~0.5s; follow it frame by frame instead of trusting a single event.
+    // the keyboard animates for ~0.5s; keep the height in step with it
     let trackUntil = 0;
     let raf = 0;
     const track = () => {
-      trackUntil = performance.now() + 900;
+      trackUntil = performance.now() + 700;
       if (raf) return;
       const tick = () => {
-        syncViewport();
+        sizePanel();
         raf = performance.now() < trackUntil ? requestAnimationFrame(tick) : 0;
       };
       raf = requestAnimationFrame(tick);
     };
     const apply = () => {
       const wide = window.matchMedia("(min-width: 768px)").matches;
-      document.documentElement.style.setProperty("--rangaa", open && wide ? "min(29vw, 440px)" : "0px");
-      // full-screen panel on phones: freeze the page underneath so it can't show through or scroll
-      const lock = open && !wide ? "hidden" : "";
-      document.documentElement.style.overflow = lock;
-      document.body.style.overflow = lock;
-      // iOS ignores overflow:hidden for scrolling, so pin the page in place and restore its position afterwards
-      const b = document.body.style;
-      if (lock && b.position !== "fixed") {
-        lockedY = window.scrollY;
-        b.position = "fixed";
-        b.top = `-${lockedY}px`;
-        b.width = "100%";
-      } else if (!lock && b.position === "fixed") {
-        b.position = "";
-        b.top = "";
-        b.width = "";
-        window.scrollTo({ top: lockedY, behavior: "instant" as ScrollBehavior });
+      const root = document.documentElement;
+      root.style.setProperty("--rangaa", open && wide ? "min(29vw, 440px)" : "0px");
+      const phone = open && !wide;
+      if (phone && !locked) {
+        locked = true;
+        savedY = window.scrollY; // coming back to the same spot when it closes
       }
-      syncViewport();
-      // Hide the page once the panel has finished sliding in, and keep it hidden through every resize the
-      // keyboard triggers. Show it again as soon as the panel starts to leave.
-      const root = document.documentElement.classList;
-      if (lock) {
-        if (!root.contains("rangaa-full") && !hideTimer) {
+      sizePanel();
+      // Hide the page once the panel has finished sliding in; keep it hidden through every keyboard resize.
+      if (phone) {
+        if (!root.classList.contains("rangaa-full") && !hideTimer) {
           hideTimer = window.setTimeout(() => {
-            root.add("rangaa-full");
+            root.classList.add("rangaa-full");
             hideTimer = 0;
           }, 420);
         }
       } else {
         window.clearTimeout(hideTimer);
         hideTimer = 0;
-        root.remove("rangaa-full");
+        root.classList.remove("rangaa-full");
+        if (locked) {
+          locked = false;
+          window.scrollTo({ top: savedY, behavior: "instant" as ScrollBehavior });
+        }
       }
     };
     apply();
@@ -125,24 +118,10 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener("focusin", track);
       window.removeEventListener("focusout", track);
       cancelAnimationFrame(raf);
-      trackUntil = 0;
-      const el = panelEl();
-      if (el) {
-        el.style.removeProperty("bottom");
-        el.style.removeProperty("min-height");
-        el.style.removeProperty("height");
-        el.style.removeProperty("top");
-      }
       window.clearTimeout(hideTimer);
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
-      if (document.body.style.position === "fixed") {
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.width = "";
-        window.scrollTo({ top: lockedY, behavior: "instant" as ScrollBehavior });
-      }
+      resetPanel();
       document.documentElement.classList.remove("rangaa-full");
+      if (locked) window.scrollTo({ top: savedY, behavior: "instant" as ScrollBehavior });
     };
   }, [open]);
 
