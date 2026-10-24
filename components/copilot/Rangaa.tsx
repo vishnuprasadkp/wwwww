@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { pageInfo } from "@/lib/rangaa-pages";
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /* ------------------------------------------------------------------ state */
@@ -11,7 +13,6 @@ const RangaaCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () 
 export const useRangaa = () => useContext(RangaaCtx);
 
 const ACCENT = "#e4572e";
-const PROMPTS = ["What makes your design approach unique?", "What projects have you worked on?", "Tell me about your design process"];
 
 /** Splits a streamed reply into the visible text and the trailing "NEXT: a | b | c" suggestions. */
 function parseReply(raw: string) {
@@ -286,6 +287,10 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
 
 function RangaaPanel() {
   const { open, close } = useRangaa();
+  const pathname = usePathname();
+  const page = pageInfo(pathname);
+  const pageRef = useRef(pathname);
+  pageRef.current = pathname;
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
@@ -358,7 +363,7 @@ function RangaaPanel() {
       const res = await fetch("/api/rangaa", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ messages: history.map(({ role, content }) => ({ role, content })) }),
+        body: JSON.stringify({ page: pageRef.current, messages: history.map(({ role, content }) => ({ role, content })) }),
         signal: abort.current.signal,
       });
       if (!res.ok || !res.body) throw new Error(await res.text());
@@ -517,9 +522,13 @@ function RangaaPanel() {
         {empty ? (
           <div className="mt-auto">
             <p className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
-            <p className="mt-2 text-[15px] leading-[24px] text-pigment">I&apos;m Rangaa, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</p>
+            <p className="mt-2 text-[15px] leading-[24px] text-pigment">{page.key === "home" ? (
+                <>I&apos;m Rangaa, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</>
+              ) : (
+                <>You&apos;re on <span className="text-pigment">{page.title}</span>. Ask me about it, or tap a question.</>
+              )}</p>
             <ul className="mt-6 space-y-3">
-              {PROMPTS.map((p) => (
+              {page.prompts.slice(0, 3).map((p) => (
                 <li key={p}>
                   <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[15px] leading-[22px] text-pigment-soft transition-colors hover:text-[#C44419]">
                     <span aria-hidden>↳</span>

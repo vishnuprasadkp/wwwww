@@ -38,8 +38,10 @@ export async function POST(req: Request) {
   if (limited(ip)) return new Response("Too many questions — give me a minute.", { status: 429 });
 
   let messages: Msg[];
+  let page = "/";
   try {
-    const body = (await req.json()) as { messages?: Msg[] };
+    const body = (await req.json()) as { messages?: Msg[]; page?: string };
+    page = typeof body.page === "string" ? body.page.slice(0, 80) : "/";
     messages = (body.messages ?? [])
       .filter((m) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
       .slice(-12)
@@ -53,7 +55,7 @@ export async function POST(req: Request) {
 
   // No key configured: answer from the site's own content so Rangaa still works.
   if (!key) {
-    const answer = await localAnswer(messages[messages.length - 1].content).catch(() => FALLBACK);
+    const answer = await localAnswer(messages[messages.length - 1].content, page).catch(() => FALLBACK);
     return textStream(async (push) => {
       for (const part of answer.match(/\S+\s*/g) ?? []) {
         push(part);
@@ -69,12 +71,12 @@ export async function POST(req: Request) {
       model: process.env.RANGAA_MODEL ?? "claude-haiku-4-5-20251001",
       max_tokens: 500,
       stream: true,
-      system: systemPrompt(await knowledge().catch(() => "")),
+      system: systemPrompt(await knowledge().catch(() => ""), page),
       messages,
     }),
   });
   if (!upstream.ok || !upstream.body) {
-    const answer = await localAnswer(messages[messages.length - 1].content).catch(() => FALLBACK);
+    const answer = await localAnswer(messages[messages.length - 1].content, page).catch(() => FALLBACK);
     return textStream(async (push) => push(answer));
   }
 
