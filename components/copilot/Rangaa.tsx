@@ -39,10 +39,10 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
   // On phones the panel is full screen: the page is hidden behind it, and the panel is sized to the part of
   // the screen the keyboard leaves free.
   //
-  // Deliberately NOT done: pinning the body (position: fixed) or moving the panel to follow the keyboard.
-  // Both push iOS into panning the visual viewport instead of scrolling the page, which is what made the panel
-  // jump. We leave the document scrollable (iOS then scrolls the hidden page to reveal the input and the
-  // fixed panel stays put) and only ever change the panel's height.
+  // Once the panel is in, the page is removed from layout (display: none, see globals.css) so the document is
+  // no taller than the screen and iOS has nothing to scroll when the keyboard opens. Any remaining pan of the
+  // visual viewport is followed through visualViewport.offsetTop, so the panel always covers exactly the
+  // visible area above the keyboard.
   useLayoutEffect(() => {
     let hideTimer = 0;
     let savedY = 0;
@@ -59,7 +59,7 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
       const phone = open && !window.matchMedia("(min-width: 768px)").matches && !!vv;
       if (!el) return;
       if (phone && vv) {
-        el.style.top = "0px";
+        el.style.top = `${Math.max(0, Math.round(vv.offsetTop))}px`;
         el.style.bottom = "auto";
         el.style.minHeight = "0";
         el.style.height = `${vv.height}px`;
