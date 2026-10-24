@@ -124,3 +124,8 @@
 
 /* Full-screen Rangaa on phones: nothing from the page may show around or under it, only the paper. */
 .rangaa-full body > :not(aside):not(.paper-bg):not(script):not(style) { visibility: hidden; }
+
+/* Phones: the panel is exactly the visible area above the on-screen keyboard (set from visualViewport in JS). */
+@media (max-width: 767.98px) {
+  .rangaa-panel { top: var(--vv-top, 0px); bottom: auto; height: var(--vv-h, 100dvh); min-height: 0; }
+}

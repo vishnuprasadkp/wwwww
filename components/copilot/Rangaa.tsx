@@ -37,6 +37,19 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
   // Docked panel pushes the page over on wide screens (--rangaa is read by body padding in globals.css).
   useLayoutEffect(() => {
     let hideTimer = 0;
+    const vv = window.visualViewport;
+    // Size the phone panel to the part of the screen not covered by the keyboard.
+    const syncViewport = () => {
+      const phone = open && !window.matchMedia("(min-width: 768px)").matches && vv;
+      const root = document.documentElement.style;
+      if (phone && vv) {
+        root.setProperty("--vv-h", `${vv.height}px`);
+        root.setProperty("--vv-top", `${vv.offsetTop}px`);
+      } else {
+        root.removeProperty("--vv-h");
+        root.removeProperty("--vv-top");
+      }
+    };
     const apply = () => {
       window.clearTimeout(hideTimer);
       const wide = window.matchMedia("(min-width: 768px)").matches;
@@ -45,14 +58,21 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
       const lock = open && !wide ? "hidden" : "";
       document.documentElement.style.overflow = lock;
       document.body.style.overflow = lock;
+      syncViewport();
       // hide the page only once the panel has finished sliding in (and show it again as soon as it starts to leave)
       document.documentElement.classList.remove("rangaa-full");
       if (lock) hideTimer = window.setTimeout(() => document.documentElement.classList.add("rangaa-full"), 420);
     };
     apply();
     window.addEventListener("resize", apply);
+    vv?.addEventListener("resize", syncViewport);
+    vv?.addEventListener("scroll", syncViewport);
     return () => {
       window.removeEventListener("resize", apply);
+      vv?.removeEventListener("resize", syncViewport);
+      vv?.removeEventListener("scroll", syncViewport);
+      document.documentElement.style.removeProperty("--vv-h");
+      document.documentElement.style.removeProperty("--vv-top");
       window.clearTimeout(hideTimer);
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
@@ -319,6 +339,14 @@ function RangaaPanel() {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const onResize = () => scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
+    vv.addEventListener("resize", onResize);
+    return () => vv.removeEventListener("resize", onResize);
+  }, []);
+
   const ask = useCallback(async (history: Msg[]) => {
     stopSpeaking();
     setSpeaking(null);
@@ -464,7 +492,7 @@ function RangaaPanel() {
     <aside
       aria-label="Rangaa, Vishnu's AI assistant"
       aria-hidden={!open}
-      className={`fixed inset-y-0 right-0 z-50 flex min-h-dvh w-full flex-col overflow-hidden overscroll-contain border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
+      className={`rangaa-panel fixed inset-y-0 right-0 z-50 flex min-h-dvh w-full flex-col overflow-hidden overscroll-contain border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
     >
       <div aria-hidden className="rangaa-paper pointer-events-none md:hidden" />
 
@@ -618,7 +646,7 @@ function RangaaPanel() {
             placeholder="Ask about Vishnu…"
             aria-label="Ask Rangaa"
             maxLength={600}
-            className="mr-2 block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-[15px] leading-[24px] outline-none placeholder:text-pigment-soft/80"
+            className="mr-2 block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-base leading-[24px] outline-none md:text-[15px] placeholder:text-pigment-soft/80"
           />
           {canSpeak && (
             <button
