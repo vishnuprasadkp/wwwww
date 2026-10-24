@@ -13,7 +13,7 @@ export function Gallery({ rows }: { rows: string[][] }) {
             {rows.map((ids, r) => (
               <ul key={r} className="flex gap-[9.33px]">
                 {ids.map((id) => (
-                  <li key={id} className="h-[260px] shrink-0 md:h-[375px]">
+                  <li key={id} className="h-[260px] shrink-0 [backface-visibility:hidden] [transform:translateZ(0)] md:h-[375px]">
                     <Img id={id} eager sync sizes="(min-width: 768px) 400px, 260px" className="!h-full !w-auto" />
                   </li>
                 ))}
