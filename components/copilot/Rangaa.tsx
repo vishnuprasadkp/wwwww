@@ -39,10 +39,18 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
     const apply = () => {
       const wide = window.matchMedia("(min-width: 768px)").matches;
       document.documentElement.style.setProperty("--rangaa", open && wide ? "min(29vw, 440px)" : "0px");
+      // full-screen panel on phones: freeze the page underneath so it can't show through or scroll
+      const lock = open && !wide ? "hidden" : "";
+      document.documentElement.style.overflow = lock;
+      document.body.style.overflow = lock;
     };
     apply();
     window.addEventListener("resize", apply);
-    return () => window.removeEventListener("resize", apply);
+    return () => {
+      window.removeEventListener("resize", apply);
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   useEffect(() => {
@@ -449,7 +457,7 @@ function RangaaPanel() {
     <aside
       aria-label="Rangaa, Vishnu's AI assistant"
       aria-hidden={!open}
-      className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-hidden border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
+      className={`fixed right-0 top-0 z-50 flex h-dvh w-full flex-col overflow-hidden overscroll-contain border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
     >
       <div aria-hidden className="rangaa-paper pointer-events-none md:hidden" />
 

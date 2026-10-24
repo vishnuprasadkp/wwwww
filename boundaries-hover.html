@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boundaries – hover state</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand-50:#f7f3ed; --sand-500:#e5dbc7; --sand-700:#c3b9a8;
+  --green-900:#0f2805; --green-950:#081403; --ink:#2e2814;
+  --gold-300:#b3a378; --gold-600:#6a5a32; --gold-500:#938256;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:Spectral,Georgia,serif;background:var(--sand-50);color:var(--ink);padding:48px 24px 80px}
+.wrap{max-width:1180px;margin:0 auto}
+.head{text-align:center;max-width:830px;margin:0 auto}
+.eyebrow{display:block;font-size:16px;font-weight:500;line-height:24px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-600);margin-bottom:12px}
+h2{font-size:40px;font-weight:300;line-height:52px;letter-spacing:-.8px;color:var(--green-900);margin-bottom:16px}
+h2 em{color:#847347}
+.head p{font-size:18px;line-height:28px;letter-spacing:-.5px}
+
+.switch{display:flex;gap:8px;justify-content:center;margin:32px 0 0}
+.switch button{font:500 13px/1 Spectral,serif;letter-spacing:1.2px;text-transform:uppercase;padding:10px 14px;border:1px solid var(--sand-700);background:transparent;color:var(--ink);cursor:pointer}
+.switch button[aria-pressed=true]{background:var(--green-900);color:var(--sand-50);border-color:var(--green-900)}
+.note{text-align:center;font-size:14px;color:var(--gold-600);margin-top:12px;min-height:20px}
+
+.row{display:flex;gap:16px;margin-top:40px}
+.item{position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;gap:12px;
+  padding:32px;flex:1 1 0;min-width:0;min-height:400px;border:1px solid var(--sand-700);
+  background:linear-gradient(177deg,var(--sand-500) -59.93%,var(--sand-50) 97.14%)}
+.item img{width:28px;height:28px;position:relative;z-index:1}
+.bg{position:absolute;inset:0 0 auto 0;height:60%;z-index:0;pointer-events:none;transform:translateY(-100%);
+  background:
+   radial-gradient(175% 147% at 116% -39%,rgba(220,255,76,.4) 8%,rgba(116,145,40,.2) 51%,rgba(15,40,5,0) 100%),
+   radial-gradient(96% 118% at 77% -79%,rgba(220,232,171,.5) 0%,rgba(132,149,99,.5) 43%,rgba(15,40,5,0) 100%),
+   radial-gradient(105% 118% at 42% -44%,rgba(171,182,125,.75) 0%,rgba(171,182,125,.52) 27%,rgba(147,160,94,.16) 57%,rgba(147,160,94,0) 100%)}
+.content{position:relative;z-index:1;margin-top:auto}
+.num{font-size:14px;font-weight:600;line-height:18px;letter-spacing:.84px;text-transform:uppercase;color:var(--gold-600);margin-bottom:12px}
+.title{font-size:20px;font-weight:500;line-height:26px;color:var(--green-900)}
+.excerpt p{font-size:16px;line-height:24px;color:var(--ink)}
+
+/* ───────── BEFORE (what the site does today) ───────── */
+.old .item{transition:flex-grow .5s,border-color .5s}
+.old .bg{transition:transform .5s}
+.old .excerpt{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .5s,opacity .4s,margin-top .5s}
+.old .excerpt .inner{overflow:hidden;min-height:0}
+.old .item.is-active{flex-grow:2.2;background:var(--green-900)}   /* background can't transition → snaps */
+.old .item.is-active .bg{transform:none}
+.old .item.is-active .title,.old .item.is-active .excerpt p{color:var(--sand-50)}
+.old .item.is-active .num{color:var(--gold-300)}
+.old .item.is-active .excerpt{grid-template-rows:1fr;opacity:1;margin-top:12px}
+.old .item.is-active img{filter:brightness(0) saturate(100%) invert(99%) sepia(93%) saturate(406%) hue-rotate(314deg) brightness(95%) contrast(82%)}
+
+/* ───────── AFTER (smooth) ─────────
+   Root cause of the bounce: text that hugs the card must re-wrap every frame while the card
+   is changing width, and the heading moves each time the line count changes.
+   Fix: never let text reflow mid-animation.
+   1. The card width animates (cheap, only the box changes).
+   2. The text is laid out ONCE at the width it will have when the animation ends (fixed px,
+      set by JS) – the instant the state flips – while it is invisible.
+   3. It then fades in over the last part of the width animation, so the card edge "reveals" it.
+   4. Dark fill, bg glow and colours are opacity/transform/colour transitions on one easing. */
+.new .item{height:420px;min-height:0;transition:flex-grow .55s var(--ease),border-color .45s var(--ease)}
+.new .item.is-active{flex-grow:2.2}
+.new .item::before{content:"";position:absolute;inset:0;background:linear-gradient(var(--green-900) 0%,var(--green-950) 70%,#061002 100%);opacity:0;transition:opacity .45s var(--ease);pointer-events:none}
+.new .bg{transition:transform .6s var(--ease);will-change:transform}
+.new .item img{transition:filter .45s var(--ease)}
+.new .content{position:absolute;left:32px;bottom:32px;margin:0;width:var(--w-in,160px)}
+.new .item.is-active .content{width:var(--w-ex,360px)}
+.new .excerpt{display:none;padding-top:12px}
+.new .item.is-active .excerpt{display:block}
+.new .num,.new .title,.new .excerpt p{transition:color .45s var(--ease)}
+.new .item.is-active::before{opacity:1}
+.new .item.is-active .bg{transform:none}
+.new .item.is-active .title,.new .item.is-active .excerpt p{color:var(--sand-50)}
+.new .item.is-active .num{color:var(--gold-300)}
+.new .item.is-active img{filter:brightness(0) saturate(100%) invert(99%) sepia(93%) saturate(406%) hue-rotate(314deg) brightness(95%) contrast(82%)}
+/* Switching animation-name restarts it, so both the card that opens and the one that closes fade their text. */
+.new .item.is-active .content{animation:textIn .55s var(--ease) both}
+.new .item:not(.is-active) .content{animation:textBack .55s var(--ease) both}
+@keyframes textIn  {0%,30%{opacity:0}100%{opacity:1}}
+@keyframes textBack{0%,30%{opacity:0}100%{opacity:1}}
+
+@media (max-width:991px){
+  .row{flex-direction:column}
+  .new .item{height:auto;min-height:0}
+  .new .item::before{opacity:1}
+  .new .content{position:relative;left:auto;bottom:auto;width:auto!important;animation:none!important;margin-top:24px}
+  .new .excerpt{display:block}
+  .new .bg{transform:none}
+  .new .title,.new .excerpt p{color:var(--sand-50)} .new .num{color:var(--gold-300)}
+  .new .item img{filter:brightness(0) saturate(100%) invert(99%) sepia(93%) saturate(406%) hue-rotate(314deg) brightness(95%) contrast(82%)}
+  .item{padding:24px}
+}
+@media (prefers-reduced-motion:reduce){.new *,.new *::before{transition-duration:.01ms!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <span class="eyebrow">Boundaries</span>
+    <h2>Grant your agents autonomy <em>within the limits</em> you set.</h2>
+    <p>Define what an agent may touch, spend and decide before it runs once. Everything outside those bounds routes to a person instead of guessing.</p>
+  </div>
+
+  <div class="switch" role="group" aria-label="Version">
+    <button data-v="old" aria-pressed="false">Before</button>
+    <button data-v="new" aria-pressed="true">After</button>
+  </div>
+  <p class="note" id="note"></p>
+
+  <div class="row new" id="row">
+    <div class="item is-active">
+      <div class="bg"></div>
+      <img alt="" src="https://images.contentstack.io/v3/assets/blt55a41789e979ba65/blt76a65476da9ecb8a/6ad8604a0179ea3dca2e6a2f/puzzle-piece-02-solid.svg">
+      <div class="content"><div class="num">Reasoning</div><div class="title">Put unstructured work in scope</div>
+        <div class="excerpt"><div class="inner"><p>Point agents at documents, tickets and email threads — the material rules-based automation could never read — and get structured decisions back.</p></div></div></div>
+    </div>
+    <div class="item">
+      <div class="bg"></div>
+      <img alt="" src="https://images.contentstack.io/v3/assets/blt55a41789e979ba65/blt7d75b2c6e70400e1/6ad5ab8d7d4a28eeec9030ec/lock-01-solid.svg">
+      <div class="content"><div class="num">Access</div><div class="title">Act on systems without holding keys</div>
+        <div class="excerpt"><div class="inner"><p>Every read and write routes through the governed API gateway. Agents request the action; the platform decides whether it is allowed and logs the result.</p></div></div></div>
+    </div>
+    <div class="item">
+      <div class="bg"></div>
+      <img alt="" src="https://images.contentstack.io/v3/assets/blt55a41789e979ba65/blt4e10e2984cb5c8fb/6ad5aba798f3c839a1b7ba4b/shield-03-solid.svg">
+      <div class="content"><div class="num">Guardrails</div><div class="title">Cap scope, spend and certainty</div>
+        <div class="excerpt"><div class="inner"><p>Set the systems in reach, the budget per run and the confidence an agent must clear before it commits anything.</p></div></div></div>
+    </div>
+    <div class="item">
+      <div class="bg"></div>
+      <img alt="" src="https://images.contentstack.io/v3/assets/blt55a41789e979ba65/blt97acd393142b5354/6ad5abb89355c0e61f7b1b7f/loop_soild.svg">
+      <div class="content"><div class="num">Models</div><div class="title">Swap models as economics change</div>
+        <div class="excerpt"><div class="inner"><p>Choose from 50+ models per step — a cheap one for bulk parsing, a strong one for judgment — and change your mind later without editing the workflow.</p></div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const row = document.getElementById('row');
+const items = [...row.querySelectorAll('.item')];
+const note = document.getElementById('note');
+const notes = {
+  old: 'Before: card widths and excerpt height animate, so text re-wraps and the title jumps every frame.',
+  new: 'After: cards grow; text is laid out once at its final width while hidden, then fades in, so nothing re-wraps mid-animation.'
+};
+
+// Text widths for the two resting states (collapsed / expanded), derived from the row width.
+const GROW = 2.2, GAP = 16, PAD = 32, BORDER = 1;
+function measure(){
+  const chrome = (PAD + BORDER) * 2;
+  const free = (row.clientWidth - GAP * (items.length - 1) - chrome * items.length) / (items.length - 1 + GROW);
+  row.style.setProperty('--w-in', Math.max(free, 120) + 'px');
+  row.style.setProperty('--w-ex', Math.max(free * GROW, 200) + 'px');
+}
+
+// Active card = hovered/focused card; falls back to the first card when the pointer leaves the row.
+let current = items[0];
+function activate(el){
+  if (el === current) return;
+  current.classList.remove('is-active');
+  el.classList.add('is-active');
+  current = el;
+}
+items.forEach(el => {
+  el.tabIndex = 0;
+  el.addEventListener('mouseenter', () => activate(el));
+  el.addEventListener('focus', () => activate(el));
+});
+row.addEventListener('mouseleave', () => activate(items[0]));
+
+document.querySelectorAll('.switch button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.switch button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  row.className = 'row ' + b.dataset.v;
+  note.textContent = notes[b.dataset.v];
+  measure();
+}));
+
+note.textContent = notes.new;
+measure();
+addEventListener('resize', measure);
+document.fonts && document.fonts.ready.then(measure);
+</script>
+</body>
+</html>

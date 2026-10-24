@@ -6,12 +6,13 @@ type Props = {
   alt?: string;
   priority?: boolean;
   eager?: boolean;
+  sync?: boolean;
   sizes?: string;
   className?: string;
 };
 
 /** Renders a self-hosted image by its id in content/assets.json. */
-export default function Img({ id, alt, priority, eager, sizes = "(min-width: 768px) calc(100vw - 64px), 100vw", className = "" }: Props) {
+export default function Img({ id, alt, priority, eager, sync, sizes = "(min-width: 768px) calc(100vw - 64px), 100vw", className = "" }: Props) {
   const a = getAsset(id);
-  return <Pic file={a.file} alt={alt ?? a.alt} priority={priority} eager={eager} sizes={sizes} className={`h-auto w-full ${className}`} />;
+  return <Pic file={a.file} alt={alt ?? a.alt} priority={priority} eager={eager} sync={sync} sizes={sizes} className={`h-auto w-full ${className}`} />;
 }
