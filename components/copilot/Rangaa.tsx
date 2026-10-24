@@ -38,18 +38,40 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
   // Docked panel pushes the page over on wide screens (--rangaa is read by body padding in globals.css).
   useLayoutEffect(() => {
     let hideTimer = 0;
+    let lockedY = 0;
     const vv = window.visualViewport;
-    // Size the phone panel to the part of the screen not covered by the keyboard.
+    // Phones: make the panel exactly the part of the screen that is visible (above the keyboard).
+    // We measure instead of assuming how this browser positions fixed elements: after sizing it to the
+    // visual viewport, we read where it actually landed and nudge it onto the visual viewport's top edge.
+    const panelEl = () => document.querySelector<HTMLElement>(".rangaa-panel");
     const syncViewport = () => {
-      const phone = open && !window.matchMedia("(min-width: 768px)").matches && vv;
-      const root = document.documentElement.style;
+      const el = panelEl();
+      if (!el) return;
+      const phone = open && !window.matchMedia("(min-width: 768px)").matches && !!vv;
       if (phone && vv) {
-        root.setProperty("--vv-h", `${vv.height}px`);
-        root.setProperty("--vv-top", `${vv.offsetTop}px`);
+        el.style.bottom = "auto";
+        el.style.minHeight = "0";
+        el.style.height = `${vv.height}px`;
+        el.style.transform = "none";
+        el.style.transform = `translateY(${vv.offsetTop - el.getBoundingClientRect().top}px)`;
       } else {
-        root.removeProperty("--vv-h");
-        root.removeProperty("--vv-top");
+        el.style.removeProperty("bottom");
+        el.style.removeProperty("min-height");
+        el.style.removeProperty("height");
+        el.style.removeProperty("transform");
       }
+    };
+    // The keyboard animates for ~0.5s; follow it frame by frame instead of trusting a single event.
+    let trackUntil = 0;
+    let raf = 0;
+    const track = () => {
+      trackUntil = performance.now() + 900;
+      if (raf) return;
+      const tick = () => {
+        syncViewport();
+        raf = performance.now() < trackUntil ? requestAnimationFrame(tick) : 0;
+      };
+      raf = requestAnimationFrame(tick);
     };
     const apply = () => {
       window.clearTimeout(hideTimer);
@@ -59,6 +81,19 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
       const lock = open && !wide ? "hidden" : "";
       document.documentElement.style.overflow = lock;
       document.body.style.overflow = lock;
+      // iOS ignores overflow:hidden for scrolling, so pin the page in place and restore its position afterwards
+      const b = document.body.style;
+      if (lock && b.position !== "fixed") {
+        lockedY = window.scrollY;
+        b.position = "fixed";
+        b.top = `-${lockedY}px`;
+        b.width = "100%";
+      } else if (!lock && b.position === "fixed") {
+        b.position = "";
+        b.top = "";
+        b.width = "";
+        window.scrollTo({ top: lockedY, behavior: "instant" as ScrollBehavior });
+      }
       syncViewport();
       // hide the page only once the panel has finished sliding in (and show it again as soon as it starts to leave)
       document.documentElement.classList.remove("rangaa-full");
@@ -66,17 +101,34 @@ export function RangaaProvider({ children }: { children: React.ReactNode }) {
     };
     apply();
     window.addEventListener("resize", apply);
-    vv?.addEventListener("resize", syncViewport);
-    vv?.addEventListener("scroll", syncViewport);
+    vv?.addEventListener("resize", track);
+    vv?.addEventListener("scroll", track);
+    window.addEventListener("focusin", track);
+    window.addEventListener("focusout", track);
     return () => {
       window.removeEventListener("resize", apply);
-      vv?.removeEventListener("resize", syncViewport);
-      vv?.removeEventListener("scroll", syncViewport);
-      document.documentElement.style.removeProperty("--vv-h");
-      document.documentElement.style.removeProperty("--vv-top");
+      vv?.removeEventListener("resize", track);
+      vv?.removeEventListener("scroll", track);
+      window.removeEventListener("focusin", track);
+      window.removeEventListener("focusout", track);
+      cancelAnimationFrame(raf);
+      trackUntil = 0;
+      const el = panelEl();
+      if (el) {
+        el.style.removeProperty("bottom");
+        el.style.removeProperty("min-height");
+        el.style.removeProperty("height");
+        el.style.removeProperty("transform");
+      }
       window.clearTimeout(hideTimer);
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
+      if (document.body.style.position === "fixed") {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        window.scrollTo({ top: lockedY, behavior: "instant" as ScrollBehavior });
+      }
       document.documentElement.classList.remove("rangaa-full");
     };
   }, [open]);
@@ -291,6 +343,8 @@ function RangaaPanel() {
   const page = pageInfo(pathname);
   const pageRef = useRef(pathname);
   pageRef.current = pathname;
+  // The page the chat started on. Replies stay on this topic even if the visitor moves to another page.
+  const topicRef = useRef<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
@@ -353,6 +407,7 @@ function RangaaPanel() {
   }, []);
 
   const ask = useCallback(async (history: Msg[]) => {
+    if (topicRef.current === null) topicRef.current = pageRef.current; // first question fixes the topic
     stopSpeaking();
     setSpeaking(null);
     setMessages([...history, { role: "assistant", content: "" }]);
@@ -363,7 +418,7 @@ function RangaaPanel() {
       const res = await fetch("/api/rangaa", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ page: pageRef.current, messages: history.map(({ role, content }) => ({ role, content })) }),
+        body: JSON.stringify({ page: topicRef.current ?? pageRef.current, messages: history.map(({ role, content }) => ({ role, content })) }),
         signal: abort.current.signal,
       });
       if (!res.ok || !res.body) throw new Error(await res.text());
@@ -431,6 +486,7 @@ function RangaaPanel() {
   };
 
   const reset = () => {
+    topicRef.current = null;
     abort.current?.abort();
     cancelled.current = true;
     rec.current?.abort();
@@ -584,9 +640,13 @@ function RangaaPanel() {
                   {i === messages.length - 1 && !busy && m.next && m.next.length > 0 && (
                     <div className="mt-5">
                       <ul className="space-y-3">
-                        {m.next.map((n) => (
+                        {[...m.next.slice(0, 2), ...(page.key !== pageInfo(topicRef.current ?? pathname).key && page.key !== "home" ? [page.prompts[0]] : m.next.slice(2, 3))].filter(Boolean).map((n) => (
                           <li key={n}>
-                            <button type="button" onClick={() => send(n)} className="flex items-start gap-2 text-left text-[14px] leading-[20px] text-pigment-soft transition-colors hover:text-[#C44419]">
+                            <button type="button" onClick={() => {
+                                // choosing the suggestion about the page you are looking at moves the conversation there
+                                if (page.key !== "home" && n === page.prompts[0]) topicRef.current = pageRef.current;
+                                send(n);
+                              }} className="flex items-start gap-2 text-left text-[14px] leading-[20px] text-pigment-soft transition-colors hover:text-[#C44419]">
                               <span aria-hidden>↳</span>
                               {n}
                             </button>
