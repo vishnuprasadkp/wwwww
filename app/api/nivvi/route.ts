@@ -1,4 +1,4 @@
-import { knowledge, localAnswer, systemPrompt } from "@/lib/rangaa";
+import { knowledge, localAnswer, systemPrompt } from "@/lib/nivvi";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,7 +15,7 @@ const limited = (ip: string) => {
   return recent.length > 20;
 };
 
-const FALLBACK = "I'm Rangaa, Vishnu's AI assistant. Ask me about his projects, process or background.\nNEXT: What makes your design approach unique? | What projects have you worked on? | Tell me about your design process";
+const FALLBACK = "I'm Nivvi, Vishnu's AI assistant. Ask me about his projects, process or background.\nNEXT: What makes your design approach unique? | What projects have you worked on? | Tell me about your design process";
 
 const enc = new TextEncoder();
 const textStream = (run: (push: (s: string) => void) => Promise<void>) =>
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
   const key = process.env.ANTHROPIC_API_KEY;
 
-  // No key configured: answer from the site's own content so Rangaa still works.
+  // No key configured: answer from the site's own content so Nivvi still works.
   if (!key) {
     const answer = await localAnswer(messages[messages.length - 1].content, page).catch(() => FALLBACK);
     return textStream(async (push) => {
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
     body: JSON.stringify({
-      model: process.env.RANGAA_MODEL ?? "claude-haiku-4-5-20251001",
+      model: process.env.NIVVI_MODEL ?? "claude-haiku-4-5-20251001",
       max_tokens: 500,
       stream: true,
       system: systemPrompt(await knowledge().catch(() => ""), page),

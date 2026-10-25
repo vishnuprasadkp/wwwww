@@ -7,7 +7,7 @@ import Footer from "@/components/layout/Footer";
 import Cursor from "@/components/layout/Cursor";
 import ScrollUp from "@/components/layout/ScrollUp";
 import TocRail from "@/components/layout/TocRail";
-import { RangaaProvider } from "@/components/copilot/Rangaa";
+import { NivviProvider } from "@/components/copilot/Nivvi";
 import { preload } from "react-dom";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${serif.variable} ${geist.variable} ${mono.variable}`}>
       <body className="min-h-dvh flex flex-col">
-        <RangaaProvider>
+        <NivviProvider>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 bg-pigment text-sand px-3 py-2 text-sm">
           Skip to content
         </a>
@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Cursor />
         <ScrollUp />
         <TocRail />
-        </RangaaProvider>
+        </NivviProvider>
         <Analytics />
       </body>
     </html>
