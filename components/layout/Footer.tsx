@@ -1,8 +1,6 @@
 "use client";
 
 import Pic from "@/components/ui/Pic";
-import PaintingMoth from "@/components/layout/PaintingMoth";
-import { SCHEMES } from "@/lib/painting";
 import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 
@@ -17,7 +15,6 @@ export default function Footer() {
       {art && (
         <div className="relative h-[420px] w-full md:h-[900px]">
           <Pic file="/images/site/footer-bg.png" sizes="100vw" fill />
-          <PaintingMoth scheme={SCHEMES.charcoal} />
         </div>
       )}
       <div className={`flex flex-col justify-between gap-1 md:flex-row ${pathname === "/" ? "" : "border-t border-rule"} px-5 pb-[27px] pt-[26px] font-mono text-base leading-[26px] text-pigment-soft sm:flex-row md:px-8`}>

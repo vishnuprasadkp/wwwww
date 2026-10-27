@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { pageInfo } from "@/lib/nivvi-pages";
-import MothTrail, { MothIcon } from "@/components/copilot/Moth";
+import { pageInfo } from "@/lib/rangaa-pages";
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /* ------------------------------------------------------------------ state */
 
 type Msg = { role: "user" | "assistant"; content: string; next?: string[] };
 type Ctx = { open: boolean; toggle: () => void; close: () => void; show: () => void };
-const NivviCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () => {}, show: () => {} });
-export const useNivvi = () => useContext(NivviCtx);
+const RangaaCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () => {}, show: () => {} });
+export const useRangaa = () => useContext(RangaaCtx);
 
 const ACCENT = "#e4572e";
 
@@ -30,13 +29,13 @@ function parseReply(raw: string) {
   };
 }
 
-export function NivviProvider({ children }: { children: React.ReactNode }) {
+export function RangaaProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const toggle = useCallback(() => setOpen((o) => !o), []);
   const close = useCallback(() => setOpen(false), []);
   const show = useCallback(() => setOpen(true), []);
 
-  // Docked panel pushes the page over on wide screens (--nivvi is read by body padding in globals.css).
+  // Docked panel pushes the page over on wide screens (--rangaa is read by body padding in globals.css).
   // On phones the panel is full screen: the page is hidden behind it, and the panel is sized to the part of
   // the screen the keyboard leaves free.
   //
@@ -49,7 +48,7 @@ export function NivviProvider({ children }: { children: React.ReactNode }) {
     let savedY = 0;
     let locked = false;
     const vv = window.visualViewport;
-    const panelEl = () => document.querySelector<HTMLElement>(".nivvi-panel");
+    const panelEl = () => document.querySelector<HTMLElement>(".rangaa-panel");
     const resetPanel = () => {
       const el = panelEl();
       if (!el) return;
@@ -81,7 +80,7 @@ export function NivviProvider({ children }: { children: React.ReactNode }) {
     const apply = () => {
       const wide = window.matchMedia("(min-width: 768px)").matches;
       const root = document.documentElement;
-      root.style.setProperty("--nivvi", open && wide ? "min(29vw, 440px)" : "0px");
+      root.style.setProperty("--rangaa", open && wide ? "min(29vw, 440px)" : "0px");
       const phone = open && !wide;
       if (phone && !locked) {
         locked = true;
@@ -90,16 +89,16 @@ export function NivviProvider({ children }: { children: React.ReactNode }) {
       sizePanel();
       // Hide the page once the panel has finished sliding in; keep it hidden through every keyboard resize.
       if (phone) {
-        if (!root.classList.contains("nivvi-full") && !hideTimer) {
+        if (!root.classList.contains("rangaa-full") && !hideTimer) {
           hideTimer = window.setTimeout(() => {
-            root.classList.add("nivvi-full");
+            root.classList.add("rangaa-full");
             hideTimer = 0;
           }, 420);
         }
       } else {
         window.clearTimeout(hideTimer);
         hideTimer = 0;
-        root.classList.remove("nivvi-full");
+        root.classList.remove("rangaa-full");
         if (locked) {
           locked = false;
           window.scrollTo({ top: savedY, behavior: "instant" as ScrollBehavior });
@@ -121,7 +120,7 @@ export function NivviProvider({ children }: { children: React.ReactNode }) {
       cancelAnimationFrame(raf);
       window.clearTimeout(hideTimer);
       resetPanel();
-      document.documentElement.classList.remove("nivvi-full");
+      document.documentElement.classList.remove("rangaa-full");
       if (locked) window.scrollTo({ top: savedY, behavior: "instant" as ScrollBehavior });
     };
   }, [open]);
@@ -133,38 +132,37 @@ export function NivviProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <NivviCtx.Provider value={{ open, toggle, close, show }}>
+    <RangaaCtx.Provider value={{ open, toggle, close, show }}>
       {children}
-      <NivviIntro />
-      <NivviPanel />
-    </NivviCtx.Provider>
+      <RangaaIntro />
+      <RangaaPanel />
+    </RangaaCtx.Provider>
   );
 }
 
 /* ------------------------------------------------------------------ bits */
 
-/** The orange AI sparkle. It takes the moth's place in the panel header once the moth has flown off. */
-function Star({ size = 17 }: { size?: number }) {
+export function Sparkle({ size = 18, className = "" }: { size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="#e4572e" aria-hidden="true" className="nivvi-mark-star">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={ACCENT} aria-hidden="true" className={className}>
       <path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" />
     </svg>
   );
 }
 
-/** Header trigger: the moth + "Nivvi" in the nav's mono style. */
-export function NivviButton({ className = "" }: { className?: string }) {
-  const { open, toggle } = useNivvi();
+/** Header trigger: orange sparkle + "Rangaa" in the nav's mono style. */
+export function RangaaButton({ className = "" }: { className?: string }) {
+  const { open, toggle } = useRangaa();
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={open ? "Close Nivvi" : "Ask Nivvi"}
+      aria-label={open ? "Close Rangaa" : "Ask Rangaa"}
       aria-expanded={open}
       className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
-      <MothIcon size={24} />
-      <span className="nivvi-label">Nivvi</span>
+      <Sparkle size={17} />
+      <span>Rangaa</span>
     </button>
   );
 }
@@ -173,7 +171,7 @@ export function NivviButton({ className = "" }: { className?: string }) {
 function MicIcon({ listening }: { listening: boolean }) {
   return (
     <span className="relative grid place-items-center">
-      {listening && <span className="absolute h-8 w-8 rounded-full" style={{ background: "rgba(228,87,46,0.18)", animation: "nivvi-pulse 1.2s ease-out infinite" }} />}
+      {listening && <span className="absolute h-8 w-8 rounded-full" style={{ background: "rgba(228,87,46,0.18)", animation: "rangaa-pulse 1.2s ease-out infinite" }} />}
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={listening ? ACCENT : "currentColor"} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="relative">
         <rect x="9" y="3" width="6" height="11" rx="3" />
         <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" />
@@ -212,8 +210,8 @@ function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
 /* ------------------------------------------------------------------ intro */
 
 /** Hello that appears under the header trigger on every fresh load, until it is closed or used. */
-function NivviIntro() {
-  const { open } = useNivvi();
+function RangaaIntro() {
+  const { open } = useRangaa();
   const [gone, setGone] = useState(true);
   const [ready, setReady] = useState(false);
 
@@ -235,7 +233,7 @@ function NivviIntro() {
   return (
     <div
       role="dialog"
-      aria-label="Nivvi says hello"
+      aria-label="Rangaa says hello"
       className={`absolute right-5 top-[68px] z-[45] w-[calc(100vw-40px)] max-w-[320px] border border-rule bg-[#efedeb] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:right-8 ${ready ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
     >
       <span aria-hidden className="absolute -top-[7px] right-[106px] h-3 w-3 rotate-45 border-l border-t border-rule bg-[#efedeb] md:right-[42px]" />
@@ -243,8 +241,11 @@ function NivviIntro() {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
       </button>
       <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
-        I’m Nivvi, Vishnu’s assistant and unofficial tour guide. Ask me anything. Click{" "}
-        <span className="whitespace-nowrap font-mono text-[#C44419]">Nivvi</span>{" "}
+        I’m Rangaa, Vishnu’s assistant and unofficial tour guide. Ask me anything. Click{" "}
+        <span className="whitespace-nowrap font-mono text-pigment-soft">
+          <Sparkle size={13} className="mr-1 inline-block align-[-1px]" />
+          Rangaa
+        </span>{" "}
         above.
       </p>
     </div>
@@ -328,8 +329,8 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
   return [...window.speechSynthesis.getVoices()].sort((a, b) => score(b) - score(a))[0];
 }
 
-function NivviPanel() {
-  const { open, close } = useNivvi();
+function RangaaPanel() {
+  const { open, close } = useRangaa();
   const pathname = usePathname();
   const page = pageInfo(pathname);
   const pageRef = useRef(pathname);
@@ -353,8 +354,6 @@ function NivviPanel() {
   const abort = useRef<AbortController | null>(null);
   const rec = useRef<SR | null>(null);
   const heard = useRef("");
-  const panelEl = useRef<HTMLElement>(null);
-  const [signal, setSignal] = useState<{ kind: "send" | "reply"; id: number }>();
 
   useEffect(() => {
     const w = window as unknown as { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown };
@@ -405,11 +404,10 @@ function NivviPanel() {
     setSpeaking(null);
     setMessages([...history, { role: "assistant", content: "" }]);
     setBusy(true);
-    setSignal({ kind: "send", id: Date.now() });
     abort.current = new AbortController();
     let raw = "";
     try {
-      const res = await fetch("/api/nivvi", {
+      const res = await fetch("/api/rangaa", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ page: topicRef.current ?? pageRef.current, messages: history.map(({ role, content }) => ({ role, content })) }),
@@ -430,7 +428,6 @@ function NivviPanel() {
     const { text: finalText, next } = parseReply(raw);
     setMessages([...history, { role: "assistant", content: finalText, next }]);
     setBusy(false);
-    setSignal({ kind: "reply", id: Date.now() });
     if (byVoice.current && finalText) {
       byVoice.current = false;
       speakRef.current?.(history.length, finalText);
@@ -546,23 +543,17 @@ function NivviPanel() {
 
   return (
     <aside
-      data-moth-host
-      ref={panelEl}
-      aria-label="Nivvi, Vishnu's AI assistant"
+      aria-label="Rangaa, Vishnu's AI assistant"
       aria-hidden={!open}
-      className={`nivvi-panel fixed inset-y-0 right-0 z-50 flex min-h-dvh w-full flex-col overflow-hidden overscroll-contain border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
+      className={`rangaa-panel fixed inset-y-0 right-0 z-50 flex min-h-dvh w-full flex-col overflow-hidden overscroll-contain border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
     >
-      <div aria-hidden className="nivvi-paper pointer-events-none md:hidden" />
-      <MothTrail active={open} busy={busy} signal={signal} />
+      <div aria-hidden className="rangaa-paper pointer-events-none md:hidden" />
 
       {/* header */}
-      <div data-ledge="ceiling" className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-base leading-[19px] text-pigment-soft">
+      <div className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-base leading-[19px] text-pigment-soft">
         <span className="flex items-center gap-2">
-          <span className="nivvi-mark relative grid">
-            <MothIcon size={24} className="nivvi-mark-moth" />
-            <Star />
-          </span>
-          Nivvi
+          <Sparkle size={17} />
+          Rangaa
         </span>
         <span className="flex items-center gap-4 text-pigment-soft">
           <button type="button" onClick={reset} aria-label="Start over" className="transition-colors hover:text-pigment">
@@ -575,12 +566,12 @@ function NivviPanel() {
       </div>
 
       {/* conversation */}
-      <div ref={scroller} className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-18px),transparent)] [scrollbar-width:thin]">
+      <div ref={scroller} className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [scrollbar-width:thin]">
         {empty ? (
           <div className="mt-auto">
-            <p data-ledge="hero" className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
+            <p className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
             <p className="mt-2 text-[15px] leading-[24px] text-pigment">{page.key === "home" ? (
-                <>I&apos;m Nivvi, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</>
+                <>I&apos;m Rangaa, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</>
               ) : (
                 <>You&apos;re on <span className="text-pigment">{page.title}</span>. Ask me about it, or tap a question.</>
               )}</p>
@@ -600,10 +591,10 @@ function NivviPanel() {
             {messages.map((m, i) =>
               m.role === "user" ? (
                 <div key={i} className="flex justify-end">
-                  <p data-ledge="msg-u" className="max-w-[85%] border border-rule bg-white/45 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
+                  <p className="max-w-[85%] border border-rule bg-white/45 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
                 </div>
               ) : (
-                <div key={i} data-ledge="msg-a" className="text-[15px] leading-[24px]">
+                <div key={i} className="text-[15px] leading-[24px]">
                   {m.content ? (
                     m.content.split(/\n{2,}/).map((para, j) => (
                       <p key={j} className={j ? "mt-3" : ""}>
@@ -611,9 +602,9 @@ function NivviPanel() {
                       </p>
                     ))
                   ) : (
-                    <span className="inline-flex items-center gap-1 py-2" aria-label="Nivvi is thinking">
+                    <span className="inline-flex items-center gap-1 py-2" aria-label="Rangaa is thinking">
                       {[0, 1, 2].map((d) => (
-                        <span key={d} className="h-1 w-1 rounded-full" style={{ background: ACCENT, animation: `nivvi-dot 1s ${d * 0.15}s ease-in-out infinite` }} />
+                        <span key={d} className="h-1 w-1 rounded-full" style={{ background: ACCENT, animation: `rangaa-dot 1s ${d * 0.15}s ease-in-out infinite` }} />
                       ))}
                     </span>
                   )}
@@ -668,7 +659,7 @@ function NivviPanel() {
         className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-8"}`}
       >
         {listening ? (
-          <div data-ledge="composer" className="border border-[#bcb6b3] bg-white/45 px-3 pb-3 pt-3">
+          <div className="border border-[#bcb6b3] bg-white/45 px-3 pb-3 pt-3">
             <p className="min-h-[24px] px-1 text-[15px] leading-[24px] text-pigment">
               {draft || <span className="text-pigment-soft/80">Listening…</span>}
             </p>
@@ -697,7 +688,7 @@ function NivviPanel() {
             </div>
           </div>
         ) : (
-        <div data-ledge="composer" className="flex items-end border border-rule bg-white/45 py-2 pl-2 pr-1 transition-colors focus-within:border-[#b8b2af]">
+        <div className="flex items-end border border-rule bg-white/45 py-2 pl-2 pr-1 transition-colors focus-within:border-[#b8b2af]">
           <textarea
             ref={input}
             value={draft}
@@ -710,7 +701,7 @@ function NivviPanel() {
               }
             }}
             placeholder="Ask about Vishnu…"
-            aria-label="Ask Nivvi"
+            aria-label="Ask Rangaa"
             maxLength={600}
             className="mr-2 block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-base leading-[24px] outline-none md:text-[15px] placeholder:text-pigment-soft/80"
           />
@@ -718,7 +709,7 @@ function NivviPanel() {
             <button
               type="button"
               onClick={() => toggleMic()}
-              aria-label="Speak to Nivvi"
+              aria-label="Speak to Rangaa"
               className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]"
             >
               <MicIcon listening={false} />

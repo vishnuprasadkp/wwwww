@@ -2,8 +2,8 @@
 const cases = ["enterprise-search", "adeo", "ai-agent", "hdfc", "sony"];
 
 export default {
-  // /api/nivvi reads content/*.mdx and resume.txt at runtime; make sure Vercel bundles them with the function.
-  outputFileTracingIncludes: { "/api/nivvi": ["./content/**/*"] },
+  // /api/rangaa reads content/*.mdx and resume.txt at runtime; make sure Vercel bundles them with the function.
+  outputFileTracingIncludes: { "/api/rangaa": ["./content/**/*"] },
   async headers() {
     return [
       { source: "/images/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=31536000" }] },

@@ -1,9 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { site } from "@/lib/site";
-import { pageInfo } from "@/lib/nivvi-pages";
+import { pageInfo } from "@/lib/rangaa-pages";
 
-/** Plain-text knowledge base built from the site's own content, so Nivvi only says what the portfolio says. */
+/** Plain-text knowledge base built from the site's own content, so Rangaa only says what the portfolio says. */
 let cache: string | null = null;
 
 const strip = (mdx: string) => {
@@ -52,13 +52,13 @@ Where the visitor is right now
 `;
 };
 
-export const systemPrompt = (kb: string, pathname = "/") => `You are Nivvi, the AI on Vishnu Prasad's portfolio (vishnuprasad.design). You answer in Vishnu's own voice, in the first person ("I"), the way he would answer a curious recruiter, founder or fellow designer. Vishnu is a product designer with 5+ years of experience designing enterprise and AI products.
+export const systemPrompt = (kb: string, pathname = "/") => `You are Rangaa, the AI on Vishnu Prasad's portfolio (vishnuprasad.design). You answer in Vishnu's own voice, in the first person ("I"), the way he would answer a curious recruiter, founder or fellow designer. Vishnu is a product designer with 5+ years of experience designing enterprise and AI products.
 
 How to answer
 - Visitors ask "you / your" questions ("What projects have you worked on?"). Answer directly as Vishnu: warm, confident, concrete, plain language.
 - One short paragraph, 2-4 sentences. No headings, no bullet lists, no emoji, no jargon for its own sake.
 - Use ONLY the facts in KNOWLEDGE below (case studies, About, resume). Never invent clients, numbers, dates, titles or opinions. If it isn't covered, say "I don't have that on hand - the best way is to email me at ${site.email}."
-- If someone asks who or what you are: "I'm Nivvi, Vishnu's AI assistant, answering in his voice from his portfolio and resume." Never claim to be a human.
+- If someone asks who or what you are: "I'm Rangaa, Vishnu's AI assistant, answering in his voice from his portfolio and resume." Never claim to be a human.
 - When a case study is relevant, name it and link it like [Agent Workforce Platform](/work/ai-agent). Pages: /work/enterprise-search, /work/adeo, /work/ai-agent, /work/hdfc, /work/sony, /about, /resume.
 - Hiring, collaboration, roles: be encouraging, share the email, don't promise availability or salary.
 - Stay on topic (my work, process, background, skills). Politely decline anything unrelated.
@@ -222,5 +222,5 @@ async function localAnswerGeneral(question: string): Promise<string> {
     return `I'm Vishnu, a product designer with five years of experience in enterprise and AI products. I studied Planning & Architecture at NIT Bhopal, which taught me to understand a system before trying to change it, and that still shapes how I design. There's more on my [about page](/about).${NEXT("What projects have you worked on?", "Tell me about your design process", "What kind of work excites you?")}`;
   if (/(project|work|case|portfolio|built|designed|start|begin|first|show me|proud)/.test(q))
     return `I've mostly designed AI-powered enterprise products. A few I'd point you to: [Enterprise Search](/work/enterprise-search), the [Committee Board Agentic Application](/work/adeo), the [Agent Workforce Platform](/work/ai-agent), [HDFC's consent management](/work/hdfc) and [Sony's enterprise platforms](/work/sony).${NEXT("Tell me about the agent platform", "What was the HDFC project like?", "Which one are you proudest of?")}`;
-  return `I'm Nivvi, Vishnu's AI assistant, answering in his voice from his portfolio and resume. Ask me about his projects, process, experience or background.${NEXT("What makes your design approach unique?", "What projects have you worked on?", "Tell me about your design process")}`;
+  return `I'm Rangaa, Vishnu's AI assistant, answering in his voice from his portfolio and resume. Ask me about his projects, process, experience or background.${NEXT("What makes your design approach unique?", "What projects have you worked on?", "Tell me about your design process")}`;
 }
