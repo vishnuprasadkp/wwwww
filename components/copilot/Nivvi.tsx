@@ -143,6 +143,15 @@ export function NivviProvider({ children }: { children: React.ReactNode }) {
 
 /* ------------------------------------------------------------------ bits */
 
+/** The orange AI sparkle. It takes the moth's place in the panel header once the moth has flown off. */
+function Star({ size = 17 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="#e4572e" aria-hidden="true" className="nivvi-mark-star">
+      <path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" />
+    </svg>
+  );
+}
+
 /** Header trigger: the moth + "Nivvi" in the nav's mono style. */
 export function NivviButton({ className = "" }: { className?: string }) {
   const { open, toggle } = useNivvi();
@@ -154,8 +163,8 @@ export function NivviButton({ className = "" }: { className?: string }) {
       aria-expanded={open}
       className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
-      <MothIcon size={28} />
-      <span>Nivvi</span>
+      <MothIcon size={24} />
+      <span className="nivvi-label">Nivvi</span>
     </button>
   );
 }
@@ -235,10 +244,7 @@ function NivviIntro() {
       </button>
       <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
         I’m Nivvi, Vishnu’s assistant and unofficial tour guide. Ask me anything. Click{" "}
-        <span className="whitespace-nowrap font-mono text-pigment-soft">
-          <MothIcon size={18} className="mr-1 inline-block align-[-5px]" />
-          Nivvi
-        </span>{" "}
+        <span className="whitespace-nowrap font-mono text-[#C44419]">Nivvi</span>{" "}
         above.
       </p>
     </div>
@@ -540,6 +546,7 @@ function NivviPanel() {
 
   return (
     <aside
+      data-moth-host
       ref={panelEl}
       aria-label="Nivvi, Vishnu's AI assistant"
       aria-hidden={!open}
@@ -549,10 +556,11 @@ function NivviPanel() {
       <MothTrail active={open} busy={busy} signal={signal} />
 
       {/* header */}
-      <div className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-base leading-[19px] text-pigment-soft">
+      <div data-ledge="ceiling" className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-base leading-[19px] text-pigment-soft">
         <span className="flex items-center gap-2">
-          <span className="nivvi-mark grid">
-            <MothIcon size={28} />
+          <span className="nivvi-mark relative grid">
+            <MothIcon size={24} className="nivvi-mark-moth" />
+            <Star />
           </span>
           Nivvi
         </span>
@@ -567,7 +575,7 @@ function NivviPanel() {
       </div>
 
       {/* conversation */}
-      <div ref={scroller} className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [scrollbar-width:thin]">
+      <div ref={scroller} className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-18px),transparent)] [scrollbar-width:thin]">
         {empty ? (
           <div className="mt-auto">
             <p data-ledge="hero" className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
