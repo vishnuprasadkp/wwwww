@@ -26,6 +26,55 @@ const WIDE = 1.4; // the moth is drawn this much wider than tall
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
+/* Legs and wing lines are drawn as slim shapes that come to a point, not as round-ended strokes. */
+type Pt = [number, number];
+const sample = (a: Pt, b: Pt, c: Pt, d: Pt, n = 14): Pt[] =>
+  Array.from({ length: n + 1 }, (_, i) => {
+    const t = i / n;
+    const u = 1 - t;
+    return [u * u * u * a[0] + 3 * u * u * t * b[0] + 3 * u * t * t * c[0] + t * t * t * d[0], u * u * u * a[1] + 3 * u * u * t * b[1] + 3 * u * t * t * c[1] + t * t * t * d[1]] as Pt;
+  });
+/** A path along `pts` whose width follows `w(t)`, t from 0 at the first point to 1 at the last: where it is 0 the end is a point. */
+const ribbon = (pts: Pt[], w: (t: number) => number): string => {
+  const n = pts.length - 1;
+  const left: Pt[] = [];
+  const right: Pt[] = [];
+  pts.forEach((p, i) => {
+    const a = pts[Math.max(0, i - 1)];
+    const b = pts[Math.min(n, i + 1)];
+    const dx = b[0] - a[0];
+    const dy = b[1] - a[1];
+    const len = Math.hypot(dx, dy) || 1;
+    const h = w(i / n) / 2;
+    left.push([p[0] - (dy / len) * h, p[1] + (dx / len) * h]);
+    right.push([p[0] + (dy / len) * h, p[1] - (dx / len) * h]);
+  });
+  return "M" + [...left, ...right.reverse()].map((q) => `${q[0].toFixed(2)} ${q[1].toFixed(2)}`).join("L") + "Z";
+};
+const mirror = (pts: Pt[]): Pt[] => pts.map(([x, y]) => [40 - x, y] as Pt);
+const taperOut = (t: number) => 1.9 * Math.pow(1 - t, 0.85); // a leg: thick where it joins the body, a point at the foot
+const lens = (t: number) => 1.15 * Math.pow(Math.sin(Math.PI * t), 0.7); // a wing line: a point at each end
+/** An antenna like the moth's: one long, thin, curved line, tapering to a sharp point. */
+const antenna = (shaft: Pt[]): string => ribbon(shaft, (t) => 1.15 * Math.pow(1 - t, 0.55));
+const TOP_ANT = sample([20.8, 6.6], [23, 3.8], [27, 1.8], [32.4, 1.2], 16);
+const TOP_ANT_D = antenna(TOP_ANT);
+const TOP_ANT_L_D = antenna(mirror(TOP_ANT));
+const SIDE_ANT_D = antenna(sample([16.6, 6.2], [18, 3.8], [21.2, 2.2], [26.2, 1.6], 16));
+const legsOf = (legs: Pt[][]) => legs.map((l) => ribbon(l, taperOut)).join("");
+const TOP_LEGS: Pt[][] = [
+  [[14.6, 13.4], [11.8, 13.6], [10.8, 10.6]],
+  [[12.6, 20.6], [10.8, 21.2], [9.2, 22.6]],
+  [[13.8, 28.8], [12, 32], [10.8, 35]],
+];
+const TOP_LEGS_D = legsOf([...TOP_LEGS, ...TOP_LEGS.map(mirror)]);
+const SIDE_LEGS_D = legsOf([
+  [[16.4, 14], [13.6, 14.4], [12.4, 11.6]],
+  [[16.8, 21.4], [15.2, 22], [13.6, 22.8]],
+  [[17.4, 29], [15.8, 32], [14.6, 34.8]],
+]);
+const TOP_LINES_D = [sample([22, 16.2], [22.6, 22], [22.4, 28.6], [21.6, 33.6]), sample([26.4, 17.4], [27, 23], [25.8, 29.4], [22.9, 34])].map((l) => ribbon(l, lens)).join("");
+const SIDE_LINES_D = [sample([20.6, 15.4], [26, 16.6], [29.2, 22], [28.4, 29.4]), sample([19.6, 19.4], [23.4, 21.2], [25.2, 25.6], [24.4, 32.6])].map((l) => ribbon(l, lens)).join("");
+
 /**
  * Poses the top-view moth. `p` 0 is at rest (wings folded into a triangle: the app icon), about 0.55 is walking
  * (wings half open, hind wings showing) and 1 is in flight (wings spread). Each wing pivots on the shoulder, so
@@ -46,10 +95,6 @@ function Sparkle() {
   return <path className="moth-spark" d="M35.4 0.6C35.8 3.4 37.2 4.8 40 5.2C37.2 5.6 35.8 7 35.4 9.8C35 7 33.6 5.6 30.8 5.2C33.6 4.8 35 3.4 35.4 0.6Z" fill={INK} />;
 }
 
-/** The antennae and legs: thin dark lines that keep their width however the moth is scaled. */
-const feelerOf = (c: MothColors) => ({ stroke: c.deep, strokeWidth: 1, strokeLinecap: "round" as const, vectorEffect: "non-scaling-stroke" as const });
-/** The wing pattern and abdomen rings: fine pale lines cut into the solid shapes. */
-const veinOf = (c: MothColors) => ({ stroke: c.vein, strokeWidth: 0.9, strokeLinecap: "round" as const, vectorEffect: "non-scaling-stroke" as const });
 
 /** The AI star, drawn square (the moth is stretched wider than tall, the star must not be), at the moth's top right. */
 function StarBadge({ size }: { size: number }) {
@@ -61,25 +106,26 @@ function StarBadge({ size }: { size: number }) {
 }
 
 export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLORS, className = "" }: { size?: number; open?: number; star?: boolean; colors?: MothColors; className?: string }) {
-  const feeler = feelerOf(colors);
-  const vein = veinOf(colors);
   const id = "mc" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const ref = useRef<SVGSVGElement>(null);
   useEffect(() => {
     if (ref.current) setMothOpen(ref.current, open);
   }, [open]);
-  // Drawn after a tiger moth and kept very simple: a broad drooping wing with one pale vein, a smaller hind wing, a plain
-  // abdomen, two long thin antennae. Solid, with the pattern as one fine pale line per wing. Wings are drawn for the right side,
-  // spread; the left side is the mirror image.
-  const wings = (
+  // A jewel beetle, kept as simple as the moth was: a small head with two short antennae, a broad shield behind it, two rounded
+  // wing cases that taper to a point and carry one fine pale stripe each, and six thin legs. Each wing case is drawn closed
+  // (lying along the body) inside a group that turns it out by FOLD degrees, so at rest it is closed, and as `setMothOpen`
+  // lifts it the case swings out and the pale under-wing shows beneath it. The right side is drawn; the left is its mirror.
+  const cases = (
     <>
       <g data-hw>
-        <path d="M21 22.6C25 22.2 30 23.4 33.2 25.4C33.4 28.6 30 30.4 26.4 29.6C23.6 29 22 27 21 24.6Z" fill={colors.hind} />
+        <g transform={`rotate(${-FOLD * 0.5} ${PIVOT})`}>
+          <path d="M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z" fill={colors.hind} />
+        </g>
       </g>
       <g data-fw>
-        <path d="M20.8 12.2C26.4 14 33.6 17.2 39 21.6C38.6 24 36.2 25.4 33 25.4C28.6 24.6 24.4 24.4 21 24.6Z" fill={colors.grey} />
-        <g fill="none" {...vein}>
-          <path d="M22.8 16C27.8 18 32.4 20.8 35.6 23.4" />
+        <g transform={`rotate(${-FOLD} ${PIVOT})`}>
+          <path d="M20.3 13.4C25.8 12.8 28.6 17.6 28.2 23.4C27.8 29.6 24.4 35 20.3 35.8Z" fill={colors.grey} stroke={colors.deep} strokeWidth="0.9" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+          <path d={TOP_LINES_D} fill={colors.vein} />
         </g>
       </g>
     </>
@@ -93,17 +139,16 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
             <rect x="20" y="-10" width="30" height="60" />
           </clipPath>
         </defs>
-        <g fill="none" {...feeler}>
-          <path className="moth-ant" style={{ transformOrigin: "20px 8px" }} d="M20.8 7.2C23 4.2 27 2.2 33.5 1.2" />
-          <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 8px" }} d="M19.2 7.2C17 4.2 13 2.2 6.5 1.2" />
-        </g>
-        <path d="M18.3 13C18 18 18.6 24 20 31.4C21.4 24 22 18 21.7 13Z" fill={colors.deep} />
-        <g clipPath={`url(#${id})`}>{wings}</g>
+        <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_D} fill={colors.deep} />
+        <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_L_D} fill={colors.deep} />
+        <path d={TOP_LEGS_D} fill={colors.deep} />
+        <path d="M18 13C17.6 20 18.4 26 20 31C21.6 26 22.4 20 22 13Z" fill={colors.deep} />
+        <g clipPath={`url(#${id})`}>{cases}</g>
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
-          {wings}
+          {cases}
         </g>
-        <ellipse cx="20" cy="11.6" rx="2.7" ry="3.2" fill={colors.deep} />
-        <circle cx="20" cy="7.6" r="1.6" fill={colors.deep} />
+        <path d="M14.6 14.4C14.4 10.4 17 9 20 9C23 9 25.6 10.4 25.4 14.4C23.4 14.9 16.6 14.9 14.6 14.4Z" fill={colors.deep} />
+        <path d="M17.6 9C17.4 6 22.6 6 22.4 9Z" fill={colors.deep} />
       </svg>
       {star && <MothStar size={size} />}
     </span>
@@ -120,190 +165,20 @@ export function MothStar({ size = 28 }: { size?: number }) {
 }
 
 /**
- * The moth from the side, head up, legs on its left: wings folded into a solid wedge along its back with a fine pale
- * vein. Clinging to a wall on its left as drawn (mirrored for a wall on the right); turned a quarter, it is standing on
+ * The beetle from the side, head up, legs on its left: the rounded wing case domed over its back with a fine pale stripe.
+ * Clinging to a wall on its left as drawn (mirrored for a wall on the right); turned a quarter, it is standing on
  * a ledge, head along it. Same solid drawing as the top view.
  */
 export function MothSideIcon({ size = 28, colors = MOTH_COLORS }: { size?: number; colors?: MothColors }) {
-  const feeler = feelerOf(colors);
-  const vein = veinOf(colors);
   return (
   <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" style={{ overflow: "visible" }}>
-    <g fill="none" {...feeler}>
-      <path d="M15.6 13.4L12.8 12.8L10.8 15M15.9 17.4L12.9 17.2L10.8 19.6M16.5 21.6L13.6 22.2L11.4 24.6" />
-      <path className="moth-ant" style={{ transformOrigin: "16px 8px" }} d="M16.4 7.4C17.8 4.4 21.2 2.4 26.4 1.8" />
-    </g>
-    <path d="M19.4 31.4L21 36L23.4 32Z" fill={colors.deep} />
-    <path d="M17 12.6C25.2 14.4 32 22.8 31.8 33.4L18.6 32.2C16.8 25.4 15.8 18.4 17 12.6Z" fill={colors.grey} />
-    <g fill="none" {...vein}>
-      <path d="M19 15.8C24 18.4 28.2 23.8 29.4 31.4" />
-    </g>
-    <ellipse cx="16.4" cy="12.4" rx="2.2" ry="2.8" fill={colors.deep} />
-    <circle cx="15.6" cy="8.4" r="1.6" fill={colors.deep} />
+    <path d={SIDE_LEGS_D} fill={colors.deep} />
+    <path d="M17.2 12.4C28 11.6 33 19 31.6 27C30.6 32 25.8 35.6 20.4 36C17.4 29 16.4 19 17.2 12.4Z" fill={colors.grey} stroke={colors.deep} strokeWidth="0.9" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+    <path d={SIDE_LINES_D} fill={colors.vein} />
+    <ellipse cx="16.8" cy="12.4" rx="2.2" ry="2.7" fill={colors.deep} />
+    <path d="M14 8.8C13.8 6 17.2 6 17 8.8Z" fill={colors.deep} />
+    <path className="moth-ant" style={{ transformOrigin: "16px 6px" }} d={SIDE_ANT_D} fill={colors.deep} />
   </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ one drawing that turns from top view to side view */
-
-type Pt = [number, number];
-const cubic = (a: Pt, b: Pt, c: Pt, d: Pt, n: number, skipFirst = false): Pt[] => {
-  const out: Pt[] = [];
-  for (let i = skipFirst ? 1 : 0; i <= n; i++) {
-    const t = i / n;
-    const u = 1 - t;
-    out.push([u * u * u * a[0] + 3 * u * u * t * b[0] + 3 * u * t * t * c[0] + t * t * t * d[0], u * u * u * a[1] + 3 * u * u * t * b[1] + 3 * u * t * t * c[1] + t * t * t * d[1]]);
-  }
-  return out;
-};
-// the top-view fore wing, the hind wing and the wing's vein, as the MothIcon draws them (spread pose, right wing)
-const WING_PTS: Pt[] = [
-  ...cubic([20.8, 12.2], [26.4, 14], [33.6, 17.2], [39, 21.6], 14),
-  ...cubic([39, 21.6], [38.6, 24], [36.2, 25.4], [33, 25.4], 12, true),
-  ...cubic([33, 25.4], [28.6, 24.6], [24.4, 24.4], [21, 24.6], 12, true),
-];
-const HIND_PTS: Pt[] = [...cubic([21, 22.6], [25, 22.2], [30, 23.4], [33.2, 25.4], 10), ...cubic([33.2, 25.4], [33.4, 28.6], [30, 30.4], [26.4, 29.6], 8, true), ...cubic([26.4, 29.6], [23.6, 29], [22, 27], [21, 24.6], 8, true)];
-const VEIN_PTS: Pt[] = cubic([22.8, 16], [27.8, 18], [32.4, 20.8], [35.6, 23.4], 10);
-// the two edges of the side-view wing (the wedge along the moth's back), as functions of height
-const sortByY = (pts: Pt[]) => [...pts].sort((a, b) => a[1] - b[1]);
-const WEDGE_RIGHT = sortByY(cubic([17, 12.6], [25.2, 14.4], [32, 22.8], [31.8, 33.4], 30));
-const WEDGE_LEFT = sortByY(cubic([18.6, 32.2], [16.8, 25.4], [15.8, 18.4], [17, 12.6], 30));
-const edgeX = (tab: Pt[], y: number) => {
-  if (y <= tab[0][1]) return tab[0][0];
-  for (let i = 1; i < tab.length; i++) {
-    if (y <= tab[i][1]) {
-      const [x0, y0] = tab[i - 1];
-      const [x1, y1] = tab[i];
-      return y1 === y0 ? x1 : x0 + ((x1 - x0) * (y - y0)) / (y1 - y0);
-    }
-  }
-  return tab[tab.length - 1][0];
-};
-const clipRight = (poly: Pt[]): Pt[] => {
-  // keep the part of a wing on its own side of the body line (x ≥ 20): the folded wing would otherwise cross it
-  const out: Pt[] = [];
-  for (let i = 0; i < poly.length; i++) {
-    const a = poly[i];
-    const b = poly[(i + 1) % poly.length];
-    const ain = a[0] >= 20;
-    const bin = b[0] >= 20;
-    if (ain) out.push(a);
-    if (ain !== bin) {
-      const t = (20 - a[0]) / (b[0] - a[0]);
-      out.push([20, a[1] + (b[1] - a[1]) * t]);
-    }
-  }
-  return out;
-};
-const rotAbout = (pts: Pt[], deg: number): Pt[] => {
-  const r = (deg * Math.PI) / 180;
-  const cs = Math.cos(r);
-  const sn = Math.sin(r);
-  return pts.map(([x, y]) => [20 + (x - 20) * cs - (y - 13) * sn, 13 + (x - 20) * sn + (y - 13) * cs] as Pt);
-};
-const SIDE_ANT: Pt[] = [[16.4, 7.4], [17.8, 4.4], [21.2, 2.4], [26.4, 1.8]];
-const TOP_ANT_R: Pt[] = [[20.8, 7.2], [23, 4.2], [27, 2.2], [33.5, 1.2]];
-const TOP_ANT_L: Pt[] = [[19.2, 7.2], [17, 4.2], [13, 2.2], [6.5, 1.2]];
-const antennaD = (a: Pt[], b: Pt[], t: number, k: number) => {
-  const q = a.map((pt, i) => [20 + (pt[0] + (b[i][0] - pt[0]) * t - 20) * k, pt[1] + (b[i][1] - pt[1]) * t] as Pt); // k squeezes it to the drawing's width
-  return `M${q[0][0].toFixed(2)} ${q[0][1].toFixed(2)}C${q[1][0].toFixed(2)} ${q[1][1].toFixed(2)} ${q[2][0].toFixed(2)} ${q[2][1].toFixed(2)} ${q[3][0].toFixed(2)} ${q[3][1].toFixed(2)}`;
-};
-
-/**
- * The moth turning from its back (top view, φ = 0) to its flank (side view, φ = 90°), drawn as one object: the wings fold
- * onto its back (they are already folded when it turns), every point of a wing swings from its place across the back to its
- * place along the wedge, the head and body shift to their side-view places, the other antenna slides behind the first, and
- * the legs come into view. The drawing is stretched WIDE across (as the top view is), so side-view widths are divided by it.
- */
-function drawMorph(svg: SVGSVGElement, phi: number, wing: number, colors: MothColors) {
-  void colors;
-  const q = (name: string) => svg.querySelector<SVGElement>(`[data-m="${name}"]`)!;
-  const cs = Math.cos(phi);
-  const sn = Math.sin(phi);
-  const fold = FOLD * (1 - clamp(wing, 0, 1));
-  const squeeze = 1 / WIDE;
-  const yMap = (y: number) => 13 + (y - 13) * (1 + 0.11 * sn); // the side-view wing is a little longer than the folded top-view wing
-  const place = (pts: Pt[], side: number, withDepth: boolean): string => {
-    const clipped = clipRight(pts);
-    return clipped
-      .map(([x, y]) => {
-        const xr = x - 20;
-        let xs = 20;
-        if (withDepth) {
-          const u = clamp(xr / (0.61 * (y - 12.6) + 0.6), 0, 1); // how far out across the back this point is
-          xs = edgeX(WEDGE_LEFT, clamp(y, 12.6, 32.2)) + (edgeX(WEDGE_RIGHT, clamp(y, 12.6, 33.4)) - edgeX(WEDGE_LEFT, clamp(y, 12.6, 32.2))) * u;
-        }
-        return `${(20 + side * xr * cs + (xs - 20) * squeeze * sn).toFixed(2)},${yMap(y).toFixed(2)}`;
-      })
-      .join(" ");
-  };
-  const fore = rotAbout(WING_PTS, fold);
-  q("wingR").setAttribute("points", place(fore, 1, true));
-  q("wingL").setAttribute("points", place(fore, -1, true));
-  const hindA = clamp((wing - 0.1) / 0.25, 0, 1) * clamp((0.66 - sn) / 0.2, 0, 1); // opaque until it is a sliver, then gone: never a ghost
-  const hind = rotAbout(HIND_PTS, fold * 0.5);
-  q("hindR").setAttribute("points", place(hind, 1, false));
-  q("hindL").setAttribute("points", place(hind, -1, false));
-  for (const n of ["hindR", "hindL"]) q(n).style.opacity = String(hindA);
-  // the wing's vein, riding on the wing
-  const veinPts = rotAbout(VEIN_PTS, fold);
-  const veinD = (side: number) =>
-    "M" +
-    veinPts
-      .map(([x, y]) => {
-        const xr = x - 20;
-        const u = clamp(xr / (0.61 * (y - 12.6) + 0.6), 0, 1);
-        const xs = edgeX(WEDGE_LEFT, clamp(y, 12.6, 32.2)) + (edgeX(WEDGE_RIGHT, clamp(y, 12.6, 33.4)) - edgeX(WEDGE_LEFT, clamp(y, 12.6, 32.2))) * u;
-        return `${(20 + side * xr * cs + (xs - 20) * squeeze * sn).toFixed(2)} ${yMap(y).toFixed(2)}`;
-      })
-      .join("L");
-  q("veinR").setAttribute("d", veinD(1));
-  q("veinL").setAttribute("d", veinD(-1));
-  // body: thorax and head move to their side-view places; the long top-view abdomen gives way to the tip seen from the side
-  const thorax = q("thorax");
-  thorax.setAttribute("cx", (20 + (16.4 - 20) * squeeze * sn).toFixed(2));
-  thorax.setAttribute("cy", (11.6 + 0.8 * sn).toFixed(2));
-  thorax.setAttribute("rx", (2.7 + (2.2 * squeeze - 2.7) * sn).toFixed(2));
-  thorax.setAttribute("ry", (3.2 - 0.4 * sn).toFixed(2));
-  const head = q("head");
-  head.setAttribute("cx", (20 + (15.6 - 20) * squeeze * sn).toFixed(2));
-  head.setAttribute("cy", (7.6 + 0.8 * sn).toFixed(2));
-  head.setAttribute("rx", (1.6 + (1.6 * squeeze - 1.6) * sn).toFixed(2));
-  // the abdomen narrows as it rolls and stays solid; only when it is a sliver does the tip seen from the side take over
-  q("abdomen").style.opacity = String(clamp((0.97 - sn) / 0.12, 0, 1));
-  q("abdomen").setAttribute("transform", `translate(${((16.4 - 20) * squeeze * sn).toFixed(2)} 0) translate(20 0) scale(${(1 - 0.45 * sn).toFixed(3)} 1) translate(-20 0)`);
-  q("tip").style.opacity = String(clamp((sn - 0.8) / 0.15, 0, 1));
-  // antennae: both reach out in top view; seen from the side the far one hides behind the near one
-  q("antR").setAttribute("d", antennaD(TOP_ANT_R, SIDE_ANT, sn, 1 + (squeeze - 1) * sn));
-  q("antL").setAttribute("d", antennaD(TOP_ANT_L, SIDE_ANT, sn, 1 + (squeeze - 1) * sn));
-  q("antL").style.opacity = String(Math.pow(cs, 1.5));
-  q("legs").style.opacity = String(clamp((sn - 0.45) / 0.35, 0, 1));
-}
-
-/** The painting sections' moth, in all the positions between top view and side view. Drawn by `drawMorph`. */
-function MothMorph({ size, colors }: { size: number; colors: MothColors }) {
-  const feeler = feelerOf(colors);
-  const vein = veinOf(colors);
-  return (
-    <svg data-morph width={size * WIDE} height={size} viewBox="0 0 40 40" preserveAspectRatio="none" aria-hidden="true" style={{ overflow: "visible", display: "block" }}>
-      <g fill="none" {...feeler}>
-        <path data-m="legs" transform="translate(20 0) scale(0.714 1) translate(-20 0)" d="M15.6 13.4L12.8 12.8L10.8 15M15.9 17.4L12.9 17.2L10.8 19.6M16.5 21.6L13.6 22.2L11.4 24.6" style={{ opacity: 0 }} />
-        <path data-m="antR" d="M20.8 7.2C23 4.2 27 2.2 33.5 1.2" />
-        <path data-m="antL" d="M19.2 7.2C17 4.2 13 2.2 6.5 1.2" />
-      </g>
-      <path data-m="abdomen" d="M18.3 13C18 18 18.6 24 20 31.4C21.4 24 22 18 21.7 13Z" fill={colors.deep} />
-      <path data-m="tip" transform="translate(20 0) scale(0.714 1) translate(-20 0)" d="M19.4 31.4L21 36L23.4 32Z" fill={colors.deep} style={{ opacity: 0 }} />
-      <polygon data-m="hindR" fill={colors.hind} style={{ opacity: 0 }} />
-      <polygon data-m="hindL" fill={colors.hind} style={{ opacity: 0 }} />
-      <polygon data-m="wingR" fill={colors.grey} />
-      <polygon data-m="wingL" fill={colors.grey} />
-      <g fill="none" {...vein}>
-        <path data-m="veinR" />
-        <path data-m="veinL" />
-      </g>
-      <ellipse data-m="thorax" cx="20" cy="11.6" rx="2.7" ry="3.2" fill={colors.deep} />
-      <ellipse data-m="head" cx="20" cy="7.6" rx="1.6" ry="1.6" fill={colors.deep} />
-    </svg>
   );
 }
 
@@ -323,7 +198,7 @@ type Spot = { x: number; y: number; wall: Wall; ledge?: Ledge; dir?: 1 | -1; use
 export type MothSignal = { kind: "send" | "reply"; id: number };
 
 const SIZE_BASE = 28; // moth height in px, the same as the icon it flies out of
-const SIZE_SCENE = 32; // in a painting section the moth is 2px larger on every side
+const SIZE_SCENE = 34; // in a painting section the beetle is a little larger than the assistant's (28)
 /** The moths in one painting section, so they keep out of each other's way and a press goes to the nearer one. */
 type Mate = { pos: { x: number; y: number }; goal: () => { x: number; y: number } | null };
 const swarm = new WeakMap<HTMLElement, Set<Mate>>();
@@ -428,7 +303,7 @@ function washBar(wc: CanvasRenderingContext2D, wash: Wash, cx: number, cy: numbe
  * When the panel opens, the moth that is the icon in the panel header wakes up, turns to face where it is going and
  * hops to the middle of the assistant first, then on to other places: the top edge of the heading, a question or a
  * reply, the top edge of the input box, high up, or onto the left divider or right screen edge. When the user sends
- * a question it flies to the top of the input box and walks along it while Nivvi thinks; when the answer arrives it
+ * a question it flies to the top of the input box and walks along it while Nyrro thinks; when the answer arrives it
  * flies to the top of the answer's text. Hops are wings beating, no paint. On a ledge or in the open it folds its
  * wings, turns to face its way and walks a short way, head first, painting. On a wall it comes down turning onto its
  * side as it lands, clings, and crawls upwards, painting. It only ever moves forwards, and every change of pose
@@ -495,9 +370,6 @@ export default function MothTrail({
     const sface = sideFace.current;
     const topSvg = el?.querySelector<SVGSVGElement>("[data-top] svg");
     const topFace = el?.querySelector<HTMLElement>("[data-top]");
-    const morphSvg = sface?.querySelector<SVGSVGElement>("svg[data-morph]") ?? null;
-    const morphWrap = sface?.querySelector<HTMLElement>("[data-morphwrap]") ?? null;
-    const sideWrap = sface?.querySelector<HTMLElement>("[data-sidewrap]") ?? null;
     const host = cv?.closest("[data-moth-host]") as HTMLElement | null;
     if (!active || !cv || !sh || !star || !hit || !el || !turner || !sface || !topSvg || !topFace || !host) return;
     const ctx = cv.getContext("2d");
@@ -709,10 +581,6 @@ export default function MothTrail({
     let rollW = 0;
     let headV = 0; // how fast it is turning (rad/s)
     let wall: Wall = null; // the wall it is clinging to
-    // In a section, the left and right walls use the one drawing that turns (MothMorph); the top and bottom edges use exactly
-    // what the assistant does (the top-view icon rolls and cross-fades into the side-view icon). Chosen while it is in the air.
-    let useMorph = false;
-    let morphNext = false;
     let sideNext: Exclude<Wall, null> = "R"; // the side it will land on: taken up once it is in the air and in top view, so it never flips while it is still on its side
     let rollSide: Exclude<Wall, null> = "R"; // …or last was, so the roll turns the right way while it peels off
     let ledge: Ledge | null = null; // the ledge it is standing on
@@ -891,32 +759,15 @@ export default function MothTrail({
       // …and as it comes over it tilts towards you (rotateX) at the half-way point, like a body rolling, and the two views
       // cross-fade while they are both foreshortened, so there is no moment when it is a thin line or doubled
       const rv = clamp(rollVis, -0.08, 1.1);
-      const frac = useMorph ? clamp(rv, 0, 1) : rv >= 0 && rv <= 1 ? ease(rv) : rv; // a section: the roll is already eased (in the hop, and by the spring), so it is not eased a third time
+      const frac = rv >= 0 && rv <= 1 ? ease(rv) : rv;
       const angle = 90 * dirn * frac;
       const deg = Math.abs(angle);
-      if (morphWrap && sideWrap) {
-        morphWrap.style.display = useMorph ? "" : "none";
-        sideWrap.style.display = useMorph ? "none" : "";
-      }
-      el.style.perspective = useMorph ? "420px" : "200px";
-      if (useMorph) {
-        // a painting section: no swap between two drawings. Once it starts to turn, the one drawing (MothMorph) is shown, and it
-        // goes from its back to its flank continuously; it is mirrored for the right-hand wall or a heading to the right
-        // the first few degrees cross-fade the icon drawing into the morph (they are the same moth from above), so there is no pop
-        const mix = ease(clamp(frac / 0.14, 0, 1));
-        turner.style.transform = "none";
-        topFace.style.opacity = String(1 - mix);
-        sface.style.opacity = mix > 0.001 ? String(mix) : "0";
-        sface.style.transform = rollSide === "R" ? "scaleX(-1)" : "none";
-        if (mix > 0.001 && morphSvg) drawMorph(morphSvg, (Math.PI / 2) * clamp(frac, 0, 1), wingNow, colors);
-      } else {
-        turner.style.transform = `rotateX(${(-5 * Math.sin(Math.PI * clamp(frac, 0, 1))).toFixed(1)}deg) rotateY(${angle.toFixed(1)}deg)`;
-        sface.style.transform = rollSide === "L" ? "rotateY(-90deg)" : "rotateY(90deg) scaleX(-1)";
-        // In a section the swap happens where the top view (cos θ of its width) and the side view (sin θ of its) are equally wide,
-        // about 55°, so there is no jump in size, and the blend is short so there is no ghost of the other view.
-        topFace.style.opacity = String(clamp((60 - deg) / 18, 0, 1));
-        sface.style.opacity = String(clamp((deg - 42) / 18, 0, 1));
-      }
+      turner.style.transform = `rotateX(${(-5 * Math.sin(Math.PI * clamp(frac, 0, 1))).toFixed(1)}deg) rotateY(${angle.toFixed(1)}deg)`;
+      sface.style.transform = rollSide === "L" ? "rotateY(-90deg)" : "rotateY(90deg) scaleX(-1)";
+      // In a section the swap happens where the top view (cos θ of its width) and the side view (sin θ of its) are equally wide,
+      // about 55°, so there is no jump in size, and the blend is short so there is no ghost of the other view.
+      topFace.style.opacity = String(clamp((60 - deg) / 18, 0, 1));
+      sface.style.opacity = String(clamp((deg - 42) / 18, 0, 1));
       const sway = mode === "walk" && !perched ? Math.sin(now / 240) * 0.05 : 0;
       const bob = mode === "walk" && perched ? Math.sin(now / 120) * 0.5 : 0; // a walking step
       // the wrapper only moves (so the shadow always falls straight down); the moth turns inside it
@@ -930,7 +781,7 @@ export default function MothTrail({
       // the moth's real extent (wide in top view, slim on its side), turned by its heading.
       const k = scale * (1 - 0.07 * squash);
       const theta = heading + Math.PI / 2 + sway;
-      const hx = (19.6 + (9.5 - 19.6) * ease(clamp(rollVis, 0, 1))) * k; // half its width, top view → on its side
+      const hx = (13.5 + (8.5 - 13.5) * ease(clamp(rollVis, 0, 1))) * k; // half its width, top view → on its side
       const hy = 14 * k; // half its length
       const reach = Math.abs(Math.cos(theta)) * hy + Math.abs(Math.sin(theta)) * hx; // how far up it reaches from its middle
       let tx = clamp(pos.x, 9, w - 9);
@@ -995,7 +846,7 @@ export default function MothTrail({
         ty: to.ledge?.side ? ledgeYFor(to.ledge, 0) : to.y,
         cx: pos.x + dx / 2 + (-dy / len) * bend,
         cy: pos.y + dy / 2 + (dx / len) * bend - len * 0.1, // a hop, so the arc rises
-        dur: (first ? 1.3 + len / 420 : 0.95 + len / 420) * (scene ? (to.wall ? 1.25 : 1.15) : 1),
+        dur: (first ? 1.3 + len / 420 : 0.95 + len / 420) * (scene ? 1.15 : 1),
         t: 0,
         to,
         first,
@@ -1022,7 +873,6 @@ export default function MothTrail({
         next.cy = pos.y - 2;
       }
       first = false;
-      morphNext = scene && !!to.wall;
       if (to.wall) sideNext = to.wall;
       else if (to.ledge?.side) {
         // landing head-first along the ledge; hanging from the top boundary the legs point up, so the side flips
@@ -1173,11 +1023,8 @@ export default function MothTrail({
         p += pv * hh;
       }
       squash = Math.max(0, squash - dt * 4.5);
-      // the side it will land on, and which drawing turns, are taken up in the air once it is flat (top view): never while any of it shows
-      if (mode === "fly" && rollVis < 0.02) {
-        rollSide = sideNext;
-        useMorph = morphNext;
-      }
+      // the side it will land on is taken up in the air once it is flat (top view): never while any of it shows
+      if (mode === "fly" && rollVis < 0.02) rollSide = sideNext;
       shiverAt -= dt;
       if (shiverAt <= 0) {
         shiver = 1;
@@ -1265,7 +1112,7 @@ export default function MothTrail({
         // peeling off a wall or a box edge: it comes off its side, the wings opening as it does; once it is past half way
         // onto its back it starts to turn towards where it is going, and it lifts off the surface as it comes round
         const peel = !!wall || !!ledge?.side;
-        if (roll > 0) roll = Math.max(0, roll - dt / (useMorph ? 1 : 0.65));
+        if (roll > 0) roll = Math.max(0, roll - dt / 0.65);
         if (peel) pt = roll < 0.25 ? 0.5 : 0; // the wings stay folded while it is on its side (so the two views match), and open once it is on its back
         if (roll < 0.3) turn(face, dt, next.first ? 3.4 : 6);
         if (wall) pos.x = wallXFor(wall, rollVis);
@@ -1342,7 +1189,7 @@ export default function MothTrail({
           // wall or edge (30–70%), and only then does it roll over onto its side (60–100%)
           const edgeScene = scene && !jump.to.wall; // onto the top or bottom edge of a section the hop is long and ends slowly, so it turns and rolls earlier, and is side-on well before it touches down
           const kh = edgeScene ? ease(clamp((t - 0.1) / 0.4, 0, 1)) : ease(clamp((t - 0.3) / 0.4, 0, 1));
-          const kr = edgeScene ? ease(clamp((t - 0.2) / 0.5, 0, 1)) : ease(clamp((t - (scene ? 0.5 : 0.6)) / (scene ? 0.5 : 0.4), 0, 1));
+          const kr = edgeScene ? ease(clamp((t - 0.2) / 0.5, 0, 1)) : ease(clamp((t - 0.6) / 0.4, 0, 1));
           const land = jump.to.wall ? -Math.PI / 2 : jump.to.dir === -1 ? Math.PI : 0;
           heading = tangent + wrap(land - tangent) * kh;
           roll = jump.to.wall || jump.to.ledge?.side ? kr : 0;
@@ -1357,7 +1204,7 @@ export default function MothTrail({
         if (t >= 1) {
           scale = 1;
           lift = 0;
-          squash = scene && jump.to.wall ? 0 : 1; // in a section it sits down without a pop in its size
+          squash = 1; // in a section it sits down without a pop in its size
           shiver = 1; // a little settling tremble on landing
           wall = jump.to.wall;
           ledge = jump.to.ledge ?? null;
@@ -1543,24 +1390,13 @@ export default function MothTrail({
         <StarBadge size={STAR} />
       </div>
       <div ref={shadowEl} className="absolute left-0 top-0" style={{ width: BOX_W, height: SIZE }}>
-        <div ref={mothEl} className="absolute inset-0 will-change-transform" style={{ opacity: 0, perspective: scene ? 420 : 200 }}>
+        <div ref={mothEl} className="absolute inset-0 will-change-transform" style={{ opacity: 0, perspective: 200 }}>
           <div ref={turnEl} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
             <div data-top className="absolute inset-0" style={face}>
               <MothIcon size={SIZE} star={false} colors={colors} />
             </div>
             <div ref={sideFace} className="absolute inset-0 grid place-items-center" style={face}>
-              {scene ? (
-                <>
-                  <div data-morphwrap style={{ display: "none" }}>
-                    <MothMorph size={SIZE} colors={colors} />
-                  </div>
-                  <div data-sidewrap>
-                    <MothSideIcon size={SIZE} colors={colors} />
-                  </div>
-                </>
-              ) : (
-                <MothSideIcon size={SIZE} colors={colors} />
-              )}
+              <MothSideIcon size={SIZE} colors={colors} />
             </div>
           </div>
         </div>

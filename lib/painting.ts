@@ -10,13 +10,20 @@ export type Scheme = { name: string; bg: string; moth: MothColors; paint: Rgb; g
 
 const hex = (h: string): Rgb => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
 
+/** A colour part of the way from `a` to `b`: the beetle's third colour, a grey between its pale and its dark one. */
+function mix(a: string, b: string, t: number): string {
+  const x = hex(a);
+  const y = hex(b);
+  return "#" + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, "0")).join("");
+}
+
 /** `wing` is the moth's pale colour, `dark` its dark colour, `spray` the paint, all read off the design. */
 function scheme(name: string, bg: string, wing: string, dark: string, spray: string, gain = 0.65): Scheme {
   return {
     name,
     bg,
-    // the drawing's four colours: fore wings, hind wings, body/head/antennae/legs, and the lines cut into the fore wings
-    moth: { grey: wing, hind: dark, deep: wing, vein: dark },
+    // the drawing's four colours: the wing cases (a grey, inside), the under-wings, the outside (head, shield, antennae, legs and the case outline: white), and the lines cut into the cases
+    moth: { grey: mix(wing, dark, 0.45), hind: dark, deep: wing, vein: dark },
     paint: hex(spray),
     gain,
   };

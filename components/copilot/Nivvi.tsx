@@ -152,19 +152,19 @@ function Star({ size = 17 }: { size?: number }) {
   );
 }
 
-/** Header trigger: the moth + "Nivvi" in the nav's mono style. */
+/** Header trigger: the moth + "Nyrro" in the nav's mono style. */
 export function NivviButton({ className = "" }: { className?: string }) {
   const { open, toggle } = useNivvi();
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={open ? "Close Nivvi" : "Ask Nivvi"}
+      aria-label={open ? "Close Nyrro" : "Ask Nyrro"}
       aria-expanded={open}
       className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
       <MothIcon size={24} />
-      <span className="nivvi-label">Nivvi</span>
+      <span className="nivvi-label">Nyrro</span>
     </button>
   );
 }
@@ -235,7 +235,7 @@ function NivviIntro() {
   return (
     <div
       role="dialog"
-      aria-label="Nivvi says hello"
+      aria-label="Nyrro says hello"
       className={`absolute right-5 top-[68px] z-[45] w-[calc(100vw-40px)] max-w-[320px] border border-rule bg-[#efedeb] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:right-8 ${ready ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
     >
       <span aria-hidden className="absolute -top-[7px] right-[106px] h-3 w-3 rotate-45 border-l border-t border-rule bg-[#efedeb] md:right-[42px]" />
@@ -243,8 +243,8 @@ function NivviIntro() {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
       </button>
       <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
-        I’m Nivvi, Vishnu’s assistant and unofficial tour guide. Ask me anything. Click{" "}
-        <span className="whitespace-nowrap font-mono text-[#C44419]">Nivvi</span>{" "}
+        I’m Nyrro, Vishnu’s assistant and unofficial tour guide. Ask me anything. Click{" "}
+        <span className="whitespace-nowrap font-mono text-[#C44419]">Nyrro</span>{" "}
         above.
       </p>
     </div>
@@ -548,7 +548,7 @@ function NivviPanel() {
     <aside
       data-moth-host
       ref={panelEl}
-      aria-label="Nivvi, Vishnu's AI assistant"
+      aria-label="Nyrro, Vishnu's AI assistant"
       aria-hidden={!open}
       className={`nivvi-panel fixed inset-y-0 right-0 z-50 flex min-h-dvh w-full flex-col overflow-hidden overscroll-contain border-l border-rule bg-white md:bg-transparent md:w-[min(29vw,440px)] transition-transform duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${open ? "translate-x-0" : "translate-x-full"}`}
     >
@@ -562,7 +562,7 @@ function NivviPanel() {
             <MothIcon size={24} className="nivvi-mark-moth" />
             <Star />
           </span>
-          Nivvi
+          Nyrro
         </span>
         <span className="flex items-center gap-4 text-pigment-soft">
           <button type="button" onClick={reset} aria-label="Start over" className="transition-colors hover:text-pigment">
@@ -580,7 +580,7 @@ function NivviPanel() {
           <div className="mt-auto">
             <p data-ledge="hero" className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
             <p className="mt-2 text-[15px] leading-[24px] text-pigment">{page.key === "home" ? (
-                <>I&apos;m Nivvi, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</>
+                <>I&apos;m Nyrro, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</>
               ) : (
                 <>You&apos;re on <span className="text-pigment">{page.title}</span>. Ask me about it, or tap a question.</>
               )}</p>
@@ -611,7 +611,7 @@ function NivviPanel() {
                       </p>
                     ))
                   ) : (
-                    <span className="inline-flex items-center gap-1 py-2" aria-label="Nivvi is thinking">
+                    <span className="inline-flex items-center gap-1 py-2" aria-label="Nyrro is thinking">
                       {[0, 1, 2].map((d) => (
                         <span key={d} className="h-1 w-1 rounded-full" style={{ background: ACCENT, animation: `nivvi-dot 1s ${d * 0.15}s ease-in-out infinite` }} />
                       ))}
@@ -710,7 +710,7 @@ function NivviPanel() {
               }
             }}
             placeholder="Ask about Vishnu…"
-            aria-label="Ask Nivvi"
+            aria-label="Ask Nyrro"
             maxLength={600}
             className="mr-2 block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-base leading-[24px] outline-none md:text-[15px] placeholder:text-pigment-soft/80"
           />
@@ -718,7 +718,7 @@ function NivviPanel() {
             <button
               type="button"
               onClick={() => toggleMic()}
-              aria-label="Speak to Nivvi"
+              aria-label="Speak to Nyrro"
               className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]"
             >
               <MicIcon listening={false} />

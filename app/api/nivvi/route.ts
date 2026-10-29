@@ -15,7 +15,7 @@ const limited = (ip: string) => {
   return recent.length > 20;
 };
 
-const FALLBACK = "I'm Nivvi, Vishnu's AI assistant. Ask me about his projects, process or background.\nNEXT: What makes your design approach unique? | What projects have you worked on? | Tell me about your design process";
+const FALLBACK = "I'm Nyrro, Vishnu's AI assistant. Ask me about his projects, process or background.\nNEXT: What makes your design approach unique? | What projects have you worked on? | Tell me about your design process";
 
 const enc = new TextEncoder();
 const textStream = (run: (push: (s: string) => void) => Promise<void>) =>
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
   const key = process.env.ANTHROPIC_API_KEY;
 
-  // No key configured: answer from the site's own content so Nivvi still works.
+  // No key configured: answer from the site's own content so Nyrro still works.
   if (!key) {
     const answer = await localAnswer(messages[messages.length - 1].content, page).catch(() => FALLBACK);
     return textStream(async (push) => {
