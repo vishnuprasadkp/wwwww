@@ -1,5 +1,5 @@
 /**
- * What Rangaa knows about "where the visitor is". Pure data (no fs), shared by the panel (suggested
+ * What Nyrro knows about "where the visitor is". Pure data (no fs), shared by the panel (suggested
  * questions) and the API route (so answers and follow-ups stay on the page being read).
  * Every question here is answerable from that page's own content.
  */

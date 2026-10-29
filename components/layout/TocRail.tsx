@@ -77,7 +77,7 @@ export default function TocRail() {
     <nav
       aria-label="On this page"
       className="group fixed top-1/2 z-30 hidden -translate-y-1/2 md:block"
-      style={{ right: "var(--rangaa, 0px)", transition: "right 0.4s cubic-bezier(0.2,0.8,0.2,1)" }}
+      style={{ right: "var(--nivvi, 0px)", transition: "right 0.4s cubic-bezier(0.2,0.8,0.2,1)" }}
     >
       <ul className="flex max-h-[78vh] flex-col items-end overflow-hidden border-y border-l border-transparent py-3 pl-3 pr-0 transition-[background-color,border-color,padding] duration-300 ease-out group-hover:border-rule group-hover:bg-[#efedeb]/95 group-hover:px-4 group-hover:py-[9px] group-focus-within:border-rule group-focus-within:bg-[#efedeb]/95 group-focus-within:px-4 group-focus-within:py-[9px] hover:overflow-y-auto">
         {items.map((it, i) => {

@@ -5,9 +5,10 @@ import { getAsset } from "@/lib/assets";
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 import Cursor from "@/components/layout/Cursor";
+import Loader from "@/components/layout/Loader";
 import ScrollUp from "@/components/layout/ScrollUp";
 import TocRail from "@/components/layout/TocRail";
-import { RangaaProvider } from "@/components/copilot/Rangaa";
+import { NivviProvider } from "@/components/copilot/Nivvi";
 import { preload } from "react-dom";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -29,9 +30,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   preload("/images/site/paper.webp", { as: "image", fetchPriority: "high", media: "(min-width: 768px)" });
   preload("/images/site/paper-sm.webp", { as: "image", fetchPriority: "high", media: "(max-width: 767.98px)" });
   return (
-    <html lang="en" className={`${serif.variable} ${geist.variable} ${mono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${serif.variable} ${geist.variable} ${mono.variable}`}>
       <body className="min-h-dvh flex flex-col">
-        <RangaaProvider>
+        {/* the opening plays on every full load (not for visitors who ask for reduced motion); the page is held back until it has */}
+        <script dangerouslySetInnerHTML={{ __html: "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-loading','')}catch(e){}" }} />
+        <NivviProvider>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 bg-pigment text-sand px-3 py-2 text-sm">
           Skip to content
         </a>
@@ -40,9 +43,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <div className="paper-bg" aria-hidden />
         <Cursor />
+        <Loader />
         <ScrollUp />
         <TocRail />
-        </RangaaProvider>
+        </NivviProvider>
         <Analytics />
       </body>
     </html>

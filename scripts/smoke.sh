@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Starts the production server (run `npm run build` first), checks every page and the Rangaa API, then stops it.
+# Starts the production server (run `npm run build` first), checks every page and the Nyrro API, then stops it.
 set -euo pipefail
 PORT="${SMOKE_PORT:-3456}"
 BASE="http://localhost:$PORT"
@@ -25,10 +25,10 @@ for file in /icon.png /resume/Vishnu_Prasad_Resume.pdf /images/site/paper.webp; 
   [ "$code" = "200" ] && echo "ok   $code $file" || { echo "FAIL $code $file"; fail=1; }
 done
 
-# Rangaa must answer and end with follow-up questions
-reply=$(curl -s -X POST "$BASE/api/rangaa" -H 'content-type: application/json' \
+# Nyrro must answer and end with follow-up questions
+reply=$(curl -s -X POST "$BASE/api/nivvi" -H 'content-type: application/json' \
   -d '{"messages":[{"role":"user","content":"What projects have you worked on?"}]}')
-if echo "$reply" | grep -q "NEXT:"; then echo "ok   api /api/rangaa"; else echo "FAIL api /api/rangaa: $reply"; fail=1; fi
+if echo "$reply" | grep -q "NEXT:"; then echo "ok   api /api/nivvi"; else echo "FAIL api /api/nivvi: $reply"; fail=1; fi
 
 [ "$fail" = "0" ] || { echo; echo "Smoke test failed. Server log:"; tail -30 /tmp/smoke-server.log; exit 1; }
 echo "Smoke test passed."
