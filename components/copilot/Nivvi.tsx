@@ -243,9 +243,7 @@ function NivviIntro() {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
       </button>
       <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
-        I’m Nyrro, Vishnu’s assistant and unofficial tour guide. Ask me anything. Click{" "}
-        <span className="whitespace-nowrap font-mono text-[#C44419]">Nyrro</span>{" "}
-        above.
+        Hey, it’s Nyrro! Your little guide to Vishnu’s work, ideas and creative process.
       </p>
     </div>
   );
@@ -578,9 +576,9 @@ function NivviPanel() {
       <div ref={scroller} className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-18px),transparent)] [scrollbar-width:thin]">
         {empty ? (
           <div className="mt-auto">
-            <p data-ledge="hero" className="font-serif text-[1.625rem] leading-[34px]">Hey, ask away.</p>
+            <p data-ledge="hero" className="font-serif text-[1.625rem] leading-[34px]">Hey, it&apos;s Nyrro!</p>
             <p className="mt-2 text-[15px] leading-[24px] text-pigment">{page.key === "home" ? (
-                <>I&apos;m Nyrro, Vishnu&apos;s AI assistant. Type, or tap the mic and just say it.</>
+                <>Your little beetle guide to Vishnu&apos;s work, ideas, and creative process. Let&apos;s explore!</>
               ) : (
                 <>You&apos;re on <span className="text-pigment">{page.title}</span>. Ask me about it, or tap a question.</>
               )}</p>

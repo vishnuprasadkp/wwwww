@@ -8,13 +8,13 @@ const ARRIVING: MothColors = { grey: "#4c3d38", hind: "#8d7168", deep: "#4c3d38"
 const VEINS = ["#f1efee", "#8db4d6", "#7da98a", "#c9935a"]; // white, blue, green, orange
 
 // milliseconds
-const MOTH_IN = 500; // the moth comes up out of the paper
-const RISE = 1700; // …and its wings open slowly
-const COLOUR_AT = [2500, 3500, 4500]; // the pattern turns blue, green, orange
-const STAND_AT = 5300; // it settles and stands still, wings folded
-const PREP_AT = 6300; // then its wing cases begin to lift, slowly, as it gets ready
-const FLY_AT = 7500; // and only then does it leave for the assistant
-const FLY = 2800;
+const MOTH_IN = 300; // the moth comes up out of the paper
+const RISE = 700; // …and its wings open slowly
+const COLOUR_AT = [900, 1400, 1900]; // the pattern turns blue, green, orange
+const STAND_AT = 2200; // it settles and stands still, wings folded
+const PREP_AT = 2600; // then its wing cases begin to lift, slowly, as it gets ready
+const FLY_AT = 3200; // and only then does it leave for the assistant
+const FLY = 1500;
 const SIZE = 46;
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
