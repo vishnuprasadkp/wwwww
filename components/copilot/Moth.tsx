@@ -156,8 +156,7 @@ const mirrorPts = (pts: Pt[]): Pt[] => pts.map(([x, y]) => [40 - x, y] as Pt);
 const CASE_PTS = poly([[300, 243], [335, 237], [372, 244], [398, 266], [414, 305], [418, 350], [409, 405], [386, 448], [352, 477], [318, 487], [301, 486]]);
 const FW = closedPath(smooth(CASE_PTS, 5));
 const HW = "M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z";
-const FW_EDGE = stroke(smooth(CASE_PTS, 5), 1.05, 3, 0.06);
-const FW_EDGE2 = stroke(smooth(CASE_PTS.map(([x, y]) => [x + 0.22, y - 0.12] as Pt), 5), 0.4, 5, 0.1);
+const FW_EDGE = stroke(smooth(CASE_PTS, 5), 0.95, 3, 0.06);
 // the stripes: long, parallel, following the roundness of the case, fat in the middle and fine at each end
 const CASE_TOP = fy(243);
 const CASE_H = fy(486) - fy(243);
@@ -238,7 +237,6 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
       <g data-hw>
         <g transform={`rotate(${-FOLD * 0.5} ${PIVOT})`}>
           <path d={HW} fill={paper} />
-          <path d={stroke(run2([[20.6, 15], [26.4, 14.2], [30, 18], [29.6, 23.6]], [[29.6, 23.6], [29, 29.6], [25, 34.6], [20.6, 37.2]]), 0.9, 25)} fill={ink} />
         </g>
       </g>
     </>
@@ -249,7 +247,6 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
         <g transform={`rotate(${-FOLD} ${PIVOT})`}>
           <path d={FW} fill={paper} />
           <path d={STRIPES} fill={ink} />
-          <path d={FW_EDGE2} fill={ink} fillOpacity=".4" />
           <path d={FW_EDGE} fill={ink} />
           <path d={SEAM} fill={ink} />
         </g>
