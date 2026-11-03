@@ -167,7 +167,7 @@ const meridian = (d: number, t0: number, t1: number): Pt[] =>
     return [20 + d * Math.pow(Math.sin(Math.PI * (0.04 + 0.92 * t)), 0.65), CASE_TOP + CASE_H * t] as Pt;
   });
 const STRIPES = [
-  [0.95, 0.07, 0.94, 0.75], [2.1, 0.06, 0.95, 0.8], [3.25, 0.06, 0.94, 0.8], [4.4, 0.07, 0.92, 0.8], [5.5, 0.1, 0.88, 0.74], [6.4, 0.22, 0.76, 0.6],
+  [2.6, 0.09, 0.93, 1.0], [4.9, 0.12, 0.9, 1.0],
 ].map((d, i) => stroke(meridian(d[0], d[1], d[2]), d[3], i * 2.7 + 1, 0.05)).join("");
 const SEAM = stroke(smooth(poly([[299, 243], [300, 300], [298, 380], [300, 487]])), 0.9, 27, 0.05);
 const HW_VEIN = stroke(curve([21.6, 18.4], [26, 18.4], [28.4, 22], [28, 27]), 0.7, 29);
@@ -176,10 +176,8 @@ const ABD = "M20 14.2C24.6 14.2 26.2 20 25.6 27C25 32.6 22.8 35.8 20 36.2C17.2 3
 const ABD_EDGE = stroke(smooth([[20, 14.2], [24.6, 15], [26.2, 20], [25.6, 27], [24.6, 32.4], [22.4, 35.6], [20, 36.2]]), 0.9, 61, 0.05);
 const ABD_EDGE_L = stroke(smooth(mirrorPts([[20, 14.2], [24.6, 15], [26.2, 20], [25.6, 27], [24.6, 32.4], [22.4, 35.6], [20, 36.2]])), 0.9, 63, 0.05);
 const ABD_LINES = [
-  stroke(curve([14.8, 19.6], [17.8, 21], [22.2, 21], [25.2, 19.6]), 0.85, 51, 0.06),
-  stroke(curve([14.4, 24.2], [17.6, 25.8], [22.4, 25.8], [25.6, 24.2]), 0.9, 53, 0.06),
-  stroke(curve([14.7, 29], [17.6, 30.6], [22.4, 30.6], [25.3, 29]), 0.85, 55, 0.06),
-  stroke(curve([16.2, 33.2], [18.2, 34.6], [21.8, 34.6], [23.8, 33.2]), 0.75, 57, 0.06),
+  stroke(curve([14.5, 23.4], [17.6, 25], [22.4, 25], [25.5, 23.4]), 1, 53, 0.05),
+  stroke(curve([15.2, 30.2], [18, 31.8], [22, 31.8], [24.8, 30.2]), 1, 55, 0.05),
 ].join("");
 // the shield: a white dome, its outline bold and a little thinner at the sides
 const SHIELD_PTS = poly([[222, 233], [226, 214], [242, 191], [270, 173], [300, 168], [333, 173], [362, 189], [386, 212], [392, 233]]);
@@ -233,16 +231,18 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
   // legs. Each wing case is drawn closed (lying along the body) inside a group that turns it out by FOLD degrees, so at rest it is
   // closed, and as `setMothOpen` lifts it the case swings out and the abdomen and the under-wing show beneath it.
   // The right side is drawn; the left is its mirror.
-  const cases = (
+  const under = (
     <>
       <g data-hw>
         <g transform={`rotate(${-FOLD * 0.5} ${PIVOT})`}>
-          <path d={HW} fill={paper} fillOpacity=".7" />
-          <path d={HW} fill={ink} fillOpacity=".08" />
-          <path d={HW_VEIN} fill={ink} fillOpacity=".6" />
-          <path d={stroke(run2([[20.6, 15], [26.4, 14.2], [30, 18], [29.6, 23.6]], [[29.6, 23.6], [29, 29.6], [25, 34.6], [20.6, 37.2]]), 0.9, 25)} fill={ink} fillOpacity=".75" />
+          <path d={HW} fill={paper} />
+          <path d={stroke(run2([[20.6, 15], [26.4, 14.2], [30, 18], [29.6, 23.6]], [[29.6, 23.6], [29, 29.6], [25, 34.6], [20.6, 37.2]]), 0.9, 25)} fill={ink} />
         </g>
       </g>
+    </>
+  );
+  const cases = (
+    <>
       <g data-fw>
         <g transform={`rotate(${-FOLD} ${PIVOT})`}>
           <path d={FW} fill={paper} />
@@ -279,6 +279,10 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
             </g>
           );
         })}
+        <g clipPath={`url(#${id})`}>{under}</g>
+        <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
+          {under}
+        </g>
         <path d={ABD} fill={paper} />
         <path d={ABD_LINES} fill={ink} />
         <path d={ABD_EDGE} fill={ink} />
