@@ -125,6 +125,7 @@ const stroke = (pts: Pt[], peak: number, seed: number, amp = 0.2): string => {
   return ribbon(shaky, (t) => peak * (0.26 + 0.74 * Math.pow(Math.sin(Math.PI * Math.min(1, Math.max(0, t * 0.92 + 0.04))), 0.5)) * (1 + 0.22 * Math.sin(t * 9 + seed)));
 };
 const curve = (a: Pt, b: Pt, c: Pt, d: Pt) => sample(a, b, c, d, 12);
+const run2 = (...segs: [Pt, Pt, Pt, Pt][]): Pt[] => segs.flatMap((sg, i) => sample(sg[0], sg[1], sg[2], sg[3], 10).slice(i ? 1 : 0));
 /** A leg: thick at the body, a point at the foot, its line a little unsteady. */
 const limb = (l: Pt[], seed: number, base: number, edge = false) =>
   ribbon(sample(l[0], l[1], l[1], l[2], 12).map(([x, y], i) => [x + Math.sin(i * 2.1 + seed) * 0.09 - (edge ? 0.28 : 0), y + Math.cos(i * 1.7 + seed) * 0.09 - (edge ? 0.12 : 0)] as Pt), (t) => base * (0.32 + 0.68 * Math.pow(1 - t, 0.6)));
@@ -132,23 +133,28 @@ const limb = (l: Pt[], seed: number, base: number, edge = false) =>
 // right fore wing (seen closed: the left is its mirror)
 const FW = "M20.3 13C26.6 12.2 29.4 18.4 28.8 24.6C28.2 31.2 24.7 36.2 20.3 36.8Z";
 const HW = "M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z";
-// brush strokes of lighter and darker paint across the body (they follow the roundness of the case)
-const STROKES_LIGHT = [
-  stroke(curve([22.2, 15.6], [24.4, 14.8], [26.8, 17.2], [27.8, 21.6]), 1.5, 3),
-  stroke(curve([21.6, 22.4], [23.2, 21], [24.6, 22.4], [25.2, 25]), 1.2, 7),
-  stroke(curve([23.4, 29.4], [24.8, 28.6], [26, 29.6], [26.4, 31]), 1.1, 11),
-  stroke(curve([27.6, 24.4], [28, 27.6], [27.2, 30.8], [25.6, 33.4]), 1, 15),
-].join("");
-const STROKES_DARK = [
-  stroke(curve([21.2, 18], [21.6, 24], [21.4, 30], [20.8, 35]), 1.8, 19),
-  stroke(curve([28.2, 18.8], [28.8, 23], [28.2, 28], [26.4, 33]), 1.1, 23),
-].join("");
-const SPOTS: [number, number, number, number][] = [
-  [26.8, 18.8, 1.45, 1.95],
-  [23.6, 23.1, 1.75, 2.15],
-  [26.4, 27.8, 1.5, 1.95],
-  [23.2, 32, 1.5, 1.85],
+// brush strokes of paint across the body, along its roundness, from the seam outwards: lighter ones catch the light, darker ones
+// are the shade; they are short and overlap, so the body is built of dabs of paint, not one flat colour
+const meridian = (d: number, t0: number, t1: number): Pt[] =>
+  Array.from({ length: 11 }, (_, i) => {
+    const t = t0 + ((t1 - t0) * i) / 10;
+    return [20.3 + d * Math.pow(Math.sin(Math.PI * t), 0.75) * (1 - 0.06 * t), 13.2 + 23.4 * t] as Pt;
+  });
+const DABS: [number, number, number, number, number][] = [
+  // d, from, to, width, light (1) or dark (0)
+  [1.3, 0.1, 0.5, 1.5, 1], [1.6, 0.52, 0.92, 1.3, 0], [2.7, 0.06, 0.4, 1.6, 0], [2.9, 0.42, 0.86, 1.7, 1],
+  [4.1, 0.1, 0.55, 1.8, 1], [4.3, 0.56, 0.9, 1.4, 0], [5.4, 0.12, 0.44, 1.5, 0], [5.6, 0.46, 0.84, 1.8, 1],
+  [6.7, 0.16, 0.58, 1.6, 1], [6.9, 0.6, 0.86, 1.2, 0], [7.7, 0.22, 0.5, 1.2, 0], [7.8, 0.52, 0.74, 1.3, 1],
 ];
+const STROKES_LIGHT = DABS.filter((d) => d[4]).map((d, i) => stroke(meridian(d[0], d[1], d[2]), d[3], i * 3.1 + 1)).join("");
+const STROKES_DARK = DABS.filter((d) => !d[4]).map((d, i) => stroke(meridian(d[0], d[1], d[2]), d[3], i * 2.3 + 5)).join("");
+// the pattern: two fine lines in each wing case, and a short third by its edge
+const LINES = [
+  stroke(curve([22, 16.2], [22.6, 22], [22.4, 28.6], [21.6, 33.8]), 0.85, 3, 0.12),
+  stroke(curve([26.4, 17.4], [27, 23], [25.8, 29.4], [22.9, 34.2]), 0.82, 6, 0.12),
+  stroke(curve([28, 20.4], [28.4, 23.8], [27.7, 27.2], [26.6, 30]), 0.7, 9, 0.1),
+].join("");
+const RIM = stroke(run2([[20.3, 13], [26.6, 12.2], [29.4, 18.4], [28.8, 24.6]], [[28.8, 24.6], [28.2, 31.2], [24.7, 36.2], [20.3, 36.8]]), 0.9, 13, 0.08);
 const SEAM = stroke(curve([20.4, 15], [20.9, 22], [20.6, 30], [20.3, 36.8]), 1.3, 27, 0.1);
 const HW_VEIN = stroke(curve([21.6, 18.4], [26, 18.4], [28.4, 22], [28, 27]), 0.6, 29);
 // shield and head
@@ -171,11 +177,10 @@ const DOME_LIGHT = [
   stroke(curve([21, 23], [23.6, 21.8], [26.4, 23.4], [27.4, 26.6]), 1.2, 35),
 ].join("");
 const DOME_DARK = stroke(curve([29.8, 20], [31.4, 24], [30.6, 29.4], [27, 33.6]), 1.5, 37);
-const DOME_SPOTS: [number, number, number, number][] = [
-  [26.4, 18.2, 1.9, 2.2],
-  [24.2, 26, 1.9, 2.3],
-  [22, 32, 1.4, 1.6],
-];
+const DOME_LINES = [
+  stroke(curve([20.6, 15.4], [26, 16.6], [29.2, 22], [28.4, 29.4]), 1.05, 41, 0.12),
+  stroke(curve([19.6, 19.4], [23.4, 21.2], [25.2, 25.6], [24.4, 32.6]), 1, 43, 0.12),
+].join("");
 
 /** Whether this beetle is drawn for a dark ground (white body, dark shades), judged from the colours it is given. */
 const onDark = (c: MothColors) => lumOf(c.deep) > 0.72;
@@ -210,11 +215,11 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
       <g data-fw>
         <g transform={`rotate(${-FOLD} ${PIVOT})`}>
           <path d={FW} {...bodyProps} />
-          <path d={STROKES_LIGHT} fill="#fff" fillOpacity={chalk ? 0.5 : 0.26} />
-          <path d={STROKES_DARK} fill={dark} fillOpacity={chalk ? 0.2 : 0.16} />
-          {SPOTS.map(([x, y, rx, ry], i) => (
-            <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={dark} transform={`rotate(${i % 2 ? -12 : 10} ${x} ${y})`} />
-          ))}
+          <path d={STROKES_DARK} fill={dark} fillOpacity={chalk ? 0.22 : 0.17} />
+          <path d={STROKES_LIGHT} fill="#fff" fillOpacity={chalk ? 0.5 : 0.28} />
+          <path d={FW} fill={`url(#${id}s)`} />
+          <path d={RIM} fill={dark} fillOpacity=".3" />
+          <path d={LINES} fill={dark} fillOpacity=".92" />
           <path d={SEAM} fill={dark} />
         </g>
       </g>
@@ -228,6 +233,17 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
           <clipPath id={id}>
             <rect x="20" y="-10" width="30" height="60" />
           </clipPath>
+          {/* the light and the shade of the paint: a highlight high on the case, falling to a darker rim */}
+          <radialGradient id={id + "s"} cx=".3" cy=".28" r=".85">
+            <stop offset="0" stopColor="#fff" stopOpacity=".42" />
+            <stop offset=".45" stopColor="#fff" stopOpacity=".04" />
+            <stop offset="1" stopColor="#000" stopOpacity=".34" />
+          </radialGradient>
+          <radialGradient id={id + "h"} cx=".35" cy=".25" r=".8">
+            <stop offset="0" stopColor="#fff" stopOpacity=".3" />
+            <stop offset=".5" stopColor="#fff" stopOpacity="0" />
+            <stop offset="1" stopColor="#000" stopOpacity=".3" />
+          </radialGradient>
         </defs>
         <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_D} fill={dark} />
         <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_L_D} fill={dark} />
@@ -239,6 +255,7 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
         </g>
         <path d="M18.6 14.2L21.4 14.2L20 17.8Z" fill={dark} />
         <path d={HEAD} fill={dark} />
+        <path d={HEAD} fill={`url(#${id}h)`} />
         <path d={SHIELD_SHADE} fill="#fff" fillOpacity={chalk ? 0.3 : 0.14} />
         <ellipse cx="16.7" cy="12.4" rx="1.9" ry="1.15" fill={cream} transform="rotate(-18 16.7 12.4)" />
         <ellipse cx="23.3" cy="12.4" rx="1.9" ry="1.15" fill={cream} transform="rotate(18 23.3 12.4)" />
@@ -266,6 +283,7 @@ export function MothStar({ size = 28 }: { size?: number }) {
  * a ledge, head along it. Painted like the top view.
  */
 export function MothSideIcon({ size = 28, colors = MOTH_COLORS }: { size?: number; colors?: MothColors }) {
+  const id = "ms" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const ref = useRef<SVGSVGElement>(null);
   const chalk = onDark(colors);
   useEffect(() => {
@@ -279,12 +297,18 @@ export function MothSideIcon({ size = 28, colors = MOTH_COLORS }: { size?: numbe
     <svg ref={ref} width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" style={{ overflow: "visible" }}>
       <path d={SIDE_LEG_DARK} fill={dark} />
       <path d={SIDE_LEG_EDGE} {...bodyProps} fillOpacity=".95" />
+      <defs>
+        <radialGradient id={id + "s"} cx=".3" cy=".28" r=".85">
+          <stop offset="0" stopColor="#fff" stopOpacity=".42" />
+          <stop offset=".45" stopColor="#fff" stopOpacity=".04" />
+          <stop offset="1" stopColor="#000" stopOpacity=".34" />
+        </radialGradient>
+      </defs>
       <path d={DOME} {...bodyProps} />
-      <path d={DOME_LIGHT} fill="#fff" fillOpacity={chalk ? 0.5 : 0.26} />
-      <path d={DOME_DARK} fill={dark} fillOpacity={chalk ? 0.2 : 0.16} />
-      {DOME_SPOTS.map(([x, y, rx, ry], i) => (
-        <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={dark} transform={`rotate(${i % 2 ? -12 : 10} ${x} ${y})`} />
-      ))}
+      <path d={DOME_DARK} fill={dark} fillOpacity={chalk ? 0.22 : 0.17} />
+      <path d={DOME_LIGHT} fill="#fff" fillOpacity={chalk ? 0.5 : 0.28} />
+      <path d={DOME} fill={`url(#${id}s)`} />
+      <path d={DOME_LINES} fill={dark} fillOpacity=".92" />
       <ellipse cx="16.8" cy="12.4" rx="2.4" ry="2.9" fill={dark} />
       <ellipse cx="16.4" cy="11.6" rx="0.8" ry="1" fill={cream} />
       <path d="M14 8.8C13.8 6 17.2 6 17 8.8Z" fill={dark} />
