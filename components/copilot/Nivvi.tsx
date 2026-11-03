@@ -576,8 +576,8 @@ function NivviPanel() {
       <div ref={scroller} className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-18px),transparent)] [scrollbar-width:thin]">
         {empty ? (
           <div className="mt-auto">
-            <p data-ledge="hero" className="font-serif text-[22px] leading-[30px]">Hey, it&apos;s Nyrro!</p>
-            <p className="mt-2 text-[15px] leading-[24px] text-pigment">{page.key === "home" ? (
+            <p data-ledge="hero" className="font-serif text-[24px] leading-[32px]">Hey, it&apos;s Nyrro!</p>
+            <p className="mt-[10px] text-[15px] leading-[24px] text-pigment">{page.key === "home" ? (
                 <>Your little beetle guide to Vishnu&apos;s work, ideas, and creative process. Let&apos;s explore!</>
               ) : (
                 <>You&apos;re on <span className="text-pigment">{page.title}</span>. Ask me about it, or tap a question.</>
