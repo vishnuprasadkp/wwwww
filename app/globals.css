@@ -39,12 +39,13 @@
     background: transparent;
     font-family: var(--font-sans);
     font-size: 16px;
+    line-height: 24px;
     letter-spacing: -0.011em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
   @media (min-width: 768px) {
-    body { font-size: 14px; }
+    body { font-size: 15px; }
   }
   /* headings are set close, as in the reference; an explicit weight class still wins */
   :where(.font-serif) { letter-spacing: -0.03em; font-weight: 500; }
@@ -74,8 +75,8 @@
 @media (min-width: 768px) {
   .case-grid > p:first-of-type { font-size: 1.125rem; line-height: 30px; }
   .case-grid.lead-lg > p:first-of-type { font-size: 1.5rem; line-height: 36px; }
-  /* on the web the 16px text is 14px */
-  .case-grid > p, .case-grid > p.cap { font-size: 0.875rem; }
+  /* on the web the 16px text is 15px, on a 24px line */
+  .case-grid > p, .case-grid > p.cap { font-size: 0.9375rem; line-height: 24px; }
   .case-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
   .case-grid > p { grid-column: 2; }
   .case-grid > p:first-of-type, .case-grid > p.src { grid-column: 1; }

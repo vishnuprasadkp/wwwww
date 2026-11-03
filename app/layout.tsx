@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* the opening plays on every full load (not for visitors who ask for reduced motion); the page is held back until it has */}
         <script dangerouslySetInnerHTML={{ __html: "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-loading','')}catch(e){}" }} />
         <NivviProvider>
-        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 bg-pigment text-sand px-3 py-2 text-sm">
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 bg-pigment text-sand px-3 py-2 text-[15px]">
           Skip to content
         </a>
         <Nav />
