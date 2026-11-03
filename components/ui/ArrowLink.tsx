@@ -22,7 +22,7 @@ export function ArrowLink({
   /** Replaces the arrow (e.g. a printer or download glyph). */
   icon?: React.ReactNode;
 }) {
-  const cls = `group relative inline-flex h-[30px] w-max items-center px-0 font-mono text-base md:text-[15px] leading-[25px] text-pigment transition-[padding] duration-200 after:pointer-events-none after:absolute after:inset-0 after:border-b-2 after:border-transparent after:transition-colors after:duration-200 hover:px-1 hover:after:border-pigment ${className}`;
+  const cls = `group relative inline-flex h-[30px] w-max items-center px-0 font-mono text-[15px] leading-[25px] text-pigment transition-[padding] duration-200 after:pointer-events-none after:absolute after:inset-0 after:border-b-2 after:border-transparent after:transition-colors after:duration-200 hover:px-1 hover:after:border-pigment ${className}`;
   const inner = (
     <span className="flex items-center gap-[17px] transition-[gap] duration-200 group-hover:gap-2">
       <span>{children}</span>

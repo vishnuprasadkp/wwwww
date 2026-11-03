@@ -100,7 +100,7 @@ export default function ResumeViewer() {
   };
 
   const btn =
-    "flex h-9 items-center gap-2 px-2 font-mono text-base md:text-[15px] leading-[19px] text-pigment-soft transition-colors hover:text-[#C44419] disabled:pointer-events-none disabled:opacity-30";
+    "flex h-9 items-center gap-2 px-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-colors hover:text-[#C44419] disabled:pointer-events-none disabled:opacity-30";
 
   return (
     <>
@@ -111,7 +111,7 @@ export default function ResumeViewer() {
             <button type="button" onClick={() => step(-1)} disabled={zoom <= STEPS[0]} aria-label="Zoom out" className={btn}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-4-4M8 11h6" /></svg>
             </button>
-            <span className="w-12 text-center font-mono text-base md:text-[15px] tabular-nums text-pigment" aria-live="polite">{Math.round(zoom * 100)}%</span>
+            <span className="w-12 text-center font-mono text-[15px] tabular-nums text-pigment" aria-live="polite">{Math.round(zoom * 100)}%</span>
             <button type="button" onClick={() => step(1)} disabled={zoom >= STEPS[STEPS.length - 1]} aria-label="Zoom in" className={btn}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-4-4M8 11h6M11 8v6" /></svg>
             </button>
@@ -143,9 +143,9 @@ export default function ResumeViewer() {
 
       <div ref={stage} className="overflow-x-auto px-5 pb-8 pt-5 md:px-8 md:pt-8">
         <div ref={holder} className="mx-auto flex w-max min-w-full flex-col items-center gap-6" />
-        {!ready && !failed && <p className="py-24 text-center font-mono text-base md:text-[15px] text-pigment-soft">Loading resume…</p>}
+        {!ready && !failed && <p className="py-24 text-center font-mono text-[15px] text-pigment-soft">Loading resume…</p>}
         {failed && (
-          <p className="py-24 text-center font-mono text-base md:text-[15px] text-pigment-soft">
+          <p className="py-24 text-center font-mono text-[15px] text-pigment-soft">
             Couldn&apos;t display the resume here. <a href={FILE} className="underline underline-offset-4 hover:text-[#C44419]">Open the PDF</a>
           </p>
         )}

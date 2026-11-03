@@ -38,14 +38,11 @@
     transition: padding-right 0.4s cubic-bezier(0.32, 0.72, 0, 1);
     background: transparent;
     font-family: var(--font-sans);
-    font-size: 16px;
+    font-size: 15px;
     line-height: 24px;
     letter-spacing: -0.011em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-  @media (min-width: 768px) {
-    body { font-size: 15px; }
   }
   /* headings are set close, as in the reference; an explicit weight class still wins */
   :where(.font-serif) { font-weight: 400; }
@@ -64,15 +61,15 @@
 
 /* Case-study / about body: a two-column grid. Lead text left, supporting blocks right. */
 .case-grid { display: grid; row-gap: 26px; }
-.case-grid > p { font-size: 1rem; line-height: 26px; }
+.case-grid > p { font-size: 0.9375rem; line-height: 24px; }
 .case-grid > p:first-of-type { font-size: 1.125rem; line-height: 28px; }
 .case-grid.lead-lg > p:first-of-type { font-size: 1.125rem; line-height: 30px; }
 .case-grid.statement > p:nth-of-type(2) { font-size: 1.625rem; line-height: 40px; }
 .case-grid > figure { margin: 0; }
 /* in the big blocks the sub-text (captions, notes, the source line) is one step down from the lead text */
-.case-grid.big .rc, .case-grid.big .rc dd, .case-grid.big .rc div, .case-grid.big > p.src { font-size: 1rem; line-height: 26px; }
+.case-grid.big .rc, .case-grid.big .rc dd, .case-grid.big .rc div, .case-grid.big > p.src { font-size: 0.9375rem; line-height: 24px; }
 .case-grid.big .rc dt { font-size: 1.75rem; line-height: 42px; }
-.case-grid > p.cap { font-size: 1rem; line-height: 26px; }
+.case-grid > p.cap { font-size: 0.9375rem; line-height: 24px; }
 .case-grid > article { margin-top: 56px; }
 @media (min-width: 768px) {
   .case-grid > p:first-of-type { font-size: 1.125rem; line-height: 30px; }
