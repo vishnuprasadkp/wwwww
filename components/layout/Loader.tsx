@@ -166,12 +166,12 @@ export default function Loader() {
           by = yc;
           rot = 90;
         } else if (rowAt.kind === "arrive") {
-          // down out of the top left of the screen, wings beating, to the line, head first
+          // in from the left side of the screen, wings beating, to the line, head first
           const u = clamp((t - rowAt.at) / rowAt.d);
-          const a = { x: w * 0.04, y: -60 };
+          const a = { x: -SIZE * 1.8, y: HEIGHTS[0] * h - 70 };
           const b = { x: LINE_AT[0] * w - front - 3, y: HEIGHTS[0] * h };
           yc = HEIGHTS[0] * h;
-          const f = arc(a, b, u, 90);
+          const f = arc(a, b, u, 36);
           const turn = Math.pow(Math.sin(Math.PI * u), 0.7);
           bx = f.x;
           by = f.y;
