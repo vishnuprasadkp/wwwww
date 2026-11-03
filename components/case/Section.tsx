@@ -3,7 +3,7 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(
 type Props = {
   label?: string;
   title?: string;
-  large?: boolean;      // the About page's heading: 36px on the web (case studies use 32px)
+  large?: boolean;      // the About page's headings; the opening one (`intro`) is 36px on the web, the rest are 32px like the case studies
   intro?: boolean;      // title left, body right on the same row (About opener)
   stack?: boolean;      // body stays in the left column, a figure sits right
   statement?: boolean;  // second paragraph set large
@@ -17,7 +17,7 @@ type Props = {
  */
 export default function Section({ label, title, large, intro, stack, statement, big, children }: Props) {
   const id = label ?? title;
-  const h = large ? "text-[1.875rem] leading-[40px] md:text-[2.25rem] md:leading-[46px]" : "text-[1.625rem] leading-[34px] md:text-[2rem] md:leading-[42px]";
+  const h = large ? `text-[1.875rem] leading-[40px] ${intro ? "md:text-[2.25rem] md:leading-[46px]" : "md:text-[2rem] md:leading-[42px]"}` : "text-[1.625rem] leading-[34px] md:text-[2rem] md:leading-[42px]";
   const grid = `case-grid ${stack ? "stack" : ""} ${statement ? "statement" : ""} ${big ? "big" : ""} ${large && !label ? "lead-lg" : ""}`;
 
   if (intro) {
