@@ -48,7 +48,8 @@
     body { font-size: 15px; }
   }
   /* headings are set close, as in the reference; an explicit weight class still wins */
-  :where(.font-serif) { letter-spacing: -0.03em; font-weight: 500; }
+  :where(.font-serif) { font-weight: 500; }
+  :where(h1, h2, h3, h4, h5, h6, .font-serif) { letter-spacing: -0.015em; }
   :where(.font-mono) { letter-spacing: -0.005em; font-feature-settings: "tnum"; }
   ::selection {
     background: var(--color-pigment);

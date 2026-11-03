@@ -14,7 +14,7 @@ export default function NextProjects({ closing, next }: { closing: string; next:
       </div>
       <section className="mt-16 md:mt-[100px] lg:mt-[140px]">
         <div className="border-b border-rule px-5 pb-[22px] pt-[21px] md:px-8">
-          <h2 className="font-serif text-[1.625rem] leading-[34px] md:text-4xl md:leading-[46px]">Next project</h2>
+          <h2 className="font-serif text-[1.625rem] leading-[34px] md:text-[2rem] md:leading-[42px]">Next project</h2>
         </div>
         <ul className="mt-5 grid md:mt-8 gap-x-4 gap-y-12 px-5 lg:grid-cols-2 md:px-8">
           {next.map((c, i) => (

@@ -8,7 +8,7 @@ export default function SubProduct({
     <article data-toc-sub={title}>
       <div className="-mx-5 border-b border-rule px-5 pb-[23px] pt-[21px] md:-mx-8 md:px-8">
         <p className="font-mono text-base md:text-[15px] leading-[26px] md:leading-[24px] text-pigment-soft">Product {index}</p>
-        <h3 className="mt-2.5 font-serif text-[1.625rem] leading-[34px] md:max-w-[min(40rem,calc(50%-8px))] md:text-4xl md:leading-[46px]">{title}</h3>
+        <h3 className="mt-2.5 font-serif text-[1.625rem] leading-[34px] md:max-w-[min(40rem,calc(50%-8px))] md:text-[2rem] md:leading-[42px]">{title}</h3>
       </div>
       <div className="case-grid sub mt-[11px] md:mt-[23px]">
         {children}

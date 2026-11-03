@@ -17,7 +17,7 @@ type Props = {
  */
 export default function Section({ label, title, large, intro, stack, statement, big, children }: Props) {
   const id = label ?? title;
-  const h = large ? "text-[1.875rem] leading-[40px] md:text-[2.25rem] md:leading-[46px]" : "text-[1.625rem] leading-[34px] md:text-4xl md:leading-[46px]";
+  const h = large ? "text-[1.875rem] leading-[40px] md:text-[2rem] md:leading-[42px]" : "text-[1.625rem] leading-[34px] md:text-[2rem] md:leading-[42px]";
   const grid = `case-grid ${stack ? "stack" : ""} ${statement ? "statement" : ""} ${big ? "big" : ""} ${large && !label ? "lead-lg" : ""}`;
 
   if (intro) {
