@@ -55,7 +55,7 @@ export default function NyrroNote() {
         aria-controls="nyrro-note"
         onClick={() => (open ? setOpen(false) : show())}
         onFocus={show}
-        className="pointer-events-auto flex items-center gap-2 border border-rule nyrro-paper py-1.5 px-3.5 font-mono text-[13px] leading-5 text-pigment transition-[filter] hover:brightness-95"
+        className="pointer-events-auto flex items-center gap-2 border border-rule nyrro-paper py-1.5 px-3.5 font-mono text-[14px] leading-5 text-pigment transition-[filter] hover:brightness-95"
       >
         About Nyrro
       </button>
@@ -68,11 +68,11 @@ export default function NyrroNote() {
           aria-hidden={!open}
           className={`w-[min(calc(100vw-40px),380px)] nyrro-paper border border-rule p-5 text-left transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-y-0 opacity-100" : "-translate-y-1.5 opacity-0"}`}
         >
-          <h3 className="font-serif text-[20px] leading-[28px] text-pigment">Nyrro &mdash; Nature in Colour</h3>
-          <p className="mt-3 text-[15px] leading-6 text-pigment">
+          <h3 className="font-serif text-[18px] leading-[28px] text-pigment">Nyrro &mdash; Nature in Colour</h3>
+          <p className="mt-3 text-[16px] md:text-[14px] leading-6 text-pigment">
             I&rsquo;d never really paid much attention to beetles before. But while working on this portfolio, one caught my eye and made me curious to explore their little world. The more I looked into them, the more I discovered some fascinating things about their natural defence mechanisms &mdash; from the oily droplets of oil beetles to the chemical spray of bombardier beetles, which can leave traces of their own.
           </p>
-          <p className="mt-3 text-[15px] leading-6 text-pigment">
+          <p className="mt-3 text-[16px] md:text-[14px] leading-6 text-pigment">
             That sparked an idea: what if a tiny creature left its own trail wherever it wandered, like a paintbrush moving across a canvas? That&rsquo;s how Nyrro came to life &mdash; part observation, part imagination, and a little expression of my love for nature, painting, and creative exploration.
           </p>
         </div>

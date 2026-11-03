@@ -23,7 +23,7 @@ export default function NextProjects({ closing, next }: { closing: string; next:
                 <div className="relative aspect-[680/411] w-full overflow-hidden">
                   <Pic file={`/images/next/${c.slug}.png`} sizes="(min-width: 1024px) calc(50vw - 24px), 100vw" fill />
                 </div>
-                <p className="mt-4 text-lg leading-[28px] md:text-xl md:leading-[30px]">{c.title.replace(/\.$/, "")}</p>
+                <p className="mt-4 text-lg leading-[28px] md:text-lg md:leading-[30px]">{c.title.replace(/\.$/, "")}</p>
               </Link>
             </li>
           ))}

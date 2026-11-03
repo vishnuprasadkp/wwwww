@@ -161,7 +161,7 @@ export function NivviButton({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={open ? "Close Nyrro" : "Ask Nyrro"}
       aria-expanded={open}
-      className={`flex items-center gap-2 font-mono text-base leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
+      className={`flex items-center gap-2 font-mono text-sm leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
       <MothIcon size={24} />
       <span className="nivvi-label">Nyrro</span>
@@ -242,7 +242,7 @@ function NivviIntro() {
       <button type="button" onClick={dismiss} aria-label="Close" className="absolute right-3 top-3 text-pigment-soft transition-colors hover:text-[#C44419]">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
       </button>
-      <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
+      <p className="py-4 pl-4 pr-10 text-[16px] md:text-[14px] leading-[24px] text-pigment">
         Hey, it’s Nyrro! Your little guide to Vishnu’s work, ideas and creative process.
       </p>
     </div>
@@ -554,7 +554,7 @@ function NivviPanel() {
       <MothTrail active={open} busy={busy} signal={signal} />
 
       {/* header */}
-      <div data-ledge="ceiling" className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-base leading-[19px] text-pigment-soft">
+      <div data-ledge="ceiling" className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-sm leading-[19px] text-pigment-soft">
         <span className="flex items-center gap-2">
           <span className="nivvi-mark relative grid">
             <MothIcon size={24} className="nivvi-mark-moth" />
@@ -577,7 +577,7 @@ function NivviPanel() {
         {empty ? (
           <div className="mt-auto">
             <p data-ledge="hero" className="font-serif text-[1.625rem] leading-[34px]">Hey, it&apos;s Nyrro!</p>
-            <p className="mt-2 text-[15px] leading-[24px] text-pigment">{page.key === "home" ? (
+            <p className="mt-2 text-[16px] md:text-[14px] leading-[24px] text-pigment">{page.key === "home" ? (
                 <>Your little beetle guide to Vishnu&apos;s work, ideas, and creative process. Let&apos;s explore!</>
               ) : (
                 <>You&apos;re on <span className="text-pigment">{page.title}</span>. Ask me about it, or tap a question.</>
@@ -585,7 +585,7 @@ function NivviPanel() {
             <ul className="mt-6 space-y-3">
               {page.prompts.slice(0, 3).map((p) => (
                 <li key={p}>
-                  <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[15px] leading-[22px] text-pigment-soft transition-colors hover:text-[#C44419]">
+                  <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[16px] md:text-[14px] leading-[22px] text-pigment-soft transition-colors hover:text-[#C44419]">
                     <span aria-hidden>↳</span>
                     {p}
                   </button>
@@ -598,10 +598,10 @@ function NivviPanel() {
             {messages.map((m, i) =>
               m.role === "user" ? (
                 <div key={i} className="flex justify-end">
-                  <p data-ledge="msg-u" className="max-w-[85%] border border-rule bg-white/45 px-4 py-3 text-[15px] leading-[22px]">{m.content}</p>
+                  <p data-ledge="msg-u" className="max-w-[85%] border border-rule bg-white/45 px-4 py-3 text-[16px] md:text-[14px] leading-[22px]">{m.content}</p>
                 </div>
               ) : (
-                <div key={i} data-ledge="msg-a" className="text-[15px] leading-[24px]">
+                <div key={i} data-ledge="msg-a" className="text-[16px] md:text-[14px] leading-[24px]">
                   {m.content ? (
                     m.content.split(/\n{2,}/).map((para, j) => (
                       <p key={j} className={j ? "mt-3" : ""}>
@@ -667,7 +667,7 @@ function NivviPanel() {
       >
         {listening ? (
           <div data-ledge="composer" className="border border-[#bcb6b3] bg-white/45 px-3 pb-3 pt-3">
-            <p className="min-h-[24px] px-1 text-[15px] leading-[24px] text-pigment">
+            <p className="min-h-[24px] px-1 text-[16px] md:text-[14px] leading-[24px] text-pigment">
               {draft || <span className="text-pigment-soft/80">Listening…</span>}
             </p>
             <div className="mt-3 flex items-center gap-1">
@@ -710,7 +710,7 @@ function NivviPanel() {
             placeholder="Ask about Vishnu…"
             aria-label="Ask Nyrro"
             maxLength={600}
-            className="mr-2 block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-base leading-[24px] outline-none md:text-[15px] placeholder:text-pigment-soft/80"
+            className="mr-2 block max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[6px] pl-2 pr-1 text-base md:text-sm leading-[24px] outline-none md:text-[14px] placeholder:text-pigment-soft/80"
           />
           {canSpeak && (
             <button

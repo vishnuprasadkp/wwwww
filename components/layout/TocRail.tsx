@@ -103,7 +103,7 @@ export default function TocRail() {
                   />
                   <span className={`flex h-0 w-0 items-baseline gap-2.5 overflow-hidden whitespace-nowrap opacity-0 transition-[width,height,opacity,margin,color] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:h-[22px] group-hover:w-[256px] ${open} group-focus-within:h-[22px] group-focus-within:w-[256px] ${on ? "text-[#C44419]" : "text-pigment hover:text-[#C44419]"}`}>
                     <span className="shrink-0 font-mono text-[12px] text-pigment-soft">{String(n).padStart(2, "0")}</span>
-                    <span className="truncate text-[15px] leading-[22px]">{it.title}</span>
+                    <span className="truncate text-[16px] md:text-[14px] leading-[22px]">{it.title}</span>
                   </span>
                 </a>
               </li>
@@ -119,7 +119,7 @@ export default function TocRail() {
                 }}
                 aria-current={on ? "location" : undefined}
                 tabIndex={-1}
-                className={`flex w-[256px] items-center gap-2 py-[3px] pl-[26px] text-[15px] leading-[22px] transition-colors ${on ? "text-[#C44419]" : "text-pigment-soft hover:text-pigment"}`}
+                className={`flex w-[256px] items-center gap-2 py-[3px] pl-[26px] text-[16px] md:text-[14px] leading-[22px] transition-colors ${on ? "text-[#C44419]" : "text-pigment-soft hover:text-pigment"}`}
               >
                 <span aria-hidden className="shrink-0">↳</span>
                 <span className="block min-w-0 flex-1 truncate">{it.title}</span>

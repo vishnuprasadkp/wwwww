@@ -25,8 +25,8 @@ export default function CaseList({ cases }: { cases: CaseMeta[] }) {
                 {t && (
                   <Pic file={t.src} sizes="(min-width: 768px) calc(50vw - 24px), 100vw" className="h-auto w-full" />
                 )}
-                <h3 className="mt-4 text-lg leading-[28px] md:text-xl md:leading-[1.5]">{c.title}</h3>
-                <p className="mt-1 font-mono text-base leading-[1.625] text-pigment-soft md:mt-0">{c.cardTags.join(" / ")}</p>
+                <h3 className="mt-4 text-lg leading-[28px] md:text-lg md:leading-[1.5]">{c.title}</h3>
+                <p className="mt-1 font-mono text-sm leading-[1.625] text-pigment-soft md:mt-0">{c.cardTags.join(" / ")}</p>
               </Link>
             </li>
           );

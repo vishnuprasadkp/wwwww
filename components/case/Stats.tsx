@@ -9,8 +9,8 @@ export function Stat({ value, label, children }: { value: string; label?: string
   return (
     <div>
       <dt className="text-2xl leading-[32px] md:text-[1.75rem] md:leading-[42px]">{value}</dt>
-      {label && <dd className="text-base leading-[26px]">{label}</dd>}
-      {children && <dd className="text-base leading-[26px]">{children}</dd>}
+      {label && <dd className="text-base md:text-sm leading-[26px]">{label}</dd>}
+      {children && <dd className="text-base md:text-sm leading-[26px]">{children}</dd>}
     </div>
   );
 }
