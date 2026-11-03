@@ -153,14 +153,14 @@ const closedPath = (pts: Pt[]) => "M" + pts.map((q) => `${q[0].toFixed(2)} ${q[1
 const mirrorPts = (pts: Pt[]): Pt[] => pts.map(([x, y]) => [40 - x, y] as Pt);
 
 // the right wing case (seen closed: the left is its mirror): its outline from the top of the seam round to the bottom of it
-const CASE_PTS = poly([[300, 243], [335, 237], [372, 244], [398, 266], [414, 305], [418, 350], [408, 408], [388, 456], [352, 492], [320, 514], [301, 523]]);
+const CASE_PTS = poly([[300, 243], [335, 237], [372, 244], [398, 266], [414, 305], [418, 350], [409, 405], [386, 448], [352, 477], [318, 487], [301, 486]]);
 const FW = closedPath(smooth(CASE_PTS, 5));
 const HW = "M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z";
 const FW_EDGE = stroke(smooth(CASE_PTS, 5), 1.05, 3, 0.06);
 const FW_EDGE2 = stroke(smooth(CASE_PTS.map(([x, y]) => [x + 0.22, y - 0.12] as Pt), 5), 0.4, 5, 0.1);
 // the stripes: long, parallel, following the roundness of the case, fat in the middle and fine at each end
 const CASE_TOP = fy(243);
-const CASE_H = fy(522) - fy(243);
+const CASE_H = fy(486) - fy(243);
 const meridian = (d: number, t0: number, t1: number): Pt[] =>
   Array.from({ length: 12 }, (_, i) => {
     const t = t0 + ((t1 - t0) * i) / 11;
@@ -169,18 +169,22 @@ const meridian = (d: number, t0: number, t1: number): Pt[] =>
 const STRIPES = [
   [2.6, 0.09, 0.93, 1.0], [4.9, 0.12, 0.9, 1.0],
 ].map((d, i) => stroke(meridian(d[0], d[1], d[2]), d[3], i * 2.7 + 1, 0.05)).join("");
-const SEAM = stroke(smooth(poly([[299, 243], [300, 300], [298, 390], [300, 522]])), 0.9, 27, 0.05);
+const SEAM = stroke(smooth(poly([[299, 243], [300, 300], [298, 380], [300, 487]])), 0.9, 27, 0.05);
 const HW_VEIN = stroke(curve([21.6, 18.4], [26, 18.4], [28.4, 22], [28, 27]), 0.7, 29);
 // the abdomen under the wing cases: seen only when they open
 const ABD = "M20 14.2C24.6 14.2 26.4 20 25.8 26.5C25.2 32 22.2 35.6 20 38.6C17.8 35.6 14.8 32 14.2 26.5C13.6 20 15.4 14.2 20 14.2Z";
+const ABD_PTS: Pt[] = [[20, 14.2], [24.4, 15], [26, 20], [25.4, 25.6], [23.8, 30.4], [21.6, 33.6], [20, 35.2]];
+const ABD_EDGE = stroke(smooth(ABD_PTS), 0.9, 61, 0.05);
+const ABD_EDGE_L = stroke(smooth(mirrorPts(ABD_PTS)), 0.9, 63, 0.05);
 const ABD_LINES = [
-  stroke(curve([14.6, 23.6], [17.6, 25.2], [22.4, 25.2], [25.4, 23.6]), 0.9, 53, 0.05),
-  stroke(curve([15.4, 30.2], [18, 31.8], [22, 31.8], [24.6, 30.2]), 0.9, 55, 0.05),
+  stroke(curve([14.8, 22.8], [17.6, 24.4], [22.4, 24.4], [25.2, 22.8]), 0.9, 53, 0.05),
+  stroke(curve([16.4, 29.2], [18.4, 30.6], [21.6, 30.6], [23.6, 29.2]), 0.85, 55, 0.05),
 ].join("");
 // the shield: a white dome, its outline bold and a little thinner at the sides
 const SHIELD_PTS = poly([[222, 233], [226, 214], [242, 191], [270, 173], [300, 168], [333, 173], [362, 189], [386, 212], [392, 233]]);
 const SHIELD = closedPath(smooth(SHIELD_PTS, 5)) ;
-const SHIELD_EDGE = stroke(smooth(SHIELD_PTS, 5), 1, 17, 0.05);
+const SHIELD_EDGE =
+  stroke(smooth(SHIELD_PTS.slice(0, 4), 5), 1, 17, 0.05) + stroke(smooth(SHIELD_PTS.slice(5), 5), 1, 18, 0.05); // not across the head
 const SHIELD_BOT = stroke(smooth(poly([[222, 233], [255, 244], [300, 249], [345, 244], [392, 233]]), 5), 0.7, 19, 0.05);
 // the head: a small rounded box with a dot for each eye, a line for the mouth, and two short curved horns
 const HEAD_PTS = poly([[279, 154], [281, 141], [298, 135], [332, 135], [347, 141], [350, 154], [345, 172], [331, 182], [299, 182], [284, 172], [279, 154]]);
@@ -281,18 +285,18 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
           {under}
         </g>
-        <path d={ABD} fill={ink} />
-        <path d={ABD_LINES} fill={paper} />
+        <path d={ABD_LINES} fill={ink} />
+        <path d={ABD_EDGE} fill={ink} />
+        <path d={ABD_EDGE_L} fill={ink} />
         <g clipPath={`url(#${id})`}>{cases}</g>
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
           {cases}
         </g>
-        <path d={SHIELD} fill={ink} />
+        <path d={SHIELD_BOT} fill={ink} />
         <path d={SHIELD_EDGE} fill={ink} />
-        <path d={HEAD} fill={ink} />
         <path d={HEAD_EDGE} fill={ink} />
-        <ellipse cx={fx(289)} cy={fy(156)} rx=".55" ry=".62" fill={paper} />
-        <ellipse cx={fx(341)} cy={fy(156)} rx=".55" ry=".62" fill={paper} />
+        <ellipse cx={fx(289)} cy={fy(156)} rx=".5" ry=".58" fill={ink} />
+        <ellipse cx={fx(341)} cy={fy(156)} rx=".5" ry=".58" fill={ink} />
       </svg>
       {star && <MothStar size={size} />}
     </span>
