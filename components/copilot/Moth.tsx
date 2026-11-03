@@ -155,6 +155,14 @@ const LINES = [
   stroke(curve([28, 20.4], [28.4, 23.8], [27.7, 27.2], [26.6, 30]), 0.7, 9, 0.1),
 ].join("");
 const RIM = stroke(run2([[20.3, 13], [26.6, 12.2], [29.4, 18.4], [28.8, 24.6]], [[28.8, 24.6], [28.2, 31.2], [24.7, 36.2], [20.3, 36.8]]), 0.9, 13, 0.08);
+// the abdomen under the wing cases: seen only when they open
+const ABD = "M20 13.4C24.8 13.4 26.8 19 26 26C25.2 32 22.6 36 20 36.9C17.4 36 14.8 32 14 26C13.2 19 15.2 13.4 20 13.4Z";
+const ABD_LINES = [
+  stroke(curve([15.4, 19.6], [17.8, 21.2], [22.2, 21.2], [24.6, 19.6]), 0.9, 51, 0.08),
+  stroke(curve([14.6, 24.2], [17.6, 26], [22.4, 26], [25.4, 24.2]), 0.95, 53, 0.08),
+  stroke(curve([14.8, 29], [17.6, 30.8], [22.4, 30.8], [25.2, 29]), 0.9, 55, 0.08),
+  stroke(curve([16.2, 33.4], [18.2, 34.8], [21.8, 34.8], [23.8, 33.4]), 0.8, 57, 0.08),
+].join("");
 const SEAM = stroke(curve([20.4, 15], [20.9, 22], [20.6, 30], [20.3, 36.8]), 1.3, 27, 0.1);
 const HW_VEIN = stroke(curve([21.6, 18.4], [26, 18.4], [28.4, 22], [28, 27]), 0.6, 29);
 // shield and head
@@ -239,6 +247,11 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
             <stop offset=".45" stopColor="#fff" stopOpacity=".04" />
             <stop offset="1" stopColor="#000" stopOpacity=".34" />
           </radialGradient>
+          <radialGradient id={id + "a"} cx=".5" cy=".3" r=".85">
+            <stop offset="0" stopColor="#fff" stopOpacity=".3" />
+            <stop offset=".5" stopColor="#fff" stopOpacity="0" />
+            <stop offset="1" stopColor="#000" stopOpacity=".45" />
+          </radialGradient>
           <radialGradient id={id + "h"} cx=".35" cy=".25" r=".8">
             <stop offset="0" stopColor="#fff" stopOpacity=".3" />
             <stop offset=".5" stopColor="#fff" stopOpacity="0" />
@@ -249,6 +262,10 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
         <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_L_D} fill={dark} />
         <path d={LEG_DARK} fill={dark} />
         <path d={LEG_EDGE} {...bodyProps} fillOpacity=".95" />
+        <path d={ABD} {...bodyProps} />
+        <path d={ABD} fill={`url(#${id}a)`} />
+        <path d={ABD_LINES} fill={dark} fillOpacity={chalk ? 0.6 : 0.5} />
+        <path d="M20 14V36.6" stroke={dark} strokeOpacity=".5" strokeWidth=".5" fill="none" />
         <g clipPath={`url(#${id})`}>{cases}</g>
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
           {cases}
