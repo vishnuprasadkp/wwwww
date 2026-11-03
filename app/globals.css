@@ -69,7 +69,8 @@
 .case-grid.lead-lg > p:first-of-type { font-size: 1.125rem; line-height: 30px; }
 .case-grid.statement > p:nth-of-type(2) { font-size: 1.625rem; line-height: 40px; }
 .case-grid > figure { margin: 0; }
-.case-grid.big .rc, .case-grid.big .rc dd, .case-grid.big .rc div, .case-grid.big > p.src { font-size: 1.125rem; line-height: 28px; }
+/* in the big blocks the sub-text (captions, notes, the source line) is one step down from the lead text */
+.case-grid.big .rc, .case-grid.big .rc dd, .case-grid.big .rc div, .case-grid.big > p.src { font-size: 1rem; line-height: 26px; }
 .case-grid.big .rc dt { font-size: 1.75rem; line-height: 42px; }
 .case-grid > p.cap { font-size: 1rem; line-height: 26px; }
 .case-grid > article { margin-top: 56px; }
@@ -78,6 +79,7 @@
   .case-grid.lead-lg > p:first-of-type { font-size: 1.125rem; line-height: 28px; }
   /* on the web the 16px text is 15px, on a 24px line */
   .case-grid > p, .case-grid > p.cap { font-size: 0.9375rem; line-height: 24px; }
+  .case-grid.big .rc, .case-grid.big .rc dd, .case-grid.big .rc div, .case-grid.big > p.src { font-size: 0.9375rem; line-height: 24px; }
   .case-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
   .case-grid > p { grid-column: 2; }
   .case-grid > p:first-of-type, .case-grid > p.src { grid-column: 1; }
