@@ -127,40 +127,80 @@ const run2 = (...segs: [Pt, Pt, Pt, Pt][]): Pt[] => segs.flatMap((sg, i) => samp
 const limb = (l: Pt[], seed: number, base: number) =>
   ribbon(sample(l[0], l[1], l[1], l[2], 12).map(([x, y], i) => [x + Math.sin(i * 2.1 + seed) * 0.1, y + Math.cos(i * 1.7 + seed) * 0.1] as Pt), (t) => base * (0.4 + 0.6 * Math.pow(1 - t, 0.5)));
 
-// right fore wing (seen closed: the left is its mirror)
-const FW = "M20.3 13C26.6 12.2 29.4 18.4 28.8 24.6C28.2 31.2 24.7 36.2 20.3 36.8Z";
+// The top view is traced from a print of a striped beetle. Its points were read off that drawing in pixels (centre line at x 299,
+// the wing cases from y 243 to 487, the legs out to x 95 and 504) and are turned into this drawing's units here.
+const fx = (px: number) => 20 + (px - 299) * 0.0607;
+const fy = (py: number) => 3 + (py - 108) * 0.085;
+const poly = (pts: [number, number][]): Pt[] => pts.map(([x, y]) => [fx(x), fy(y)] as Pt);
+/** A smooth line through points (Catmull–Rom), as many points as a stroke needs. */
+const smooth = (pts: Pt[], n = 6): Pt[] => {
+  const out: Pt[] = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[Math.min(pts.length - 1, i + 2)];
+    for (let k = 0; k < n; k++) {
+      const t = k / n;
+      const f = (a: number, b: number, c: number, d: number) => 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t * t + (-a + 3 * b - 3 * c + d) * t * t * t);
+      out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
+    }
+  }
+  out.push(pts[pts.length - 1]);
+  return out;
+};
+const closedPath = (pts: Pt[]) => "M" + pts.map((q) => `${q[0].toFixed(2)} ${q[1].toFixed(2)}`).join("L") + "Z";
+const mirrorPts = (pts: Pt[]): Pt[] => pts.map(([x, y]) => [40 - x, y] as Pt);
+
+// the right wing case (seen closed: the left is its mirror): its outline from the top of the seam round to the bottom of it
+const CASE_PTS = poly([[300, 243], [335, 237], [372, 244], [398, 266], [414, 305], [418, 350], [409, 405], [386, 448], [352, 477], [318, 487], [301, 486]]);
+const FW = closedPath(smooth(CASE_PTS, 5));
 const HW = "M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z";
-const FW_EDGE = stroke(run2([[20.3, 13], [26.6, 12.2], [29.4, 18.4], [28.8, 24.6]], [[28.8, 24.6], [28.2, 31.2], [24.7, 36.2], [20.3, 36.8]]), 1.5, 3);
-const FW_EDGE2 = stroke(run2([[20.1, 12.7], [27, 11.9], [29.8, 18.6], [29.2, 24.9]], [[29.2, 24.9], [28.5, 31.6], [25, 36.6], [20.7, 37.2]]), 0.8, 5, 0.2);
+const FW_EDGE = stroke(smooth(CASE_PTS, 5), 1.05, 3, 0.06);
+const FW_EDGE2 = stroke(smooth(CASE_PTS.map(([x, y]) => [x + 0.22, y - 0.12] as Pt), 5), 0.4, 5, 0.1);
 // the stripes: long, parallel, following the roundness of the case, fat in the middle and fine at each end
+const CASE_TOP = fy(243);
+const CASE_H = fy(486) - fy(243);
 const meridian = (d: number, t0: number, t1: number): Pt[] =>
-  Array.from({ length: 11 }, (_, i) => {
-    const t = t0 + ((t1 - t0) * i) / 10;
-    return [20.3 + d * Math.pow(Math.sin(Math.PI * t), 0.75) * (1 - 0.06 * t), 13.2 + 23.4 * t] as Pt;
+  Array.from({ length: 12 }, (_, i) => {
+    const t = t0 + ((t1 - t0) * i) / 11;
+    return [20 + d * Math.pow(Math.sin(Math.PI * (0.04 + 0.92 * t)), 0.65), CASE_TOP + CASE_H * t] as Pt;
   });
 const STRIPES = [
-  [2.5, 0.13, 0.9, 0.85], [3.9, 0.1, 0.9, 0.9], [5.3, 0.11, 0.86, 0.9], [6.6, 0.15, 0.78, 0.8],
-].map((d, i) => stroke(meridian(d[0], d[1], d[2]), d[3], i * 2.7 + 1, 0.08)).join("");
-const SEAM = stroke(curve([20.4, 14], [20.9, 22], [20.6, 30], [20.3, 37]), 1.1, 27, 0.08);
+  [0.95, 0.07, 0.94, 0.75], [2.1, 0.06, 0.95, 0.8], [3.25, 0.06, 0.94, 0.8], [4.4, 0.07, 0.92, 0.8], [5.5, 0.1, 0.88, 0.74], [6.4, 0.22, 0.76, 0.6],
+].map((d, i) => stroke(meridian(d[0], d[1], d[2]), d[3], i * 2.7 + 1, 0.05)).join("");
+const SEAM = stroke(smooth(poly([[299, 243], [300, 300], [298, 380], [300, 487]])), 0.9, 27, 0.05);
 const HW_VEIN = stroke(curve([21.6, 18.4], [26, 18.4], [28.4, 22], [28, 27]), 0.7, 29);
 // the abdomen under the wing cases: seen only when they open
-const ABD = "M20 13.4C24.8 13.4 26.8 19 26 26C25.2 32 22.6 36 20 36.9C17.4 36 14.8 32 14 26C13.2 19 15.2 13.4 20 13.4Z";
-const ABD_EDGE = stroke(run2([[20, 13.4], [24.8, 13.4], [26.8, 19], [26, 26]], [[26, 26], [25.2, 32], [22.6, 36], [20, 36.9]]), 1.4, 61);
-const ABD_EDGE_L = stroke(run2([[20, 13.4], [15.2, 13.4], [13.2, 19], [14, 26]], [[14, 26], [14.8, 32], [17.4, 36], [20, 36.9]]), 1.4, 63);
+const ABD = "M20 14.2C24.6 14.2 26.2 20 25.6 27C25 32.6 22.8 35.8 20 36.2C17.2 35.8 15 32.6 14.4 27C13.8 20 15.4 14.2 20 14.2Z";
+const ABD_EDGE = stroke(smooth([[20, 14.2], [24.6, 15], [26.2, 20], [25.6, 27], [24.6, 32.4], [22.4, 35.6], [20, 36.2]]), 0.9, 61, 0.05);
+const ABD_EDGE_L = stroke(smooth(mirrorPts([[20, 14.2], [24.6, 15], [26.2, 20], [25.6, 27], [24.6, 32.4], [22.4, 35.6], [20, 36.2]])), 0.9, 63, 0.05);
 const ABD_LINES = [
-  stroke(curve([15.4, 19.6], [17.8, 21.2], [22.2, 21.2], [24.6, 19.6]), 1.1, 51, 0.08),
-  stroke(curve([14.6, 24.2], [17.6, 26], [22.4, 26], [25.4, 24.2]), 1.2, 53, 0.08),
-  stroke(curve([14.8, 29], [17.6, 30.8], [22.4, 30.8], [25.2, 29]), 1.1, 55, 0.08),
-  stroke(curve([16.2, 33.4], [18.2, 34.8], [21.8, 34.8], [23.8, 33.4]), 1, 57, 0.08),
+  stroke(curve([14.8, 19.6], [17.8, 21], [22.2, 21], [25.2, 19.6]), 0.85, 51, 0.06),
+  stroke(curve([14.4, 24.2], [17.6, 25.8], [22.4, 25.8], [25.6, 24.2]), 0.9, 53, 0.06),
+  stroke(curve([14.7, 29], [17.6, 30.6], [22.4, 30.6], [25.3, 29]), 0.85, 55, 0.06),
+  stroke(curve([16.2, 33.2], [18.2, 34.6], [21.8, 34.6], [23.8, 33.2]), 0.75, 57, 0.06),
 ].join("");
-// shield and head: a big white shield with a bold outline, and a small dark head
-const SHIELD = "M14.4 14.6C14.2 10.6 16.8 8.8 20 8.8C23.2 8.8 25.8 10.6 25.6 14.6C23.4 15.2 16.6 15.2 14.4 14.6Z";
-const SHIELD_EDGE = stroke(run2([[14.4, 14.6], [14, 10.4], [16.8, 8.6], [20, 8.6]], [[20, 8.6], [23.2, 8.6], [26, 10.4], [25.6, 14.6]]), 1.6, 17);
-const SHIELD_BOT = stroke(curve([14.2, 14.7], [17, 15.6], [23, 15.6], [25.8, 14.7]), 1.5, 19);
-const HEAD = "M17.4 9.2C17 6 23 6 22.6 9.2Z";
-const HEAD_EDGE = stroke(run2([[17.2, 9.4], [16.8, 5.6], [23.2, 5.6], [22.8, 9.4]]), 1.5, 23);
-const LEGS = [...TOP_LEGS, ...TOP_LEGS.map(mirror)];
-const LEG_INK = LEGS.map((l, i) => limb(l, i * 1.3 + 2, 2.3)).join("");
+// the shield: a white dome, its outline bold and a little thinner at the sides
+const SHIELD_PTS = poly([[222, 233], [226, 214], [242, 191], [270, 173], [300, 168], [333, 173], [362, 189], [386, 212], [392, 233]]);
+const SHIELD = closedPath(smooth(SHIELD_PTS, 5)) ;
+const SHIELD_EDGE = stroke(smooth(SHIELD_PTS, 5), 1, 17, 0.05);
+const SHIELD_BOT = stroke(smooth(poly([[222, 233], [255, 244], [300, 249], [345, 244], [392, 233]]), 5), 0.7, 19, 0.05);
+// the head: a small rounded box with a dot for each eye, a line for the mouth, and two short curved horns
+const HEAD_PTS = poly([[279, 154], [281, 141], [298, 135], [332, 135], [347, 141], [350, 154], [345, 172], [331, 182], [299, 182], [284, 172], [279, 154]]);
+const HEAD = closedPath(smooth(HEAD_PTS, 4));
+const HEAD_EDGE = stroke(smooth(HEAD_PTS, 4), 0.8, 23, 0.04);
+const MOUTH = stroke(smooth(poly([[301, 171], [315, 176], [329, 171]])), 0.45, 25, 0.03);
+const HORN_L = ribbon(smooth(poly([[283, 141], [263, 131], [251, 116], [250, 106]])), (t) => 0.5 * (0.55 + 0.45 * Math.pow(1 - t * 0.6, 0.6)));
+const HORN_R = ribbon(smooth(poly([[347, 138], [369, 129], [379, 116], [379, 107]])), (t) => 0.5 * (0.55 + 0.45 * Math.pow(1 - t * 0.6, 0.6)));
+// the legs, as in the print: a thin curved shaft, a bulb where it leaves the body, and a club at the foot
+const LEG_L: Pt[][] = [
+  poly([[222, 214], [205, 196], [190, 172], [165, 153], [135, 148]]),
+  poly([[190, 323], [165, 330], [150, 356], [125, 380], [95, 386]]),
+  poly([[196, 418], [175, 428], [166, 462], [140, 488], [125, 497]]),
+];
+const LEG_ALL: Pt[][] = [...LEG_L, ...LEG_L.map(mirrorPts)];
+const LEG_INK = LEG_ALL.map((l, i) => ribbon(smooth(l, 5).map(([x, y], j) => [x + Math.sin(j * 1.9 + i) * 0.04, y + Math.cos(j * 2.3 + i) * 0.04] as Pt), (t) => 0.85 * (0.7 + 0.3 * (1 - t)))).join("");
 const SIDE_LEG_PTS: Pt[][] = [
   [[16.4, 14], [13.6, 14.4], [12.4, 11.6]],
   [[16.8, 21.4], [15.2, 22], [13.6, 22.8]],
@@ -223,12 +263,22 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
             <rect x="20" y="-10" width="30" height="60" />
           </clipPath>
         </defs>
-        <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_D} fill={ink} />
-        <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_L_D} fill={ink} />
+        <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={HORN_L} fill={ink} />
+        <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={HORN_R} fill={ink} />
+        <ellipse cx={fx(250)} cy={fy(105)} rx=".5" ry=".42" fill={ink} />
+        <ellipse cx={fx(379)} cy={fy(106)} rx=".5" ry=".42" fill={ink} />
         <path d={LEG_INK} fill={ink} />
-        {LEGS.map((l, i) => (
-          <ellipse key={i} cx={l[2][0]} cy={l[2][1]} rx="1.15" ry=".8" fill={ink} transform={`rotate(${i < 3 ? -20 : 20} ${l[2][0]} ${l[2][1]})`} />
-        ))}
+        {LEG_ALL.map((l, i) => {
+          const hip = l[0];
+          const foot = l[l.length - 1];
+          const left = i < 3;
+          return (
+            <g key={i}>
+              <ellipse cx={hip[0]} cy={hip[1]} rx=".85" ry=".62" fill={ink} />
+              <ellipse cx={foot[0]} cy={foot[1]} rx=".95" ry=".52" fill={ink} transform={`rotate(${left ? (i === 0 ? -12 : i === 1 ? 4 : 28) : i === 3 ? 12 : i === 4 ? -4 : -28} ${foot[0]} ${foot[1]})`} />
+            </g>
+          );
+        })}
         <path d={ABD} fill={paper} />
         <path d={ABD_LINES} fill={ink} />
         <path d={ABD_EDGE} fill={ink} />
@@ -240,10 +290,11 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
         <path d={SHIELD} fill={paper} />
         <path d={SHIELD_BOT} fill={ink} />
         <path d={SHIELD_EDGE} fill={ink} />
-        <path d={HEAD} fill={ink} />
+        <path d={HEAD} fill={paper} />
         <path d={HEAD_EDGE} fill={ink} />
-        <ellipse cx="18.6" cy="7.7" rx=".75" ry="1" fill={paper} />
-        <ellipse cx="21.4" cy="7.7" rx=".75" ry="1" fill={paper} />
+        <ellipse cx={fx(289)} cy={fy(158)} rx=".6" ry=".66" fill={ink} />
+        <ellipse cx={fx(341)} cy={fy(158)} rx=".6" ry=".66" fill={ink} />
+        <path d={MOUTH} fill={ink} />
       </svg>
       {star && <MothStar size={size} />}
     </span>
