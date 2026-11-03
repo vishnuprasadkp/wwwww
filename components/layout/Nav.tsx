@@ -33,8 +33,8 @@ export default function Nav() {
       >
         {isHome ? (
           <Link href="/" aria-label="Home" className="justify-self-start transition-colors duration-300 hover:text-pigment">
-            <svg width="29" height="32" viewBox="0 0 29 32" fill="currentColor" aria-hidden="true" style={{ overflow: "visible" }}>
-              <path d={LOGO_INK.echo} fillOpacity=".4" />
+            <svg width="24" height="26.5" viewBox="0 0 29 32" fill="currentColor" aria-hidden="true" style={{ overflow: "visible" }}>
+              <path d={LOGO_INK.echo} fillOpacity=".5" />
               <path d={LOGO_INK.main} />
             </svg>
           </Link>

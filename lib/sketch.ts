@@ -64,21 +64,30 @@ function ribbon(pts: Pt[], width: (t: number) => number): string {
   return "M" + [...left, ...right.reverse()].map((q) => `${q[0].toFixed(2)} ${q[1].toFixed(2)}`).join("L") + "Z";
 }
 
-/** The ink for a path: `main` is the stroke, `echo` the faint second line a little off it. `weight` is the widest the main stroke gets. */
-export function inkPath(d: string, weight = 1.7): { main: string; echo: string } {
+/**
+ * The ink for a path, drawn the way a signature is: each piece is one quick stroke that starts with weight and thins to a sharp point
+ * at the end, the line loosely unsteady; a closed shape is not closed neatly, the pen runs on past where it began and flicks off.
+ * `main` is the stroke, `echo` a lighter second pass that covers most of it, a little off. `weight` is the widest the stroke gets.
+ */
+export function inkPath(d: string, weight = 2): { main: string; echo: string } {
   let main = "";
   let echo = "";
   pieces(d).forEach((piece, s) => {
     let pts = piece.pts;
     if (piece.closed) {
-      // the hand runs on past where it began
-      const over = pts.slice(1, Math.max(3, Math.round(pts.length * 0.06)));
-      pts = [...pts, ...over.map(([x, y]) => [x + 0.22, y - 0.18] as Pt)];
+      // the pen runs on past the start, drifting outwards, and flicks off
+      const n = Math.max(4, Math.round(pts.length * 0.12));
+      const over = pts.slice(1, n).map(([x, y], i) => [x + (i / n) * 0.7, y - (i / n) * 0.55] as Pt);
+      pts = [...pts, ...over];
     }
-    const shaky = pts.map(([x, y], i) => [x + Math.sin(i * 0.9 + s * 2.1) * 0.12 + Math.sin(i * 2.3 + s) * 0.06, y + Math.cos(i * 1.1 + s * 1.7) * 0.12 + Math.cos(i * 2.7 + s * 0.6) * 0.06] as Pt);
-    main += ribbon(shaky, (t) => weight * (0.42 + 0.58 * Math.pow(Math.sin(Math.PI * Math.min(1, Math.max(0, t * 0.96 + 0.02))), 0.55)) * (1 + 0.14 * Math.sin(t * 11 + s)));
-    const off = shaky.map(([x, y]) => [x + 0.32, y - 0.26] as Pt);
-    echo += ribbon(off, () => 0.55);
+    const shaky = pts.map(([x, y], i) => [x + Math.sin(i * 0.7 + s * 2.1) * 0.2 + Math.sin(i * 2.1 + s) * 0.1, y + Math.cos(i * 0.9 + s * 1.7) * 0.2 + Math.cos(i * 2.5 + s * 0.6) * 0.1] as Pt);
+    // pressure: weight at the start, thinning, a sharp point at each end
+    main += ribbon(shaky, (t) => weight * (1.18 - 0.36 * t) * (0.04 + 0.96 * Math.pow(Math.sin(Math.PI * Math.min(1, Math.max(0, t))), 0.85)) * (1 + 0.16 * Math.sin(t * 13 + s)));
+    // the second pass: most of the length, a little off, lighter, and pointed too
+    const from = Math.round(shaky.length * 0.08);
+    const to = Math.round(shaky.length * 0.88);
+    const second = shaky.slice(from, to).map(([x, y], i) => [x + 0.45 + Math.sin(i * 0.6 + s) * 0.14, y - 0.4 + Math.cos(i * 0.8 + s) * 0.14] as Pt);
+    if (second.length > 3) echo += ribbon(second, (t) => 0.8 * (0.04 + 0.96 * Math.pow(Math.sin(Math.PI * Math.min(1, Math.max(0, t))), 0.8)));
   });
   return { main, echo };
 }

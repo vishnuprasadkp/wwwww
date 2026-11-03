@@ -75,7 +75,7 @@
 .case-grid > article { margin-top: 56px; }
 @media (min-width: 768px) {
   .case-grid > p:first-of-type { font-size: 1.125rem; line-height: 30px; }
-  .case-grid.lead-lg > p:first-of-type { font-size: 1.5rem; line-height: 36px; }
+  .case-grid.lead-lg > p:first-of-type { font-size: 1.125rem; line-height: 28px; }
   /* on the web the 16px text is 15px, on a 24px line */
   .case-grid > p, .case-grid > p.cap { font-size: 0.9375rem; line-height: 24px; }
   .case-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
