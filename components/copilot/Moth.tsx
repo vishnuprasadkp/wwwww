@@ -105,6 +105,23 @@ function StarBadge({ size }: { size: number }) {
   );
 }
 
+/** On a dark ground the pencil is chalk: pale lines, and the parts filled with the ground's own dark. */
+const paperFor = (c: MothColors) => {
+  const n = parseInt(c.deep.slice(1), 16);
+  const lum = (0.3 * (n >> 16) + 0.59 * ((n >> 8) & 255) + 0.11 * (n & 255)) / 255;
+  return lum > 0.72 ? c.hind : PAPER;
+};
+const HEAD = "M14.6 14.4C14.4 10.4 17 9 20 9C23 9 25.6 10.4 25.4 14.4C23.4 14.9 16.6 14.9 14.6 14.4Z";
+
+/** A fine pencil hatching, as a fill: parallel lines at an angle, on nothing. */
+function Hatch({ id, ink, gap, width, angle }: { id: string; ink: string; gap: number; width: number; angle: number }) {
+  return (
+    <pattern id={id} patternUnits="userSpaceOnUse" width={gap} height={gap} patternTransform={`rotate(${angle})`}>
+      <line x1="0" y1="0" x2="0" y2={gap} stroke={ink} strokeWidth={width * 1.3} strokeOpacity=".9" />
+    </pattern>
+  );
+}
+
 export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLORS, className = "" }: { size?: number; open?: number; star?: boolean; colors?: MothColors; className?: string }) {
   const id = "mc" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const ref = useRef<SVGSVGElement>(null);
@@ -115,17 +132,29 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
   // wing cases that taper to a point and carry one fine pale stripe each, and six thin legs. Each wing case is drawn closed
   // (lying along the body) inside a group that turns it out by FOLD degrees, so at rest it is closed, and as `setMothOpen`
   // lifts it the case swings out and the pale under-wing shows beneath it. The right side is drawn; the left is its mirror.
+  // Drawn as a pencil sketch rather than a solid illustration: each part is the paper's own colour (so what is behind it is rubbed
+  // out), shaded with a few fine hatching lines, and outlined twice, the second line a little off and fainter, as a hand overshoots.
+  const FW = "M20.3 13.4C25.8 12.8 28.6 17.6 28.2 23.4C27.8 29.6 24.4 35 20.3 35.8Z";
+  const HW = "M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z";
+  const ink = colors.deep;
+  const paper = paperFor(colors);
+  const line = { fill: "none", stroke: ink, strokeLinejoin: "round" as const, strokeLinecap: "round" as const, vectorEffect: "non-scaling-stroke" as const };
   const cases = (
     <>
       <g data-hw>
         <g transform={`rotate(${-FOLD * 0.5} ${PIVOT})`}>
-          <path d="M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z" fill={colors.hind} />
+          <path d={HW} fill={paper} fillOpacity=".7" />
+          <path d={HW} fill={`url(#${id}h2)`} />
+          <path d={HW} {...line} strokeOpacity=".7" strokeWidth="1" />
         </g>
       </g>
       <g data-fw>
         <g transform={`rotate(${-FOLD} ${PIVOT})`}>
-          <path d="M20.3 13.4C25.8 12.8 28.6 17.6 28.2 23.4C27.8 29.6 24.4 35 20.3 35.8Z" fill={colors.grey} stroke={colors.deep} strokeWidth="0.9" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+          <path d={FW} fill={paper} />
+          <path d={FW} fill={`url(#${id}h)`} />
           <path d={TOP_LINES_D} fill={colors.vein} />
+          <path d={FW} {...line} strokeWidth="0.95" />
+          <path d={FW} {...line} strokeOpacity=".4" strokeWidth=".6" transform="translate(.3 -.25) rotate(1.6 20 25)" />
         </g>
       </g>
     </>
@@ -138,17 +167,26 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
           <clipPath id={id}>
             <rect x="20" y="-10" width="30" height="60" />
           </clipPath>
+          <Hatch id={id + "h"} ink={ink} gap={1.7} width={0.5} angle={38} />
+          <Hatch id={id + "h2"} ink={ink} gap={3} width={0.38} angle={38} />
+          <Hatch id={id + "h3"} ink={ink} gap={1.3} width={0.5} angle={-38} />
         </defs>
-        <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_D} fill={colors.deep} />
-        <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_L_D} fill={colors.deep} />
-        <path d={TOP_LEGS_D} fill={colors.deep} />
-        <path d="M18 13C17.6 20 18.4 26 20 31C21.6 26 22.4 20 22 13Z" fill={colors.deep} />
+        <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_D} fill={ink} fillOpacity=".9" />
+        <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_L_D} fill={ink} fillOpacity=".9" />
+        <path d={TOP_LEGS_D} fill={ink} fillOpacity=".88" />
+        <path d={TOP_LEGS_D} fill={ink} fillOpacity=".3" transform="translate(.35 .25)" />
+        <path d="M18 13C17.6 20 18.4 26 20 31C21.6 26 22.4 20 22 13Z" fill={paper} />
+        <path d="M18 13C17.6 20 18.4 26 20 31C21.6 26 22.4 20 22 13Z" fill={`url(#${id}h3)`} />
+        <path d="M18 13C17.6 20 18.4 26 20 31C21.6 26 22.4 20 22 13Z" {...line} strokeWidth=".8" />
         <g clipPath={`url(#${id})`}>{cases}</g>
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
           {cases}
         </g>
-        <path d="M14.6 14.4C14.4 10.4 17 9 20 9C23 9 25.6 10.4 25.4 14.4C23.4 14.9 16.6 14.9 14.6 14.4Z" fill={colors.deep} />
-        <path d="M17.6 9C17.4 6 22.6 6 22.4 9Z" fill={colors.deep} />
+        <path d={HEAD} fill={paper} />
+        <path d={HEAD} fill={`url(#${id}h3)`} />
+        <path d={HEAD} {...line} strokeWidth="1.2" />
+        <path d={HEAD} {...line} strokeOpacity=".4" strokeWidth=".6" transform="translate(-.25 .3) rotate(-1.4 20 12)" />
+        <path d="M17.6 9C17.4 6 22.6 6 22.4 9Z" fill={ink} fillOpacity=".9" />
       </svg>
       {star && <MothStar size={size} />}
     </span>
@@ -170,14 +208,29 @@ export function MothStar({ size = 28 }: { size?: number }) {
  * a ledge, head along it. Same solid drawing as the top view.
  */
 export function MothSideIcon({ size = 28, colors = MOTH_COLORS }: { size?: number; colors?: MothColors }) {
+  const id = "ms" + useId().replace(/[^a-zA-Z0-9]/g, "");
+  const ink = colors.deep;
+  const paper = paperFor(colors);
+  const DOME = "M17.2 12.4C28 11.6 33 19 31.6 27C30.6 32 25.8 35.6 20.4 36C17.4 29 16.4 19 17.2 12.4Z";
+  const line = { fill: "none", stroke: ink, strokeLinejoin: "round" as const, strokeLinecap: "round" as const, vectorEffect: "non-scaling-stroke" as const };
   return (
   <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" style={{ overflow: "visible" }}>
-    <path d={SIDE_LEGS_D} fill={colors.deep} />
-    <path d="M17.2 12.4C28 11.6 33 19 31.6 27C30.6 32 25.8 35.6 20.4 36C17.4 29 16.4 19 17.2 12.4Z" fill={colors.grey} stroke={colors.deep} strokeWidth="0.9" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+    <defs>
+      <Hatch id={id + "h"} ink={ink} gap={1.7} width={0.5} angle={38} />
+      <Hatch id={id + "h3"} ink={ink} gap={1.3} width={0.5} angle={-38} />
+    </defs>
+    <path d={SIDE_LEGS_D} fill={ink} fillOpacity=".88" />
+    <path d={SIDE_LEGS_D} fill={ink} fillOpacity=".3" transform="translate(.35 .25)" />
+    <path d={DOME} fill={paper} />
+    <path d={DOME} fill={`url(#${id}h)`} />
     <path d={SIDE_LINES_D} fill={colors.vein} />
-    <ellipse cx="16.8" cy="12.4" rx="2.2" ry="2.7" fill={colors.deep} />
-    <path d="M14 8.8C13.8 6 17.2 6 17 8.8Z" fill={colors.deep} />
-    <path className="moth-ant" style={{ transformOrigin: "16px 6px" }} d={SIDE_ANT_D} fill={colors.deep} />
+    <path d={DOME} {...line} strokeWidth="1.25" />
+    <path d={DOME} {...line} strokeOpacity=".4" strokeWidth=".6" transform="translate(.3 -.25) rotate(1.6 24 24)" />
+    <ellipse cx="16.8" cy="12.4" rx="2.2" ry="2.7" fill={paper} />
+    <ellipse cx="16.8" cy="12.4" rx="2.2" ry="2.7" fill={`url(#${id}h3)`} />
+    <ellipse cx="16.8" cy="12.4" rx="2.2" ry="2.7" {...line} strokeWidth=".9" />
+    <path d="M14 8.8C13.8 6 17.2 6 17 8.8Z" fill={ink} fillOpacity=".9" />
+    <path className="moth-ant" style={{ transformOrigin: "16px 6px" }} d={SIDE_ANT_D} fill={ink} fillOpacity=".9" />
   </svg>
   );
 }
