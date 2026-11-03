@@ -266,18 +266,6 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
         <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={HORN_R} fill={ink} />
         <ellipse cx={fx(250)} cy={fy(105)} rx=".5" ry=".42" fill={ink} />
         <ellipse cx={fx(379)} cy={fy(106)} rx=".5" ry=".42" fill={ink} />
-        <path d={LEG_INK} fill={ink} />
-        {LEG_ALL.map((l, i) => {
-          const hip = l[0];
-          const foot = l[l.length - 1];
-          const left = i < 3;
-          return (
-            <g key={i}>
-              <ellipse cx={hip[0]} cy={hip[1]} rx=".85" ry=".62" fill={ink} />
-              <ellipse cx={foot[0]} cy={foot[1]} rx=".95" ry=".52" fill={ink} transform={`rotate(${left ? (i === 0 ? -12 : i === 1 ? 4 : 28) : i === 3 ? 12 : i === 4 ? -4 : -28} ${foot[0]} ${foot[1]})`} />
-            </g>
-          );
-        })}
         <g clipPath={`url(#${id})`}>{under}</g>
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
           {under}
@@ -289,6 +277,19 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
           {cases}
         </g>
+        {/* the legs are in front of the wings: when the cases swing open they must not cover them */}
+        <path d={LEG_INK} fill={ink} />
+        {LEG_ALL.map((l, i) => {
+          const hip = l[0];
+          const foot = l[l.length - 1];
+          const left = i < 3;
+          return (
+            <g key={i}>
+              <ellipse cx={hip[0]} cy={hip[1]} rx=".6" ry=".45" fill={ink} />
+              <ellipse cx={foot[0]} cy={foot[1]} rx=".95" ry=".52" fill={ink} transform={`rotate(${left ? (i === 0 ? -12 : i === 1 ? 4 : 28) : i === 3 ? 12 : i === 4 ? -4 : -28} ${foot[0]} ${foot[1]})`} />
+            </g>
+          );
+        })}
         <path d={SHIELD_BOT} fill={ink} />
         <path d={SHIELD_EDGE} fill={ink} />
         <path d={HEAD_EDGE} fill={ink} />
