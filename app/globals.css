@@ -162,9 +162,11 @@ aside[data-moth-away] .nivvi-mark-star { opacity: 1; transform: translateY(-50%)
 .loader { display: none; }
 html[data-loading] { overflow: hidden; }
 html[data-loading] .loader { display: block; position: fixed; inset: 0; z-index: 100; pointer-events: none; }
-/* a dark panel over the page: its left edge is pushed across the screen, and the page is under it. It takes clicks, so nothing behind it can be used. */
-.loader-dark { position: absolute; inset: 0; background: #1d1b1b; pointer-events: auto; }
-.loader-edge { position: absolute; left: 0; top: 0; width: 0; height: 100%; box-shadow: -10px 0 26px 6px rgba(29, 27, 27, 0.28); pointer-events: none; will-change: transform; opacity: 0; }
+/* the paper over the page, laid exactly as the page lays its own (so it matches); it takes clicks, so nothing behind it can be used until it lifts */
+.loader-bg { position: absolute; inset: 0; background: #eae7e6; pointer-events: auto; overflow: hidden; }
+.loader-bg::before { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: max(1654px, 100lvh); opacity: 0.9; background: #e8e5e4 url("/images/site/paper-sm.webp") center top / cover no-repeat; }
+@media (min-width: 768px) { .loader-bg::before { background-image: url("/images/site/paper.webp"); } }
+@media (min-width: 1024px) { .loader-bg::before { left: 50%; width: max(100vw, 1728px); transform: translateX(-50%); } }
 .loader-moth { position: fixed; left: 0; top: 0; opacity: 0; pointer-events: none; will-change: transform, opacity; }
 /* while it plays, the header shows the word "Nyrro" alone, a little to the left; the moth lands on its left and the word eases to the right */
 html[data-landed] button[aria-label="Ask Nyrro"] > span:first-child { transition: none; }
