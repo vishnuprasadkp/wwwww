@@ -15,7 +15,7 @@ export type PageInfo = {
 const HOME: PageInfo = {
   key: "home",
   title: "Vishnu's portfolio",
-  prompts: ["What makes your design approach unique?", "What projects have you worked on?", "Tell me about your design process"],
+  prompts: ["What makes Vishnu's design approach unique?", "What has Vishnu worked on?", "How does Vishnu design?"],
 };
 
 const CASES: Record<string, PageInfo> = {
@@ -25,10 +25,10 @@ const CASES: Record<string, PageInfo> = {
     title: "Intelligent Enterprise Search Platform",
     prompts: [
       "What problem was this search platform solving?",
-      "How did you design for three different roles?",
+      "How did he design for three different roles?",
       "What are Ask, Configure and Govern?",
       "What outcomes came from this platform?",
-      "What did you learn from this project?",
+      "What did he learn from this project?",
     ],
   },
   adeo: {
@@ -40,7 +40,7 @@ const CASES: Record<string, PageInfo> = {
       "How does the AI help members in a session?",
       "How does voting work in this platform?",
       "What were the outcomes of this project?",
-      "What did you learn from designing for government?",
+      "What did he learn designing for government?",
     ],
   },
   "ai-agent": {
@@ -49,10 +49,10 @@ const CASES: Record<string, PageInfo> = {
     title: "Agent Workforce Platform",
     prompts: [
       "What is the Agent Workforce Platform?",
-      "Who did you design it for?",
-      "How did you design Simple, Workflow and Advanced agents?",
+      "Who did he design it for?",
+      "How did he design the three kinds of agents?",
       "What are guardrails and observability here?",
-      "What did you learn from this project?",
+      "What did he learn from this project?",
     ],
   },
   hdfc: {
@@ -62,8 +62,8 @@ const CASES: Record<string, PageInfo> = {
     prompts: [
       "What was the challenge with consent at HDFC?",
       "What results came out of this project?",
-      "How did you design for regulation and customers?",
-      "What did you learn from this project?",
+      "How did he design for regulation and customers?",
+      "What did he learn from this project?",
     ],
   },
   sony: {
@@ -72,9 +72,9 @@ const CASES: Record<string, PageInfo> = {
     title: "Intelligence at the core of Asia's largest media group (Sony)",
     prompts: [
       "What are the four platforms in the Sony work?",
-      "What was your role on the Sony projects?",
+      "What was his role on the Sony projects?",
       "What results did these platforms deliver?",
-      "What did you learn from this project?",
+      "What did he learn from this project?",
     ],
   },
 };
@@ -83,10 +83,10 @@ const ABOUT: PageInfo = {
   key: "about",
   title: "About Vishnu",
   prompts: [
-    "What's your background?",
-    "How does architecture shape how you design?",
-    "What do you do outside of design?",
-    "How do you approach design?",
+    "What is Vishnu's background?",
+    "How does architecture shape his design?",
+    "What does he do outside of design?",
+    "How does he approach design?",
   ],
 };
 
@@ -94,10 +94,10 @@ const RESUME: PageInfo = {
   key: "resume",
   title: "Vishnu's resume",
   prompts: [
-    "Where have you worked?",
-    "What are your core skills?",
-    "What have you achieved at UnifyApps?",
-    "What did you study?",
+    "Where has Vishnu worked?",
+    "What are his core skills?",
+    "What has he achieved at UnifyApps?",
+    "What did he study?",
   ],
 };
 

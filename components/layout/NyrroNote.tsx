@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MothIcon } from "@/components/copilot/Moth";
 
 /**
  * A small greeting in the corner of the painting ("Hi, I'm Nyrro"). Hover it (or tap it on a phone) and a longer note opens
@@ -56,11 +55,8 @@ export default function NyrroNote() {
         aria-controls="nyrro-note"
         onClick={() => (open ? setOpen(false) : show())}
         onFocus={show}
-        className="pointer-events-auto flex items-center gap-2 border border-rule nyrro-paper py-1.5 pl-2 pr-3.5 font-mono text-[13px] leading-5 text-pigment transition-[filter] hover:brightness-95"
+        className="pointer-events-auto flex items-center gap-2 border border-rule nyrro-paper py-1.5 px-3.5 font-mono text-[13px] leading-5 text-pigment transition-[filter] hover:brightness-95"
       >
-        <span className="grid place-items-center">
-          <MothIcon size={22} star={false} colors={{ grey: "#4c3d38", hind: "#8d7168", deep: "#4c3d38", vein: "#eae7e6" }} />
-        </span>
         About Nyrro
       </button>
 

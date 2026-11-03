@@ -15,7 +15,7 @@ const limited = (ip: string) => {
   return recent.length > 20;
 };
 
-const FALLBACK = "I'm Nyrro, Vishnu's AI assistant. Ask me about his projects, process or background.\nNEXT: What makes your design approach unique? | What projects have you worked on? | Tell me about your design process";
+const FALLBACK = "I'm Nyrro, the beetle guide of Vishnu's portfolio. Ask me about his projects, process or background.\nNEXT: What makes Vishnu's approach unique? | What has he worked on? | Why a beetle?";
 
 const enc = new TextEncoder();
 const textStream = (run: (push: (s: string) => void) => Promise<void>) =>
@@ -25,7 +25,7 @@ const textStream = (run: (push: (s: string) => void) => Promise<void>) =>
         try {
           await run((s) => controller.enqueue(enc.encode(s)));
         } catch {
-          controller.enqueue(enc.encode("Sorry — I lost my train of thought. Please try again in a moment.\nNEXT: Where should I start? | What does Vishnu do? | Is he open to roles?"));
+          controller.enqueue(enc.encode("Sorry, I lost my trail for a moment. Please try again.\nNEXT: Where should I start? | What does Vishnu do? | Is he open to roles?"));
         }
         controller.close();
       },
@@ -68,8 +68,8 @@ export async function POST(req: Request) {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
     body: JSON.stringify({
-      model: process.env.NIVVI_MODEL ?? "claude-haiku-4-5-20251001",
-      max_tokens: 500,
+      model: process.env.NIVVI_MODEL ?? "claude-sonnet-5-5",
+      max_tokens: 600,
       stream: true,
       system: systemPrompt(await knowledge().catch(() => ""), page),
       messages,
