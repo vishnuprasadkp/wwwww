@@ -114,7 +114,7 @@ const lumOf = (h: string) => {
   const n = parseInt(h.slice(1), 16);
   return (0.3 * (n >> 16) + 0.59 * ((n >> 8) & 255) + 0.11 * (n & 255)) / 255;
 };
-const BLACK = "#1c1a1a"; // the black of the ink
+const BLACK = "#393636"; // the ink: the brand's dark
 
 /** One brush stroke: a ribbon along `pts`, its width following the pressure, the line itself a little unsteady. */
 const stroke = (pts: Pt[], peak: number, seed: number, amp = 0.16): string => {
@@ -227,7 +227,7 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
   }, [open]);
   const chalk = onDark(colors);
   const ink = chalk ? colors.deep : BLACK;
-  const paper = chalk ? colors.hind : PAPER;
+  const paper = chalk ? "none" : PAPER; // on the dark section nothing is filled: only the white ink
   // A jewel beetle: a small head with two feelers, a broad shield behind it, two rounded wing cases that taper to a point, and six
   // legs. Each wing case is drawn closed (lying along the body) inside a group that turns it out by FOLD degrees, so at rest it is
   // closed, and as `setMothOpen` lifts it the case swings out and the abdomen and the under-wing show beneath it.
@@ -318,7 +318,7 @@ export function MothStar({ size = 28 }: { size?: number }) {
 export function MothSideIcon({ size = 28, colors = MOTH_COLORS }: { size?: number; colors?: MothColors }) {
   const chalk = onDark(colors);
   const ink = chalk ? colors.deep : BLACK;
-  const paper = chalk ? colors.hind : PAPER;
+  const paper = chalk ? "none" : PAPER; // on the dark section nothing is filled: only the white ink
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" style={{ overflow: "visible" }}>
       <path d={SIDE_LEG_INK} fill={ink} />
@@ -353,7 +353,7 @@ type Spot = { x: number; y: number; wall: Wall; ledge?: Ledge; dir?: 1 | -1; use
 export type MothSignal = { kind: "send" | "reply"; id: number };
 
 const SIZE_BASE = 28; // moth height in px, the same as the icon it flies out of
-const SIZE_SCENE = 34; // in a painting section the beetle is a little larger than the assistant's (28)
+const SIZE_SCENE = 42; // in a painting section the beetle is a little larger than the assistant's (28)
 /** The moths in one painting section, so they keep out of each other's way and a press goes to the nearer one. */
 type Mate = { pos: { x: number; y: number }; goal: () => { x: number; y: number } | null };
 const swarm = new WeakMap<HTMLElement, Set<Mate>>();
