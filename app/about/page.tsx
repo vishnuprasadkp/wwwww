@@ -22,12 +22,12 @@ export default async function About() {
   return (
     <>
       {content}
-      <section data-toc="Let’s connect" className="mt-16 border-y border-rule px-5 py-3 md:mt-[140px] md:py-6 md:px-8 lg:mt-[241px]">
-        <div className="grid gap-6 md:grid-cols-2 md:gap-4">
-          <p className="font-serif text-2xl leading-[32px] md:max-w-[40rem] md:text-[2rem] md:leading-[46px]">
+      <section data-toc="Let’s connect" className="mt-16 border-y border-rule px-5 py-5 md:mt-[140px] md:px-8 md:py-8 lg:mt-[241px]">
+        <div className="grid items-start gap-6 md:grid-cols-2 md:gap-4">
+          <p className="font-serif text-[1.625rem] leading-[34px] text-pigment md:max-w-[40rem] md:text-[2rem] md:leading-[42px]">
             Let’s connect. Open to good conversations and interesting ideas.
           </p>
-          <div className="self-start md:pt-[61px]">
+          <div className="md:pt-1.5">
             <ArrowLink href={site.gmail}>Get in touch</ArrowLink>
           </div>
         </div>
