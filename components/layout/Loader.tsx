@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MothIcon, setMothOpen } from "@/components/copilot/Moth";
 
-// milliseconds. The page is hidden behind its own paper, and there is a fine line standing on it, near the left edge. A beetle
+// milliseconds. The page is hidden behind its own paper, and there is a line standing on it, the same as the header's rule, near the left edge. A beetle
 // flies in, lands with its head to the line, and shoves it a good way across. Then it takes off, flies round, lands again at
 // another height and shoves again; three times, the last pushing the line off the far side of the screen. Only then does the page
 // appear, and the beetle flies up to the assistant in the header and lands beside the word "Nyrro".
@@ -109,12 +109,12 @@ export default function Loader() {
       return { x, y, heading: (Math.atan2(vx, -vy) * 180) / Math.PI };
     };
 
-    // the line: a long thin stroke a little unsteady, pressed forward where the beetle leans on it
+    // the line: the same as the rule under the header (one pixel, the same grey), pressed forward where the beetle leans on it
     const drawLine = (X: number, yc: number, bulge: number, opacity: number, h: number) => {
       let d = "";
       for (let y = -12; y <= h + 12; y += 14) {
         const g = Math.exp(-(((y - yc) / 150) ** 2));
-        const x = X + bulge * g + Math.sin(y * 0.045 + 1.3) * 0.9 + Math.sin(y * 0.13) * 0.4;
+        const x = X + bulge * g;
         d += (d ? "L" : "M") + x.toFixed(1) + " " + y;
       }
       wire.setAttribute("d", d);
@@ -277,7 +277,7 @@ export default function Loader() {
     <div ref={root} className="loader" aria-hidden>
       <div ref={bg} className="loader-bg" />
       <svg className="loader-line" width="100%" height="100%" style={{ position: "fixed", inset: 0, overflow: "visible", pointerEvents: "none" }}>
-        <path ref={line} d="" fill="none" stroke="#1c1a1a" strokeWidth="2.2" strokeLinecap="round" style={{ opacity: 0 }} />
+        <path ref={line} d="" fill="none" stroke="#cfcfcf" strokeWidth="1" style={{ opacity: 0 }} />
       </svg>
       <div ref={mothEl} className="loader-moth" style={{ width: SIZE * 1.4, height: SIZE }}>
         <MothIcon size={SIZE} star={false} />
