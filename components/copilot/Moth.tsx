@@ -105,22 +105,64 @@ function StarBadge({ size }: { size: number }) {
   );
 }
 
-/** On a dark ground the pencil is chalk: pale lines, and the parts filled with the ground's own dark. */
-const paperFor = (c: MothColors) => {
-  const n = parseInt(c.deep.slice(1), 16);
-  const lum = (0.3 * (n >> 16) + 0.59 * ((n >> 8) & 255) + 0.11 * (n & 255)) / 255;
-  return lum > 0.72 ? c.hind : PAPER;
+/* ----------------------------------------------------------------- the beetle, drawn in ink
+ * Drawn the way a quick ink sketch is: every line is one stroke of a brush pen, thicker where the hand pressed and thin where it lifted,
+ * a little unsteady, stopping short or running past where it should join, with a few broad strokes of grey marker for the shading.
+ * Nothing is filled but with the paper's own colour (so a line behind a part is rubbed out). The strokes are made once, here, from
+ * hand-placed curves with a fixed unsteadiness, so the beetle is the same sketch each time it is drawn.
+ */
+const lumOf = (h: string) => {
+  const n = parseInt(h.slice(1), 16);
+  return (0.3 * (n >> 16) + 0.59 * ((n >> 8) & 255) + 0.11 * (n & 255)) / 255;
 };
-const HEAD = "M14.6 14.4C14.4 10.4 17 9 20 9C23 9 25.6 10.4 25.4 14.4C23.4 14.9 16.6 14.9 14.6 14.4Z";
+/** On a dark ground the ink is chalk: pale lines, and parts filled with the ground's own dark. */
+const paperFor = (c: MothColors) => (lumOf(c.deep) > 0.72 ? c.hind : PAPER);
 
-/** A fine pencil hatching, as a fill: parallel lines at an angle, on nothing. */
-function Hatch({ id, ink, gap, width, angle }: { id: string; ink: string; gap: number; width: number; angle: number }) {
-  return (
-    <pattern id={id} patternUnits="userSpaceOnUse" width={gap} height={gap} patternTransform={`rotate(${angle})`}>
-      <line x1="0" y1="0" x2="0" y2={gap} stroke={ink} strokeWidth={width * 1.3} strokeOpacity=".9" />
-    </pattern>
-  );
-}
+/** One brush stroke: a ribbon along `pts`, its width following the pressure, the line itself a little unsteady. */
+const stroke = (pts: Pt[], peak: number, seed: number, amp = 0.2): string => {
+  const shaky = pts.map(([x, y], i) => [x + Math.sin(i * 1.9 + seed) * amp + Math.sin(i * 4.3 + seed * 2.1) * amp * 0.5, y + Math.cos(i * 2.3 + seed * 1.3) * amp + Math.cos(i * 5.1 + seed) * amp * 0.5] as Pt);
+  return ribbon(shaky, (t) => peak * (0.26 + 0.74 * Math.pow(Math.sin(Math.PI * Math.min(1, Math.max(0, t * 0.92 + 0.04))), 0.5)) * (1 + 0.22 * Math.sin(t * 9 + seed)));
+};
+const run = (...segs: [Pt, Pt, Pt, Pt][]): Pt[] => segs.flatMap((sg, i) => sample(sg[0], sg[1], sg[2], sg[3], 10).slice(i ? 1 : 0));
+const curve = (a: Pt, b: Pt, c: Pt, d: Pt) => sample(a, b, c, d, 12);
+/** A leg: one stroke through its three points, thick at the body and a thin point at the foot. */
+const limb = (l: Pt[], seed: number) => ribbon(sample(l[0], l[1], l[1], l[2], 12).map(([x, y], i) => [x + Math.sin(i * 2.1 + seed) * 0.09, y + Math.cos(i * 1.7 + seed) * 0.09] as Pt), (t) => 0.5 + 1.0 * Math.pow(1 - t, 0.7));
+
+// right fore wing (seen closed: the left is its mirror)
+const FW = "M20.3 13.4C25.8 12.8 28.6 17.6 28.2 23.4C27.8 29.6 24.4 35 20.3 35.8Z";
+const HW = "M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z";
+const FW_EDGE = stroke(run([[20.3, 13.4], [25.8, 12.8], [28.6, 17.6], [28.2, 23.4]], [[28.2, 23.4], [27.8, 29.6], [24.4, 35], [20.3, 35.8]]), 1.55, 3);
+const FW_EDGE2 = stroke(run([[20.1, 13], [26.3, 12.3], [29.1, 17.9], [28.7, 23.7]], [[28.7, 23.7], [28.1, 30.1], [24.7, 35.5], [20.7, 36.3]]), 0.75, 5, 0.18);
+const FW_SUTURE = stroke(curve([20.3, 13.6], [20.9, 21], [20.5, 29], [20.2, 36.4]), 1.2, 7);
+const FW_RIB1 = stroke(curve([22.6, 16.4], [23.6, 22], [23.4, 28], [21.8, 33.4]), 0.8, 9);
+const FW_RIB2 = stroke(curve([25.8, 17.6], [26.6, 22.6], [25.6, 28.4], [23, 33.8]), 0.75, 11);
+const FW_SHADE1 = stroke(curve([24.3, 17.4], [25.3, 22], [24.6, 28], [22.6, 32.4]), 3.4, 13, 0.05);
+const FW_SHADE2 = stroke(curve([27.1, 19.6], [27.5, 23], [26.7, 27.5], [25.5, 30.8]), 1.7, 15, 0.05);
+const HW_EDGE = stroke(run([[20.6, 15], [26.4, 14.2], [30, 18], [29.6, 23.6]], [[29.6, 23.6], [29, 29.6], [25, 34.6], [20.6, 37.2]]), 0.8, 25);
+const HW_VEIN = stroke(curve([21.6, 18.4], [26, 18.4], [28.4, 22], [28, 27]), 0.55, 27);
+// shield and head
+const HEAD = "M14.6 14.4C14.4 10.4 17 9 20 9C23 9 25.6 10.4 25.4 14.4C23.4 14.9 16.6 14.9 14.6 14.4Z";
+const SH_TOP = stroke(run([[14.6, 14.4], [14.3, 10.4], [17, 9], [20, 9]], [[20, 9], [23, 9], [25.7, 10.4], [25.4, 14.4]]), 1.5, 17);
+const SH_BOT = stroke(curve([14.3, 14.5], [17, 15.3], [23, 15.3], [25.7, 14.5]), 1.3, 19);
+const SH_SHADE = stroke(curve([16.2, 13.8], [16.5, 12], [17.6, 10.8], [18.6, 10.3]), 2, 21, 0.04);
+const HEAD_ARC = stroke(run([[17.6, 9.3], [17.1, 5.8], [22.9, 5.8], [22.4, 9.3]]), 1.3, 23);
+// legs and feelers
+const LEG_INK = [...TOP_LEGS, ...TOP_LEGS.map(mirror)].map((l, i) => limb(l, i * 1.3 + 2)).join("");
+const SIDE_LEG_PTS: Pt[][] = [
+  [[16.4, 14], [13.6, 14.4], [12.4, 11.6]],
+  [[16.8, 21.4], [15.2, 22], [13.6, 22.8]],
+  [[17.4, 29], [15.8, 32], [14.6, 34.8]],
+];
+const SIDE_LEG_INK = SIDE_LEG_PTS.map((l, i) => limb(l, i * 1.7 + 4)).join("");
+// side view
+const DOME = "M17.2 12.4C28 11.6 33 19 31.6 27C30.6 32 25.8 35.6 20.4 36C17.4 29 16.4 19 17.2 12.4Z";
+const DOME_EDGE = stroke(run([[17.2, 12.4], [28, 11.6], [33, 19], [31.6, 27]], [[31.6, 27], [30.6, 32], [25.8, 35.6], [20.4, 36]]), 1.6, 31);
+const DOME_EDGE2 = stroke(run([[17, 12], [28.4, 11.2], [33.4, 19.3], [32, 27.4]], [[32, 27.4], [30.9, 32.4], [26, 36], [20.6, 36.5]]), 0.75, 33, 0.18);
+const DOME_BACK = stroke(curve([17.2, 12.6], [16.4, 19], [17.4, 29], [20.4, 36]), 1.1, 35);
+const DOME_RIB1 = stroke(curve([20.6, 15.4], [26, 16.6], [29.2, 22], [28.4, 29.4]), 0.8, 37);
+const DOME_RIB2 = stroke(curve([19.6, 19.4], [23.4, 21.2], [25.2, 25.6], [24.4, 32.6]), 0.75, 39);
+const DOME_SHADE = stroke(curve([22, 17], [27, 19], [29.6, 24], [28.6, 30]), 3.2, 41, 0.05);
+const EYE = stroke(run([[14.6, 12.4], [14.6, 9.8], [18.8, 9.8], [18.8, 12.4]], [[18.8, 12.4], [18.8, 15], [14.6, 15], [14.6, 12.4]]), 1.2, 43);
 
 export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLORS, className = "" }: { size?: number; open?: number; star?: boolean; colors?: MothColors; className?: string }) {
   const id = "mc" + useId().replace(/[^a-zA-Z0-9]/g, "");
@@ -128,33 +170,34 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
   useEffect(() => {
     if (ref.current) setMothOpen(ref.current, open);
   }, [open]);
-  // A jewel beetle, kept as simple as the moth was: a small head with two short antennae, a broad shield behind it, two rounded
-  // wing cases that taper to a point and carry one fine pale stripe each, and six thin legs. Each wing case is drawn closed
-  // (lying along the body) inside a group that turns it out by FOLD degrees, so at rest it is closed, and as `setMothOpen`
-  // lifts it the case swings out and the pale under-wing shows beneath it. The right side is drawn; the left is its mirror.
-  // Drawn as a pencil sketch rather than a solid illustration: each part is the paper's own colour (so what is behind it is rubbed
-  // out), shaded with a few fine hatching lines, and outlined twice, the second line a little off and fainter, as a hand overshoots.
-  const FW = "M20.3 13.4C25.8 12.8 28.6 17.6 28.2 23.4C27.8 29.6 24.4 35 20.3 35.8Z";
-  const HW = "M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z";
   const ink = colors.deep;
   const paper = paperFor(colors);
-  const line = { fill: "none", stroke: ink, strokeLinejoin: "round" as const, strokeLinecap: "round" as const, vectorEffect: "non-scaling-stroke" as const };
+  // the fine lines in the wing cases are ink, unless the colour given is a bright one (the opening's coloured wing pattern), which then is the line
+  const ribs = lumOf(colors.vein) > 0.85 || paper !== PAPER ? ink : colors.vein;
+  // A jewel beetle, kept simple: a small head with two long feelers, a broad shield behind it, two rounded wing cases that taper to a
+  // point, and six thin legs. Each wing case is drawn closed (lying along the body) inside a group that turns it out by FOLD
+  // degrees, so at rest it is closed, and as `setMothOpen` lifts it the case swings out and the under-wing shows beneath it.
+  // The right side is drawn; the left is its mirror.
   const cases = (
     <>
       <g data-hw>
         <g transform={`rotate(${-FOLD * 0.5} ${PIVOT})`}>
-          <path d={HW} fill={paper} fillOpacity=".7" />
-          <path d={HW} fill={`url(#${id}h2)`} />
-          <path d={HW} {...line} strokeOpacity=".7" strokeWidth="1" />
+          <path d={HW} fill={paper} fillOpacity=".72" />
+          <path d={HW} fill={ink} fillOpacity=".09" />
+          <path d={HW_EDGE} fill={ink} fillOpacity=".8" />
+          <path d={HW_VEIN} fill={ink} fillOpacity=".6" />
         </g>
       </g>
       <g data-fw>
         <g transform={`rotate(${-FOLD} ${PIVOT})`}>
           <path d={FW} fill={paper} />
-          <path d={FW} fill={`url(#${id}h)`} />
-          <path d={TOP_LINES_D} fill={colors.vein} />
-          <path d={FW} {...line} strokeWidth="0.95" />
-          <path d={FW} {...line} strokeOpacity=".4" strokeWidth=".6" transform="translate(.3 -.25) rotate(1.6 20 25)" />
+          <path d={FW_SHADE1} fill={ink} fillOpacity=".2" />
+          <path d={FW_SHADE2} fill={ink} fillOpacity=".16" />
+          <path d={FW_RIB1} fill={ribs} fillOpacity=".85" />
+          <path d={FW_RIB2} fill={ribs} fillOpacity=".8" />
+          <path d={FW_SUTURE} fill={ink} />
+          <path d={FW_EDGE2} fill={ink} fillOpacity=".45" />
+          <path d={FW_EDGE} fill={ink} />
         </g>
       </g>
     </>
@@ -167,26 +210,22 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
           <clipPath id={id}>
             <rect x="20" y="-10" width="30" height="60" />
           </clipPath>
-          <Hatch id={id + "h"} ink={ink} gap={1.7} width={0.5} angle={38} />
-          <Hatch id={id + "h2"} ink={ink} gap={3} width={0.38} angle={38} />
-          <Hatch id={id + "h3"} ink={ink} gap={1.3} width={0.5} angle={-38} />
         </defs>
-        <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_D} fill={ink} fillOpacity=".9" />
-        <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_L_D} fill={ink} fillOpacity=".9" />
-        <path d={TOP_LEGS_D} fill={ink} fillOpacity=".88" />
-        <path d={TOP_LEGS_D} fill={ink} fillOpacity=".3" transform="translate(.35 .25)" />
-        <path d="M18 13C17.6 20 18.4 26 20 31C21.6 26 22.4 20 22 13Z" fill={paper} />
-        <path d="M18 13C17.6 20 18.4 26 20 31C21.6 26 22.4 20 22 13Z" fill={`url(#${id}h3)`} />
-        <path d="M18 13C17.6 20 18.4 26 20 31C21.6 26 22.4 20 22 13Z" {...line} strokeWidth=".8" />
+        <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_D} fill={ink} />
+        <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={TOP_ANT_L_D} fill={ink} />
+        <path d={LEG_INK} fill={ink} fillOpacity=".92" />
         <g clipPath={`url(#${id})`}>{cases}</g>
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
           {cases}
         </g>
         <path d={HEAD} fill={paper} />
-        <path d={HEAD} fill={`url(#${id}h3)`} />
-        <path d={HEAD} {...line} strokeWidth="1.2" />
-        <path d={HEAD} {...line} strokeOpacity=".4" strokeWidth=".6" transform="translate(-.25 .3) rotate(-1.4 20 12)" />
-        <path d="M17.6 9C17.4 6 22.6 6 22.4 9Z" fill={ink} fillOpacity=".9" />
+        <path d={SH_SHADE} fill={ink} fillOpacity=".22" />
+        <path d={SH_BOT} fill={ink} />
+        <path d={SH_TOP} fill={ink} />
+        <path d="M17.6 9.3C17.2 6.4 22.8 6.4 22.4 9.3Z" fill={paper} />
+        <path d={HEAD_ARC} fill={ink} />
+        <ellipse cx="18.5" cy="7.7" rx=".9" ry="1.2" fill={ink} />
+        <ellipse cx="21.5" cy="7.7" rx=".9" ry="1.2" fill={ink} />
       </svg>
       {star && <MothStar size={size} />}
     </span>
@@ -203,35 +242,30 @@ export function MothStar({ size = 28 }: { size?: number }) {
 }
 
 /**
- * The beetle from the side, head up, legs on its left: the rounded wing case domed over its back with a fine pale stripe.
+ * The beetle from the side, head up, legs on its left: the rounded wing case domed over its back with its fine lines.
  * Clinging to a wall on its left as drawn (mirrored for a wall on the right); turned a quarter, it is standing on
- * a ledge, head along it. Same solid drawing as the top view.
+ * a ledge, head along it. Drawn in ink, like the top view.
  */
 export function MothSideIcon({ size = 28, colors = MOTH_COLORS }: { size?: number; colors?: MothColors }) {
-  const id = "ms" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const ink = colors.deep;
   const paper = paperFor(colors);
-  const DOME = "M17.2 12.4C28 11.6 33 19 31.6 27C30.6 32 25.8 35.6 20.4 36C17.4 29 16.4 19 17.2 12.4Z";
-  const line = { fill: "none", stroke: ink, strokeLinejoin: "round" as const, strokeLinecap: "round" as const, vectorEffect: "non-scaling-stroke" as const };
+  const ribs = lumOf(colors.vein) > 0.85 || paper !== PAPER ? ink : colors.vein;
   return (
-  <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" style={{ overflow: "visible" }}>
-    <defs>
-      <Hatch id={id + "h"} ink={ink} gap={1.7} width={0.5} angle={38} />
-      <Hatch id={id + "h3"} ink={ink} gap={1.3} width={0.5} angle={-38} />
-    </defs>
-    <path d={SIDE_LEGS_D} fill={ink} fillOpacity=".88" />
-    <path d={SIDE_LEGS_D} fill={ink} fillOpacity=".3" transform="translate(.35 .25)" />
-    <path d={DOME} fill={paper} />
-    <path d={DOME} fill={`url(#${id}h)`} />
-    <path d={SIDE_LINES_D} fill={colors.vein} />
-    <path d={DOME} {...line} strokeWidth="1.25" />
-    <path d={DOME} {...line} strokeOpacity=".4" strokeWidth=".6" transform="translate(.3 -.25) rotate(1.6 24 24)" />
-    <ellipse cx="16.8" cy="12.4" rx="2.2" ry="2.7" fill={paper} />
-    <ellipse cx="16.8" cy="12.4" rx="2.2" ry="2.7" fill={`url(#${id}h3)`} />
-    <ellipse cx="16.8" cy="12.4" rx="2.2" ry="2.7" {...line} strokeWidth=".9" />
-    <path d="M14 8.8C13.8 6 17.2 6 17 8.8Z" fill={ink} fillOpacity=".9" />
-    <path className="moth-ant" style={{ transformOrigin: "16px 6px" }} d={SIDE_ANT_D} fill={ink} fillOpacity=".9" />
-  </svg>
+    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" style={{ overflow: "visible" }}>
+      <path d={SIDE_LEG_INK} fill={ink} fillOpacity=".92" />
+      <path d={DOME} fill={paper} />
+      <path d={DOME_SHADE} fill={ink} fillOpacity=".2" />
+      <path d={DOME_RIB1} fill={ribs} fillOpacity=".85" />
+      <path d={DOME_RIB2} fill={ribs} fillOpacity=".8" />
+      <path d={DOME_BACK} fill={ink} fillOpacity=".9" />
+      <path d={DOME_EDGE2} fill={ink} fillOpacity=".45" />
+      <path d={DOME_EDGE} fill={ink} />
+      <path d="M14.6 12.4C14.6 9.8 18.8 9.8 18.8 12.4C18.8 15 14.6 15 14.6 12.4Z" fill={paper} />
+      <path d={EYE} fill={ink} />
+      <path d="M14 8.8C13.8 6 17.2 6 17 8.8Z" fill={paper} />
+      <path d={stroke(run([[14, 8.8], [13.6, 5.9], [17.4, 5.9], [17, 8.8]]), 1.1, 45)} fill={ink} />
+      <path className="moth-ant" style={{ transformOrigin: "16px 6px" }} d={SIDE_ANT_D} fill={ink} />
+    </svg>
   );
 }
 
