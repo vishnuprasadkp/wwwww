@@ -20,10 +20,10 @@ export default function Feature({ title, lead, note, images = [], children }: Pr
       </div>
       <div className="mt-[11px] grid gap-[26px] md:mt-[23px] md:grid-cols-2 md:gap-x-4">
         <div className="md:max-w-[40rem]">
-          <p className="text-lg leading-[28px] md:text-lg md:leading-[30px]">{lead}</p>
+          <p className="text-[17px] leading-[26px] md:text-lg md:leading-[30px]">{lead}</p>
           {children && <div className="mt-1.5 space-y-[26px] text-[15px] leading-[24px]">{children}</div>}
         </div>
-        {side ? <Img id={images[0]} sizes="(min-width: 768px) 50vw, 100vw" /> : note && <p className="text-lg leading-[30px] md:max-w-[40rem]">{note}</p>}
+        {side ? <Img id={images[0]} sizes="(min-width: 768px) 50vw, 100vw" /> : note && <p className="text-[17px] leading-[28px] md:text-lg md:leading-[30px] md:max-w-[40rem]">{note}</p>}
       </div>
       {images.length > 0 && !side && (
         <div className="mt-8">

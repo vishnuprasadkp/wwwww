@@ -62,7 +62,7 @@ export function SourceLink({ href, children }: { href: string; children: React.R
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative mt-2 inline-flex w-max items-center pb-[7px] text-lg leading-[18px] text-pigment-soft after:pointer-events-none after:absolute after:inset-0 after:border-b-[1.5px] after:border-transparent after:transition-colors after:duration-200 hover:after:border-pigment-soft"
+      className="group relative mt-2 inline-flex w-max items-center pb-[7px] text-[17px] leading-[18px] md:text-lg text-pigment-soft after:pointer-events-none after:absolute after:inset-0 after:border-b-[1.5px] after:border-transparent after:transition-colors after:duration-200 hover:after:border-pigment-soft"
     >
       <span className="flex items-center gap-3 transition-[gap] duration-200 group-hover:gap-1.5">
         <span>{children}</span>

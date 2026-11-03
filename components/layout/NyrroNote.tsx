@@ -68,7 +68,7 @@ export default function NyrroNote() {
           aria-hidden={!open}
           className={`max-h-[330px] w-[min(calc(100vw-40px),380px)] overflow-y-auto nyrro-paper border border-rule p-5 text-left md:max-h-none md:overflow-visible transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-y-0 opacity-100" : "-translate-y-1.5 opacity-0"}`}
         >
-          <h3 className="font-serif text-[18px] leading-[28px] text-pigment">Nyrro &mdash; Nature in Colour</h3>
+          <h3 className="font-serif text-[17px] leading-[26px] md:text-[18px] md:leading-[28px] text-pigment">Nyrro &mdash; Nature in Colour</h3>
           <p className="mt-3 text-[15px] leading-6 text-pigment">
             I&rsquo;d never really paid much attention to beetles before. But while working on this portfolio, one caught my eye and made me curious to explore their little world. The more I looked into them, the more I discovered some fascinating things about their natural defence mechanisms &mdash; from the oily droplets of oil beetles to the chemical spray of bombardier beetles, which can leave traces of their own.
           </p>

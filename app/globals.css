@@ -62,8 +62,8 @@
 /* Case-study / about body: a two-column grid. Lead text left, supporting blocks right. */
 .case-grid { display: grid; row-gap: 26px; }
 .case-grid > p { font-size: 0.9375rem; line-height: 24px; }
-.case-grid > p:first-of-type { font-size: 1.125rem; line-height: 28px; }
-.case-grid.lead-lg > p:first-of-type { font-size: 1.125rem; line-height: 30px; }
+.case-grid > p:first-of-type { font-size: 1.0625rem; line-height: 26px; }
+.case-grid.lead-lg > p:first-of-type { font-size: 1.0625rem; line-height: 26px; }
 .case-grid.statement > p:nth-of-type(2) { font-size: 1.625rem; line-height: 40px; }
 .case-grid > figure { margin: 0; }
 /* in the big blocks the sub-text (captions, notes, the source line) is one step down from the lead text */
