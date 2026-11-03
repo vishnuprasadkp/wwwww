@@ -8,9 +8,10 @@
   --color-pigment-soft: #83685f;
   --color-rule: #cfcfcf;
 
-  --font-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+  /* one neo-grotesque for every role: the "serif" (headings) is Inter Tight, the "sans" (text) and the "mono" (labels, navigation) are Inter */
+  --font-serif: var(--font-inter-tight), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   --container-prose: 42rem;
   --container-page: 90rem;
@@ -37,9 +38,13 @@
     transition: padding-right 0.4s cubic-bezier(0.32, 0.72, 0, 1);
     background: transparent;
     font-family: var(--font-sans);
+    letter-spacing: -0.011em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* headings are set close, as in the reference; an explicit weight class still wins */
+  :where(.font-serif) { letter-spacing: -0.03em; font-weight: 500; }
+  :where(.font-mono) { letter-spacing: -0.005em; font-feature-settings: "tnum"; }
   ::selection {
     background: var(--color-pigment);
     color: var(--color-sand);

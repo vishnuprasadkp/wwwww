@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Source_Serif_4, Geist, JetBrains_Mono } from "next/font/google";
+import { Inter, Inter_Tight } from "next/font/google";
 import { site } from "@/lib/site";
 import { getAsset } from "@/lib/assets";
 import Nav from "@/components/layout/Nav";
@@ -13,10 +13,10 @@ import { preload } from "react-dom";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-// next/font downloads these at build time and serves them from your own domain.
-const serif = Source_Serif_4({ subsets: ["latin"], variable: "--font-source-serif", display: "swap" });
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
+// next/font downloads these at build time and serves them from your own domain. One neo-grotesque family for everything: Inter Tight, set
+// close, for headings; Inter for text, labels and the navigation.
+const display = Inter_Tight({ subsets: ["latin"], variable: "--font-inter-tight", display: "swap" });
+const text = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   preload("/images/site/paper.webp", { as: "image", fetchPriority: "high", media: "(min-width: 768px)" });
   preload("/images/site/paper-sm.webp", { as: "image", fetchPriority: "high", media: "(max-width: 767.98px)" });
   return (
-    <html lang="en" suppressHydrationWarning className={`${serif.variable} ${geist.variable} ${mono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${display.variable} ${text.variable}`}>
       <body className="min-h-dvh flex flex-col">
         {/* the opening plays on every full load (not for visitors who ask for reduced motion); the page is held back until it has */}
         <script dangerouslySetInnerHTML={{ __html: "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-loading','')}catch(e){}" }} />

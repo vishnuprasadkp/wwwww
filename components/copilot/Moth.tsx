@@ -353,7 +353,7 @@ type Spot = { x: number; y: number; wall: Wall; ledge?: Ledge; dir?: 1 | -1; use
 export type MothSignal = { kind: "send" | "reply"; id: number };
 
 const SIZE_BASE = 28; // moth height in px, the same as the icon it flies out of
-const SIZE_SCENE = 42; // in a painting section the beetle is a little larger than the assistant's (28)
+const SIZE_SCENE = 34; // in a painting section the beetle is a little larger than the assistant's (28)
 /** The moths in one painting section, so they keep out of each other's way and a press goes to the nearer one. */
 type Mate = { pos: { x: number; y: number }; goal: () => { x: number; y: number } | null };
 const swarm = new WeakMap<HTMLElement, Set<Mate>>();
