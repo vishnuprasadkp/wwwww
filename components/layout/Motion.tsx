@@ -19,9 +19,12 @@ declare global {
 const HEADINGS = "h1, h2, h3, h4, .font-serif";
 const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 
-let skewTargets: HTMLElement[] = []; // pictures that have arrived: they lean a little with the speed of the scroll
-
 const html = () => document.documentElement;
+// a picture is only uncovered once it is loaded and decoded, so it never pops in half-drawn
+const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img.decode() : new Promise<void>((r) => (img.onload = () => r()))).catch(() => undefined);
+const REVEAL = { clipPath: "inset(0% 0% 0% 0%)", scale: 1, duration: 1.5, ease: "expo.out", clearProps: "clipPath,transform" };
+const COVERED = { clipPath: "inset(0% 0% 100% 0%)", scale: 1.1, transformOrigin: "50% 0%", opacity: 1 };
+
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
 /**
@@ -41,15 +44,7 @@ export default function Motion() {
     if (!html().hasAttribute("data-motion")) return;
     const lenis = new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 1, anchors: true });
     window.__lenis = lenis;
-    lenis.on("scroll", (l: Lenis) => {
-      ScrollTrigger.update();
-      // the scroll's speed leans the pictures a hair, and they settle as it slows
-      const lean = gsap.utils.clamp(-1, 1, l.velocity * 0.03);
-      skewTargets.forEach((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.bottom > 0 && r.top < innerHeight) gsap.set(el, { skewY: lean });
-      });
-    });
+    lenis.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => lenis.raf(t * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
@@ -149,32 +144,37 @@ export default function Motion() {
         onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.95, ease: "power3.out", stagger: 0.07, overwrite: true, clearProps: "filter,transform" }),
       });
 
-      // cards (the case list, the next projects): the picture, the title and the tag line arrive as one piece, a beat apart
-      const at = (card: HTMLElement) => ({ trigger: card, start: "top 85%", once: true });
+      // cards (the case list, the next projects): the picture, the title and the tag line arrive as one piece, a beat apart,
+      // once the picture is in hand
       Array.from(main.querySelectorAll<HTMLElement>("[data-card]")).forEach((card) => {
         const img = card.querySelector<HTMLImageElement>("img");
         const title = card.querySelector<HTMLElement>("[data-card-title]");
         const meta = card.querySelector<HTMLElement>("[data-card-meta]");
-        if (img) {
-          gsap.fromTo(
-            img,
-            { clipPath: "inset(0% 0% 100% 0%)", opacity: 1, y: 40 },
-            { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,transform", scrollTrigger: at(card), onComplete: () => void skewTargets.push(img) },
-          );
-        }
+        const parts: gsap.core.Tween[] = [];
+        let go = false;
+        const play = () => {
+          go = true;
+          parts.forEach((t) => t.play());
+        };
+        if (img) parts.push(gsap.fromTo(img, COVERED, { ...REVEAL, paused: true }));
         const lines = (el: HTMLElement, delay: number) => {
           SplitText.create(el, {
             type: "lines",
             mask: "lines",
             linesClass: "split-line",
             autoSplit: true,
-            onSplit: (self) => gsap.from(self.lines, { yPercent: 110, duration: 1.15, ease: "power4.out", stagger: 0.08, delay, scrollTrigger: at(card) }),
+            onSplit: (self) => {
+              const t = gsap.from(self.lines, { yPercent: 110, duration: 1.3, ease: "expo.out", stagger: 0.08, delay, paused: !go });
+              parts.push(t);
+              return t;
+            },
           });
           el.style.visibility = "visible";
           el.style.opacity = "1";
         };
-        if (title) lines(title, 0.35);
-        if (meta) lines(meta, 0.6);
+        if (title) lines(title, 0.4);
+        if (meta) lines(meta, 0.65);
+        ScrollTrigger.create({ trigger: card, start: "top 88%", once: true, onEnter: () => void (img ? ready(img).then(play) : play()) });
       });
 
       // pictures: uncovered from the top down as they arrive (small ones, logos and the moving strip, are left alone)
@@ -185,11 +185,8 @@ export default function Motion() {
           img.style.opacity = "1";
           return;
         }
-        gsap.fromTo(
-          img,
-          { clipPath: "inset(0% 0% 100% 0%)", opacity: 1, y: 36 },
-          { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,transform", scrollTrigger: { trigger: img, start: "top 93%", once: true }, onComplete: () => void skewTargets.push(img) },
-        );
+        const tw = gsap.fromTo(img, COVERED, { ...REVEAL, paused: true });
+        ScrollTrigger.create({ trigger: img, start: "top 92%", once: true, onEnter: () => void ready(img).then(() => tw.play()) });
       });
     };
 
@@ -231,7 +228,6 @@ export default function Motion() {
 
     return () => {
       cancelled = true;
-      skewTargets = [];
       cleanups.forEach((f) => f());
       ctx?.revert();
     };

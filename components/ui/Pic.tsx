@@ -36,7 +36,7 @@ export default function Pic({ file, sizes, alt = "", priority, eager, sync, fill
         width={v.w}
         height={v.h}
         alt={alt}
-        loading={priority || eager ? "eager" : "lazy"}
+        loading="eager"
         decoding={sync ? "sync" : "async"}
         {...(priority ? { fetchPriority: "high" as const } : {})}
         className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : className}
