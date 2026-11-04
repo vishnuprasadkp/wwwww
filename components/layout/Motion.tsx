@@ -141,7 +141,9 @@ export default function Motion() {
       // the opening of every page (its h1 and the text in the first screen: label, title, description) arrives line by line, up out of a
       // mask, softly blurred, the title first and the rest a beat behind it. Text further down is simply there.
       const caseStudy = location.pathname.startsWith("/work/"); // there only the title is blurred; the rest of the opening just rises
-      const opening = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim() && el.getBoundingClientRect().top < innerHeight * 0.9;
+      const about = location.pathname === "/about"; // there the right half (the description beside the title) is simply there
+      const opening = (el: HTMLElement) =>
+        !el.closest("[data-no-motion]") && !!el.textContent?.trim() && el.getBoundingClientRect().top < innerHeight * 0.9 && !(about && innerWidth >= 768 && el.getBoundingClientRect().left > innerWidth * 0.45);
       const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => el.matches("h1") ? !el.closest("[data-no-motion]") && !!el.textContent?.trim() : opening(el));
       const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => opening(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
       [...heads, ...blocks]
