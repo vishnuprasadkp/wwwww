@@ -22,9 +22,9 @@ const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 const html = () => document.documentElement;
 // a picture is only uncovered once it is loaded and decoded, so it never pops in half-drawn
 const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img.decode() : new Promise<void>((r) => (img.onload = () => r()))).catch(() => undefined);
-// a picture eases up into place while it fades in; there is no mask, so its edges are never cut
-const COVERED = { opacity: 0, y: 56 };
-const REVEAL = { opacity: 1, y: 0, duration: 1.5, ease: "expo.out", clearProps: "transform" };
+// a picture eases up into place while it fades in, the same way every time: no mask, no drift while it is scrolled
+const COVERED = { opacity: 0, y: 40 };
+const REVEAL = { opacity: 1, y: 0, duration: 1.4, ease: "expo.out", clearProps: "transform" };
 
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
@@ -187,14 +187,7 @@ export default function Motion() {
           img.style.opacity = "1";
           return;
         }
-        const drift = getComputedStyle(img).position !== "absolute"; // pictures that fill a clipped frame stay put
-        const tw = gsap.fromTo(img, COVERED, {
-          ...REVEAL,
-          paused: true,
-          onComplete: () => {
-            if (drift) gsap.fromTo(img, { y: 12 }, { y: -12, ease: "none", scrollTrigger: { trigger: img, start: "top bottom", end: "bottom top", scrub: 0.6 } });
-          },
-        });
+        const tw = gsap.fromTo(img, COVERED, { ...REVEAL, paused: true });
         ScrollTrigger.create({ trigger: img, start: "top 92%", once: true, onEnter: () => void ready(img).then(() => tw.play()) });
       });
     };
