@@ -155,7 +155,7 @@ export default function Motion() {
             linesClass: "split-line",
             autoSplit: true,
             onSplit: (self) =>
-              gsap.from(self.lines, { yPercent: 100, ...(!caseStudy || el.matches("h1") ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 0.8, ease: "expo.out", stagger: 0.08, delay: Math.min(i, 4) * 0.12, scrollTrigger: { trigger: el, start: "top 98%", once: true } }),
+              gsap.from(self.lines, { yPercent: 100, ...(!caseStudy || el.matches("h1") ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 0.8, ease: "expo.out", stagger: 0.08, delay: Math.min(i, 4) * 0.12, scrollTrigger: { trigger: el, start: "top 98%", once: true }, onComplete: () => self.revert() }), // the text goes back to flowing freely (a panel opening, a resize) once it has arrived
           });
           el.style.visibility = "visible";
         });
