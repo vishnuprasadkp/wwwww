@@ -7,12 +7,13 @@ type Props = {
   lead: string;      // one-line framing
   note?: string;     // right-column pull-out
   images?: string[];
+  beside?: boolean;  // a single picture sits in the right column even when it is wide
   children?: React.ReactNode;
 };
 
-export default function Feature({ title, lead, note, images = [], children }: Props) {
+export default function Feature({ title, lead, note, images = [], beside, children }: Props) {
   // One near-square screenshot sits in the right column beside the copy; everything else goes below.
-  const side = images.length === 1 && !isWide(getAsset(images[0]));
+  const side = images.length === 1 && (beside || !isWide(getAsset(images[0])));
   return (
     <article data-toc-sub={title}>
       <div className="-mx-5 border-b border-rule px-5 pb-[23px] pt-[21px] md:-mx-8 md:px-8">
@@ -23,7 +24,11 @@ export default function Feature({ title, lead, note, images = [], children }: Pr
           <p className="text-[17px] leading-[26px] md:text-lg md:leading-[30px]">{lead}</p>
           {children && <div className="mt-1.5 space-y-[26px] text-[15px] leading-[24px]">{children}</div>}
         </div>
-        {side ? <Img id={images[0]} sizes="(min-width: 768px) 50vw, 100vw" /> : note && <p className="text-[17px] leading-[28px] md:text-lg md:leading-[30px] md:max-w-[40rem]">{note}</p>}
+        {side ? (
+          <div className="md:col-start-2 md:row-start-1">
+            <Img id={images[0]} sizes="(min-width: 768px) 50vw, 100vw" />
+          </div>
+        ) : note && <p className="text-[17px] leading-[28px] md:text-lg md:leading-[30px] md:max-w-[40rem]">{note}</p>}
       </div>
       {images.length > 0 && !side && (
         <div className="mt-8">
