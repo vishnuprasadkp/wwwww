@@ -139,8 +139,8 @@ export default function Motion() {
       const all = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !headSet.has(el) && !el.closest(HEADINGS) && !el.closest("[data-no-motion]") && !el.closest("[data-card]") && el.textContent?.trim());
       const outer = all.filter((el) => !all.some((o) => o !== el && o.contains(el)));
       // everything held back by the stylesheet that is not itself going to move (inside one that is moving, or with no text: a row of logos) is shown now
-      Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !outer.includes(el) && !el.closest("[data-card]")).forEach((el) => (el.style.opacity = "1"));
-      Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el) && !el.closest("[data-card]")).forEach((el) => (el.style.visibility = "visible"));
+      Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !outer.includes(el) && !el.hasAttribute("data-card-meta")).forEach((el) => (el.style.opacity = "1"));
+      Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
       gsap.set(outer, { opacity: 0, y: 22, filter: "blur(10px)" });
       ScrollTrigger.batch(outer, {
         start: "top 94%",
@@ -202,6 +202,14 @@ export default function Motion() {
         ctx = gsap.context(build);
         html().setAttribute("data-motion-ready", "");
         ScrollTrigger.refresh();
+        // pictures that arrive late push the page down: measure again so each trigger sits where its card really is
+        const again = () => ScrollTrigger.refresh();
+        window.addEventListener("load", again);
+        const t = window.setTimeout(again, 1200);
+        cleanups.push(() => {
+          window.removeEventListener("load", again);
+          window.clearTimeout(t);
+        });
       } catch {
         html().removeAttribute("data-motion"); // anything wrong: show the page as it is
       }
