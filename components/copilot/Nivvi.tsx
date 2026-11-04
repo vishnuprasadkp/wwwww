@@ -578,7 +578,7 @@ function NivviPanel() {
           <div className="mt-auto">
             <p data-ledge="hero" className="font-serif text-[24px] leading-[32px]">Hey, it&apos;s Nyrro!</p>
             <p className="mt-[10px] text-[15px] leading-[24px] text-pigment">{page.key === "home" ? (
-                <>Your little beetle guide to Vishnu&apos;s work, ideas, and creative process. Let&apos;s explore!</>
+                <>A small beetle who knows Vishnu a bit too well. Ask me anything.</>
               ) : (
                 <>You&apos;re on <span className="text-pigment">{page.title}</span>. Ask me about it, or tap a question.</>
               )}</p>
