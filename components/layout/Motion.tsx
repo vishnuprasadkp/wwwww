@@ -22,8 +22,9 @@ const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 const html = () => document.documentElement;
 // a picture is only uncovered once it is loaded and decoded, so it never pops in half-drawn
 const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img.decode() : new Promise<void>((r) => (img.onload = () => r()))).catch(() => undefined);
-const REVEAL = { clipPath: "inset(0% 0% 0% 0%)", scale: 1, duration: 1.5, ease: "expo.out", clearProps: "clipPath,transform" };
-const COVERED = { clipPath: "inset(0% 0% 100% 0%)", scale: 1.1, transformOrigin: "50% 0%", opacity: 1 };
+// a picture eases up into place while it fades in; there is no mask, so its edges are never cut
+const COVERED = { opacity: 0, y: 56 };
+const REVEAL = { opacity: 1, y: 0, duration: 1.5, ease: "expo.out", clearProps: "transform" };
 
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
@@ -136,12 +137,12 @@ export default function Motion() {
       // everything held back by the stylesheet that is not itself going to move (inside one that is moving, or with no text: a row of logos) is shown now
       Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !outer.includes(el) && !el.hasAttribute("data-card-meta")).forEach((el) => (el.style.opacity = "1"));
       Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
-      gsap.set(outer, { opacity: 0, y: 22, filter: "blur(5px)" });
+      gsap.set(outer, { opacity: 0, y: 32, filter: "blur(5px)" });
       ScrollTrigger.batch(outer, {
         start: "top 94%",
         once: true,
         batchMax: 8,
-        onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.95, ease: "power3.out", stagger: 0.07, overwrite: true, clearProps: "filter,transform" }),
+        onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out", stagger: 0.08, overwrite: true, clearProps: "filter,transform" }),
       });
 
       // cards (the case list, the next projects): the picture, the title and the tag line arrive as one piece, a beat apart,
@@ -185,7 +186,14 @@ export default function Motion() {
           img.style.opacity = "1";
           return;
         }
-        const tw = gsap.fromTo(img, COVERED, { ...REVEAL, paused: true });
+        const drift = getComputedStyle(img).position !== "absolute"; // pictures that fill a clipped frame stay put
+        const tw = gsap.fromTo(img, COVERED, {
+          ...REVEAL,
+          paused: true,
+          onComplete: () => {
+            if (drift) gsap.fromTo(img, { y: 12 }, { y: -12, ease: "none", scrollTrigger: { trigger: img, start: "top bottom", end: "bottom top", scrub: 0.6 } });
+          },
+        });
         ScrollTrigger.create({ trigger: img, start: "top 92%", once: true, onEnter: () => void ready(img).then(() => tw.play()) });
       });
     };
