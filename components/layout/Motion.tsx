@@ -117,24 +117,24 @@ export default function Motion() {
       if (!main) return;
       gsap.set(main, { clearProps: "opacity,transform" });
 
-      // all text: line by line, up out of a mask, softly blurred as it comes in (headings and the text under them alike)
-      const reveal = (el: HTMLElement, stagger: number) => {
+      // all text: line by line, up out of a mask, headings with a soft blur as they come in, the text under them without
+      const reveal = (el: HTMLElement, stagger: number, blur: boolean) => {
         SplitText.create(el, {
           type: "lines",
           mask: "lines",
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 1.2, ease: "expo.out", stagger, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 100, ...(blur ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 1.2, ease: "expo.out", stagger, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
       };
       const movable = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim();
       const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter(movable);
-      heads.forEach((el) => reveal(el, 0.2));
+      heads.forEach((el) => reveal(el, 0.2, true));
       // the text blocks that hold text themselves (not ones that only wrap other blocks, headings or pictures)
       const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => movable(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
-      blocks.forEach((el) => reveal(el, 0.07));
+      blocks.forEach((el) => reveal(el, 0.07, false));
       // whatever the stylesheet holds back that does not move (wrappers, logos) is shown at once
       Array.from(main.querySelectorAll<HTMLElement>(`${HEADINGS}, ${BLOCKS}`)).filter((el) => !heads.includes(el) && !blocks.includes(el)).forEach((el) => (el.style.visibility = "visible"));
 
