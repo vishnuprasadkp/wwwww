@@ -146,7 +146,9 @@ export default function Motion() {
         });
         el.style.visibility = "visible";
       };
-      const movable = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim();
+      // on a page split in halves (the case studies, About) only the left half moves; the right half's text is simply there
+      const rightHalf = (el: HTMLElement) => innerWidth >= 768 && !el.closest("[data-card]") && el.getBoundingClientRect().left > innerWidth * 0.45;
+      const movable = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim() && !rightHalf(el);
       const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter(movable);
       heads.forEach((el) => reveal(el, 0.2));
       // the text blocks that hold text themselves (not ones that only wrap other blocks, headings or pictures)
