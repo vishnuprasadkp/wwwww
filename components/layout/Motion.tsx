@@ -17,7 +17,6 @@ declare global {
 
 // What moves. The same lists are in globals.css (the page holds these back until they are ready, so nothing flashes before it moves).
 const HEADINGS = "h1, h2, h3, h4, .font-serif";
-const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 
 const html = () => document.documentElement;
 // a picture is only uncovered once it is loaded and decoded, so it never pops in half-drawn
@@ -132,30 +131,24 @@ export default function Motion() {
       if (!main) return;
       gsap.set(main, { clearProps: "opacity,transform" });
 
-      // all text: line by line, up out of a mask, big type with a soft blur as it comes in, small type without
-      const reveal = (el: HTMLElement, stagger: number) => {
-        // blur is for big type only (24px and above on the web); descriptions, labels and small headings just rise
-        const blur = innerWidth >= 768 && parseFloat(getComputedStyle(el).fontSize) >= 24;
+      // only the main headings move (36px and above on the web: the home, Cases, About, Resume and case-study titles): line by line,
+      // up out of a mask, softly blurred. All other text is simply there.
+      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter(
+        (el) => innerWidth >= 768 && !el.closest("[data-no-motion]") && !!el.textContent?.trim() && parseFloat(getComputedStyle(el).fontSize) >= 36,
+      );
+      heads.forEach((el) => {
         SplitText.create(el, {
           type: "lines",
           mask: "lines",
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 100, ...(blur ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 1.2, ease: "expo.out", stagger, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
-      };
-      // on a page split in halves (the case studies, About) only the left half moves; the right half's text is simply there
-      const rightHalf = (el: HTMLElement) => innerWidth >= 768 && !el.closest("[data-card]") && el.getBoundingClientRect().left > innerWidth * 0.45;
-      const movable = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim() && !rightHalf(el);
-      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter(movable);
-      heads.forEach((el) => reveal(el, 0.2));
-      // the text blocks that hold text themselves (not ones that only wrap other blocks, headings or pictures)
-      const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => movable(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
-      blocks.forEach((el) => reveal(el, 0.07));
-      // whatever the stylesheet holds back that does not move (wrappers, logos) is shown at once
-      Array.from(main.querySelectorAll<HTMLElement>(`${HEADINGS}, ${BLOCKS}`)).filter((el) => !heads.includes(el) && !blocks.includes(el)).forEach((el) => (el.style.visibility = "visible"));
+      });
+      // whatever the stylesheet holds back that does not move is shown at once
+      Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
 
       // cards (the case list, the next projects): the picture arrives once it is in hand (the text under it does not move)
       Array.from(main.querySelectorAll<HTMLElement>("[data-card]")).forEach((card) => {
