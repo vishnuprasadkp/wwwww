@@ -23,7 +23,9 @@ export default function CaseList({ cases }: { cases: CaseMeta[] }) {
             <li key={c.slug}>
               <Link href={`/work/${c.slug}`} data-cursor="view" className="group block">
                 {t && (
-                  <Pic file={t.src} sizes="(min-width: 768px) calc(50vw - 24px), 100vw" className="h-auto w-full" />
+                  <div className="overflow-hidden">
+                    <Pic file={t.src} sizes="(min-width: 768px) calc(50vw - 24px), 100vw" className="h-auto w-full transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.035]" />
+                  </div>
                 )}
                 <h3 className="mt-4 text-[17px] leading-[26px] md:text-lg md:leading-[1.5]">{c.title}</h3>
                 <p className="mt-1 font-mono text-sm leading-[22px] text-pigment-soft">{c.cardTags.join(" / ")}</p>

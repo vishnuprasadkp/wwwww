@@ -63,6 +63,7 @@ export default function NyrroNote() {
       <div className={`pt-2 ${open ? "pointer-events-auto" : "pointer-events-none"}`}>
         <div
           id="nyrro-note"
+          data-lenis-prevent
           role="region"
           aria-label="About Nyrro"
           aria-hidden={!open}

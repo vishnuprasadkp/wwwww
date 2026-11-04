@@ -64,7 +64,8 @@ export default function TocRail() {
 
   const go = (it: Item) => {
     const y = it.target.getBoundingClientRect().top + window.scrollY - 90;
-    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    if (window.__lenis) window.__lenis.scrollTo(Math.max(0, y), { duration: 1.2 });
+    else window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
   };
 
   // Which main section the active entry belongs to (drives the collapsed lines).

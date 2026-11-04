@@ -6,6 +6,7 @@ import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 import Cursor from "@/components/layout/Cursor";
 import Loader from "@/components/layout/Loader";
+import Motion from "@/components/layout/Motion";
 import ScrollUp from "@/components/layout/ScrollUp";
 import TocRail from "@/components/layout/TocRail";
 import { NivviProvider } from "@/components/copilot/Nivvi";
@@ -33,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={`${display.variable} ${text.variable}`}>
       <body className="min-h-dvh flex flex-col">
         {/* the opening plays on every full load (not for visitors who ask for reduced motion); the page is held back until it has */}
-        <script dangerouslySetInnerHTML={{ __html: "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-loading','')}catch(e){}" }} />
+        <script dangerouslySetInnerHTML={{ __html: "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-loading','');document.documentElement.setAttribute('data-motion','')}catch(e){}" }} />
         <NivviProvider>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 bg-pigment text-sand px-3 py-2 text-[15px]">
           Skip to content
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="paper-bg" aria-hidden />
         <Cursor />
         <Loader />
+        <Motion />
         <ScrollUp />
         <TocRail />
         </NivviProvider>

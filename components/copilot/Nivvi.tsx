@@ -573,7 +573,7 @@ function NivviPanel() {
       </div>
 
       {/* conversation */}
-      <div ref={scroller} className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-18px),transparent)] [scrollbar-width:thin]">
+      <div ref={scroller} data-lenis-prevent className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-18px),transparent)] [scrollbar-width:thin]">
         {empty ? (
           <div className="mt-auto">
             <p data-ledge="hero" className="font-serif text-[24px] leading-[32px]">Hey, it&apos;s Nyrro!</p>
