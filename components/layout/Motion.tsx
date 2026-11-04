@@ -26,6 +26,11 @@ const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img
 const COVERED = { opacity: 0, y: 40 };
 const REVEAL = { opacity: 1, y: 0, duration: 1.4, ease: "expo.out", clearProps: "transform" };
 
+let pendingHash = ""; // an anchor on the page we are going to ("#cases"): the new page opens at its top, then glides there
+
+const target = (hash: string) => (hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null);
+const glide = (el: HTMLElement) => (window.__lenis ? window.__lenis.scrollTo(el, { duration: 1.7 }) : el.scrollIntoView({ behavior: "smooth" }));
+
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
 /**
@@ -69,7 +74,16 @@ export default function Motion() {
       const href = a?.getAttribute("href");
       if (!a || !href || a.target === "_blank" || a.hasAttribute("download") || !href.startsWith("/") || href.startsWith("//")) return;
       const url = new URL(href, location.href);
-      if (url.pathname === location.pathname) return; // the same page (an anchor): Lenis scrolls to it
+      if (url.pathname === location.pathname) {
+        // the same page: glide to the anchor (the router would jump there)
+        const el = target(url.hash);
+        if (el) {
+          e.preventDefault();
+          glide(el);
+          history.pushState(null, "", url.pathname + url.search + url.hash);
+        }
+        return;
+      }
       const main = document.querySelector("main");
       if (!main) return;
       e.preventDefault();
@@ -80,7 +94,8 @@ export default function Motion() {
         duration: 0.36,
         ease: "power2.in",
         onComplete: () => {
-          router.push(href);
+          pendingHash = url.hash;
+          router.push(url.pathname + url.search); // without the anchor, which the router would jump to; we glide to it when the page is up
           window.setTimeout(() => {
             leaving = false;
             gsap.set(main, { clearProps: "opacity,transform" }); // in case the route never changed
@@ -166,6 +181,18 @@ export default function Motion() {
         window.__lenis?.scrollTo(0, { immediate: true, force: true });
         ctx = gsap.context(build);
         html().setAttribute("data-motion-ready", "");
+        if (pendingHash) {
+          const hash = pendingHash;
+          pendingHash = "";
+          const t = window.setTimeout(() => {
+            const el = target(hash);
+            if (el) {
+              glide(el);
+              history.replaceState(null, "", location.pathname + location.search + hash);
+            }
+          }, 1000);
+          cleanups.push(() => window.clearTimeout(t));
+        }
         ScrollTrigger.refresh();
         // pictures that arrive late push the page down: measure again so each trigger sits where its card really is
         const again = () => ScrollTrigger.refresh();
