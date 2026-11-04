@@ -43,14 +43,8 @@ export default function Motion() {
   // the scrolling, and the way out of a page: once
   useEffect(() => {
     if (!html().hasAttribute("data-motion")) return;
-    const lenis = new Lenis({
-      duration: 1.35, // a long glide that settles slowly, like the references
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 0.9,
-      touchMultiplier: 1.4,
-      anchors: true,
-    });
+    // lenis.dev's own setting: the library's defaults (lerp 0.1), nothing exaggerated
+    const lenis = new Lenis({ lerp: 0.1, smoothWheel: true, anchors: true });
     window.__lenis = lenis;
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => lenis.raf(t * 1000);
@@ -132,7 +126,7 @@ export default function Motion() {
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 115, filter: "blur(5px)", duration: 1.1, ease: "power4.out", stagger: 0.09, clearProps: "filter", scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 100, duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
       });
@@ -144,12 +138,12 @@ export default function Motion() {
       // everything held back by the stylesheet that is not itself going to move (inside one that is moving, or with no text: a row of logos) is shown now
       Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !outer.includes(el) && !el.hasAttribute("data-card-meta")).forEach((el) => (el.style.opacity = "1"));
       Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
-      gsap.set(outer, { opacity: 0, y: 32, filter: "blur(5px)" });
+      gsap.set(outer, { opacity: 0, y: 28 });
       ScrollTrigger.batch(outer, {
         start: "top 94%",
         once: true,
         batchMax: 8,
-        onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out", stagger: 0.08, overwrite: true, clearProps: "filter,transform" }),
+        onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 1.2, ease: "expo.out", stagger: 0.1, overwrite: true, clearProps: "transform" }),
       });
 
       // cards (the case list, the next projects): the picture, the title and the tag line arrive as one piece, a beat apart,
@@ -172,7 +166,7 @@ export default function Motion() {
             linesClass: "split-line",
             autoSplit: true,
             onSplit: (self) => {
-              const t = gsap.from(self.lines, { yPercent: 110, duration: 1.3, ease: "expo.out", stagger: 0.08, delay, paused: !go });
+              const t = gsap.from(self.lines, { yPercent: 100, duration: 1.2, ease: "expo.out", stagger: 0.2, delay, paused: !go });
               parts.push(t);
               return t;
             },
