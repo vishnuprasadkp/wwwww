@@ -26,6 +26,9 @@ const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img
 const COVERED = { opacity: 0, y: 40 };
 const REVEAL = { opacity: 1, y: 0, duration: 1.4, ease: "expo.out", clearProps: "transform" };
 
+// the blur is for the major headings only: on the web, type above 28px
+const big = (el: HTMLElement) => innerWidth >= 768 && parseFloat(getComputedStyle(el).fontSize) > 28;
+
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
 /**
@@ -126,7 +129,7 @@ export default function Motion() {
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 100, ...(el.matches("h1, h2") ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 100, ...(big(el) ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
       });
