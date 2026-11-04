@@ -132,8 +132,10 @@ export default function Motion() {
       if (!main) return;
       gsap.set(main, { clearProps: "opacity,transform" });
 
-      // all text: line by line, up out of a mask, headings with a soft blur as they come in, the text under them without
-      const reveal = (el: HTMLElement, stagger: number, blur: boolean) => {
+      // all text: line by line, up out of a mask, big type with a soft blur as it comes in, small type without
+      const reveal = (el: HTMLElement, stagger: number) => {
+        // blur is for big type only (24px and above on the web); descriptions, labels and small headings just rise
+        const blur = innerWidth >= 768 && parseFloat(getComputedStyle(el).fontSize) >= 24;
         SplitText.create(el, {
           type: "lines",
           mask: "lines",
@@ -146,10 +148,10 @@ export default function Motion() {
       };
       const movable = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim();
       const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter(movable);
-      heads.forEach((el) => reveal(el, 0.2, true));
+      heads.forEach((el) => reveal(el, 0.2));
       // the text blocks that hold text themselves (not ones that only wrap other blocks, headings or pictures)
       const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => movable(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
-      blocks.forEach((el) => reveal(el, 0.07, false));
+      blocks.forEach((el) => reveal(el, 0.07));
       // whatever the stylesheet holds back that does not move (wrappers, logos) is shown at once
       Array.from(main.querySelectorAll<HTMLElement>(`${HEADINGS}, ${BLOCKS}`)).filter((el) => !heads.includes(el) && !blocks.includes(el)).forEach((el) => (el.style.visibility = "visible"));
 
