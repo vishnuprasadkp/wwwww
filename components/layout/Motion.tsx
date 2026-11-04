@@ -126,7 +126,7 @@ export default function Motion() {
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 100, ...(el.matches("h1, h2") ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
       });
@@ -166,7 +166,7 @@ export default function Motion() {
             linesClass: "split-line",
             autoSplit: true,
             onSplit: (self) => {
-              const t = gsap.from(self.lines, { yPercent: 100, ...(el === title ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 1.2, ease: "expo.out", stagger: 0.2, delay, paused: !go });
+              const t = gsap.from(self.lines, { yPercent: 100, duration: 1.2, ease: "expo.out", stagger: 0.2, delay, paused: !go });
               parts.push(t);
               return t;
             },
