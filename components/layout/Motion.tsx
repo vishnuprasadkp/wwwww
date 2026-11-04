@@ -19,6 +19,8 @@ declare global {
 const HEADINGS = "h1, h2, h3, h4, .font-serif";
 const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 
+let skewTargets: HTMLElement[] = []; // pictures that have arrived: they lean a little with the speed of the scroll
+
 const html = () => document.documentElement;
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
@@ -39,7 +41,15 @@ export default function Motion() {
     if (!html().hasAttribute("data-motion")) return;
     const lenis = new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 1, anchors: true });
     window.__lenis = lenis;
-    lenis.on("scroll", ScrollTrigger.update);
+    lenis.on("scroll", (l: Lenis) => {
+      ScrollTrigger.update();
+      // the scroll's speed leans the pictures a hair, and they settle as it slows
+      const lean = gsap.utils.clamp(-1, 1, l.velocity * 0.03);
+      skewTargets.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < innerHeight) gsap.set(el, { skewY: lean });
+      });
+    });
     const tick = (t: number) => lenis.raf(t * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
@@ -111,7 +121,7 @@ export default function Motion() {
       gsap.set(main, { clearProps: "opacity,transform" });
 
       // headings: line by line, up out of a mask
-      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => !el.closest("[data-no-motion]") && el.textContent?.trim());
+      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => !el.closest("[data-no-motion]") && !el.closest("[data-card]") && el.textContent?.trim());
       heads.forEach((el) => {
         SplitText.create(el, {
           type: "lines",
@@ -119,37 +129,68 @@ export default function Motion() {
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 115, duration: 1.1, ease: "power4.out", stagger: 0.09, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 115, filter: "blur(10px)", duration: 1.1, ease: "power4.out", stagger: 0.09, clearProps: "filter", scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
       });
 
       // text: rises and fades in, a few at a time, as it comes up the screen
       const headSet = new Set(heads);
-      const all = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !headSet.has(el) && !el.closest(HEADINGS) && !el.closest("[data-no-motion]") && el.textContent?.trim());
+      const all = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !headSet.has(el) && !el.closest(HEADINGS) && !el.closest("[data-no-motion]") && !el.closest("[data-card]") && el.textContent?.trim());
       const outer = all.filter((el) => !all.some((o) => o !== el && o.contains(el)));
       // everything held back by the stylesheet that is not itself going to move (inside one that is moving, or with no text: a row of logos) is shown now
-      Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !outer.includes(el)).forEach((el) => (el.style.opacity = "1"));
-      Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
-      gsap.set(outer, { opacity: 0, y: 22 });
+      Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !outer.includes(el) && !el.closest("[data-card]")).forEach((el) => (el.style.opacity = "1"));
+      Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el) && !el.closest("[data-card]")).forEach((el) => (el.style.visibility = "visible"));
+      gsap.set(outer, { opacity: 0, y: 22, filter: "blur(10px)" });
       ScrollTrigger.batch(outer, {
         start: "top 94%",
         once: true,
         batchMax: 8,
-        onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.95, ease: "power3.out", stagger: 0.07, overwrite: true }),
+        onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.95, ease: "power3.out", stagger: 0.07, overwrite: true, clearProps: "filter,transform" }),
+      });
+
+      // cards (the case list, the next projects): the picture, the title and the tag line arrive as one piece, a beat apart
+      const at = (card: HTMLElement) => ({ trigger: card, start: "top 88%", once: true });
+      Array.from(main.querySelectorAll<HTMLElement>("[data-card]")).forEach((card) => {
+        const img = card.querySelector<HTMLImageElement>("img");
+        const title = card.querySelector<HTMLElement>("[data-card-title]");
+        const meta = card.querySelector<HTMLElement>("[data-card-meta]");
+        if (img) {
+          gsap.fromTo(
+            img,
+            { clipPath: "inset(0% 0% 100% 0%)", filter: "blur(14px)", opacity: 1, y: 40 },
+            { clipPath: "inset(0% 0% 0% 0%)", filter: "blur(0px)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,filter,transform", scrollTrigger: at(card), onComplete: () => void skewTargets.push(img) },
+          );
+        }
+        if (title) {
+          SplitText.create(title, {
+            type: "lines",
+            mask: "lines",
+            linesClass: "split-line",
+            autoSplit: true,
+            onSplit: (self) => gsap.from(self.lines, { yPercent: 115, filter: "blur(10px)", duration: 1.1, ease: "power4.out", stagger: 0.09, delay: 0.3, clearProps: "filter", scrollTrigger: at(card) }),
+          });
+          title.style.visibility = "visible";
+          title.style.opacity = "1";
+        }
+        if (meta) {
+          gsap.set(meta, { opacity: 0, y: 18, filter: "blur(8px)" });
+          gsap.to(meta, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power3.out", delay: 0.55, clearProps: "filter,transform", scrollTrigger: at(card) });
+        }
       });
 
       // pictures: uncovered from the top down as they arrive (small ones, logos and the moving strip, are left alone)
       Array.from(main.querySelectorAll<HTMLImageElement>("img")).forEach((img) => {
         const big = img.clientWidth > 240 && img.clientHeight > 120 && !img.closest('[class*="animate-marquee"]') && !img.closest("[data-no-motion]");
+        if (img.closest("[data-card]")) return; // arrives with its card
         if (!big) {
           img.style.opacity = "1";
           return;
         }
         gsap.fromTo(
           img,
-          { clipPath: "inset(0% 0% 100% 0%)", opacity: 1, y: 36 },
-          { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,transform", scrollTrigger: { trigger: img, start: "top 93%", once: true } },
+          { clipPath: "inset(0% 0% 100% 0%)", filter: "blur(14px)", opacity: 1, y: 36 },
+          { clipPath: "inset(0% 0% 0% 0%)", filter: "blur(0px)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,filter,transform", scrollTrigger: { trigger: img, start: "top 93%", once: true }, onComplete: () => void skewTargets.push(img) },
         );
       });
     };
@@ -184,6 +225,7 @@ export default function Motion() {
 
     return () => {
       cancelled = true;
+      skewTargets = [];
       cleanups.forEach((f) => f());
       ctx?.revert();
     };

@@ -18,12 +18,12 @@ export default function NextProjects({ closing, next }: { closing: string; next:
         </div>
         <ul className="mt-5 grid md:mt-8 gap-x-4 gap-y-12 px-5 lg:grid-cols-2 md:px-8">
           {next.map((c, i) => (
-            <li key={c.slug} className={i > 0 ? "hidden lg:block" : ""}>
+            <li key={c.slug} data-card className={i > 0 ? "hidden lg:block" : ""}>
               <Link href={`/work/${c.slug}`} data-cursor="view" className="group block">
                 <div className="relative aspect-[680/411] w-full overflow-hidden">
                   <Pic file={`/images/next/${c.slug}.png`} sizes="(min-width: 1024px) calc(50vw - 24px), 100vw" fill />
                 </div>
-                <p className="mt-4 text-[17px] leading-[26px] md:text-lg md:leading-[30px]">{c.title.replace(/\.$/, "")}</p>
+                <p data-card-title className="mt-4 text-[17px] leading-[26px] md:text-lg md:leading-[30px]">{c.title.replace(/\.$/, "")}</p>
               </Link>
             </li>
           ))}
