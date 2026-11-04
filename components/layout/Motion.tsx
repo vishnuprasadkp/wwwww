@@ -17,6 +17,7 @@ declare global {
 
 // What moves. The same lists are in globals.css (the page holds these back until they are ready, so nothing flashes before it moves).
 const HEADINGS = "h1, h2, h3, h4, .font-serif";
+const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 
 const html = () => document.documentElement;
 // a picture is only uncovered once it is loaded and decoded, so it never pops in half-drawn
@@ -24,9 +25,6 @@ const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img
 // a picture eases up into place while it fades in, the same way every time: no mask, no drift while it is scrolled
 const COVERED = { opacity: 0, y: 40 };
 const REVEAL = { opacity: 1, y: 0, duration: 1.4, ease: "expo.out", clearProps: "transform" };
-
-// a heading, for the motion, is type of 28px and above on the web: only those move; everything smaller is plain
-const big = (el: HTMLElement) => innerWidth >= 768 && parseFloat(getComputedStyle(el).fontSize) >= 28;
 
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
@@ -119,22 +117,26 @@ export default function Motion() {
       if (!main) return;
       gsap.set(main, { clearProps: "opacity,transform" });
 
-      // headings: line by line, up out of a mask
-      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => !el.closest("[data-no-motion]") && !el.closest("[data-card]") && el.textContent?.trim() && big(el));
-      heads.forEach((el) => {
+      // all text: line by line, up out of a mask, softly blurred as it comes in (headings and the text under them alike)
+      const reveal = (el: HTMLElement, stagger: number) => {
         SplitText.create(el, {
           type: "lines",
           mask: "lines",
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 1.2, ease: "expo.out", stagger, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
-      });
-
-      // everything held back by the stylesheet that is not a heading is shown at once: only headings and pictures move
-      Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
+      };
+      const movable = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim();
+      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter(movable);
+      heads.forEach((el) => reveal(el, 0.2));
+      // the text blocks that hold text themselves (not ones that only wrap other blocks, headings or pictures)
+      const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => movable(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
+      blocks.forEach((el) => reveal(el, 0.07));
+      // whatever the stylesheet holds back that does not move (wrappers, logos) is shown at once
+      Array.from(main.querySelectorAll<HTMLElement>(`${HEADINGS}, ${BLOCKS}`)).filter((el) => !heads.includes(el) && !blocks.includes(el)).forEach((el) => (el.style.visibility = "visible"));
 
       // cards (the case list, the next projects): the picture arrives once it is in hand (the text under it does not move)
       Array.from(main.querySelectorAll<HTMLElement>("[data-card]")).forEach((card) => {
