@@ -17,6 +17,7 @@ declare global {
 
 // What moves. The same lists are in globals.css (the page holds these back until they are ready, so nothing flashes before it moves).
 const HEADINGS = "h1, h2, h3, h4, .font-serif";
+const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 
 const html = () => document.documentElement;
 // a picture is only uncovered once it is loaded and decoded, so it never pops in half-drawn
@@ -131,21 +132,26 @@ export default function Motion() {
       if (!main) return;
       gsap.set(main, { clearProps: "opacity,transform" });
 
-      // only the main heading of each page (its h1) moves: line by line, up out of a mask, softly blurred. All other text is simply there.
-      const heads = Array.from(main.querySelectorAll<HTMLElement>("h1")).filter((el) => !el.closest("[data-no-motion]") && !!el.textContent?.trim());
-      heads.forEach((el) => {
-        SplitText.create(el, {
-          type: "lines",
-          mask: "lines",
-          linesClass: "split-line",
-          autoSplit: true,
-          onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 0.8, ease: "expo.out", stagger: 0.1, scrollTrigger: { trigger: el, start: "top 94%", once: true } }),
+      // the opening of every page (its h1 and the text in the first screen: label, title, description) arrives line by line, up out of a
+      // mask, softly blurred, the title first and the rest a beat behind it. Text further down is simply there.
+      const opening = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim() && el.getBoundingClientRect().top < innerHeight * 0.9;
+      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => el.matches("h1") ? !el.closest("[data-no-motion]") && !!el.textContent?.trim() : opening(el));
+      const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => opening(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
+      [...heads, ...blocks]
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left)
+        .forEach((el, i) => {
+          SplitText.create(el, {
+            type: "lines",
+            mask: "lines",
+            linesClass: "split-line",
+            autoSplit: true,
+            onSplit: (self) =>
+              gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 0.8, ease: "expo.out", stagger: 0.08, delay: Math.min(i, 4) * 0.12, scrollTrigger: { trigger: el, start: "top 98%", once: true } }),
+          });
+          el.style.visibility = "visible";
         });
-        el.style.visibility = "visible";
-      });
       // whatever the stylesheet holds back that does not move is shown at once
-      Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
+      Array.from(main.querySelectorAll<HTMLElement>(`${HEADINGS}, ${BLOCKS}`)).filter((el) => !heads.includes(el) && !blocks.includes(el)).forEach((el) => (el.style.visibility = "visible"));
 
       // cards (the case list, the next projects): the picture arrives once it is in hand (the text under it does not move)
       Array.from(main.querySelectorAll<HTMLElement>("[data-card]")).forEach((card) => {
