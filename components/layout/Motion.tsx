@@ -129,7 +129,7 @@ export default function Motion() {
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 115, filter: "blur(10px)", duration: 1.1, ease: "power4.out", stagger: 0.09, clearProps: "filter", scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 115, filter: "blur(5px)", duration: 1.1, ease: "power4.out", stagger: 0.09, clearProps: "filter", scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
       });
@@ -141,7 +141,7 @@ export default function Motion() {
       // everything held back by the stylesheet that is not itself going to move (inside one that is moving, or with no text: a row of logos) is shown now
       Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !outer.includes(el) && !el.hasAttribute("data-card-meta")).forEach((el) => (el.style.opacity = "1"));
       Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
-      gsap.set(outer, { opacity: 0, y: 22, filter: "blur(10px)" });
+      gsap.set(outer, { opacity: 0, y: 22, filter: "blur(5px)" });
       ScrollTrigger.batch(outer, {
         start: "top 94%",
         once: true,
@@ -150,7 +150,7 @@ export default function Motion() {
       });
 
       // cards (the case list, the next projects): the picture, the title and the tag line arrive as one piece, a beat apart
-      const at = (card: HTMLElement) => ({ trigger: card, start: "top 88%", once: true });
+      const at = (card: HTMLElement) => ({ trigger: card, start: "top 85%", once: true });
       Array.from(main.querySelectorAll<HTMLElement>("[data-card]")).forEach((card) => {
         const img = card.querySelector<HTMLImageElement>("img");
         const title = card.querySelector<HTMLElement>("[data-card-title]");
@@ -158,25 +158,23 @@ export default function Motion() {
         if (img) {
           gsap.fromTo(
             img,
-            { clipPath: "inset(0% 0% 100% 0%)", filter: "blur(14px)", opacity: 1, y: 40 },
-            { clipPath: "inset(0% 0% 0% 0%)", filter: "blur(0px)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,filter,transform", scrollTrigger: at(card), onComplete: () => void skewTargets.push(img) },
+            { clipPath: "inset(0% 0% 100% 0%)", opacity: 1, y: 40 },
+            { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,transform", scrollTrigger: at(card), onComplete: () => void skewTargets.push(img) },
           );
         }
-        if (title) {
-          SplitText.create(title, {
+        const lines = (el: HTMLElement, delay: number) => {
+          SplitText.create(el, {
             type: "lines",
             mask: "lines",
             linesClass: "split-line",
             autoSplit: true,
-            onSplit: (self) => gsap.from(self.lines, { yPercent: 115, filter: "blur(10px)", duration: 1.1, ease: "power4.out", stagger: 0.09, delay: 0.3, clearProps: "filter", scrollTrigger: at(card) }),
+            onSplit: (self) => gsap.from(self.lines, { yPercent: 110, duration: 1.15, ease: "power4.out", stagger: 0.08, delay, scrollTrigger: at(card) }),
           });
-          title.style.visibility = "visible";
-          title.style.opacity = "1";
-        }
-        if (meta) {
-          gsap.set(meta, { opacity: 0, y: 18, filter: "blur(8px)" });
-          gsap.to(meta, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power3.out", delay: 0.55, clearProps: "filter,transform", scrollTrigger: at(card) });
-        }
+          el.style.visibility = "visible";
+          el.style.opacity = "1";
+        };
+        if (title) lines(title, 0.35);
+        if (meta) lines(meta, 0.6);
       });
 
       // pictures: uncovered from the top down as they arrive (small ones, logos and the moving strip, are left alone)
@@ -189,8 +187,8 @@ export default function Motion() {
         }
         gsap.fromTo(
           img,
-          { clipPath: "inset(0% 0% 100% 0%)", filter: "blur(14px)", opacity: 1, y: 36 },
-          { clipPath: "inset(0% 0% 0% 0%)", filter: "blur(0px)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,filter,transform", scrollTrigger: { trigger: img, start: "top 93%", once: true }, onComplete: () => void skewTargets.push(img) },
+          { clipPath: "inset(0% 0% 100% 0%)", opacity: 1, y: 36 },
+          { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 1.3, ease: "power4.out", clearProps: "clipPath,transform", scrollTrigger: { trigger: img, start: "top 93%", once: true }, onComplete: () => void skewTargets.push(img) },
         );
       });
     };
