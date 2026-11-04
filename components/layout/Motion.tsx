@@ -43,7 +43,14 @@ export default function Motion() {
   // the scrolling, and the way out of a page: once
   useEffect(() => {
     if (!html().hasAttribute("data-motion")) return;
-    const lenis = new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 1, anchors: true });
+    const lenis = new Lenis({
+      duration: 1.35, // a long glide that settles slowly, like the references
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.4,
+      anchors: true,
+    });
     window.__lenis = lenis;
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => lenis.raf(t * 1000);
