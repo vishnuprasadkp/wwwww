@@ -208,7 +208,7 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth iframe { pointer-events: none; }
 /* What is about to move is held back until it is set up (the same lists are in Motion.tsx), so nothing shows and then jumps. Inline
    styles from the script win over these, and `:where` keeps these at no weight. If the script cannot run, the attribute is removed. */
-html[data-motion] main :where(h1, h2, h3, h4, .font-serif, p, dd, dt, li, figcaption, blockquote) { visibility: hidden; }
+html[data-motion] main :where(h1, h2, h3, h4, .font-serif) { visibility: hidden; }
 html[data-motion] main :where(img) { opacity: 0; }
 /* the lines of a heading each come up out of their own mask: room for the tails of letters so they are not cut */
 .split-line-mask { padding-bottom: 0.16em; margin-bottom: -0.16em; }

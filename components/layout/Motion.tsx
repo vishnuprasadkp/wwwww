@@ -17,7 +17,6 @@ declare global {
 
 // What moves. The same lists are in globals.css (the page holds these back until they are ready, so nothing flashes before it moves).
 const HEADINGS = "h1, h2, h3, h4, .font-serif";
-const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 
 const html = () => document.documentElement;
 // a picture is only uncovered once it is loaded and decoded, so it never pops in half-drawn
@@ -132,27 +131,21 @@ export default function Motion() {
       if (!main) return;
       gsap.set(main, { clearProps: "opacity,transform" });
 
-      // all text: line by line, up out of a mask. The main headings (36px and above on the web) are softly blurred as they come in.
-      const reveal = (el: HTMLElement, duration: number, stagger: number) => {
-        const blur = innerWidth >= 768 && parseFloat(getComputedStyle(el).fontSize) >= 36;
+      // only the main heading of each page (its h1) moves: line by line, up out of a mask, softly blurred. All other text is simply there.
+      const heads = Array.from(main.querySelectorAll<HTMLElement>("h1")).filter((el) => !el.closest("[data-no-motion]") && !!el.textContent?.trim());
+      heads.forEach((el) => {
         SplitText.create(el, {
           type: "lines",
           mask: "lines",
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 100, ...(blur ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration, ease: "expo.out", stagger, scrollTrigger: { trigger: el, start: "top 94%", once: true } }),
+            gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 0.8, ease: "expo.out", stagger: 0.1, scrollTrigger: { trigger: el, start: "top 94%", once: true } }),
         });
         el.style.visibility = "visible";
-      };
-      const movable = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim();
-      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter(movable);
-      heads.forEach((el) => reveal(el, 0.8, 0.1));
-      // the text blocks that hold text themselves (not ones that only wrap other blocks, headings or pictures)
-      const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => movable(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
-      blocks.forEach((el) => reveal(el, 0.7, 0.05));
-      // whatever the stylesheet holds back that does not move (wrappers, logos) is shown at once
-      Array.from(main.querySelectorAll<HTMLElement>(`${HEADINGS}, ${BLOCKS}`)).filter((el) => !heads.includes(el) && !blocks.includes(el)).forEach((el) => (el.style.visibility = "visible"));
+      });
+      // whatever the stylesheet holds back that does not move is shown at once
+      Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
 
       // cards (the case list, the next projects): the picture arrives once it is in hand (the text under it does not move)
       Array.from(main.querySelectorAll<HTMLElement>("[data-card]")).forEach((card) => {
@@ -163,9 +156,9 @@ export default function Motion() {
         ScrollTrigger.create({ trigger: card, start: "top 88%", once: true, onEnter: () => void (img ? ready(img).then(play) : play()) });
       });
 
-      // pictures: uncovered from the top down as they arrive (small ones, logos and the moving strip, are left alone)
+      // pictures: uncovered from the top down as they arrive (small ones, logos and anything in a moving strip, the painting ticker included, are left alone)
       Array.from(main.querySelectorAll<HTMLImageElement>("img")).forEach((img) => {
-        const big = img.clientWidth > 240 && img.clientHeight > 120 && !img.closest('[class*="animate-marquee"]') && !img.closest("[data-no-motion]");
+        const big = img.clientWidth > 240 && img.clientHeight > 120 && !img.closest('[class*="animate-"]') && !img.closest("[data-no-motion]");
         if (img.closest("[data-card]")) return; // arrives with its card
         if (!big) {
           img.style.opacity = "1";
