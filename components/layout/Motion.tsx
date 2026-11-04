@@ -17,7 +17,6 @@ declare global {
 
 // What moves. The same lists are in globals.css (the page holds these back until they are ready, so nothing flashes before it moves).
 const HEADINGS = "h1, h2, h3, h4, .font-serif";
-const BLOCKS = "p, dd, dt, li, figcaption, blockquote";
 
 const html = () => document.documentElement;
 // a picture is only uncovered once it is loaded and decoded, so it never pops in half-drawn
@@ -26,8 +25,8 @@ const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img
 const COVERED = { opacity: 0, y: 40 };
 const REVEAL = { opacity: 1, y: 0, duration: 1.4, ease: "expo.out", clearProps: "transform" };
 
-// the blur is for the major headings only: on the web, type above 28px
-const big = (el: HTMLElement) => innerWidth >= 768 && parseFloat(getComputedStyle(el).fontSize) > 28;
+// a heading, for the motion, is type of 28px and above on the web: only those move; everything smaller is plain
+const big = (el: HTMLElement) => innerWidth >= 768 && parseFloat(getComputedStyle(el).fontSize) >= 28;
 
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
@@ -121,7 +120,7 @@ export default function Motion() {
       gsap.set(main, { clearProps: "opacity,transform" });
 
       // headings: line by line, up out of a mask
-      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => !el.closest("[data-no-motion]") && !el.closest("[data-card]") && el.textContent?.trim());
+      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => !el.closest("[data-no-motion]") && !el.closest("[data-card]") && el.textContent?.trim() && big(el));
       heads.forEach((el) => {
         SplitText.create(el, {
           type: "lines",
@@ -129,56 +128,20 @@ export default function Motion() {
           linesClass: "split-line",
           autoSplit: true,
           onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 100, ...(big(el) ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
+            gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 1.2, ease: "expo.out", stagger: 0.2, scrollTrigger: { trigger: el, start: "top 92%", once: true } }),
         });
         el.style.visibility = "visible";
       });
 
-      // text: rises and fades in, a few at a time, as it comes up the screen
-      const headSet = new Set(heads);
-      const all = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !headSet.has(el) && !el.closest(HEADINGS) && !el.closest("[data-no-motion]") && !el.closest("[data-card]") && el.textContent?.trim());
-      const outer = all.filter((el) => !all.some((o) => o !== el && o.contains(el)));
-      // everything held back by the stylesheet that is not itself going to move (inside one that is moving, or with no text: a row of logos) is shown now
-      Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => !outer.includes(el) && !el.hasAttribute("data-card-meta")).forEach((el) => (el.style.opacity = "1"));
+      // everything held back by the stylesheet that is not a heading is shown at once: only headings and pictures move
       Array.from(main.querySelectorAll<HTMLElement>(HEADINGS)).filter((el) => !heads.includes(el)).forEach((el) => (el.style.visibility = "visible"));
-      gsap.set(outer, { opacity: 0, y: 28 });
-      ScrollTrigger.batch(outer, {
-        start: "top 94%",
-        once: true,
-        batchMax: 8,
-        onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 1.2, ease: "expo.out", stagger: 0.1, overwrite: true, clearProps: "transform" }),
-      });
 
-      // cards (the case list, the next projects): the picture, the title and the tag line arrive as one piece, a beat apart,
-      // once the picture is in hand
+      // cards (the case list, the next projects): the picture arrives once it is in hand (the text under it does not move)
       Array.from(main.querySelectorAll<HTMLElement>("[data-card]")).forEach((card) => {
         const img = card.querySelector<HTMLImageElement>("img");
-        const title = card.querySelector<HTMLElement>("[data-card-title]");
-        const meta = card.querySelector<HTMLElement>("[data-card-meta]");
         const parts: gsap.core.Tween[] = [];
-        let go = false;
-        const play = () => {
-          go = true;
-          parts.forEach((t) => t.play());
-        };
+        const play = () => parts.forEach((t) => t.play());
         if (img) parts.push(gsap.fromTo(img, COVERED, { ...REVEAL, paused: true }));
-        const lines = (el: HTMLElement, delay: number) => {
-          SplitText.create(el, {
-            type: "lines",
-            mask: "lines",
-            linesClass: "split-line",
-            autoSplit: true,
-            onSplit: (self) => {
-              const t = gsap.from(self.lines, { yPercent: 100, duration: 1.2, ease: "expo.out", stagger: 0.2, delay, paused: !go });
-              parts.push(t);
-              return t;
-            },
-          });
-          el.style.visibility = "visible";
-          el.style.opacity = "1";
-        };
-        if (title) lines(title, 0.4);
-        if (meta) lines(meta, 0.65);
         ScrollTrigger.create({ trigger: card, start: "top 88%", once: true, onEnter: () => void (img ? ready(img).then(play) : play()) });
       });
 
