@@ -243,7 +243,7 @@ function NivviIntro() {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
       </button>
       <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
-        Hey, it’s Nyrro! Your little guide to Vishnu’s work, ideas and creative process.
+        I’m Nyrro, a small beetle who knows my work a bit too well. Ask away.
       </p>
     </div>
   );
