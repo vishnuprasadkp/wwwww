@@ -29,7 +29,13 @@ const REVEAL = { opacity: 1, y: 0, duration: 1.4, ease: "expo.out", clearProps: 
 let pendingHash = ""; // an anchor on the page we are going to ("#cases"): the new page opens at its top, then glides there
 
 const target = (hash: string) => (hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null);
-const glide = (el: HTMLElement) => (window.__lenis ? window.__lenis.scrollTo(el, { duration: 1.7 }) : el.scrollIntoView({ behavior: "smooth" }));
+// a gentle in-and-out glide, longer for a longer way (never abrupt at either end)
+const glide = (el: HTMLElement) => {
+  const lenis = window.__lenis;
+  if (!lenis) return el.scrollIntoView({ behavior: "smooth" });
+  const far = Math.abs(el.getBoundingClientRect().top);
+  lenis.scrollTo(el, { duration: Math.min(2.4, Math.max(1.2, far / 1100)), easing: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2) });
+};
 
 const uniq = <T,>(a: T[]) => Array.from(new Set(a));
 
@@ -134,6 +140,7 @@ export default function Motion() {
 
       // the opening of every page (its h1 and the text in the first screen: label, title, description) arrives line by line, up out of a
       // mask, softly blurred, the title first and the rest a beat behind it. Text further down is simply there.
+      const caseStudy = location.pathname.startsWith("/work/"); // there only the title is blurred; the rest of the opening just rises
       const opening = (el: HTMLElement) => !el.closest("[data-no-motion]") && !!el.textContent?.trim() && el.getBoundingClientRect().top < innerHeight * 0.9;
       const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => el.matches("h1") ? !el.closest("[data-no-motion]") && !!el.textContent?.trim() : opening(el));
       const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => opening(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
@@ -146,7 +153,7 @@ export default function Motion() {
             linesClass: "split-line",
             autoSplit: true,
             onSplit: (self) =>
-              gsap.from(self.lines, { yPercent: 100, filter: "blur(6px)", clearProps: "filter", duration: 0.8, ease: "expo.out", stagger: 0.08, delay: Math.min(i, 4) * 0.12, scrollTrigger: { trigger: el, start: "top 98%", once: true } }),
+              gsap.from(self.lines, { yPercent: 100, ...(!caseStudy || el.matches("h1") ? { filter: "blur(6px)", clearProps: "filter" } : {}), duration: 0.8, ease: "expo.out", stagger: 0.08, delay: Math.min(i, 4) * 0.12, scrollTrigger: { trigger: el, start: "top 98%", once: true } }),
           });
           el.style.visibility = "visible";
         });
@@ -190,7 +197,7 @@ export default function Motion() {
               glide(el);
               history.replaceState(null, "", location.pathname + location.search + hash);
             }
-          }, 1000);
+          }, 700);
           cleanups.push(() => window.clearTimeout(t));
         }
         ScrollTrigger.refresh();
