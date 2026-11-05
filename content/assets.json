@@ -488,5 +488,82 @@
     "w": 3340,
     "h": 1800,
     "alt": "Sony enterprise platforms"
+  },
+  "logo-12": {
+    "url": "",
+    "file": "/images/logos/logo-12.png",
+    "w": 484,
+    "h": 100,
+    "alt": "Stowers Institute"
+  },
+  "logo-13": {
+    "url": "",
+    "file": "/images/logos/logo-13.png",
+    "w": 184,
+    "h": 100,
+    "alt": "wasl"
+  },
+  "logo-14": {
+    "url": "",
+    "file": "/images/logos/logo-14.png",
+    "w": 274,
+    "h": 100,
+    "alt": "Mphasis"
+  },
+  "logo-15": {
+    "url": "",
+    "file": "/images/logos/logo-15.png",
+    "w": 389,
+    "h": 100,
+    "alt": "Shaw"
+  },
+  "logo-16": {
+    "url": "",
+    "file": "/images/logos/logo-16.png",
+    "w": 362,
+    "h": 91,
+    "alt": "Virtusa"
+  },
+  "logo-17": {
+    "url": "",
+    "file": "/images/logos/logo-17.png",
+    "w": 346,
+    "h": 100,
+    "alt": "Ajman One"
+  },
+  "logo-18": {
+    "url": "",
+    "file": "/images/logos/logo-18.png",
+    "w": 384,
+    "h": 100,
+    "alt": "Docebo"
+  },
+  "logo-19": {
+    "url": "",
+    "file": "/images/logos/logo-19.png",
+    "w": 186,
+    "h": 100,
+    "alt": "Lowe's"
+  },
+  "logo-20": {
+    "url": "",
+    "file": "/images/logos/logo-20.png",
+    "w": 444,
+    "h": 99,
+    "alt": "Air Arabia"
+  },
+  "logo-21": {
+    "url": "",
+    "file": "/images/logos/logo-21.png",
+    "w": 212,
+    "h": 100,
+    "alt": "Sharek"
+  },
+  "logo-22": {
+    "url": "",
+    "file": "/images/logos/logo-22.png",
+    "w": 536,
+    "h": 100,
+    "alt": "Tekion"
   }
 }
