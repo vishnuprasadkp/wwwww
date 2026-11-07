@@ -15,7 +15,7 @@ export type PageInfo = {
 const HOME: PageInfo = {
   key: "home",
   title: "Vishnu's portfolio",
-  prompts: ["What makes Vishnu's design approach unique?", "What has Vishnu worked on?", "How does Vishnu design?"],
+  prompts: ["Who is Vishnu?", "What are his core skills?", "How does he work with AI?"],
 };
 
 const CASES: Record<string, PageInfo> = {

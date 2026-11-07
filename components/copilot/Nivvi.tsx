@@ -419,6 +419,16 @@ function NivviPanel() {
       const reply = nyrro.ask(questions[questions.length - 1]);
       finalText = reply.answer;
       next = (reply.followups ?? []).slice(0, 4);
+      // Only talk about case studies when the visitor is asking about work: a skills or contact answer should not
+      // end with "Tell me about ADEO". Those chips are swapped for general ones the visitor has not asked yet.
+      const aboutWork = reply.match.type === "entity" || reply.match.type === "fallback" || /^(projects-list|industries|best-problems|proudest|most-complex|platforms|success-metrics|common-thread|outcomes-real|current-work|other-|domain-)/.test(reply.match.id);
+      if (!aboutWork) {
+        const work = /(adeo|hdfc|sony|enterprise search|agent workforce|other projects|case stud)/i;
+        const asked = new Set(questions.map((q) => q.toLowerCase()));
+        const pool = ["What are his core skills?", "What tools does he use?", "How does he design?", "Where did he study?", "What does he do outside of design?", "Why should we hire him?", "How can I contact him?"];
+        next = next.filter((n) => !work.test(n));
+        for (const q of pool) if (next.length < 4 && !asked.has(q.toLowerCase()) && !next.includes(q) && q.toLowerCase() !== questions[questions.length - 1].toLowerCase()) next.push(q);
+      }
       await new Promise((r) => setTimeout(r, 250));
     } catch {
       finalText = "I couldn't reach my notes just now. Please try again, or email Vishnu at vishnuprasadkp98@gmail.com.";
@@ -600,7 +610,7 @@ function NivviPanel() {
               ) : (
                 <div key={i} data-ledge="msg-a" className="text-[15px] leading-[24px]">
                   {m.content ? (
-                    <NyrroMarkdown text={m.content} />
+                    <NyrroMarkdown text={m.content} onNavigate={() => window.matchMedia("(max-width: 767px)").matches && close()} />
                   ) : (
                     <span className="inline-flex items-center gap-1 py-2" aria-label="Nyrro is thinking">
                       {[0, 1, 2].map((d) => (
@@ -619,7 +629,7 @@ function NivviPanel() {
                         {speaking === i ? (
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="0.5" /><rect x="14" y="5" width="4" height="14" rx="0.5" /></svg>
                         ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5-12-7.5Z" /></svg>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4Z" /><path d="M15.5 9a4 4 0 0 1 0 6" /><path d="M18 6.5a7.5 7.5 0 0 1 0 11" /></svg>
                         )}
                       </button>
                       {i === messages.length - 1 && (

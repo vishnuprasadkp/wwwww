@@ -1,15 +1,25 @@
 import { Fragment } from "react";
+import Link from "next/link";
 
-/** Renders Nyrro's answers: paragraphs, **bold**, _italic_ / *italic*, "- " bullets, "1." lists and [text](https://url) links (opened in a new tab). */
+const SITE = /^https?:\/\/(www\.)?vishnuprasad\.space/;
+
+/** Renders Nyrro's answers: paragraphs, **bold**, _italic_ / *italic*, "- " bullets, "1." lists and [text](https://url) links (this site stays in the same tab; other sites open in a new one). */
 
 const INLINE = /(\[[^\]]+\]\(https?:[^)\s]+\)|\*\*[^*]+\*\*|(?:^|(?<=[^*\w]))_[^_]+_(?![\w])|\*[^*]+\*)/g;
 
-function Inline({ text }: { text: string }) {
+function Inline({ text, onNavigate }: { text: string; onNavigate?: () => void }) {
   return (
     <>
       {text.split(INLINE).map((p, i) => {
         if (!p) return null;
         const link = p.match(/^\[([^\]]+)\]\((https?:[^)\s]+)\)$/);
+        // links to this site stay in the same tab, so the page changes beside the open panel
+        if (link && SITE.test(link[2]))
+          return (
+            <Link key={i} href={link[2].replace(SITE, "") || "/"} onClick={onNavigate} className="underline underline-offset-4 hover:text-pigment-soft">
+              {link[1]}
+            </Link>
+          );
         if (link)
           return (
             <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-pigment-soft">
@@ -46,7 +56,7 @@ function blocks(text: string): Block[] {
   return out;
 }
 
-export default function NyrroMarkdown({ text }: { text: string }) {
+export default function NyrroMarkdown({ text, onNavigate }: { text: string; onNavigate?: () => void }) {
   return (
     <>
       {blocks(text).map((b, i) => {
@@ -54,7 +64,7 @@ export default function NyrroMarkdown({ text }: { text: string }) {
         if (b.kind === "p")
           return (
             <p key={i} className={gap}>
-              <Inline text={b.items[0]} />
+              <Inline text={b.items[0]} onNavigate={onNavigate} />
             </p>
           );
         const Tag = b.kind;
@@ -62,7 +72,7 @@ export default function NyrroMarkdown({ text }: { text: string }) {
           <Tag key={i} className={`${gap} ${b.kind === "ul" ? "list-disc" : "list-decimal"} space-y-1 pl-5`}>
             {b.items.map((it, j) => (
               <li key={j}>
-                <Inline text={it} />
+                <Inline text={it} onNavigate={onNavigate} />
               </li>
             ))}
           </Tag>
