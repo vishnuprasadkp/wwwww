@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import NyrroMarkdown from "./NyrroMarkdown";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { pageInfo } from "@/lib/nivvi-pages";
 import MothTrail, { MothIcon } from "@/components/copilot/Moth";
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -330,6 +330,7 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
 function NivviPanel() {
   const { open, close } = useNivvi();
   const pathname = usePathname();
+  const router = useRouter();
   const page = pageInfo(pathname);
   const pageRef = useRef(pathname);
   pageRef.current = pathname;
@@ -418,6 +419,9 @@ function NivviPanel() {
       for (const q of questions.slice(0, -1)) nyrro.ask(q);
       const reply = nyrro.ask(questions[questions.length - 1]);
       finalText = reply.answer;
+      // Asking about one of the five case studies opens it on the left, beside the panel (not on phones, where the panel is full screen).
+      const slug = ({ "enterprise-search": "enterprise-search", adeo: "adeo", "agent-workforce": "ai-agent", hdfc: "hdfc", sony: "sony" } as Record<string, string>)[reply.match.id];
+      if (reply.match.type === "entity" && slug && !window.matchMedia("(max-width: 767px)").matches && !window.location.pathname.startsWith(`/work/${slug}`)) router.push(`/work/${slug}`);
       next = (reply.followups ?? []).slice(0, 4);
       // Only talk about case studies when the visitor is asking about work: a skills or contact answer should not
       // end with "Tell me about ADEO". Those chips are swapped for general ones the visitor has not asked yet.
@@ -440,7 +444,7 @@ function NivviPanel() {
       byVoice.current = false;
       speakRef.current?.(history.length, finalText);
     }
-  }, []);
+  }, [router]);
 
   const send = useCallback(
     (text: string) => {
@@ -619,21 +623,21 @@ function NivviPanel() {
                     </span>
                   )}
                   {m.content && !(busy && i === messages.length - 1) && (
-                    <div className="-ml-2 mt-1 flex items-center text-pigment-soft">
+                    <div className="-ml-1.5 mt-1 flex items-center text-pigment-soft">
                       <button
                         type="button"
                         onClick={() => speak(i, m.content)}
                         aria-label={speaking === i ? "Stop reading" : "Read aloud"}
-                        className="grid h-8 w-8 place-items-center transition-colors hover:text-[#C44419]"
+                        className="grid h-7 w-7 place-items-center transition-colors hover:text-[#C44419]"
                       >
                         {speaking === i ? (
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="0.5" /><rect x="14" y="5" width="4" height="14" rx="0.5" /></svg>
                         ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4Z" /><path d="M15.5 9a4 4 0 0 1 0 6" /><path d="M18 6.5a7.5 7.5 0 0 1 0 11" /></svg>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4Z" /><path d="M15.5 9a4 4 0 0 1 0 6" /><path d="M18 6.5a7.5 7.5 0 0 1 0 11" /></svg>
                         )}
                       </button>
                       {i === messages.length - 1 && (
-                        <button type="button" onClick={regenerate} aria-label="Regenerate answer" className="grid h-8 w-8 place-items-center transition-colors hover:text-[#C44419]">
+                        <button type="button" onClick={regenerate} aria-label="Regenerate answer" className="grid h-7 w-7 place-items-center transition-colors hover:text-[#C44419]">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9" /><path d="M20 4v5h-5" /></svg>
                         </button>
                       )}

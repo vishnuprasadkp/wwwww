@@ -24,7 +24,7 @@ export function ArrowLink({
 }) {
   const cls = `group relative inline-flex h-[30px] w-max items-center px-0 font-mono text-[15px] leading-[25px] text-pigment transition-[padding] duration-200 after:pointer-events-none after:absolute after:inset-0 after:border-b-2 after:border-transparent after:transition-colors after:duration-200 hover:px-1 hover:after:border-pigment ${className}`;
   const inner = (
-    <span className="flex items-center gap-[17px] transition-[gap] duration-200 group-hover:gap-2">
+    <span className={`flex items-center transition-[gap] duration-200 ${icon ? "gap-2 group-hover:gap-1.5" : "gap-[17px] group-hover:gap-2"}`}>
       <span>{children}</span>
       {icon ?? (
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.73" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={down ? "rotate-90" : ""}>

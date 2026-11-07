@@ -13,6 +13,7 @@ export type CaseMeta = {
   cardTags: string[];  // shown on the home page card
   client: string;
   platform: string;
+  domain: string;
   timeline: string;
   role: string;
   hero: string;        // asset ids from content/assets.json

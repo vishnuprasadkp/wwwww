@@ -4,7 +4,7 @@ import type { CaseMeta } from "@/lib/cases";
 export default function CaseHero({ meta }: { meta: CaseMeta }) {
   const rows = [
     ["Client", meta.client],
-    ["Platform", meta.platform],
+    ["Domain", meta.domain],
     ["Timeline", meta.timeline],
     ["My role", meta.role],
   ];

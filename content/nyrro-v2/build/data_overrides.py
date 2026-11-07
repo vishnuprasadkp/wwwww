@@ -181,6 +181,39 @@ DONT_KNOW = f"I don't know about that, sorry. 🪲 You can get in touch with Vis
 def K(id, *kws):
     if id in OVERRIDES: OVERRIDES[id]["add_keywords"] += list(kws)
     else: O(id, add_keywords=kws)
+# ── Lead-level rewrites from the resume (v2.1) ──
+O("who-is-vishnu",
+  "**Vishnu Prasad K P** is a Senior Product Designer at **ICD (Itu Chaudhuri Design)**, leading design for **UnifyApps**, an AI-powered enterprise platform.\n\nWith 5+ years across enterprise SaaS, AI and data-heavy platforms, he takes complex, high-stakes systems from discovery to launch, working closely with product, engineering and executive stakeholders. His work includes products for **HDFC Bank**, **DGE Abu Dhabi** and **Sony Pictures Networks India**.",
+  followups=["What has he worked on?", "What makes his approach unique?", "How many years of experience?"])
+
+O("experience-years",
+  "**5+ years** in product design across enterprise SaaS, AI and data-heavy platforms:\n\n- **ICD, embedded at UnifyApps** (Oct 2024 – present): drove design across **60+ enterprise deployments**, ran 3 initiatives in parallel and mentored 6 junior designers\n- **Brane Enterprises** (Oct 2023 – Sep 2024): led UX for **20+ client projects** on a low-code platform\n- **Kocha Technologies** (Nov 2021 – Oct 2023): designed an NFT marketplace end to end\n\nIn total, **100+ use cases**.",
+  followups=["What did he do at each company?", "What is his title?"])
+
+O("career-history",
+  "1. **Kocha Technologies** (Nov 2021 – Oct 2023), Senior UI/UX Designer: designed **Nextdecentrum**, an NFT marketplace, end to end, covering onboarding, discovery, bidding and wallet integration with a distributed engineering team\n2. **Brane Enterprises** (Oct 2023 – Sep 2024), Senior UI/UX Designer: led UX for **20+ client projects** across e-commerce, finance, healthcare and education, turning unclear business and technical requirements into scalable workflows\n3. **ICD, embedded at UnifyApps** (Oct 2024 – present), Senior Product Designer: leads design on UnifyApps' AI products and **60+ enterprise deployments**, owns the design system and mentors 6 junior designers\n\nHis work moved from consumer and Web3 products to large-scale enterprise and AI systems.",
+  followups=["Tell me about his early work", "What is he working on now?"])
+
+O("skills",
+  "**Design & research**\n- Product, UX and interaction design; information architecture and user flows\n- Design systems and component libraries\n- Usability testing, journey mapping and accessibility (WCAG 2.1)\n\n**Strategy & leadership**\n- Product strategy and discovery; systems thinking\n- Stakeholder management and design leadership\n- DesignOps: handoff and review workflows that cut rework\n\n**AI product design**\n- Agentic UX, prompt engineering and generative prototyping\n- Data visualisation for data-heavy platforms",
+  followups=["What tools does he use?", "How does he design?"])
+
+O("tools",
+  "**Design and handoff**\n- Figma, Figma AI and FigJam for design, design systems and developer handoff\n- Adobe Creative Suite and Framer\n\n**Collaboration**\n- Miro and FigJam for workshops, mapping and alignment with product and engineering\n\n**AI product design**\n- Claude and Google AI Studio for prompt design and generative prototyping",
+  followups=["What are his core skills?", "How does he design?"])
+
+O("proudest",
+  "These five case studies in his portfolio show his strongest work. Which one he's proudest of is a question for Vishnu himself:\n\n1. **Intelligent Enterprise Search:** AI search across a company's tools, with sources (UnifyApps)\n2. **Committee Board Agentic App:** AI-assisted decisions for the Abu Dhabi government (DGE / ADEO)\n3. **Agent Workforce Platform:** build, govern and run AI agents (UnifyApps)\n4. **HDFC Bank consent platform:** consent management for 30M+ customers\n5. **Sony Pictures Networks India:** four AI platforms for a media group\n\nWhich would you like to explore?",
+  followups=CS[:4])
+
+O("industries",
+  "Vishnu has designed across these domains. **Bold** names are full case studies in his portfolio:\n\n- **Enterprise AI & knowledge:** **Intelligent Enterprise Search**, **Agent Workforce Platform**, Lowe's, Stowers Institute, Docebo\n- **Government:** **Committee Board Agentic App (DGE / ADEO)**, Digital Dubai, Digital Ajman, CGB Qatar\n- **Banking & insurance:** **HDFC Bank**, Mashreq, Niva Bupa\n- **Media & entertainment:** **Sony Pictures Networks India**\n- **Manufacturing & sales:** Greif, Shaw Industries, Jubilant\n- **Automotive & hospitality:** Tekion, Wasl\n- **HR, workplace & aviation:** Virtusa, Mphasis, Air Arabia\n\nName any of them and I'll tell you what he designed.",
+  followups=["Other projects", "Tell me about Mashreq", "Tell me about Digital Dubai"])
+
+K("proudest", "best projects", "top projects", "best works", "best case studies", "greatest work", "his best projects")
+K("experience-years", "his experience", "work experience", "professional experience", "his work experience")
+K("industries", "what all domains", "domains and projects", "domain wise", "projects by domain", "domains he worked", "all domains")
+
 K("skills", "ux designer", "ui designer", "ui or ux", "ux or ui", "ux designer or ui designer", "what kind of skills")
 K("why-hire", "reasons to hire", "reason to hire", "3 reasons", "three reasons", "good hire", "convince")
 K("unique-approach", "known for", "famous for", "best known", "signature")
