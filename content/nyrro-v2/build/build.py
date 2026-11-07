@@ -95,7 +95,7 @@ SPELLFIX = {
 
 # Starter chips shown when the bot isn't sure.
 FALLBACK = {
-  "answer": "I'm not sure I understood that. 🪲 I know a lot about Vishnu's **projects, design approach, AI work, clients and experience**. Try one of these, or email him at **vishnuprasadkp98@gmail.com**.",
+  "answer": "I'm not sure I understood that. I know a lot about Vishnu's **projects, design approach, AI work, clients and experience**. Try one of these, or email him at **vishnuprasadkp98@gmail.com**.",
   "followups": ["Who is Vishnu?", "What has he worked on?", "How does he design?", "What AI work has he done?", "How can I contact him?"],
 }
 
@@ -153,7 +153,7 @@ kb = {"version": "2.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
       "entities": ENTITIES, "intents": INTENTS, "fallback": FALLBACK, "contactEmail": "vishnuprasadkp98@gmail.com",
       "whichProjectAnswer": "Which project would you like to know about? Here are his five case studies:",
       "repeatAnswer": "I've already shared that above ☝️ Is there something more specific you'd like to know?",
-      "exploreChips": ["Tell me about Enterprise Search", "Tell me about ADEO", "Tell me about the Agent Workforce Platform", "Tell me about HDFC Bank", "Tell me about the Sony platforms", "How does he design?", "What AI work has he done?", "Other projects", "How can I contact him?"]}
+      "exploreChips": ["Tell me about Enterprise Search", "Tell me about ADEO", "Tell me about the Agent Workforce Platform", "Tell me about HDFC Bank", "Tell me about the Sony platforms", "How does he design?", "What AI work has he done?", "Other client work", "How can I contact him?"]}
 
 out = "../nyrro-knowledge-base.json"
 json.dump(kb, open(out, "w"), ensure_ascii=False, indent=1)

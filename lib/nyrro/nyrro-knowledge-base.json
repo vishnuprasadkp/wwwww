@@ -394,7 +394,7 @@
     "agent marketplace"
    ],
    "answers": {
-    "overview": "**Intelligent Enterprise Search Platform (UnifyApps)**\n\nAn AI-powered search platform that connects all of a company's tools into one shared knowledge index, so people get **direct answers with sources** instead of searching system after system.\n\n- **Role:** Lead Product Designer, end to end from client brief to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 – present\n- **Core idea:** in enterprise AI, trust is the product\n\n[Read the case study →](https://vishnuprasad.space/work/enterprise-search)",
+    "overview": "**Intelligent Enterprise Search Platform (UnifyApps)**\n\nAn AI-powered search platform that connects all of a company's tools into one shared knowledge index, so people get **direct answers with sources** instead of searching system after system.\n\n- **Role:** Lead Product Designer, end to end from client brief to developer handoff\n- **Domain:** Enterprise AI\n- **Timeline:** 2025 – present\n- **Core idea:** in enterprise AI, trust is the product",
     "problem": "Organisations had the information they needed, but it was scattered across documents, chat tools and business apps. Five problems stood out:\n\n1. Search returned **files, not answers**\n2. Knowledge sat in **disconnected systems** with no single place to manage it\n3. Results **ignored who was asking** and their role\n4. Teams **couldn't customise** the experience without engineering\n5. Users **couldn't see how their data was handled**, which hurt trust",
     "users": "The platform serves three roles, each with a different need:\n\n- **Employees** want clear, trustworthy answers with sources\n- **Administrators** want to manage integrations, permissions and settings without engineering help\n- **Compliance teams** want to see what data the platform can access, how it's used, and audit it\n\nThe product team defined these roles and led the research; their findings shaped every design decision.",
     "features": "Five core capabilities, each solving one of the five problems:\n\n- **Connect Applications:** Slack, Jira, GitHub, Google Drive and more in one knowledge base, with clear connection statuses\n- **Manage Connections:** admins see what's syncing, choose what's included and see failures\n- **Personalised Results:** direct, role-aware answers with sources instead of file lists\n- **Customise Enterprise Search:** branding, wording, enabled tools and AI model through plain-language settings\n- **Agent Marketplace:** ready-made agents for finance, legal, sales and operations, each showing what it does and whether it's verified",
@@ -432,7 +432,7 @@
     "department of government enablement"
    ],
    "answers": {
-    "overview": "**Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**\n\nA government platform that helps the Abu Dhabi Executive Office's committees **analyse, deliberate on, vote on and record decisions** on 1,000+ high-impact proposals a month.\n\n- **Client:** UnifyApps for DGE and ADEO\n- **Partners:** Frog Design and Nagarro Design (ICD as design partner)\n- **Platform:** Tablet-first, plus web\n- **Timeline:** April 2025 – February 2026\n- **Role:** Lead Product Designer\n\n[Read the case study →](https://vishnuprasad.space/work/adeo)",
+    "overview": "**Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**\n\nA government platform that helps the Abu Dhabi Executive Office's committees **analyse, deliberate on, vote on and record decisions** on 1,000+ high-impact proposals a month.\n\n- **Client:** UnifyApps for DGE and ADEO\n- **Partners:** Frog Design and Nagarro Design (ICD as design partner)\n- **Domain:** Government\n- **Timeline:** April 2025 – February 2026\n- **Role:** Lead Product Designer",
     "problem": "ADEO handles **1,000+ high-impact submissions every month**, mostly Arabic PDFs and presentations. Preparation could take **up to 15 working days**. Four structural problems:\n\n1. **Slow preparation:** members skimmed documents right before sessions\n2. **Unsearchable history:** five years of decisions (about 3,000–4,000 documents) couldn't be used during deliberation\n3. **Absent members had no voice:** no way to contribute or record a position\n4. **Incomplete records:** minutes, resolutions and action items were scattered",
     "users": "Three user types:\n\n- **Committee members:** about **15 minutes per topic**, so they need structured briefings\n- **Secretaries:** own the long preparation and documentation around each session\n- **Observers and admins:** need visibility without the ability to act\n\nResearch was continuous: requirements came directly from the client and departments, validated at each major decision.",
     "features": "The core flow is **Analyse → Deliberate → Decide & Record**:\n\n- **Session agenda:** members see only their committees, active session on top, proposals split into *For Information* and *Decision Making*\n- **AI analysis and briefing:** a summary, strategic alignment score, ROI estimate, feasibility rating and risk assessment for every proposal, shown before the document\n- **AI assistant:** searches the five-year archive from inside the session\n- **Voting and async participation:** five outcomes, each requiring a rationale; absent members can vote and give feedback\n- **Live documentation:** minutes, action items and resolution drafts generated during the session",
@@ -476,7 +476,7 @@
     "agent studio"
    ],
    "answers": {
-    "overview": "**Agent Workforce Platform (UnifyApps)**\n\nA platform for building, governing and running AI agents, with **three ways to build: Simple, Workflow and Advanced**, all on one design system.\n\n- **Role:** Lead Product Designer, concept to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 – present\n- **Goal:** make AI easy to adopt, govern and scale across roles\n\n[Read the case study →](https://vishnuprasad.space/work/ai-agent)",
+    "overview": "**Agent Workforce Platform (UnifyApps)**\n\nA platform for building, governing and running AI agents, with **three ways to build: Simple, Workflow and Advanced**, all on one design system.\n\n- **Role:** Lead Product Designer, concept to developer handoff\n- **Domain:** Enterprise AI\n- **Timeline:** 2025 – present\n- **Goal:** make AI easy to adopt, govern and scale across roles",
     "problem": "Getting from an idea to a working agent took too many disconnected steps:\n\n1. **Product managers** couldn't configure or launch agents without engineering\n2. **Workflow logic** lived in separate documents that drifted out of sync with the product\n3. **Compliance and security checks** came after development, causing rework\n4. **Knowledge** was scattered, so quality and freshness were hard to manage\n5. **No way to evaluate** an agent before deployment",
     "users": "Three roles:\n\n- **Product managers:** define use cases and behaviour; need to act without engineering\n- **Engineers:** need precise control over prompts, models and testing, in a focused workspace\n- **Compliance reviewers:** need visibility, audit history and security controls before approval",
     "features": "- **Simple Agent:** plain-language setup of role, goal and knowledge, with no model selection or prompt engineering\n- **Workflow Agent:** a visual canvas of triggers, conditions and actions, with execution traces non-engineers can verify\n- **Advanced Agent:** full control over models, retrieval, guardrails and evaluations, with each decision isolated and testable\n- **Guardrails & Observability:** guardrails and PII rules set during configuration; every interaction traced\n- **Reusable Skills:** a shared library (web search, file analysis, compliance checks, API actions) any agent can call",
@@ -503,7 +503,7 @@
     "hdfc bank"
    ],
    "answers": {
-    "overview": "**Consent at the Scale of a Nation's Bank (HDFC Bank)**\n\nA consent and preference management platform for one of India's largest private banks, **30M+ customers**, built for India's **DPDP Act**.\n\n- **Client:** UnifyApps & HDFC Bank\n- **Platform:** Web and mobile\n- **Timeline:** March 2025 – February 2026\n- **Role:** Lead Product Designer, working with HDFC's senior management and product team from brief to Final-for-Dev\n\n[Read the case study →](https://vishnuprasad.space/work/hdfc)",
+    "overview": "**Consent at the Scale of a Nation's Bank (HDFC Bank)**\n\nA consent and preference management platform for one of India's largest private banks, **30M+ customers**, built for India's **DPDP Act**.\n\n- **Client:** UnifyApps & HDFC Bank\n- **Domain:** Banking and data privacy\n- **Timeline:** March 2025 – February 2026\n- **Role:** Lead Product Designer, working with HDFC's senior management and product team from brief to Final-for-Dev",
     "problem": "India's DPDP Act set a deadline the bank **couldn't move**.\n\n- Customers needed to **see** what the bank holds, **control** what they agreed to, and **withdraw consent** any time\n- Operations needed every purpose **configured, versioned and auditable**\n- Consent was *collected everywhere and governed nowhere*: scattered across legacy systems, reconciled by hand, hard to act on in real time",
     "users": "Two sides of one system:\n\n- **Customers:** see, control and withdraw consent\n- **Bank operators and the Data Privacy Office:** configure purposes, version them, monitor violations and audit\n\nBoth sides were designed together on **one shared consent record**.",
     "features": "- **Customer consent portal**\n- **Operator console** on the same consent record\n- **AI that infers preferences**\n- **AI that simplifies legal disclosures** into plain language\n- **Real-time monitoring** of consent violations\n- **Instant enforcement** of consent decisions across connected systems",
@@ -542,7 +542,7 @@
     "sony case study"
    ],
    "answers": {
-    "overview": "**Intelligence at the core of Asia's largest media group (Sony Pictures Networks India)**\n\nFour enterprise platforms designed end to end, May 2025 – July 2026, with UnifyApps (ICD as design partner):\n\n1. **Contract Lifecycle Intelligence**\n2. **Corporate Secretarial Governance**\n3. **Sports Rights Scheduling & Broadcast Planning**\n4. **Social Intelligence Command**\n\nAsk me about any of them.\n\n[Read the case study →](https://vishnuprasad.space/work/sony)",
+    "overview": "**Intelligence at the core of Asia's largest media group (Sony Pictures Networks India)**\n\nFour enterprise platforms designed end to end, May 2025 – July 2026, with UnifyApps (ICD as design partner):\n\n1. **Contract Lifecycle Intelligence**\n2. **Corporate Secretarial Governance**\n3. **Sports Rights Scheduling & Broadcast Planning**\n4. **Social Intelligence Command**\n\nAsk me about any of them.",
     "problem": "Each area ran on manual or fragmented processes:\n\n- **Contracts** lived in emails, spreadsheets and offline approvals\n- **Board minutes** took days; statutory deadlines lived in spreadsheets\n- **Scheduling conflicts** surfaced only after channels reached production\n- **Audience signals** sat across vendor tools, so teams reacted late",
     "users": "Vishnu worked with **legal, compliance, broadcast operations, content strategy and corporate governance** teams, the people who use each of the four platforms.",
     "features": "- **Contracts:** AI creation, review, routing, risk and clause checks across 2,847 agreements; SAP S/4 and Adobe Sign\n- **Governance:** minutes from live transcripts, action items, Companies Act 2013 deadlines, statutory registers; MS Teams\n- **Sports scheduling:** one planner across TEN 1–5, TEN SD, Sony LIV and SET India, with real-time conflict detection and rights checks\n- **Social intelligence:** ~2.47M monthly mentions combined with ratings, spike detection, sentiment and weekly AI briefings",
@@ -564,7 +564,7 @@
     "contract lifecycle"
    ],
    "answers": {
-    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30–45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30–45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)"
    },
    "caseStudy": true,
    "name": "Sony's contract platform",
@@ -588,7 +588,7 @@
     "secretarial"
    ],
    "answers": {
-    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2–3 days → 4 hours; missed deadlines down 85%** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2–3 days → 4 hours; missed deadlines down 85%** (per project documentation)."
    },
    "caseStudy": true,
    "name": "Sony's governance platform",
@@ -609,7 +609,7 @@
     "sports scheduling"
    ],
    "answers": {
-    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1–5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1–5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation)."
    },
    "caseStudy": true,
    "name": "Sony's sports scheduling platform",
@@ -630,7 +630,7 @@
    "label": "Sony — Social Intelligence Command",
    "aliases": [],
    "answers": {
-    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation)."
    },
    "caseStudy": true,
    "name": "Sony's social intelligence platform",
@@ -1415,7 +1415,7 @@
     "hello there",
     "hey nyrro"
    ],
-   "answer": "Hi! I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
+   "answer": "Hi! I'm **Nyrro**, Vishnu's guide on this site.\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
    "followups": [
     "Who is Vishnu?",
     "What has he worked on?",
@@ -1467,7 +1467,7 @@
     "bye",
     "see you later"
    ],
-   "answer": "Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**. 🪲",
+   "answer": "Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**.",
    "followups": [],
    "priority": false
   },
@@ -1566,6 +1566,12 @@
     "his experience",
     "professional experience",
     "his work experience",
+    "how many projects",
+    "number of projects",
+    "how many clients",
+    "how many use cases",
+    "how many deployments",
+    "how many projects has he done",
     "experience kitna",
     "kitna experience",
     "kitne saal",
@@ -1601,7 +1607,12 @@
     "staff",
     "principal",
     "job title",
-    "rank"
+    "rank",
+    "his role",
+    "role in these projects",
+    "what is his role",
+    "his role in projects",
+    "role in projects"
    ],
    "questions": [
     "what is his title",
@@ -1668,7 +1679,12 @@
     "bachelor",
     "b.plan",
     "barch",
-    "school"
+    "school",
+    "certification",
+    "certifications",
+    "certificate",
+    "courses",
+    "course"
    ],
    "questions": [
     "where did he study",
@@ -1752,6 +1768,11 @@
     "countries",
     "geography",
     "where does he work",
+    "where is he from",
+    "hometown",
+    "native place",
+    "which city",
+    "which state",
     "kahan",
     "kaha se",
     "where from"
@@ -1765,7 +1786,7 @@
    "answer": "He's based in **India** and designs for teams in **India, the UAE, Qatar and the US**. Two of his case studies show this range:\n\n- **HDFC Bank** in India\n- **DGE / ADEO** for the Abu Dhabi government",
    "followups": [
     "Tell me about ADEO",
-    "Other projects"
+    "Other client work"
    ],
    "priority": false
   },
@@ -1782,7 +1803,14 @@
     "what is he doing now",
     "latest work",
     "recent work",
-    "nowadays"
+    "nowadays",
+    "where does he work now",
+    "where does he work",
+    "where is he working",
+    "current company",
+    "current employer",
+    "which company is he in",
+    "present job"
    ],
    "questions": [
     "what is vishnu working on right now",
@@ -1791,7 +1819,7 @@
    "answer": "He's leading design at **ICD for UnifyApps**: its AI products (Enterprise Search, Agent Workforce, the Low-Code Builder), client deployments, and the shared design system. Much of the current work is under NDA.",
    "followups": [
     "Tell me about Enterprise Search",
-    "Other projects"
+    "Other client work"
    ],
    "priority": false
   },
@@ -1823,7 +1851,7 @@
    "answer": "Yes. He designs data-heavy products by **leading with what needs attention and why**, not with every number.\n\n- **Sony Social Intelligence:** 2.47M monthly mentions combined with ratings, with spike detection and sentiment\n- **HDFC:** an operator console for monitoring consent violations in real time\n\nHis client work also includes dashboards for government services, hotel budgets and incident response.",
    "followups": [
     "Tell me about Sony",
-    "Other projects"
+    "Other client work"
    ],
    "priority": false
   },
@@ -1884,6 +1912,9 @@
     "interaction design",
     "information architecture",
     "visual design skills",
+    "specialty",
+    "speciality",
+    "what is he good at",
     "ux designer",
     "ui designer",
     "ui or ux",
@@ -1932,7 +1963,7 @@
     "what is his design stack",
     "does he use ai tools"
    ],
-   "answer": "**Design and handoff**\n- Figma, Figma AI and FigJam for design, design systems and developer handoff\n- Adobe Creative Suite and Framer\n\n**Collaboration**\n- Miro and FigJam for workshops, mapping and alignment with product and engineering\n\n**AI product design**\n- Claude and Google AI Studio for prompt design and generative prototyping",
+   "answer": "- **Design:** Figma, Figma AI, FigJam, Framer, Adobe Creative Suite\n- **Collaboration:** Miro, FigJam\n- **AI:** Claude, Google AI Studio",
    "followups": [
     "What are his core skills?",
     "How does he design?"
@@ -2282,7 +2313,11 @@
     "trust in ai",
     "responsible ai",
     "ethical ai",
-    "confidence score"
+    "confidence score",
+    "design for trust",
+    "designing for trust",
+    "how does he build trust",
+    "trust in design"
    ],
    "questions": [
     "how does he design for trust in ai",
@@ -2404,7 +2439,7 @@
    "answer": "A good copilot, in his view, **helps people finish the task**, not just answer a question.\n\n- **Enterprise Search:** one copilot over Search, Chat, Agents, Spaces and Apps\n- **ADEO:** an assistant that searches five years of decisions mid-session\n- **Sony:** a copilot that checks every scheduled broadcast against its rights contract",
    "followups": [
     "Tell me about Enterprise Search",
-    "Other projects"
+    "Other client work"
    ],
    "priority": false
   },
@@ -2507,7 +2542,10 @@
     "managed designers",
     "team lead",
     "design lead",
-    "led a team"
+    "led a team",
+    "lead teams",
+    "lead team",
+    "does he lead"
    ],
    "questions": [
     "does he have leadership experience",
@@ -2711,6 +2749,41 @@
     "main projects",
     "key projects",
     "featured",
+    "project",
+    "his projects",
+    "tell me his projects",
+    "what are his projects",
+    "works",
+    "his works",
+    "major works",
+    "important works",
+    "main works",
+    "key works",
+    "his major works",
+    "work he has done",
+    "what work has he done",
+    "what work",
+    "cases",
+    "show cases",
+    "his cases",
+    "list of cases",
+    "casestudies",
+    "casestudy",
+    "major casestudies",
+    "his casestudies",
+    "important projects",
+    "most important projects",
+    "products he designed",
+    "what products",
+    "products did he design",
+    "what did he design",
+    "what has he designed",
+    "major case studies",
+    "what kind of products",
+    "kind of products",
+    "what kind of products has he designed",
+    "types of products",
+    "type of products",
     "which companies trust",
     "clients trust",
     "which clients",
@@ -2734,7 +2807,7 @@
     "Tell me about ADEO",
     "Tell me about the Agent Workforce Platform",
     "Tell me about HDFC Bank",
-    "Other projects"
+    "Other client work"
    ],
    "priority": false
   },
@@ -2767,7 +2840,7 @@
    ],
    "answer": "Vishnu has designed across these domains. **Bold** names are full case studies in his portfolio:\n\n- **Enterprise AI & knowledge:** **Intelligent Enterprise Search**, **Agent Workforce Platform**, Lowe's, Stowers Institute, Docebo\n- **Government:** **Committee Board Agentic App (DGE / ADEO)**, Digital Dubai, Digital Ajman, CGB Qatar\n- **Banking & insurance:** **HDFC Bank**, Mashreq, Niva Bupa\n- **Media & entertainment:** **Sony Pictures Networks India**\n- **Manufacturing & sales:** Greif, Shaw Industries, Jubilant\n- **Automotive & hospitality:** Tekion, Wasl\n- **HR, workplace & aviation:** Virtusa, Mphasis, Air Arabia\n\nName any of them and I'll tell you what he designed.",
    "followups": [
-    "Other projects",
+    "Other client work",
     "Tell me about Mashreq",
     "Tell me about Digital Dubai"
    ],
@@ -2818,6 +2891,14 @@
     "best case studies",
     "greatest work",
     "his best projects",
+    "most famous project",
+    "famous project",
+    "most famous work",
+    "top case studies",
+    "top casestudies",
+    "most important work",
+    "headline project",
+    "marquee project",
     "strongest case study",
     "best case study",
     "strongest project",
@@ -2926,7 +3007,10 @@
     "all clients",
     "full client list",
     "client work",
-    "other case studies"
+    "other case studies",
+    "other client work",
+    "more client work",
+    "any other clients"
    ],
    "questions": [
     "what other projects has he done",
@@ -3214,7 +3298,7 @@
    "answer": "It's one of his core areas. His **Intelligent Enterprise Search** case study connects a company's tools into one index, so people get direct, role-aware answers with sources, plus an agent marketplace.",
    "followups": [
     "Tell me about Enterprise Search",
-    "Other projects"
+    "Other client work"
    ],
    "priority": false
   },
@@ -3463,7 +3547,7 @@
     "what is nyrro",
     "why are you a beetle"
    ],
-   "answer": "I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nI'm one of his creative side projects, a little beetle inspired by how beetles **defend themselves in nature**, and by the idea of a tiny creature leaving a **paint-like trail** as it moves. Part observation, part imagination, much like his watercolours.",
+   "answer": "I'm **Nyrro**, Vishnu's guide on this site.\n\nI'm one of his creative side projects, a little beetle inspired by how beetles **defend themselves in nature**, and by the idea of a tiny creature leaving a **paint-like trail** as it moves. Part observation, part imagination, much like his watercolours.",
    "followups": [],
    "priority": false
   },
@@ -3525,8 +3609,11 @@
     "how do i reach him",
     "is he on linkedin"
    ],
-   "answer": "- **Email:** vishnuprasadkp98@gmail.com\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)\n- **Behance:** [behance.net/vishnuprasadkp](https://www.behance.net/vishnuprasadkp)",
-   "followups": [],
+   "answer": "- **Email:** vishnuprasadkp98@gmail.com\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)",
+   "followups": [
+    "Why should we hire him?",
+    "What has he worked on?"
+   ],
    "priority": false
   },
   {
@@ -3707,7 +3794,13 @@
     "age",
     "married",
     "lpa",
-    "salary expectation"
+    "salary expectation",
+    "how old is he",
+    "his age",
+    "date of birth",
+    "birthday",
+    "dob",
+    "marital status"
    ],
    "questions": [
     "what is his salary expectation",
@@ -3828,7 +3921,7 @@
     "where does he see himself in 5 years",
     "what are his career goals"
    ],
-   "answer": "I don't know that, sorry. 🪲 That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know that, sorry. That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
    "followups": [
     "How can I contact him?"
    ],
@@ -3982,16 +4075,47 @@
     "what's the weather today",
     "tell me a joke"
    ],
-   "answer": "I'm Nyrro, and I only know about Vishnu and his work. 🪲 Want to see one of his case studies instead?",
+   "answer": "I'm Nyrro, and I only know about Vishnu and his work. Want to see one of his case studies instead?",
    "followups": [
     "Show me his case studies",
     "Who is Vishnu?"
    ],
    "priority": false
+  },
+  {
+   "id": "achievements",
+   "category": "career",
+   "keywords": [
+    "achievements",
+    "achievement",
+    "biggest achievement",
+    "accomplishments",
+    "accomplishment",
+    "career highlights",
+    "highlights",
+    "what has he achieved",
+    "what did he achieve",
+    "wins",
+    "notable work",
+    "impact",
+    "what is he known for"
+   ],
+   "questions": [
+    "what are his achievements",
+    "what is his biggest achievement",
+    "what has he accomplished"
+   ],
+   "answer": "From his resume:\n\n- Drove design across **60+ enterprise deployments** for clients including HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority and DGE Abu Dhabi\n- Designed consent and communication products under India's DPDP Act for HDFC Bank: **30M+ customers, 400M+ consent records, 3M+ daily communications**\n- Owned and scaled the **UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation, reused across 60+ deployments\n- Ran **3 enterprise product initiatives in parallel**\n- **Mentored 6 junior designers**\n- Led UX for **20+ client projects** at Brane Enterprises",
+   "followups": [
+    "Tell me about HDFC Bank",
+    "What are his case studies?",
+    "How does he lead?"
+   ],
+   "priority": false
   }
  ],
  "fallback": {
-  "answer": "I don't know about that, sorry. 🪲 You can get in touch with Vishnu directly at **vishnuprasadkp98@gmail.com**, and he'll be happy to help.",
+  "answer": "I don't know about that, sorry. You can get in touch with Vishnu directly at **vishnuprasadkp98@gmail.com**, and he'll be happy to help.",
   "followups": [
    "What has he worked on?",
    "How does he design?",
@@ -4009,7 +4133,7 @@
   "Tell me about the Sony platforms",
   "How does he design?",
   "What AI work has he done?",
-  "Other projects",
+  "Other client work",
   "How can I contact him?"
  ]
 }

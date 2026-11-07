@@ -14,7 +14,7 @@ EMAIL = "vishnuprasadkp98@gmail.com"
 I("greeting", "conversation",
   ["hi", "hello", "hey", "hii", "hola", "namaste", "good morning", "good evening", "good afternoon", "yo", "sup", "hey there", "anyone there"],
   ["hi", "hello there", "hey nyrro"],
-  "Hi! I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
+  "Hi! I'm **Nyrro**, Vishnu's guide on this site.\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
   ["Who is Vishnu?", "What has he worked on?", "How does he design?"])
 
 I("thanks", "conversation",
@@ -26,7 +26,7 @@ I("thanks", "conversation",
 I("bye", "conversation",
   ["bye", "goodbye", "see you", "see ya", "later", "cya", "good night"],
   ["bye", "see you later"],
-  f"Thanks for stopping by! If you'd like to talk to Vishnu, he's at **{EMAIL}**. 🪲")
+  f"Thanks for stopping by! If you'd like to talk to Vishnu, he's at **{EMAIL}**.")
 
 # ───────────── ABOUT ─────────────
 I("who-is-vishnu", "about",
@@ -421,7 +421,7 @@ I("art", "personal",
 I("nyrro", "personal",
   ["who are you", "what are you", "nyrro", "your name", "beetle", "why beetle", "what is nyrro", "about you", "mascot"],
   ["who are you", "what is nyrro", "why are you a beetle"],
-  "I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nI'm one of his creative side projects, a little beetle inspired by how beetles **defend themselves in nature**, and by the idea of a tiny creature leaving a **paint-like trail** as it moves. Part observation, part imagination, much like his watercolours.")
+  "I'm **Nyrro**, Vishnu's guide on this site.\n\nI'm one of his creative side projects, a little beetle inspired by how beetles **defend themselves in nature**, and by the idea of a tiny creature leaving a **paint-like trail** as it moves. Part observation, part imagination, much like his watercolours.")
 
 I("are-you-ai", "personal",
   ["are you ai", "are you a bot", "are you real", "are you human", "are you chatgpt", "chatgpt", "are you claude", "which model are you", "how do you work", "are you a robot"],
@@ -432,7 +432,7 @@ I("are-you-ai", "personal",
 I("contact", "hiring",
   ["contact", "email", "email address", "email id", "reach", "get in touch", "talk to him", "connect", "message him", "mail", "how to reach", "contact details", "socials", "linkedin"],
   ["how can i contact vishnu", "what is his email", "how do i reach him", "is he on linkedin"],
-  f"- **Email:** {EMAIL}\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)\n- **Behance:** [behance.net/vishnuprasadkp](https://www.behance.net/vishnuprasadkp)")
+  f"- **Email:** {EMAIL}\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)")
 
 I("resume", "hiring",
   ["resume", "cv", "download resume", "resume pdf", "curriculum vitae"],
@@ -485,7 +485,7 @@ I("working-style", "process",
 I("future-goals", "interview",
   ["5 years", "five years", "future plans", "career goals", "career goal", "see himself", "aspirations", "aspiration", "long term goal", "next step in career", "ambition", "ambitions", "dream job", "what next"],
   ["where does he see himself in 5 years", "what are his career goals"],
-  "I don't know that, sorry. 🪲 That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
+  "I don't know that, sorry. That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
   ["How can I contact him?"])
 
 # ───────────── INTERVIEW-STYLE ─────────────
@@ -518,5 +518,12 @@ I("outcomes-real", "interview",
 I("off-topic", "boundaries",
   ["write code", "python", "javascript code", "homework", "essay", "weather", "news", "joke", "recipe", "movie", "cricket score", "stock price", "translate"],
   ["can you write me a python script", "what's the weather today", "tell me a joke"],
-  "I'm Nyrro, and I only know about Vishnu and his work. 🪲 Want to see one of his case studies instead?",
+  "I'm Nyrro, and I only know about Vishnu and his work. Want to see one of his case studies instead?",
   ["Show me his case studies", "Who is Vishnu?"])
+
+# ───────────── v2.2: career highlights (from the resume) ─────────────
+I("achievements", "career",
+  ["achievements", "achievement", "biggest achievement", "accomplishments", "accomplishment", "career highlights", "highlights", "what has he achieved", "what did he achieve", "wins", "notable work", "impact", "what is he known for"],
+  ["what are his achievements", "what is his biggest achievement", "what has he accomplished"],
+  "From his resume:\n\n- Drove design across **60+ enterprise deployments** for clients including HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority and DGE Abu Dhabi\n- Designed consent and communication products under India's DPDP Act for HDFC Bank: **30M+ customers, 400M+ consent records, 3M+ daily communications**\n- Owned and scaled the **UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation, reused across 60+ deployments\n- Ran **3 enterprise product initiatives in parallel**\n- **Mentored 6 junior designers**\n- Led UX for **20+ client projects** at Brane Enterprises",
+  ["Tell me about HDFC Bank", "What are his case studies?", "How does he lead?"])

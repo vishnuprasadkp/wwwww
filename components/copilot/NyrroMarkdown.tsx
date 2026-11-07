@@ -5,6 +5,26 @@ const SITE = /^https?:\/\/(www\.)?vishnuprasad\.space/;
 
 /** Renders Nyrro's answers: paragraphs, **bold**, _italic_ / *italic*, "- " bullets, "1." lists and [text](https://url) links (this site stays in the same tab; other sites open in a new one). */
 
+const EMAIL = /([\w.+-]+@[\w-]+\.[\w.-]+[\w])/g;
+const LINK = "underline underline-offset-4 hover:text-pigment-soft";
+
+/** Plain text, with any email address turned into an underlined mailto link. */
+function Plain({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(EMAIL).map((p, i) =>
+        i % 2 ? (
+          <a key={i} href={`mailto:${p}`} className={LINK}>
+            {p}
+          </a>
+        ) : (
+          <Fragment key={i}>{p}</Fragment>
+        ),
+      )}
+    </>
+  );
+}
+
 const INLINE = /(\[[^\]]+\]\(https?:[^)\s]+\)|\*\*[^*]+\*\*|(?:^|(?<=[^*\w]))_[^_]+_(?![\w])|\*[^*]+\*)/g;
 
 function Inline({ text, onNavigate }: { text: string; onNavigate?: () => void }) {
@@ -27,10 +47,10 @@ function Inline({ text, onNavigate }: { text: string; onNavigate?: () => void })
             </a>
           );
         const bold = p.match(/^\*\*([^*]+)\*\*$/);
-        if (bold) return <strong key={i}>{bold[1]}</strong>;
+        if (bold) return <strong key={i}><Plain text={bold[1]} /></strong>;
         const em = p.match(/^_([^_]+)_$/) ?? p.match(/^\*([^*]+)\*$/);
         if (em) return <em key={i}>{em[1]}</em>;
-        return <Fragment key={i}>{p}</Fragment>;
+        return <Plain key={i} text={p} />;
       })}
     </>
   );

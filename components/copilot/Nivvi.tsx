@@ -313,14 +313,19 @@ function useLevels(active: boolean, n = 44) {
 const plain = (t: string) => t.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*/g, "").replace(/^\s*([-•]|\d+\.)\s+/gm, "").replace(/(^|\s)[_*]([^_*]+)[_*]/g, "$1$2");
 const stopSpeaking = () => typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.cancel();
 
-/** Best available natural-sounding voice: Indian English first, then other English voices. */
+/** Best available clear, warm female voice: natural/neural ones first, Indian English preferred, male voices last. */
 function pickVoice(): SpeechSynthesisVoice | undefined {
+  const male = /\b(male|rishi|ravi|prabhat|hemant|david|mark|daniel|alex|fred|george|james|thomas|oliver|arthur|guy|ryan|eric|christopher|brian|aaron|gordon|rocko|reed|eddy|grandpa)\b/i;
+  const female = /\b(female|veena|neerja|heera|samantha|serena|karen|moira|tessa|fiona|victoria|allison|ava|susan|zira|aria|jenny|sonia|libby|emma|amy|joanna|salli|kendra|kimberly|nicole|zoe|catherine|sara|natasha)\b/i;
   const score = (v: SpeechSynthesisVoice) => {
     let n = 0;
-    if (/en[-_]IN/i.test(v.lang)) n += 6;
-    else if (/^en/i.test(v.lang)) n += 2;
-    if (/rishi|ravi|male|prabhat|hemant/i.test(v.name)) n += 3;
-    if (/google|natural|neural|premium|enhanced/i.test(v.name)) n += 2;
+    if (/en[-_]IN/i.test(v.lang)) n += 5;
+    else if (/en[-_](US|GB|AU)/i.test(v.lang)) n += 3;
+    else if (/^en/i.test(v.lang)) n += 1;
+    if (female.test(v.name)) n += 8;
+    if (male.test(v.name)) n -= 12;
+    if (/natural|neural|premium|enhanced/i.test(v.name)) n += 4;
+    if (/google/i.test(v.name)) n += 2;
     if (v.localService) n += 1;
     return n;
   };
@@ -421,13 +426,15 @@ function NivviPanel() {
       finalText = reply.answer;
       // Asking about one of the five case studies opens it on the left, beside the panel (not on phones, where the panel is full screen).
       const slug = ({ "enterprise-search": "enterprise-search", adeo: "adeo", "agent-workforce": "ai-agent", hdfc: "hdfc", sony: "sony" } as Record<string, string>)[reply.match.id];
+      // Questions about his art or hobbies open the About page, where the paintings are.
+      if (reply.match.type === "intent" && (reply.match.id === "art" || reply.match.id === "hobbies") && !window.matchMedia("(max-width: 767px)").matches && !window.location.pathname.startsWith("/about")) router.push("/about");
       if (reply.match.type === "entity" && slug && !window.matchMedia("(max-width: 767px)").matches && !window.location.pathname.startsWith(`/work/${slug}`)) router.push(`/work/${slug}`);
       next = (reply.followups ?? []).slice(0, 4);
       // Only talk about case studies when the visitor is asking about work: a skills or contact answer should not
       // end with "Tell me about ADEO". Those chips are swapped for general ones the visitor has not asked yet.
       const aboutWork = reply.match.type === "entity" || reply.match.type === "fallback" || /^(projects-list|industries|best-problems|proudest|most-complex|platforms|success-metrics|common-thread|outcomes-real|current-work|other-|domain-)/.test(reply.match.id);
       if (!aboutWork) {
-        const work = /(adeo|hdfc|sony|enterprise search|agent workforce|other projects|case stud)/i;
+        const work = /(adeo|hdfc|sony|enterprise search|agent workforce|other client work|case stud)/i;
         const asked = new Set(questions.map((q) => q.toLowerCase()));
         const pool = ["What are his core skills?", "What tools does he use?", "How does he design?", "Where did he study?", "What does he do outside of design?", "Why should we hire him?", "How can I contact him?"];
         next = next.filter((n) => !work.test(n));
@@ -482,7 +489,9 @@ function NivviPanel() {
         u.voice = voice;
         u.lang = voice.lang;
       }
-      u.rate = 0.98;
+      u.rate = 0.95;
+      u.pitch = 1.1;
+      u.volume = 1;
       u.onend = () => k === parts.length - 1 && setSpeaking((c) => (c === i ? null : c));
       u.onerror = () => setSpeaking(null);
       window.speechSynthesis.speak(u);
