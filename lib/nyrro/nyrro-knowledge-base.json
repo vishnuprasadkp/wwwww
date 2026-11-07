@@ -1,0 +1,3994 @@
+{
+ "version": "2.0.0",
+ "assistant": "Nyrro",
+ "owner": "Vishnu Prasad K P",
+ "aspects": {
+  "problem": [
+   "problem",
+   "problems",
+   "challenge",
+   "challenges",
+   "pain",
+   "pain point",
+   "pain points",
+   "issue",
+   "issues",
+   "why was it needed",
+   "why needed",
+   "before",
+   "struggle",
+   "gap",
+   "context",
+   "situation",
+   "what was wrong",
+   "why build",
+   "need for",
+   "challenging",
+   "difficult",
+   "hard part",
+   "tricky",
+   "hardest",
+   "hard",
+   "complex part"
+  ],
+  "users": [
+   "users",
+   "user",
+   "who uses",
+   "who used",
+   "personas",
+   "persona",
+   "roles",
+   "audience",
+   "who is it for",
+   "target users",
+   "user types",
+   "end users",
+   "who was it for",
+   "for whom",
+   "customers of"
+  ],
+  "features": [
+   "features",
+   "feature",
+   "capabilities",
+   "capability",
+   "what can it do",
+   "functionality",
+   "functions",
+   "modules",
+   "screens",
+   "how does it work",
+   "how it works",
+   "what does it do",
+   "components",
+   "what was built",
+   "what did he build",
+   "deliverables",
+   "flows",
+   "what can",
+   "how does * work",
+   "how * work",
+   "what can * do"
+  ],
+  "strategy": [
+   "strategy",
+   "approach",
+   "how did he design",
+   "how did he approach",
+   "design approach",
+   "thinking",
+   "solution",
+   "how did he solve",
+   "solve",
+   "solved",
+   "design process",
+   "core flow",
+   "idea",
+   "concept",
+   "insight",
+   "design thinking",
+   "how was it designed",
+   "methodology",
+   "principle",
+   "key idea",
+   "design strategy"
+  ],
+  "decisions": [
+   "decision",
+   "decisions",
+   "trade off",
+   "trade offs",
+   "tradeoff",
+   "tradeoffs",
+   "why did he",
+   "choices",
+   "choice",
+   "compromise",
+   "downside",
+   "rationale",
+   "design decisions",
+   "key decisions"
+  ],
+  "outcomes": [
+   "outcome",
+   "outcomes",
+   "result",
+   "results",
+   "impact",
+   "metric",
+   "metrics",
+   "numbers",
+   "roi",
+   "savings",
+   "success",
+   "kpi",
+   "kpis",
+   "achieved",
+   "benefits",
+   "benefit",
+   "value",
+   "improvement",
+   "improvements",
+   "what changed",
+   "effect",
+   "measurable"
+  ],
+  "ai": [
+   "ai",
+   "artificial intelligence",
+   "ml",
+   "machine learning",
+   "llm",
+   "genai",
+   "gen ai",
+   "generative",
+   "model",
+   "models",
+   "type of ai",
+   "what ai",
+   "ai used",
+   "ai features",
+   "ai capabilities",
+   "agentic",
+   "intelligence used",
+   "how is ai used",
+   "ai role",
+   "use ai",
+   "uses ai",
+   "no ai"
+  ],
+  "learnings": [
+   "learn",
+   "learned",
+   "learnt",
+   "learning",
+   "learnings",
+   "lesson",
+   "lessons",
+   "takeaway",
+   "takeaways",
+   "reflection",
+   "reflections",
+   "retrospective",
+   "what did he learn"
+  ],
+  "role": [
+   "his role",
+   "role",
+   "responsibility",
+   "responsibilities",
+   "contribution",
+   "team",
+   "timeline",
+   "duration",
+   "when",
+   "how long",
+   "partner",
+   "partners",
+   "who did he work with",
+   "what did he do on",
+   "involvement",
+   "his part"
+  ],
+  "unknown": [
+   "budget",
+   "cost",
+   "costs",
+   "budget of",
+   "project budget",
+   "cost of the project",
+   "how much did it cost",
+   "price of",
+   "team size",
+   "how many designers",
+   "how many people",
+   "revenue of",
+   "funding",
+   "contract value",
+   "client contact",
+   "contact person",
+   "who was the client lead",
+   "how many screens",
+   "number of screens",
+   "salary for",
+   "tech stack",
+   "which framework",
+   "programming language",
+   "database",
+   "launch date",
+   "release date",
+   "is it live",
+   "live link",
+   "url of",
+   "app store",
+   "download the app"
+  ],
+  "voting": [
+   "vote",
+   "votes",
+   "voting",
+   "async",
+   "absent members",
+   "rationale for vote"
+  ]
+ },
+ "aspectLabels": {
+  "problem": "the problem",
+  "users": "the users",
+  "features": "the features",
+  "strategy": "the approach",
+  "decisions": "the decisions and trade-offs",
+  "outcomes": "the outcomes",
+  "ai": "how AI is used",
+  "learnings": "the learnings",
+  "role": "his role and timeline",
+  "voting": "voting",
+  "unknown": "that"
+ },
+ "aspectBoost": {
+  "voting": 1.5
+ },
+ "aspectFollowups": {
+  "overview": [
+   "What was the problem?",
+   "Who were the users?",
+   "What was the approach?",
+   "What was the outcome?"
+  ],
+  "problem": [
+   "Who were the users?",
+   "What was the approach?",
+   "What were the key features?"
+  ],
+  "users": [
+   "What were the key features?",
+   "What was the approach?"
+  ],
+  "features": [
+   "How is AI used?",
+   "What was the outcome?"
+  ],
+  "strategy": [
+   "What were the key features?",
+   "What was the outcome?"
+  ],
+  "decisions": [
+   "What was the outcome?",
+   "What did he learn?"
+  ],
+  "outcomes": [
+   "What was the approach?",
+   "What did he learn?"
+  ],
+  "ai": [
+   "What was the outcome?",
+   "What was the approach?"
+  ],
+  "learnings": [
+   "Show me another project",
+   "How does he design?"
+  ],
+  "role": [
+   "What was the problem?",
+   "What was the outcome?"
+  ],
+  "voting": [
+   "What was the outcome?",
+   "What did he learn?"
+  ]
+ },
+ "spellfix": {
+  "vishu": "vishnu",
+  "vishnus": "vishnu",
+  "visnu": "vishnu",
+  "vishhnu": "vishnu",
+  "vishnuprasad": "vishnu",
+  "experiance": "experience",
+  "experianced": "experienced",
+  "expirienced": "experienced",
+  "expirience": "experience",
+  "experince": "experience",
+  "exp": "experience",
+  "porfolio": "portfolio",
+  "portfollio": "portfolio",
+  "portfoilo": "portfolio",
+  "portifolio": "portfolio",
+  "linkdin": "linkedin",
+  "linkedln": "linkedin",
+  "resum": "resume",
+  "résumé": "resume",
+  "acheived": "achieved",
+  "acheivements": "achievements",
+  "achivement": "achievement",
+  "hdfcbank": "hdfc bank",
+  "airarabia": "air arabia",
+  "nivabupa": "niva bupa",
+  "digitaldubai": "digital dubai",
+  "ajmanone": "ajman one",
+  "unifyapp": "unifyapps",
+  "unify-apps": "unifyapps",
+  "a.i": "ai",
+  "a.i.": "ai",
+  "ux/ui": "ux ui",
+  "ui/ux": "ui ux",
+  "u": "you",
+  "ur": "your",
+  "abt": "about",
+  "wat": "what",
+  "wht": "what",
+  "pls": "please",
+  "plz": "please",
+  "tel": "tell",
+  "desgin": "design",
+  "desing": "design",
+  "designes": "designs",
+  "designd": "designed",
+  "procss": "process",
+  "proces": "process",
+  "stratergy": "strategy",
+  "startegy": "strategy",
+  "strategi": "strategy",
+  "outcom": "outcome",
+  "reslts": "results",
+  "challange": "challenge",
+  "challanges": "challenges",
+  "hobies": "hobbies",
+  "hobbys": "hobbies",
+  "agentic-ai": "agentic ai",
+  "co-pilot": "copilot",
+  "chat bot": "chatbot",
+  "e-mail": "email",
+  "mail id": "email",
+  "contactdetails": "contact details",
+  "salry": "salary",
+  "sallary": "salary",
+  "govt": "government",
+  "gov": "government",
+  "mgmt": "management",
+  "dept": "department",
+  "proj": "project",
+  "projs": "projects",
+  "yrs": "years",
+  "yr": "year",
+  "grief": "greif",
+  "lowes": "lowes",
+  "mphsis": "mphasis",
+  "mashrek": "mashreq",
+  "masreq": "mashreq",
+  "jubiliant": "jubilant",
+  "virtua": "virtusa",
+  "techion": "tekion",
+  "stower": "stowers",
+  "doceebo": "docebo"
+ },
+ "entities": [
+  {
+   "id": "enterprise-search",
+   "label": "Intelligent Enterprise Search Platform",
+   "aliases": [
+    "enterprise search",
+    "unify search",
+    "unifyapps search",
+    "search case study",
+    "agent marketplace"
+   ],
+   "answers": {
+    "overview": "**Intelligent Enterprise Search Platform (UnifyApps)**\n\nAn AI-powered search platform that connects all of a company's tools into one shared knowledge index, so people get **direct answers with sources** instead of searching system after system.\n\n- **Role:** Lead Product Designer, end to end from client brief to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 – present\n- **Core idea:** in enterprise AI, trust is the product\n\n[Read the case study →](https://vishnuprasad.space/work/enterprise-search)",
+    "problem": "Organisations had the information they needed, but it was scattered across documents, chat tools and business apps. Five problems stood out:\n\n1. Search returned **files, not answers**\n2. Knowledge sat in **disconnected systems** with no single place to manage it\n3. Results **ignored who was asking** and their role\n4. Teams **couldn't customise** the experience without engineering\n5. Users **couldn't see how their data was handled**, which hurt trust",
+    "users": "The platform serves three roles, each with a different need:\n\n- **Employees** want clear, trustworthy answers with sources\n- **Administrators** want to manage integrations, permissions and settings without engineering help\n- **Compliance teams** want to see what data the platform can access, how it's used, and audit it\n\nThe product team defined these roles and led the research; their findings shaped every design decision.",
+    "features": "Five core capabilities, each solving one of the five problems:\n\n- **Connect Applications:** Slack, Jira, GitHub, Google Drive and more in one knowledge base, with clear connection statuses\n- **Manage Connections:** admins see what's syncing, choose what's included and see failures\n- **Personalised Results:** direct, role-aware answers with sources instead of file lists\n- **Customise Enterprise Search:** branding, wording, enabled tools and AI model through plain-language settings\n- **Agent Marketplace:** ready-made agents for finance, legal, sales and operations, each showing what it does and whether it's verified",
+    "strategy": "Vishnu designed the platform as a **copilot**: Search, Chat, Agents, Spaces and Apps share one index and one interaction model.\n\nResponsibility grows across three levels:\n\n1. **Ask:** employees get answers\n2. **Configure:** admins shape the experience\n3. **Govern:** compliance oversees access and use\n\nThis lets one product serve everyone without each role seeing complexity it doesn't need.",
+    "decisions": "Key decisions:\n\n- **A marketplace instead of only an agent builder:** most people want to use good agents, not build them, and successful agents get reused across the company\n- **Failures shown openly:** sync failures and unverified agents are visible, because hiding them would erode trust\n- **Plain-language admin settings:** admins configure AI behaviour without engineering, at the cost of fewer low-level controls in that view",
+    "outcomes": "These are **UnifyApps' published figures** from a large financial institution's deployment; Vishnu did not measure them himself:\n\n- ~**$5.5M** projected annual cost savings\n- **800K+** consents captured in the first two weeks\n- **90% faster** time-to-market (two weeks vs. a typical 12–18 months)\n- **37%** better message delivery after consolidating 27+ messaging systems",
+    "ai": "AI in the search platform:\n\n- **Retrieval with citations:** answers grounded in connected sources, with the source shown\n- **Role-aware results:** answers shaped by who is asking\n- **Agents:** a marketplace of verified, ready-made agents\n- **Configurable models:** admins choose the AI model in plain-language settings",
+    "learnings": "Reflections from the project:\n\n- **Trust drives adoption** more than AI performance does\n- **Sources with every answer** make verification easy\n- **Transparency about failures** and pending states builds confidence\n- Enterprise AI must be designed for **admins and compliance reviewers**, not only end users",
+    "role": "Vishnu was the **Lead Product Designer**, owning design end to end from client brief to developer handoff, with ICD as design partner to UnifyApps. The product team defined the roles and led the research. Timeline: 2025 – present, web and mobile."
+   },
+   "caseStudy": true,
+   "name": "Enterprise Search",
+   "weakAliases": [
+    "intelligent search",
+    "search platform",
+    "knowledge search",
+    "search product",
+    "ai search",
+    "search engine",
+    "copilot search",
+    "connectors",
+    "connector management",
+    "search"
+   ]
+  },
+  {
+   "id": "adeo",
+   "label": "Committee Board Agentic Application (DGE / ADEO)",
+   "aliases": [
+    "adeo",
+    "dge",
+    "abu dhabi",
+    "committee board",
+    "abu dhabi executive office",
+    "department of government enablement"
+   ],
+   "answers": {
+    "overview": "**Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**\n\nA government platform that helps the Abu Dhabi Executive Office's committees **analyse, deliberate on, vote on and record decisions** on 1,000+ high-impact proposals a month.\n\n- **Client:** UnifyApps for DGE and ADEO\n- **Partners:** Frog Design and Nagarro Design (ICD as design partner)\n- **Platform:** Tablet-first, plus web\n- **Timeline:** April 2025 – February 2026\n- **Role:** Lead Product Designer\n\n[Read the case study →](https://vishnuprasad.space/work/adeo)",
+    "problem": "ADEO handles **1,000+ high-impact submissions every month**, mostly Arabic PDFs and presentations. Preparation could take **up to 15 working days**. Four structural problems:\n\n1. **Slow preparation:** members skimmed documents right before sessions\n2. **Unsearchable history:** five years of decisions (about 3,000–4,000 documents) couldn't be used during deliberation\n3. **Absent members had no voice:** no way to contribute or record a position\n4. **Incomplete records:** minutes, resolutions and action items were scattered",
+    "users": "Three user types:\n\n- **Committee members:** about **15 minutes per topic**, so they need structured briefings\n- **Secretaries:** own the long preparation and documentation around each session\n- **Observers and admins:** need visibility without the ability to act\n\nResearch was continuous: requirements came directly from the client and departments, validated at each major decision.",
+    "features": "The core flow is **Analyse → Deliberate → Decide & Record**:\n\n- **Session agenda:** members see only their committees, active session on top, proposals split into *For Information* and *Decision Making*\n- **AI analysis and briefing:** a summary, strategic alignment score, ROI estimate, feasibility rating and risk assessment for every proposal, shown before the document\n- **AI assistant:** searches the five-year archive from inside the session\n- **Voting and async participation:** five outcomes, each requiring a rationale; absent members can vote and give feedback\n- **Live documentation:** minutes, action items and resolution drafts generated during the session",
+    "strategy": "Vishnu structured the product around how committees actually work: **Analyse → Deliberate → Decide & Record**.\n\n- **Briefing first:** members have ~15 minutes per topic, so the AI briefing appears before the raw document\n- **Scoped arrival:** each member sees only their own committees\n- **Deliberate voting:** every vote needs a rationale\n- **Records as a by-product:** documentation is generated live, so nothing is drafted after the session\n- **Tablet-first:** the proposal stays central and the assistant is collapsed by default",
+    "decisions": "Every decision came with a named cost:\n\n- **Scoping members to their own committees** keeps arrival focused, but multi-committee members need a separate view\n- **AI content first** speeds understanding, but trust has to be earned immediately\n- **Mandatory voting rationale** makes voting deliberately slower; that friction is right for government decisions\n- **Proposal over assistant on tablet:** the assistant is collapsed by default to protect focus",
+    "outcomes": "Impact as reported in the case study:\n\n- **Preparation:** up to 15 working days → **minutes**, via AI-generated briefings\n- **History:** 3,000–4,000 documents across 5 years became **queryable mid-session**\n- **Scale:** **1,000+ proposals a month** analysed, deliberated, voted on and documented in one platform\n- **Documentation:** minutes, action items and resolution drafts generated **live**",
+    "ai": "AI in ADEO:\n\n- **Proposal briefings:** summary, strategic alignment score, ROI estimate, feasibility rating and risk assessment\n- **Archive assistant:** conversational search across five years of decisions\n- **Live documentation:** minutes, action items and resolution drafts generated during the session\n- **Clear labelling:** AI content is always marked, and humans approve before anything becomes an official record",
+    "learnings": "Reflections:\n\n- **Label AI clearly** so people always know what was machine-generated\n- **Important decisions deserve deliberate interactions**, not speed\n- **People stay in control:** AI drafts; humans review, edit and approve before anything becomes official",
+    "role": "Vishnu was the **Lead Product Designer**, working through UnifyApps for DGE and ADEO alongside **Frog Design** and **Nagarro Design**, with ICD as design partner. April 2025 – February 2026, tablet-first with web.",
+    "voting": "Voting is deliberately structured:\n\n- **Five outcomes:** Approve, Approve with Comments, Not Approved, Return for Committee, Abstain\n- **A rationale is required** for every vote, creating a record of why each decision was made\n- **Absent members** can vote asynchronously and give feedback across four dimensions\n\nThe extra friction is intentional: government decisions should be considered, not rushed."
+   },
+   "caseStudy": true,
+   "name": "the ADEO committee platform",
+   "weakAliases": [
+    "committee",
+    "board management",
+    "committee platform",
+    "voting platform",
+    "governance app",
+    "board app",
+    "committee intelligence",
+    "deliberation",
+    "voting"
+   ]
+  },
+  {
+   "id": "agent-workforce",
+   "label": "Agent Workforce Platform",
+   "aliases": [
+    "agent workforce",
+    "agent platform",
+    "ai agent platform",
+    "workforce platform",
+    "simple agent",
+    "workflow agent",
+    "advanced agent",
+    "agent modes",
+    "build agents",
+    "ai agent case study",
+    "awp",
+    "agent studio"
+   ],
+   "answers": {
+    "overview": "**Agent Workforce Platform (UnifyApps)**\n\nA platform for building, governing and running AI agents, with **three ways to build: Simple, Workflow and Advanced**, all on one design system.\n\n- **Role:** Lead Product Designer, concept to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 – present\n- **Goal:** make AI easy to adopt, govern and scale across roles\n\n[Read the case study →](https://vishnuprasad.space/work/ai-agent)",
+    "problem": "Getting from an idea to a working agent took too many disconnected steps:\n\n1. **Product managers** couldn't configure or launch agents without engineering\n2. **Workflow logic** lived in separate documents that drifted out of sync with the product\n3. **Compliance and security checks** came after development, causing rework\n4. **Knowledge** was scattered, so quality and freshness were hard to manage\n5. **No way to evaluate** an agent before deployment",
+    "users": "Three roles:\n\n- **Product managers:** define use cases and behaviour; need to act without engineering\n- **Engineers:** need precise control over prompts, models and testing, in a focused workspace\n- **Compliance reviewers:** need visibility, audit history and security controls before approval",
+    "features": "- **Simple Agent:** plain-language setup of role, goal and knowledge, with no model selection or prompt engineering\n- **Workflow Agent:** a visual canvas of triggers, conditions and actions, with execution traces non-engineers can verify\n- **Advanced Agent:** full control over models, retrieval, guardrails and evaluations, with each decision isolated and testable\n- **Guardrails & Observability:** guardrails and PII rules set during configuration; every interaction traced\n- **Reusable Skills:** a shared library (web search, file analysis, compliance checks, API actions) any agent can call",
+    "strategy": "The platform is structured as **Configure → Orchestrate → Tune**, with three modes for three depths of control.\n\nVishnu's principle: **simplicity means giving each user the right level of complexity**, not removing features. Product managers get plain language, operations teams get a visual canvas, engineers get full control, and all three run on one design system.",
+    "decisions": "Trade-offs he named explicitly:\n\n- **Simple mode hides technical controls**, so engineers may find it limiting; Advanced mode exists for them\n- **Advanced mode's depth** is deliberately not aimed at people who don't need it\n- **Guardrails come first**, so reviewers check documented decisions instead of retrofitting\n- **Traces show gaps openly**, which looks less polished but avoids confident wrong answers\n- **Shared skills** are harder to maintain than purpose-built ones, but they stop teams rebuilding the same capability",
+    "outcomes": "These are **UnifyApps' published figures** from a large financial institution's deployment; Vishnu did not measure them himself:\n\n- ~**$5.5M** projected annual cost savings\n- **800K+** consumer consents captured in two weeks\n- **90% faster** time-to-market\n- **37%** better message delivery after consolidating 27+ messaging systems",
+    "ai": "The whole product is about AI agents:\n\n- Three build modes for different skill levels\n- **Guardrails and PII rules** set at configuration time\n- **Execution traces** of every tool call, retrieval and model decision\n- **Evaluations** before deployment\n- **Reusable skills** shared across agents",
+    "learnings": "Reflections:\n\n- **Simplicity** is showing each user the right level of complexity\n- **Governance** works best when it's built into the workflow from the start\n- **Role-specific experiences** help each user focus and adopt faster",
+    "role": "Vishnu was the **Lead Product Designer**, owning the platform from concept to developer handoff, with ICD as design partner to UnifyApps. The product team defined roles and led the research. 2025 – present."
+   },
+   "caseStudy": true,
+   "name": "the Agent Workforce Platform",
+   "weakAliases": [
+    "agent builder",
+    "agents platform",
+    "multi agent"
+   ]
+  },
+  {
+   "id": "hdfc",
+   "label": "HDFC Bank — Consent & Preference Management",
+   "aliases": [
+    "hdfc",
+    "hdfc bank"
+   ],
+   "answers": {
+    "overview": "**Consent at the Scale of a Nation's Bank (HDFC Bank)**\n\nA consent and preference management platform for one of India's largest private banks, **30M+ customers**, built for India's **DPDP Act**.\n\n- **Client:** UnifyApps & HDFC Bank\n- **Platform:** Web and mobile\n- **Timeline:** March 2025 – February 2026\n- **Role:** Lead Product Designer, working with HDFC's senior management and product team from brief to Final-for-Dev\n\n[Read the case study →](https://vishnuprasad.space/work/hdfc)",
+    "problem": "India's DPDP Act set a deadline the bank **couldn't move**.\n\n- Customers needed to **see** what the bank holds, **control** what they agreed to, and **withdraw consent** any time\n- Operations needed every purpose **configured, versioned and auditable**\n- Consent was *collected everywhere and governed nowhere*: scattered across legacy systems, reconciled by hand, hard to act on in real time",
+    "users": "Two sides of one system:\n\n- **Customers:** see, control and withdraw consent\n- **Bank operators and the Data Privacy Office:** configure purposes, version them, monitor violations and audit\n\nBoth sides were designed together on **one shared consent record**.",
+    "features": "- **Customer consent portal**\n- **Operator console** on the same consent record\n- **AI that infers preferences**\n- **AI that simplifies legal disclosures** into plain language\n- **Real-time monitoring** of consent violations\n- **Instant enforcement** of consent decisions across connected systems",
+    "strategy": "Vishnu's approach:\n\n- **One record, two experiences:** customer portal and operator console built on the same consent record, so they can't drift apart\n- **Organise, don't remove:** compliance content arranged around how customers think\n- **Compliance as a by-product:** consent actions logged automatically in the normal workflow, so the audit trail builds itself",
+    "decisions": "- Compliance content was **organised to match how customers think**, not cut down\n- Consent actions are **logged automatically** in the normal flow, with no extra steps\n- The **customer and operator sides were designed together**",
+    "outcomes": "As **reported by UnifyApps**:\n\n- **400M+** consents captured across loans, cards, forex, accounts and wealth\n- **$4M** yearly cost savings\n- **98% faster** time-to-market for consent-dependent initiatives\n- **40%** delivery optimisation across **3M+ daily communications**\n- **10+ AI apps** deployed across the Data Privacy Office, Finance and Legal",
+    "ai": "- **Preference inference:** AI infers customer preferences\n- **Plain-language disclosures:** AI simplifies legal text\n- **Violation monitoring** in real time\n- **10+ AI apps** deployed across the Data Privacy Office, Finance and Legal",
+    "learnings": "- **Good records create compliance naturally**\n- **Complex information should be organised, not removed**\n- **Designing customer and operator sides together** creates a better experience",
+    "role": "Vishnu was the **Lead Product Designer**, working directly with HDFC Bank's senior management and product team from brief through Final-for-Dev handoff, with ICD as design partner to UnifyApps. March 2025 – February 2026. Some details are confidential."
+   },
+   "caseStudy": true,
+   "name": "the HDFC Bank project",
+   "weakAliases": [
+    "consent",
+    "consent management",
+    "preference management",
+    "dpdp",
+    "dpdp act",
+    "data protection",
+    "privacy",
+    "consent platform",
+    "data privacy",
+    "consent portal"
+   ]
+  },
+  {
+   "id": "sony",
+   "label": "Sony Pictures Networks India — four platforms",
+   "aliases": [
+    "sony",
+    "spni",
+    "sony pictures",
+    "sony networks",
+    "culver max",
+    "sony liv",
+    "sony case study"
+   ],
+   "answers": {
+    "overview": "**Intelligence at the core of Asia's largest media group (Sony Pictures Networks India)**\n\nFour enterprise platforms designed end to end, May 2025 – July 2026, with UnifyApps (ICD as design partner):\n\n1. **Contract Lifecycle Intelligence**\n2. **Corporate Secretarial Governance**\n3. **Sports Rights Scheduling & Broadcast Planning**\n4. **Social Intelligence Command**\n\nAsk me about any of them.\n\n[Read the case study →](https://vishnuprasad.space/work/sony)",
+    "problem": "Each area ran on manual or fragmented processes:\n\n- **Contracts** lived in emails, spreadsheets and offline approvals\n- **Board minutes** took days; statutory deadlines lived in spreadsheets\n- **Scheduling conflicts** surfaced only after channels reached production\n- **Audience signals** sat across vendor tools, so teams reacted late",
+    "users": "Vishnu worked with **legal, compliance, broadcast operations, content strategy and corporate governance** teams, the people who use each of the four platforms.",
+    "features": "- **Contracts:** AI creation, review, routing, risk and clause checks across 2,847 agreements; SAP S/4 and Adobe Sign\n- **Governance:** minutes from live transcripts, action items, Companies Act 2013 deadlines, statutory registers; MS Teams\n- **Sports scheduling:** one planner across TEN 1–5, TEN SD, Sony LIV and SET India, with real-time conflict detection and rights checks\n- **Social intelligence:** ~2.47M monthly mentions combined with ratings, spike detection, sentiment and weekly AI briefings",
+    "strategy": "Three principles connected all four platforms:\n\n- **Trust comes from visibility:** people trust AI when they can see how it reached a result\n- **AI should act before the problem happens:** flag risk before review, conflicts before production\n- **Configuration is part of the product:** rules, approvals and thresholds need deliberate design",
+    "outcomes": "From **project documentation** (not independently measured):\n\n- **Contract cycle time:** 30–45 days → **18 days**\n- **SLA compliance:** untracked → **68%**\n- **Board minutes prep:** 2–3 days → **4 hours**\n- **Missed deadlines:** down **85%**\n- **Schedule build:** days → **hours**\n- **Production conflicts:** recurring → **zero**\n- **Time-to-insight:** 48 hours → **90 minutes**\n- **Spike response:** 6 hours → **22 minutes**",
+    "learnings": "- **Trust comes from visibility**\n- **AI should act before the problem happens**\n- **Configuration is part of the product**",
+    "role": "Vishnu was the **Lead Product Designer** across all four platforms, May 2025 – July 2026, collaborating with legal, compliance, broadcast operations, content strategy and corporate governance teams. Some details are confidential."
+   },
+   "caseStudy": true,
+   "name": "the Sony platforms",
+   "weakAliases": [
+    "media group"
+   ]
+  },
+  {
+   "id": "sony-clm",
+   "label": "Sony — Contract Lifecycle Intelligence",
+   "aliases": [
+    "contract lifecycle"
+   ],
+   "answers": {
+    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30–45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+   },
+   "caseStudy": true,
+   "name": "Sony's contract platform",
+   "parent": "sony",
+   "weakAliases": [
+    "clm",
+    "contract management",
+    "contracts platform",
+    "contract",
+    "contracts",
+    "sap s4",
+    "adobe sign",
+    "agreements"
+   ]
+  },
+  {
+   "id": "sony-governance",
+   "label": "Sony — Corporate Secretarial Governance",
+   "aliases": [
+    "corporate secretarial",
+    "secretarial"
+   ],
+   "answers": {
+    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2–3 days → 4 hours; missed deadlines down 85%** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+   },
+   "caseStudy": true,
+   "name": "Sony's governance platform",
+   "parent": "sony",
+   "weakAliases": [
+    "board minutes",
+    "companies act",
+    "board governance",
+    "corporate governance",
+    "minutes",
+    "statutory"
+   ]
+  },
+  {
+   "id": "sony-sports",
+   "label": "Sony — Sports Rights Scheduling & Broadcast Planning",
+   "aliases": [
+    "sports scheduling"
+   ],
+   "answers": {
+    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1–5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+   },
+   "caseStudy": true,
+   "name": "Sony's sports scheduling platform",
+   "parent": "sony",
+   "weakAliases": [
+    "sports",
+    "broadcast",
+    "broadcast planning",
+    "scheduling",
+    "sports rights",
+    "ten channels",
+    "tournament",
+    "channel planning"
+   ]
+  },
+  {
+   "id": "sony-social",
+   "label": "Sony — Social Intelligence Command",
+   "aliases": [],
+   "answers": {
+    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+   },
+   "caseStudy": true,
+   "name": "Sony's social intelligence platform",
+   "parent": "sony",
+   "weakAliases": [
+    "social intelligence",
+    "social listening",
+    "social media",
+    "sentiment",
+    "audience",
+    "ratings",
+    "social command",
+    "mentions"
+   ]
+  },
+  {
+   "id": "digital-dubai",
+   "label": "Digital Dubai — three projects",
+   "aliases": [
+    "digital dubai",
+    "dubai digital authority",
+    "dubai digital",
+    "dda"
+   ],
+   "answers": {
+    "overview": "Vishnu designed **three AI products for Digital Dubai** (Dubai Digital Authority):\n\n1. **AI-Powered Supplier Onboarding & Verification:** document extraction, duplicate detection, human verification\n2. **Supplier GPT:** a procurement copilot for tenders, orders, shipments, invoices and payments\n3. **Smart Employee Copilot:** an assistant for HR, finance and procurement requests\n\nAsk me about any of them."
+   },
+   "contextAliases": [
+    "dubai"
+   ],
+   "caseStudy": false,
+   "name": "the Digital Dubai projects",
+   "weakAliases": []
+  },
+  {
+   "id": "dd-onboarding",
+   "label": "Digital Dubai — AI Supplier Onboarding & Verification",
+   "aliases": [
+    "supplier onboarding"
+   ],
+   "answers": {
+    "overview": "**AI-Powered Supplier Onboarding and Verification (Digital Dubai)**\n\nA **mobile and web** onboarding product that makes supplier registration faster, improves supplier data quality and reduces manual verification.\n\n- Suppliers upload documents, and **AI extracts** company and banking data for them to confirm\n- **Inconsistencies and duplicates** are flagged with confidence scores\n- **Humans verify** only the exceptions",
+    "problem": "Supplier registration meant **re-entering the same data** across business, tax and banking documents. **Inconsistent details and duplicate records** slowed verification, and poor status visibility created extra enquiries and follow-ups.",
+    "users": "- **Supplier representative:** submits documents, confirms extracted data, selects products and services\n- **Supplier onboarding manager:** oversees progress and coordinates exceptions\n- **Verification specialist:** reviews duplicates and document discrepancies\n- **Platform admin / IT:** supports access and operations",
+    "features": "- Email verification and document upload (trade licence, tax certificate, bank letter, company profile)\n- **Review of AI-extracted** company and banking information\n- **Cross-document inconsistency** detection\n- **Duplicate-profile flags** with confidence scores\n- **Product and service recommendations** from trade-licence activities\n- Manual entry, corrections, support enquiries and **trackable human-review requests**",
+    "ai": "- **Intelligent document processing** for registration documents\n- **Extraction** of company, licence, tax and banking data\n- **Entity matching** and confidence-based duplicate detection\n- **Cross-document inconsistency** detection\n- **Contextual recommendations** for product and service classification",
+    "outcomes": "- Better supplier data quality through cross-document and duplicate checks\n- Less data entry through AI extraction\n- Faster classification through trade-licence-based recommendations\n- Human review reserved for flagged exceptions\n- Better visibility through reference IDs, status tracking and support paths\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "The approach is **AI proposes, the supplier confirms, humans verify exceptions**. AI handles extraction and checking, the supplier stays accountable for their own data, and verification specialists spend time only on flagged cases. Clear status tracking reduces the \"where is my application?\" enquiries.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "onboarding",
+    "duplicate supplier",
+    "kyb"
+   ],
+   "caseStudy": false,
+   "name": "Digital Dubai supplier onboarding",
+   "parent": "digital-dubai",
+   "weakAliases": [
+    "supplier registration",
+    "supplier verification",
+    "vendor onboarding",
+    "trade license",
+    "trade licence"
+   ]
+  },
+  {
+   "id": "dd-supplier-gpt",
+   "label": "Digital Dubai — Supplier GPT",
+   "aliases": [
+    "supplier gpt"
+   ],
+   "answers": {
+    "overview": "**Supplier GPT: Intelligent Procurement Copilot (Digital Dubai)**\n\nA conversational copilot that brings **tenders, orders, shipments, invoices, payments and company records** into one natural-language experience for suppliers, and moves from answers to actions like **invoice creation** and **AI-assisted tender submission**.",
+    "problem": "Suppliers had to navigate **many procurement records** to understand tender deadlines, deliveries, invoice progress and payment status. Fragmented information and **repetitive enquiries** slowed routine work and made outstanding actions hard to spot.",
+    "users": "- **Supplier representative:** explores tenders and manages enquiries\n- **Supplier operations manager:** monitors deadlines, deliveries and outstanding actions\n- **Supplier finance specialist:** creates invoices, tracks approvals and payments\n- **Platform admin / IT:** supports access and system connectivity",
+    "features": "- **Tender discovery** with fee-based filtering and supplier-relevant matching\n- **Order and shipment line-item tracking**\n- **Invoice creation** and payment-status checks\n- **Analytical charts** and downloadable records\n- **Business classification** and registration lookups\n- **Operational summaries:** delayed shipments, upcoming deliveries, invoice-ready orders, closing tenders\n- **AI-assisted tender submission** with confirmation messages",
+    "ai": "- **Conversational AI** for natural-language procurement questions\n- **AI retrieval** of supplier and transaction records\n- **Analytical AI** for summaries and charts\n- **Recommendation AI** for tender matching\n- **Agentic AI** for assisted tender submission",
+    "outcomes": "- Visibility across **six domains**: tenders, orders, shipments, invoices, payments, supplier profiles\n- Less effort retrieving information\n- Better prioritisation of closing tenders and delayed shipments\n- Less admin through assisted invoicing and submission\n- More self-service and less reliance on support teams\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "The design goes **from answers to actions**. Suppliers don't just ask \"where is my payment?\"; they can create the invoice or submit the tender in the same conversation. Proactive summaries surface what needs attention before the supplier asks.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "procurement",
+    "tender",
+    "tenders",
+    "invoices",
+    "shipments",
+    "purchase orders"
+   ],
+   "caseStudy": false,
+   "name": "Supplier GPT",
+   "parent": "digital-dubai",
+   "weakAliases": [
+    "procurement copilot",
+    "supplier copilot"
+   ]
+  },
+  {
+   "id": "dd-employee-copilot",
+   "label": "Digital Dubai — Smart Employee Copilot",
+   "aliases": [],
+   "answers": {
+    "overview": "**Smart Employee Copilot (Digital Dubai)**\n\nAn AI corporate assistant that helps employees **find information, raise service requests and track updates** across HR, finance and procurement, in one conversation.",
+    "problem": "Employees navigated **separate processes** to request services, find policy guidance and track approvals. Finance and operations teams also had to dig for **pending transactions and budget exceptions**, which led to repetitive enquiries and delays.",
+    "users": "- **Employee:** leave, certificates, remote work, guidance, tracking\n- **Team / department manager:** approvals and operational exceptions\n- **HR / finance specialist:** workforce, payroll, invoices and budget issues\n- **Platform admin / IT:** access, permissions and availability",
+    "features": "- **Leave, certificate and remote-work** requests\n- **Request-status tracking** and FAQs\n- **Pending invoices, receipt-matching results, budget exceptions** and payroll insights\n- **Document-source references** on answers\n- Downloadable reports, reusable prompts and **response feedback**",
+    "ai": "- **Conversational AI** for employee questions and requests\n- **Generative AI** for explanations and summaries\n- **Document-grounded answers** with source references\n- **Analytical AI** for payroll, compensation and budget questions\n- **Workflow-oriented AI** for starting and following up requests",
+    "outcomes": "- Broader self-service across leave, certificate and remote-work requests\n- Less time finding guidance and checking status\n- Earlier visibility of pending invoices, matching failures and budget overruns\n- Less repetitive admin\n- More transparent help through references and feedback\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "One assistant for many back-office processes: employees don't need to know which system handles what. **Source references** keep answers verifiable, and **response feedback** lets the assistant improve over time.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "employee assistant",
+    "hr assistant",
+    "employee self service",
+    "leave request",
+    "hr copilot",
+    "corporate assistant"
+   ],
+   "caseStudy": false,
+   "name": "the Smart Employee Copilot",
+   "parent": "digital-dubai",
+   "weakAliases": [
+    "employee copilot",
+    "smart employee"
+   ]
+  },
+  {
+   "id": "niva-bupa",
+   "label": "Niva Bupa — AI-Assisted Insurance Sales Enablement",
+   "aliases": [
+    "niva bupa",
+    "niva",
+    "bupa"
+   ],
+   "answers": {
+    "overview": "**AI-Assisted Insurance Sales Enablement (Niva Bupa)**\n\nA unified sales platform for Niva Bupa's agents covering the health insurance journey, **from plan discovery and quotation to application tracking**, with AI-assisted customer messaging.",
+    "problem": "Health insurance agents juggle **complex plan variants, riders, customer needs and application stages**. Disconnected quoting and follow-up add admin, slow customer responses and hide **stalled applications**.",
+    "users": "- **Insurance agent:** calculates premiums, compares plans, manages quotes, supports applications\n- **Sales manager:** monitors targets, conversions, pipeline and agent performance\n- **Underwriting specialist:** reviews medical disclosures and complex applications\n- **Platform admin:** access, product configuration and integrations (proposed role)",
+    "features": "- **Premium calculation** and **plan comparison**\n- **Coverage and rider customisation**\n- **Quote management** and sharing via **WhatsApp and SMS**\n- **AI-assisted message refinement** for customer communication\n- **Lead tracking**, customer activity history, **application-stage visibility**\n- Campaign tracking and sales performance",
+    "ai": "- **In the design:** generative AI to draft and refine customer messages (tone and clarity)\n- **Proposed extensions (not shipped):** plan and rider recommendations, lead prioritisation by conversion propensity, automated follow-up reminders",
+    "outcomes": "- Better quote-to-application conversion through timely follow-up\n- Faster quote preparation\n- Clearer pipeline visibility\n- Less repetitive admin through reusable customer data and AI messaging\n- Clearer customer decisions through comparable, shareable quotes\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "Agents often work **while talking to the customer**, so the design puts calculation, comparison, customisation and sharing into **one continuous flow**. AI helps with the part agents find slowest, writing a clear, well-toned message, while the sales pipeline keeps follow-ups from slipping.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "insurance project",
+    "insurance app",
+    "insurance platform",
+    "insurance sales",
+    "health insurance",
+    "insurance agent",
+    "insurance",
+    "premium calculator",
+    "quotation",
+    "riders"
+   ],
+   "caseStudy": false,
+   "name": "the Niva Bupa project",
+   "weakAliases": []
+  },
+  {
+   "id": "mashreq",
+   "label": "Mashreq — three projects",
+   "aliases": [
+    "mashreq",
+    "mashreq bank"
+   ],
+   "answers": {
+    "overview": "Vishnu designed **three AI products for Mashreq**:\n\n1. **Cash AI:** conversational cross-border payment operations for corporate treasury teams\n2. **Agentic Credit Initiation:** from documents to corporate credit decisions\n3. **AI Incident Investigation:** root-cause analysis and service recovery for banking operations\n\nAsk me about any of them."
+   },
+   "contextAliases": [],
+   "caseStudy": false,
+   "name": "the Mashreq projects",
+   "weakAliases": []
+  },
+  {
+   "id": "mashreq-cash",
+   "label": "Mashreq — Cash AI",
+   "aliases": [
+    "cash ai",
+    "cross-border payments",
+    "swift",
+    "mt103"
+   ],
+   "answers": {
+    "overview": "**Cash AI: Intelligent Cross-Border Payment Operations (Mashreq)**\n\nA conversational assistant that helps corporate finance teams **retrieve foreign-currency transactions, track cross-border payments and access banking records** in plain language, with sources behind every answer.",
+    "problem": "Finance teams had to piece together **payment status, approval history, FX details and confirmations** across separate banking records. Manual retrieval slowed reconciliation and exception investigation, and increased reliance on operations support.",
+    "users": "- **Treasury analyst:** retrieves transactions, monitors transfers, supports reconciliation\n- **Treasury manager:** reviews payment progress, approvals and exceptions\n- **Payments operations specialist:** investigates returned or cancelled payments\n- **Banking platform admin:** access and configuration",
+    "features": "- **Transaction summaries** and inward-transfer enquiries\n- **Initiated and returned payment** tracking\n- **SWIFT MT103 confirmation** retrieval and **bank statements**\n- Currencies, beneficiaries, FX rates, references and **approval history**\n- **Excel exports** and downloadable confirmations\n- **Source references** behind responses",
+    "ai": "- **Conversational AI** and natural language understanding\n- **Generative transaction summaries**\n- **Retrieval-augmented answers** with sources\n- **Task-oriented AI** for guided banking requests\n\n_Capability-level classification; the underlying implementation isn't documented._",
+    "outcomes": "- One place for transaction status, references and approval history\n- Less time retrieving confirmations and statements\n- Faster investigation of delayed, returned and cancelled payments\n- Less manual reporting through exports and self-service\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "In banking, **every number must be traceable**. Every answer comes with source references and downloadable proof (MT103, statements, Excel), so treasury teams can act on it and reconcile without asking operations.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "cash management",
+    "cross border",
+    "payments",
+    "treasury",
+    "foreign currency",
+    "fx",
+    "remittance"
+   ],
+   "caseStudy": false,
+   "name": "Mashreq Cash AI",
+   "parent": "mashreq",
+   "weakAliases": []
+  },
+  {
+   "id": "mashreq-credit",
+   "label": "Mashreq — Agentic Credit Initiation",
+   "aliases": [
+    "agentic credit initiation",
+    "credit initiation",
+    "agentic credit"
+   ],
+   "answers": {
+    "overview": "**Agentic Credit Initiation: From Documents to Credit Decisions (Mashreq)**\n\nAn agentic assistant that coordinates **document collection, financial analysis and risk review** for corporate credit proposals. It helps Relationship Managers build evidence-backed proposals and lets Wholesale Risk Managers challenge assumptions before recommending.",
+    "problem": "Corporate credit initiation needed **manual document checks, financial spreading** and repeated back-and-forth between relationship and risk teams. **Missing KYC records, incomplete projections and unsupported assumptions** delayed review and could hide repayment risk.",
+    "users": "- **Relationship Manager:** collects documents, defines facility needs, prepares the proposal\n- **Wholesale Risk Manager:** reviews assumptions, challenges findings, recommends\n- **Credit analyst:** validates spreading, investigates exceptions, tests repayment capacity\n- **Platform admin / IT:** access, integrations and governance (proposed role)",
+    "features": "The assistant works in steps:\n\n1. **Classifies documents** and extracts client and shareholder data\n2. **Flags missing or expired** records (KYC)\n3. Supports **financial spreading, projections and credit ratios**\n4. Assesses **concentration exposure** and **stress-tests repayment**\n5. Generates **clarification questions** for the Relationship Manager\n\nWith source-linked extraction, confidence indicators, pending-document tracking and **human review checkpoints**.",
+    "ai": "- **Agentic AI** for the multi-step workflow\n- **Document AI** for classification and extraction\n- **Generative AI** for credit summaries and review questions\n- **Financial analytical AI** for spreading and projections\n- **Risk assessment AI** for assumption review and scenario analysis",
+    "outcomes": "- Earlier identification of repayment risk. **Illustrative example from the design:** a 20% revenue shock drops DSCR to **1.12x**, below the **1.25x** covenant\n- Shorter proposal preparation\n- Better-challenged assumptions on growth, capex and customer concentration\n- Less data entry and document chasing\n- Clearer RM–risk collaboration\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "The design makes **risk visible before the decision**, not after. The agent does the heavy lifting (documents, spreading, stress tests), but **human checkpoints** and source links keep the Relationship Manager and Risk Manager accountable. Clarification questions turn a slow back-and-forth into a structured conversation.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "credit",
+    "credit proposal",
+    "lending",
+    "loan",
+    "corporate credit",
+    "financial spreading",
+    "kyc",
+    "dscr",
+    "credit risk",
+    "underwriting credit"
+   ],
+   "caseStudy": false,
+   "name": "Mashreq Credit Initiation",
+   "parent": "mashreq",
+   "weakAliases": []
+  },
+  {
+   "id": "mashreq-incident",
+   "label": "Mashreq — AI Incident Investigation & Service Recovery",
+   "aliases": [
+    "mashreq incident"
+   ],
+   "answers": {
+    "overview": "**AI-Powered Incident Investigation and Service Recovery (Mashreq)**\n\nMoves banking technology teams from fragmented troubleshooting to **coordinated, AI-assisted incident response**: connecting alerts, finding root causes, assessing business impact and tracking recovery and prevention.",
+    "problem": "Banking failures can **cascade** across databases, processing pipelines and third-party integrations. **Disconnected alerts and scattered resolver communication** slowed root-cause work, complicated SLA management and delayed recovery of customer-facing services.",
+    "users": "- **Incident responder / SRE:** investigates alerts, validates root causes\n- **Incident manager:** coordinates resolvers, tracks SLAs, manages escalations\n- **Problem management analyst:** reviews recurring failures and preventive actions\n- **IT operations admin:** monitoring integrations and data access",
+    "features": "- **SRE and search agents** correlate alerts by timing and service dependencies\n- **Root-cause findings** with confidence indicators\n- **Investigation timelines** and causal-chain analysis\n- **Executive summaries** and business impact\n- **SLA tracking**, resolver coordination and escalation\n- **Remediation tracking** and historical pattern analysis",
+    "ai": "- **Agentic AI** for coordinated investigation\n- **Alert correlation AI**\n- **Causal reasoning AI** for root cause and dependencies\n- **Generative AI** for investigation and executive summaries\n- **Pattern recognition** for recurring incidents",
+    "outcomes": "**Illustrative figures shown in the design**:\n\n- First response at **8 min** vs. a 15-min SLA target\n- Customer notification at **22 min** vs. a 30-min target\n- **5 improvement tasks** tracked (2 done, 3 in progress)\n- **12 similar vendor API failures** found over 6 months, guiding prevention\n- Clearer impact visibility (e.g., delayed cashback and loyalty-point transfers)\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "The design connects the **whole incident lifecycle**: detect → correlate → find root cause → recover → prevent. Confidence indicators keep engineers in charge of the diagnosis, and pattern analysis turns individual incidents into structural fixes.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "incident",
+    "incident management",
+    "root cause",
+    "rca",
+    "sre",
+    "outage",
+    "alerts",
+    "service recovery",
+    "it operations",
+    "aiops"
+   ],
+   "caseStudy": false,
+   "name": "Mashreq Incident Investigation",
+   "parent": "mashreq",
+   "weakAliases": [
+    "incident investigation"
+   ]
+  },
+  {
+   "id": "jubilant",
+   "label": "Jubilant Group — Enterprise Operations & Workforce Transformation",
+   "aliases": [
+    "jubilant",
+    "jubilant foodworks",
+    "jubilant ingrevia",
+    "jubilant group",
+    "foodworks",
+    "ingrevia"
+   ],
+   "answers": {
+    "overview": "**Enterprise Operations & Workforce Transformation (Jubilant Group)**\n\nA cross-functional modernisation programme across **Jubilant Ingrevia and Jubilant FoodWorks**, covering workforce management, employee services, property management, store expansion, finance, procurement, inventory, quality control, asset management and IT operations.",
+    "problem": "Operations were spread across **many teams, systems and approval stages**. Document-heavy workflows, manual verification and fragmented handoffs made it hard to **track requests, manage exceptions and keep controls consistent**.",
+    "users": "- **Employees and contributors:** services, requests, documents, assigned workflows\n- **Managers and approvers:** reviews, approvals, escalations\n- **Admins and IT:** permissions, workflow configuration, master data\n- **Specialist operators:** finance validators, auditors, master-data managers, verification teams, fleet managers",
+    "features": "- **Role-based workflows** and employee self-service\n- **Document processing** and **identity verification**\n- **Multi-level approvals** and **master-data governance**\n- **Operational analytics**\n- AI-assisted **document extraction, product master mapping, order validation, face-based identity verification** and **demand forecasting**",
+    "ai": "- **Intelligent document processing**\n- **AI extraction and classification**\n- **Entity and master-data matching**\n- **Computer vision** for identity verification\n- **Predictive analytics** and demand forecasting",
+    "outcomes": "- Clear ownership, approval history and request tracking\n- Fewer processing delays through structured submissions and routing\n- Better visibility into financial discrepancies, inventory variance, compliance and asset status\n- Less manual data handling\n- Better employee experience\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "With so many functions, the approach is **shared building blocks**: role-based workflows, approvals, verification and exception handling applied consistently across every department, each tailored to its own requirements. AI is used where data handling is heaviest: documents, master data and verification.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "dominos"
+   ],
+   "caseStudy": false,
+   "name": "the Jubilant project",
+   "weakAliases": []
+  },
+  {
+   "id": "virtusa",
+   "label": "Virtusa — Unified HR Operations & Promotion Management",
+   "aliases": [
+    "virtusa",
+    "buddy allocation"
+   ],
+   "answers": {
+    "overview": "**Unified HR Operations and Promotion Management (Virtusa)**\n\nA central platform that **standardises employee promotions, HR partner assignments and buddy allocation** across Virtusa's business units and regions, with defined ownership and traceable decisions.",
+    "problem": "Promotions and assignments need coordination across **many roles, regions and business units**. Fragmented records and manual handoffs made it hard to **apply eligibility consistently**, track approvals, keep assignments accurate and resolve delays.",
+    "users": "- **Nominator / line manager:** submits nominations and documentation\n- **HR partner / review manager:** validates, reviews, approves or returns\n- **Compensation & benefits specialist:** configures cycles, eligibility, affordability and quotas\n- **Platform admin:** users, access, regional ownership and reminders",
+    "features": "- **Configurable promotion cycles** with eligibility and **affordability criteria**\n- **Tier-based quotas**\n- **Multi-level nominations and approvals** with reviewer comments\n- Employee data uploads and supporting documents\n- **Bulk HR partner reassignment** and **buddy availability tracking**\n- Scheduled reminders and **audit trails**",
+    "ai": "These are **proposed AI opportunities**, not shipped features:\n\n- Predicting promotion stages at risk of delay\n- Recommending buddy assignments\n- Summarising nomination comments\n- Extracting information from supporting documents\n- Flagging unusual nomination patterns",
+    "outcomes": "- More consistent promotion policy through central eligibility and affordability rules\n- Less admin through bulk uploads, reassignment and reminders\n- Stronger budget oversight through quotas and affordability limits\n- Clearer ownership, review status and follow-ups\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "**Governance through configuration**: policy lives in the system (eligibility, affordability, quotas) instead of in people's heads, so every region applies the same rules. Audit trails make each decision traceable.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "promotion",
+    "promotions",
+    "hr operations",
+    "hr partner",
+    "buddy",
+    "promotion management",
+    "appraisal",
+    "nominations"
+   ],
+   "caseStudy": false,
+   "name": "the Virtusa project",
+   "weakAliases": []
+  },
+  {
+   "id": "tekion",
+   "label": "Tekion — AI-Assisted Enterprise Workflow Platform",
+   "aliases": [
+    "tekion"
+   ],
+   "answers": {
+    "overview": "**AI-Assisted Enterprise Workflow Platform (Tekion)**\n\nA platform bringing **configurable business apps, operational workflows and AI support** together for dealership operations, customer health, procurement and **financial reconciliation**.",
+    "problem": "Teams worked across **disconnected operational and financial systems**, with manual data checks and repeated handoffs. Inconsistent records and fragmented exception handling **slowed reconciliation** and blurred accountability.",
+    "users": "- **Business operations user:** records, tasks, daily workflows\n- **Operations / finance manager:** performance, exceptions, approvals\n- **Reconciliation analyst:** investigates discrepancies and validates evidence\n- **Platform admin / IT:** apps, data definitions, permissions, validation rules",
+    "features": "- **App and form configuration** and reusable business capabilities\n- **Operational reporting**\n- **Conversational copilot**\n- **Reconciliation:** bank records, open invoices, lockbox files and statements matched; discrepancies surfaced; exceptions routed\n- **Record-level evidence, approval controls and audit trails**",
+    "ai": "- **Generative and conversational copilot**\n- **NLP** for business questions\n- **Intelligent document processing** (OCR) for financial documents\n- **Evidence-backed decision support** for operational review\n\n_Functional categories; underlying models aren't specified._",
+    "outcomes": "These are **proposed success targets**, not results:\n\n- **85–90%** automated match rate for eligible reconciliation records\n- **30–40%** less manual reconciliation effort\n- **20–30%** faster exception resolution\n- Lower processing cost per record\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "Automate the **routine matches**, and give people **evidence** for the exceptions. Every discrepancy arrives with its supporting records and a clear owner, so reviewers decide quickly and the audit trail builds itself.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "dealership",
+    "automotive",
+    "reconciliation",
+    "bank reconciliation",
+    "dealer"
+   ],
+   "caseStudy": false,
+   "name": "the Tekion project",
+   "weakAliases": [
+    "lockbox"
+   ]
+  },
+  {
+   "id": "lowes",
+   "label": "Lowe's — Enterprise AI Workspace",
+   "aliases": [
+    "lowes",
+    "lowe's",
+    "lowe"
+   ],
+   "answers": {
+    "overview": "**Enterprise AI Workspace for Connected Productivity (Lowe's)**\n\nOne AI workspace that brings **company knowledge, specialised assistants and project collaboration** together, helping employees move from fragmented searching to context-aware help.",
+    "problem": "Employees navigated **disconnected documents, conversations and productivity tools** to find information and complete recurring tasks. Fragmented project context caused **repeated searches, duplicated effort** and extra coordination.",
+    "users": "- **Employee:** finds information, analyses files, creates content\n- **Project manager:** coordinates shared conversations, references and instructions\n- **Agent creator / domain specialist:** configures assistants for departmental tasks\n- **Platform admin:** agent availability, connected sources and access",
+    "features": "- **Conversational assistance** with company knowledge search, web research and file analysis\n- **Specialised agents:** spreadsheet help, presentation generation, document creation, document comparison\n- **Project spaces:** conversations, reference documents, shared instructions and team discussions in one place",
+    "ai": "- **Conversational AI**\n- **Generative AI** for documents and presentations\n- **Retrieval-augmented** company knowledge\n- **Document AI** for analysis and comparison\n- **Task-specific agents**",
+    "outcomes": "- Faster access to source-supported company information\n- Less time drafting documents, decks and spreadsheet answers\n- Better knowledge reuse through shared project context\n- Fewer interruptions from switching tools\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "**Context is the product.** Project spaces keep conversations, documents and instructions together, so employees and agents don't start from zero every time. Specialised agents handle specific tasks better than one general assistant.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "ai workspace",
+    "productivity",
+    "enterprise workspace",
+    "connected productivity"
+   ],
+   "caseStudy": false,
+   "name": "the Lowe's workspace",
+   "weakAliases": []
+  },
+  {
+   "id": "cgb",
+   "label": "CGB Qatar — Sharek Government Service Intelligence Platform",
+   "aliases": [
+    "cgb",
+    "qatar",
+    "sharek",
+    "civil service",
+    "government development bureau"
+   ],
+   "answers": {
+    "overview": "**Sharek: Government Service Intelligence Platform (CGB, Qatar)**\n\nTurns fragmented government service data into **one performance intelligence platform**, helping Qatar's Civil Service and Government Development Bureau assess **service quality, satisfaction, digital maturity and public sentiment** across government entities.",
+    "problem": "Service data was spread across **disconnected channels and entities**, so leaders lacked visibility into performance, sentiment and bottlenecks, and had **no consistent framework** to compare services, find root causes or prioritise improvements.",
+    "users": "- **Government executives**\n- **Entity service managers**\n- **Performance analysts:** investigate trends, gaps and citizen feedback\n- **Platform admins and IT**",
+    "features": "- Feedback consolidated from **service centres, call centres, social media, surveys, CRM and chatbots**\n- **AI summaries** and **sentiment analysis**\n- **Entity benchmarking** and service-level diagnostics\n- **SLA monitoring** and interaction funnels\n- **Anomaly detection** and actionable recommendations",
+    "ai": "- **Natural language processing**\n- **Sentiment analysis**\n- **Generative summarisation**\n- **Predictive analytics**\n- **Anomaly and trend detection**",
+    "outcomes": "Target outcomes:\n\n- ~**8%** higher first-call resolution\n- ~**10%** fewer SLA breaches\n- ~**22%** better automated verification approval rates\n- ~**26%** faster processing for selected workflows\n- ~**14%** fewer critical service incidents\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "A **consistent framework** across every entity and channel makes services comparable, and AI summaries and anomaly detection point leaders to **what needs attention and why**. Vishnu also ran a **WCAG 2.1 AA accessibility audit** of the dashboard design.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "service intelligence",
+    "government service",
+    "customer satisfaction"
+   ],
+   "caseStudy": false,
+   "name": "Sharek (CGB Qatar)",
+   "weakAliases": []
+  },
+  {
+   "id": "mphasis",
+   "label": "Mphasis — Enterprise Visitor Management",
+   "aliases": [
+    "mphasis"
+   ],
+   "answers": {
+    "overview": "**Streamlining Enterprise Visitor Management (Mphasis)**\n\nA visitor management product connecting **hosts, visitors and security** across the workplace entry process: scheduling, registration and check-in in one workflow.",
+    "problem": "Visitor coordination needs **reliable handoffs** between hosts, guests and security. Incomplete registration, disconnected status updates and repeated verification **delayed entry** and made visit records inconsistent.",
+    "users": "- **Employee / host:** schedules visits, invites guests\n- **Security officer / receptionist:** verifies OTPs, registers walk-ins, manages check-in\n- **Facilities / security manager:** oversees visitor activity\n- **System admin / IT:** permissions and configuration (proposed role)",
+    "features": "- **Individual and event invitations**\n- **QR self-registration**, email verification and ID collection\n- **Digital visitor passes**\n- **OTP check-in** verification by security\n- Tracking of **pending, ongoing and completed** visits\n- **Activity timelines** from invitation to submission",
+    "ai": "**This product doesn't use AI in its current design**, and that's deliberate. The problem is coordination, not intelligence.\n\nPossible future extensions: ID data extraction, ID quality checks, visit-purpose classification, anomaly flags and visitor-volume forecasting.",
+    "outcomes": "- Central visibility of all visits\n- Shorter reception time (information collected before arrival)\n- Better host–security coordination\n- Less admin through self-registration\n- Clearer visitor preparation\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "A good example of Vishnu knowing **when AI isn't needed**. The value comes from moving data entry **before arrival** (QR self-registration), a simple **OTP** check at the gate, and **one shared status** that hosts and security both see.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "visitor",
+    "visitors",
+    "front desk",
+    "reception"
+   ],
+   "caseStudy": false,
+   "name": "the Mphasis project",
+   "weakAliases": [
+    "visitor management",
+    "qr check in",
+    "otp check in",
+    "gate pass",
+    "visitor pass"
+   ]
+  },
+  {
+   "id": "air-arabia",
+   "label": "Air Arabia — Cabin Operations & Crew Assessments",
+   "aliases": [
+    "air arabia"
+   ],
+   "answers": {
+    "overview": "**Digitizing Cabin Operations and Crew Assessments (Air Arabia)**\n\nBrings **cabin crew assessments, flight checks and onboard incident reporting** into one digital workflow, built **offline-first** for intermittent in-flight connectivity.",
+    "problem": "Cabin assessments and onboard incident reports need **complete, consistent records** despite limited connectivity. Interrupted submissions, missing exception remarks and fragmented reporting created follow-up work and delayed review.",
+    "users": "- **Cabin crew / observer:** completes checks, documents incidents\n- **Cabin supervisor / instructor:** assesses trainees, records verdicts\n- **Operations ground team:** uses the conversational assistant for flight status\n- **Platform admin / IT:** access and synchronisation",
+    "features": "- **Familiarisation and check-flight assessments**\n- **Standardised evaluation codes** (S / US / NA / NO)\n- **Mandatory remarks** on exceptions\n- **Resumable drafts** and submission review\n- **Medical incident reports:** patient details, observations, treatment, outcomes\n- A **conversational assistant concept** for flight-status queries in team chats",
+    "ai": "- A **conversational assistant concept** for operational queries (flight status) inside team conversations\n- The underlying AI architecture isn't specified; the core product is a structured offline workflow",
+    "outcomes": "- More consistent records through standardised codes\n- Less re-entry through saved, resumable drafts\n- Review-ready submissions through required remarks\n- Less documentation overhead\n- Continuity during connectivity drops\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "**Offline-first** was the core challenge: crew complete forms in flight, so drafts save and resume and nothing is lost when the connection drops. Standard codes keep routine checks fast, and **mandatory remarks only on exceptions** keep records review-ready without slowing crew down.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "airline",
+    "airlines",
+    "aviation project",
+    "airline project",
+    "aviation",
+    "cabin crew",
+    "crew assessment",
+    "cabin operations",
+    "flight",
+    "in flight",
+    "offline",
+    "medical incident"
+   ],
+   "caseStudy": false,
+   "name": "the Air Arabia project",
+   "weakAliases": []
+  },
+  {
+   "id": "stowers",
+   "label": "Stowers Institute — Enterprise Knowledge with AI Agents",
+   "aliases": [
+    "stowers",
+    "stowers institute"
+   ],
+   "answers": {
+    "overview": "**Enterprise Knowledge, Powered by AI Agents (Stowers Institute)**\n\nA unified AI workspace that helps Stowers employees **find organisational knowledge, do research and complete everyday tasks** with specialised assistants, extending into **Microsoft Outlook**.",
+    "problem": "Employees found information, reviewed research and prepared communications across **disconnected workflows**. Manual searching and repeated context-gathering slowed work, and **answers without clear sources** needed extra validation.",
+    "users": "- **Employee / knowledge worker:** finds information, completes tasks\n- **Research analyst:** investigates complex questions, validates against sources\n- **Team / project manager:** organises project conversations and research\n- **IT / platform admin:** assistant availability and configuration",
+    "features": "- **Research, enterprise search and email assistants**\n- **Citation-backed answers** (RAG) from research resources\n- **Source inspection** and task-progress visibility\n- **Suggested follow-up actions**\n- **Searchable history**, filterable by agent or project space\n- **Microsoft Outlook** integration",
+    "ai": "- **Generative AI** and **RAG** for citation-backed answers\n- **Conversational AI**\n- **AI-powered enterprise search**\n- **Agentic AI** for multi-step tasks",
+    "outcomes": "- More traceable research through citations\n- Less time searching and revisiting conversations\n- Faster research summaries and communications\n- Less context switching through Outlook\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "For a research institute, **citations are non-negotiable**: every answer can be traced back and inspected. Bringing the assistant into **Outlook** meets people where they already work.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "research institute",
+    "research assistant",
+    "outlook",
+    "microsoft outlook",
+    "research"
+   ],
+   "caseStudy": false,
+   "name": "the Stowers project",
+   "weakAliases": []
+  },
+  {
+   "id": "ajman",
+   "label": "Digital Ajman — Ajman One",
+   "aliases": [
+    "ajman",
+    "digital ajman",
+    "ajman one",
+    "trade licence renewal"
+   ],
+   "answers": {
+    "overview": "**Ajman One: AI-Powered Government Services and Business Renewals (Digital Ajman)**\n\nA unified, AI-assisted gateway to Ajman's government services that moves residents and businesses **from enquiry to guided transaction**, connecting trade licence renewal, lease coordination and payment in one journey.",
+    "problem": "Trade licence renewals can **depend on a valid tenancy agreement**, so business owners must coordinate lease negotiations, documents, fees and approvals. Disconnected steps and unclear requirements cause **repeat enquiries, delays and missed renewal deadlines**.",
+    "users": "- **Resident / business owner:** discovers services, reviews requirements, starts renewals\n- **Landlord / property manager:** reviews lease proposals, adjusts terms, approves\n- **Government service manager:** oversees delivery and support\n- **Platform admin / IT:** access, integrations and operations",
+    "features": "- **Natural-language service discovery**\n- **Fee and required-document** explanations\n- **Renewal reminders** and payment guidance\n- **Transaction records**\n- **Tenant–landlord proposals and counteroffers**\n- **AI-assisted contract drafting** and rental term comparison\n- **Explicit user confirmation** before every proposal and transaction",
+    "ai": "- **Conversational AI** for service enquiries\n- **Generative AI** for explanations and contract drafts\n- **NLU** for requests and proposed terms\n- **Decision support** for rental comparisons\n- **Agentic AI** for guided, **user-approved** multi-step journeys",
+    "outcomes": "- **Licence, lease and payment** connected in one guided journey\n- Faster service discovery and renewal preparation\n- Fewer missed renewals by highlighting expiring licences and lease dependencies\n- Less routine support workload\n- Clearer fees, actions and contract terms\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "The key insight was the **dependency**: you can't renew a licence without a valid lease. So the journey treats them as **one connected flow**. The agent guides and drafts, but **the person confirms every consequential step**, which matters for government transactions.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "government services",
+    "tenancy",
+    "landlord",
+    "tenant"
+   ],
+   "caseStudy": false,
+   "name": "Ajman One",
+   "weakAliases": [
+    "license renewal",
+    "licence renewal",
+    "lease renewal",
+    "business renewal"
+   ]
+  },
+  {
+   "id": "wasl",
+   "label": "Wasl — AI-Enabled Hospitality Budgeting",
+   "aliases": [
+    "wasl"
+   ],
+   "answers": {
+    "overview": "**AI-Enabled Hospitality Budgeting and Portfolio Consolidation (Wasl)**\n\nA central budgeting platform for Wasl's hotel portfolio, connecting **hotel operators, asset managers, finance teams and the Board** through one governed planning and approval process.",
+    "problem": "Budgeting across **many hotel operators** meant reconciling separate submissions, tracking revisions and coordinating several approval levels. Fragmented financial information made it hard to **spot inconsistencies, compare properties** and keep a traceable portfolio budget.",
+    "users": "- **Hotel operator:** prepares and submits property budgets and assumptions\n- **Asset manager / head of budgeting:** reviews, requests revisions, consolidates\n- **Hospitality administrator:** portfolio administration and readiness\n- **Senior leadership / Board:** evaluates and approves",
+    "features": "- **Annual budget initiation**\n- **P&L and CAPEX submissions** with multi-year comparisons\n- **Version tracking** and collaborative review\n- **Staged approvals** up to the Board, with **final-version locking**\n- **AI validation, revision summaries** and an **insights copilot**\n- **Consolidated reporting** and a planned **SAP integration**",
+    "ai": "- **Generative AI** for revision summaries and financial narratives\n- **Conversational insights copilot**\n- **AI-assisted validation** of submissions\n- **Comparative analysis** across versions and periods\n- **Decision support** for reviewers and leadership",
+    "outcomes": "- One consolidated view of property P&L and CAPEX\n- Less manual review through AI revision summaries\n- Better capital allocation (revenue, GOP, margins, investment requests)\n- Less consolidation and reconciliation work\n- Traceable approvals\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "AI explains **what changed and why** between budget versions, so reviewers spend their time on judgement, not on diffing spreadsheets. **Version control and staged approvals** keep a single traceable budget all the way to the Board.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "hospitality",
+    "hotel",
+    "hotels",
+    "budgeting",
+    "budget",
+    "capex",
+    "p&l",
+    "pnl",
+    "portfolio consolidation",
+    "financial planning"
+   ],
+   "caseStudy": false,
+   "name": "the Wasl project",
+   "weakAliases": []
+  },
+  {
+   "id": "shaw",
+   "label": "Shaw Industries — Unified AI Intelligence for Enterprise Sales",
+   "aliases": [
+    "shaw",
+    "shaw industries"
+   ],
+   "answers": {
+    "overview": "**Unified AI Intelligence for Enterprise Sales (Shaw Industries)**\n\nOne AI platform for **account intelligence, market research, sales call analysis and RFP response management**, turning fragmented commercial information into actionable insight.",
+    "problem": "Sales and strategy teams had to reconcile **account research, market updates, call records and proposal documents** across disconnected workflows. Manual synthesis slowed preparation and RFPs, and **risks and coaching needs** were hard to spot.",
+    "users": "- **Territory manager / sales rep:** researches accounts, prepares calls\n- **Regional / divisional sales leader:** reviews performance, prioritises coaching\n- **Proposal specialist / SME:** validates evidence, approves RFP answers\n- **Platform admin / IT:** access and permissions",
+    "features": "- **Account intelligence:** company research, decision-makers, project opportunities, competitive signals\n- **Market summaries:** sector trends, regulation, supply chain\n- **Call and business plan analysis:** sentiment, recurring issues, execution gaps, coaching, SMART goal evaluation\n- **RFP management:** evidence-linked answers, confidence indicators, departmental assignment, human review, approval and export\n- **Conversational assistant** for follow-ups",
+    "ai": "- **Generative AI** for research summaries and RFP drafting\n- **NLP** for call and business plan analysis\n- **RAG** for evidence-linked answers\n- **Sentiment and topic extraction**\n- **AI-assisted evaluation** of plan quality and coaching",
+    "outcomes": "- Better opportunity prioritisation\n- Less research and call-review time\n- Stronger execution and targeted coaching\n- Less repetitive RFP effort through evidence-linked drafting and expert review\n- Easier information discovery\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "AI drafts, **experts approve**. RFP answers carry evidence and confidence, and are routed to the right department for review, so speed doesn't cost accuracy. Call analysis turns conversations into **coaching opportunities**, not just transcripts.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "sales intelligence",
+    "account intelligence",
+    "rfp",
+    "proposal",
+    "sales calls",
+    "call analysis",
+    "flooring"
+   ],
+   "caseStudy": false,
+   "name": "the Shaw Industries project",
+   "weakAliases": [
+    "rfp response"
+   ]
+  },
+  {
+   "id": "docebo",
+   "label": "Docebo — Enterprise Intelligence & AI Workflow Automation",
+   "aliases": [
+    "docebo"
+   ],
+   "answers": {
+    "overview": "**Enterprise Intelligence & AI Workflow Automation (Docebo)**\n\nA suite of AI applications that turns fragmented business information into actionable intelligence for Docebo's **revenue, customer experience and operations** teams.",
+    "problem": "Customer, sales, knowledge and incident data sat in **disconnected systems**, so teams assembled context by hand. That made it hard to see **why deals were lost**, prioritise customer concerns, qualify opportunities consistently and track operational follow-through.",
+    "users": "- **Business users:** sales reps, customer success managers, knowledge workers\n- **Functional managers:** revenue, CX and operations leaders\n- **Analysts / domain specialists:** customer themes, competitive patterns, incident root causes\n- **IT / platform admin:** connected apps, access and configuration",
+    "features": "- **Enterprise search** with source-cited answers and **people discovery**\n- **Call transcript analysis** for buyer requirements and themes\n- **Lost-deal analysis** for root causes and patterns\n- **Voice of Customer:** NPS, sentiment, account-level feedback\n- **Market and competitive research**\n- **Sales handoff:** Salesforce, Outreach and Gong combined into qualification summaries\n- **Cloud operations:** incidents, RCA, backlogs, SLAs\n- Concepts for **acquisition-fit evaluation** and due diligence",
+    "ai": "- **Generative AI** for summaries, handoff documents and recommendations\n- **NLP** for requirements, objections and themes\n- **Sentiment analysis**\n- **Semantic search with citations**\n- **Topic clustering and classification**",
+    "outcomes": "- Stronger decision support across customer, account and operational data\n- Less research and preparation effort\n- Better revenue and retention actions through visibility into objections and loss drivers\n- Less coordination overhead\n- Faster access to information\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "Every insight is tied to **evidence and a business action**: a cited source, a summary someone can share, a next step someone owns. The suite covers the whole revenue lifecycle, from research to handoff to retention.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "deal loss",
+    "lost deal",
+    "voice of customer",
+    "voc",
+    "nps",
+    "sales handoff",
+    "gong",
+    "salesforce",
+    "outreach",
+    "customer experience",
+    "revenue intelligence"
+   ],
+   "caseStudy": false,
+   "name": "the Docebo project",
+   "weakAliases": []
+  },
+  {
+   "id": "greif",
+   "label": "Greif — AI Revenue Recovery & BOM Assurance",
+   "aliases": [
+    "greif",
+    "grief",
+    "bom validation"
+   ],
+   "answers": {
+    "overview": "**AI-Powered Revenue Recovery & BOM Assurance (Greif)**\n\nAn AI solution for Greif, an industrial packaging manufacturer, that **finds missed value-added service charges** and **strengthens bill-of-materials consistency** across plants.",
+    "problem": "Chargeable services hidden in **order text** were being missed, causing **revenue leakage** and manual reconciliation. Inconsistent **BOM attributes** and component relationships needed extra checks across plants, and exceptions were hard to explain.",
+    "users": "- **Revenue assurance analyst:** reviews detected services and recovery\n- **Plant operations manager:** approves or rejects findings, investigates exceptions\n- **Manufacturing data specialist:** investigates BOM discrepancies\n- **System admin:** access, keyword configuration, validation rules",
+    "features": "**Revenue recovery**\n- Reads order and operation text to **detect services**\n- Matches them to a **configurable service catalogue**\n- **Calculates recoverable value** from quantities and rates\n\n**BOM assurance**\n- Checks **parent–child attributes, material grades, dimensions and components**\n- Individual and **batch validation**\n- A **copilot** to investigate exceptions\n\nConfidence scores, evidence, **plant-level approvals** and **audit logs** throughout.",
+    "ai": "- **Agentic AI** for guided analysis and exception review\n- **NLP** for detecting services in operational text\n- **AI classification** and catalogue matching\n- **Conversational AI** for BOM investigation\n- **Hybrid AI + rules** for explainable validation",
+    "outcomes": "**Illustrative project figures** (not verified production results):\n\n- **624** detected services worth ~**$591K** in potential value\n- **615** pending reviews worth ~**$590K** in potential recovery\n- **1,630** manufactured items validated across **four plants**\n- Less manual checking; more transparent reviews\n\n_These are expected outcomes from the project design, not measured production results._",
+    "strategy": "**Explainability first**: AI and rules work together so every finding comes with its evidence, a confidence score and the rule behind it. **Plant managers approve** before any charge is recovered, and audit logs keep it accountable.",
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+   },
+   "contextAliases": [
+    "revenue leakage",
+    "packaging",
+    "manufacturing plants",
+    "value added services"
+   ],
+   "caseStudy": false,
+   "name": "the Greif project",
+   "weakAliases": [
+    "revenue recovery",
+    "bom",
+    "bill of materials"
+   ]
+  },
+  {
+   "id": "unifyapps",
+   "label": "UnifyApps",
+   "aliases": [
+    "unifyapps",
+    "unify apps"
+   ],
+   "answers": {
+    "overview": "**UnifyApps** is an AI-powered enterprise platform covering enterprise search, AI agents, workflow automation and low-code apps. ICD is its design partner, and Vishnu leads design there.\n\n**Products he designed:**\n- Intelligent Enterprise Search Platform\n- Agent Workforce Platform\n- Low-Code Builder\n\nPlus **60+ client deployments**, including HDFC Bank, Sony, DGE Abu Dhabi, Digital Dubai, Mashreq and Lowe's."
+   },
+   "caseStudy": false,
+   "name": "UnifyApps",
+   "weakAliases": [
+    "unify"
+   ]
+  },
+  {
+   "id": "icd",
+   "label": "ICD — Itu Chaudhuri Design",
+   "aliases": [
+    "icd",
+    "itu chaudhuri",
+    "itu chaudhuri design"
+   ],
+   "answers": {
+    "overview": "Vishnu is a **Senior Product Designer at ICD (Itu Chaudhuri Design)**, Oct 2024 – present, embedded with **UnifyApps** as its design partner.\n\n- Leads design across **60+ enterprise deployments**\n- Owns and scales the **UnifyApps design system**\n- Runs several initiatives in parallel\n- Set up **design-to-engineering handoff** workflows\n- **Mentors** junior designers"
+   },
+   "caseStudy": false,
+   "name": "ICD",
+   "weakAliases": [
+    "current company",
+    "current job",
+    "current employer"
+   ]
+  },
+  {
+   "id": "brane",
+   "label": "Brane Enterprises",
+   "aliases": [
+    "brane",
+    "brane enterprises",
+    "brane banking",
+    "seamless loans"
+   ],
+   "answers": {
+    "overview": "**Brane Enterprises: Senior UI/UX Designer (Oct 2023 – Sep 2024)**\n\n- Led UX for **20+ client projects** across e-commerce, finance, healthcare and education\n- Built on Brane's **proprietary low-code platform**\n- Turned unclear requirements into **scalable workflows** with product and engineering teams\n- Shipped responsive products with clean developer handoff\n- Example: **Brane Banking & Seamless Loans**, a banking platform for loans and customer service"
+   },
+   "caseStudy": false,
+   "name": "Brane Enterprises",
+   "weakAliases": [
+    "low code",
+    "lowcode",
+    "no code"
+   ]
+  },
+  {
+   "id": "kocha",
+   "label": "Kocha Technologies",
+   "aliases": [
+    "kocha",
+    "kocha technologies",
+    "momentable",
+    "nextdecentrum",
+    "nft marketplace"
+   ],
+   "answers": {
+    "overview": "**Kocha Technologies: Senior UI/UX Designer (Nov 2021 – Oct 2023)**\n\n- Designed **Nextdecentrum / Momentable**, an **NFT marketplace**, end to end: onboarding, discovery, bidding and wallet integration, plus brand identity\n- Turned requirements into wireframes, flows and high-fidelity UI with a distributed engineering team\n- Improved core usability through iteration and stakeholder feedback"
+   },
+   "caseStudy": false,
+   "name": "Kocha Technologies",
+   "weakAliases": [
+    "nft",
+    "web3",
+    "crypto",
+    "blockchain"
+   ]
+  }
+ ],
+ "intents": [
+  {
+   "id": "greeting",
+   "category": "conversation",
+   "keywords": [
+    "hi",
+    "hello",
+    "hey",
+    "hii",
+    "hola",
+    "namaste",
+    "good morning",
+    "good evening",
+    "good afternoon",
+    "yo",
+    "sup",
+    "hey there",
+    "anyone there"
+   ],
+   "questions": [
+    "hi",
+    "hello there",
+    "hey nyrro"
+   ],
+   "answer": "Hi! I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
+   "followups": [
+    "Who is Vishnu?",
+    "What has he worked on?",
+    "How does he design?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "thanks",
+   "category": "conversation",
+   "keywords": [
+    "thanks",
+    "thank you",
+    "thx",
+    "ty",
+    "great",
+    "awesome",
+    "cool",
+    "nice",
+    "helpful",
+    "perfect",
+    "appreciate"
+   ],
+   "questions": [
+    "thanks",
+    "thank you so much",
+    "that was helpful"
+   ],
+   "answer": "Glad that helped! Anything else you'd like to know about Vishnu's work?",
+   "followups": [
+    "Show me his case studies",
+    "How can I contact him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "bye",
+   "category": "conversation",
+   "keywords": [
+    "bye",
+    "goodbye",
+    "see you",
+    "see ya",
+    "later",
+    "cya",
+    "good night"
+   ],
+   "questions": [
+    "bye",
+    "see you later"
+   ],
+   "answer": "Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**. 🪲",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "who-is-vishnu",
+   "category": "about",
+   "keywords": [
+    "who is vishnu",
+    "intro",
+    "quick intro",
+    "who exactly",
+    "what kind of designer",
+    "kind of designer",
+    "vishnu prasad",
+    "who vishnu",
+    "what does vishnu do",
+    "vishnu do",
+    "about vishnu",
+    "tell me about vishnu",
+    "introduce",
+    "introduction",
+    "who are you designing",
+    "about him",
+    "who is he",
+    "tell me about him",
+    "bio",
+    "biography",
+    "background",
+    "profile",
+    "elevator pitch",
+    "tldr",
+    "overview of vishnu",
+    "kaun",
+    "kaun hai",
+    "vishnu kaun hai",
+    "kon hai",
+    "do for a living"
+   ],
+   "questions": [
+    "who is vishnu",
+    "tell me about vishnu",
+    "can you introduce him",
+    "give me his background",
+    "who is this designer",
+    "what does vishnu do"
+   ],
+   "answer": "**Vishnu Prasad K P** is a Senior Product Designer at **ICD (Itu Chaudhuri Design)**, leading design for **UnifyApps**, an AI-powered enterprise platform.\n\nHe designs complex products that organisations run real work on: enterprise search, AI agents, governance and decision tools. His recent work includes products for **HDFC Bank**, **DGE Abu Dhabi** and **Sony Pictures Networks India**.",
+   "followups": [
+    "What has he worked on?",
+    "What makes his approach unique?",
+    "How many years of experience?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "summary-oneline",
+   "category": "about",
+   "keywords": [
+    "one line",
+    "one liner",
+    "in one sentence",
+    "short summary",
+    "quick summary",
+    "summarize vishnu",
+    "sum up",
+    "describe vishnu in"
+   ],
+   "questions": [
+    "describe vishnu in one line",
+    "give me a quick summary",
+    "sum him up in a sentence"
+   ],
+   "answer": "A product designer who designs experiences for the **complex systems that run real work**.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "experience-years",
+   "category": "about",
+   "keywords": [
+    "years of experience",
+    "how many years",
+    "experienced",
+    "how long",
+    "been a designer",
+    "been designing",
+    "since when",
+    "experience",
+    "how experienced",
+    "yoe",
+    "work experience",
+    "how long has he",
+    "years",
+    "career length",
+    "total experience",
+    "experience kitna",
+    "kitna experience",
+    "kitne saal",
+    "kitne years"
+   ],
+   "questions": [
+    "how many years of experience does he have",
+    "how experienced is vishnu",
+    "what is his work experience",
+    "how long has he been designing"
+   ],
+   "answer": "**5+ years** in product design, across three companies:\n\n- **ICD / UnifyApps:** Oct 2024 – present\n- **Brane Enterprises:** Oct 2023 – Sep 2024\n- **Kocha Technologies:** Nov 2021 – Oct 2023\n\nOver that time he has worked on **100+ use cases**, including **60+ enterprise deployments** at UnifyApps.",
+   "followups": [
+    "What did he do at each company?",
+    "What is his title?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "title-seniority",
+   "category": "about",
+   "keywords": [
+    "title",
+    "designation",
+    "senior",
+    "lead",
+    "level",
+    "seniority",
+    "position",
+    "lead product designer",
+    "senior product designer",
+    "is he lead",
+    "staff",
+    "principal",
+    "job title",
+    "rank"
+   ],
+   "questions": [
+    "what is his title",
+    "is he a lead designer",
+    "what level is he",
+    "why do case studies say lead",
+    "is he senior or lead",
+    "what's his designation"
+   ],
+   "answer": "His title is **Senior Product Designer** at ICD. He works at **lead-level scope**, which is why his case studies list his project role as Lead Product Designer:\n\n- **Owns design end to end**, from client brief to developer handoff\n- Works directly with **executives and senior stakeholders** (e.g., HDFC Bank's senior management)\n- Runs **several enterprise initiatives in parallel**\n- Owns and scales the **UnifyApps design system** (reused across 60+ deployments)\n- **Mentors** junior designers through critiques and growth planning",
+   "followups": [
+    "Does he have leadership experience?",
+    "Why should we hire him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "career-history",
+   "category": "about",
+   "keywords": [
+    "career",
+    "career history",
+    "previous companies",
+    "past companies",
+    "work history",
+    "companies",
+    "employers",
+    "where has he worked",
+    "journey",
+    "cv",
+    "previous jobs",
+    "past roles",
+    "timeline"
+   ],
+   "questions": [
+    "where has he worked before",
+    "what is his career history",
+    "walk me through his career",
+    "which companies has he worked for"
+   ],
+   "answer": "1. **Kocha Technologies** (2021 – 2023): designed an NFT marketplace end to end, from onboarding and discovery to bidding and wallets\n2. **Brane Enterprises** (2023 – 2024): led UX for 20+ client projects on a low-code platform, across e-commerce, finance, healthcare and education\n3. **ICD, embedded at UnifyApps** (2024 – present): leads design on UnifyApps' AI products and enterprise deployments\n\nHis work moved from consumer and Web3 products to large-scale enterprise and AI systems.",
+   "followups": [
+    "Tell me about his early work",
+    "What is he working on now?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "education",
+   "category": "about",
+   "keywords": [
+    "education",
+    "degree",
+    "college",
+    "university",
+    "nit",
+    "nit bhopal",
+    "bhopal",
+    "studied",
+    "study",
+    "qualification",
+    "graduated",
+    "academic",
+    "bachelor",
+    "b.plan",
+    "barch",
+    "school"
+   ],
+   "questions": [
+    "where did he study",
+    "what is his degree",
+    "what is his educational background",
+    "did he go to design school"
+   ],
+   "answer": "**Bachelor of Planning & Architecture**, NIT Bhopal (2017 – 2021).",
+   "followups": [
+    "How does architecture shape his design?",
+    "Walk me through his career"
+   ],
+   "priority": false
+  },
+  {
+   "id": "architecture-link",
+   "category": "about",
+   "keywords": [
+    "architecture",
+    "architect",
+    "planning",
+    "design like a building",
+    "building",
+    "urban planning",
+    "architecture to design",
+    "architecture background",
+    "from architecture",
+    "background in architecture",
+    "architecture degree"
+   ],
+   "questions": [
+    "how does architecture help his design",
+    "why did he move from architecture to product design",
+    "what does design like a building mean"
+   ],
+   "answer": "More than you'd expect. A building and an enterprise product are both **systems many kinds of people move through**.\n\n**\"Design like a building\"** in practice:\n\n- **Foundation:** the data and permissions everything depends on\n- **Structure:** the core flow every role shares\n- **Rooms:** role-specific views for different people\n- **Circulation:** how people and work move between steps\n- **Safety:** what happens when something fails, and how people see it\n\nThat's why he maps roles, dependencies and failure points **before** drawing screens.",
+   "followups": [
+    "What is his design process?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "languages",
+   "category": "about",
+   "keywords": [
+    "languages",
+    "language",
+    "speak",
+    "malayalam",
+    "hindi",
+    "tamil",
+    "english",
+    "arabic",
+    "multilingual"
+   ],
+   "questions": [
+    "what languages does he speak",
+    "does he speak hindi"
+   ],
+   "answer": "- **English:** professional\n- **Malayalam:** native\n- **Hindi:** conversational\n- **Tamil:** conversational",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "location-regions",
+   "category": "about",
+   "keywords": [
+    "where is he based",
+    "location",
+    "based",
+    "country",
+    "city",
+    "regions",
+    "international",
+    "global",
+    "uae",
+    "middle east",
+    "gcc",
+    "us clients",
+    "india",
+    "countries",
+    "geography",
+    "where does he work",
+    "kahan",
+    "kaha se",
+    "where from"
+   ],
+   "questions": [
+    "where is he based",
+    "which countries has he worked with",
+    "does he have international experience",
+    "has he worked with middle east clients"
+   ],
+   "answer": "He's based in **India** and designs for teams in **India, the UAE, Qatar and the US**. Two of his case studies show this range:\n\n- **HDFC Bank** in India\n- **DGE / ADEO** for the Abu Dhabi government",
+   "followups": [
+    "Tell me about ADEO",
+    "Other projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "current-work",
+   "category": "about",
+   "keywords": [
+    "working on now",
+    "currently working",
+    "right now",
+    "these days",
+    "current projects",
+    "current work",
+    "what is he doing now",
+    "latest work",
+    "recent work",
+    "nowadays"
+   ],
+   "questions": [
+    "what is vishnu working on right now",
+    "what is he doing these days"
+   ],
+   "answer": "He's leading design at **ICD for UnifyApps**: its AI products (Enterprise Search, Agent Workforce, the Low-Code Builder), client deployments, and the shared design system. Much of the current work is under NDA.",
+   "followups": [
+    "Tell me about Enterprise Search",
+    "Other projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "dashboards",
+   "category": "skills",
+   "keywords": [
+    "dashboard",
+    "dashboards",
+    "data visualization",
+    "data visualisation",
+    "dataviz",
+    "data viz",
+    "analytics",
+    "charts",
+    "reporting",
+    "reports",
+    "kpi dashboard",
+    "data heavy",
+    "data-heavy",
+    "insights platform",
+    "bi"
+   ],
+   "questions": [
+    "has he designed dashboards",
+    "any experience with data visualization",
+    "can he design analytics products"
+   ],
+   "answer": "Yes. He designs data-heavy products by **leading with what needs attention and why**, not with every number.\n\n- **Sony Social Intelligence:** 2.47M monthly mentions combined with ratings, with spike detection and sentiment\n- **HDFC:** an operator console for monitoring consent violations in real time\n\nHis client work also includes dashboards for government services, hotel budgets and incident response.",
+   "followups": [
+    "Tell me about Sony",
+    "Other projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "coding",
+   "category": "skills",
+   "keywords": [
+    "code",
+    "coding",
+    "can he code",
+    "html",
+    "css",
+    "javascript",
+    "frontend",
+    "front end",
+    "developer skills",
+    "programming",
+    "vibe coding",
+    "build websites",
+    "technical skills"
+   ],
+   "questions": [
+    "does he know coding",
+    "can he code",
+    "is he technical"
+   ],
+   "answer": "He's a product designer first, but technically fluent:\n\n- Works closely with engineering on **handoff and implementation** (he set up ICD's handoff and review process)\n- Designs **for engineers as users** (Agent Workforce Advanced mode: models, retrieval, evaluations)\n- Uses **AI tools like Claude and Google AI Studio** for prototyping\n- Rebuilt his own portfolio site in code, moving off a no-code builder",
+   "followups": [
+    "How does he work with engineers?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "skills",
+   "category": "skills",
+   "keywords": [
+    "skills",
+    "skill set",
+    "skillset",
+    "strengths",
+    "expertise",
+    "good at",
+    "specialization",
+    "specialisation",
+    "superpower",
+    "capabilities",
+    "what can he do",
+    "competencies",
+    "strong at",
+    "core skills",
+    "prompt engineering",
+    "ui ux",
+    "ui and ux",
+    "ux and ui",
+    "ui as well as ux",
+    "ux design",
+    "ui design",
+    "interaction design",
+    "information architecture",
+    "visual design skills",
+    "ux designer",
+    "ui designer",
+    "ui or ux",
+    "ux or ui",
+    "ux designer or ui designer",
+    "what kind of skills"
+   ],
+   "questions": [
+    "what are his skills",
+    "what is he good at",
+    "what are his strengths",
+    "what is his expertise"
+   ],
+   "answer": "**Design & research**\n- Product, UX and interaction design; information architecture\n- Design systems and component libraries\n- Usability testing, journey mapping, accessibility (WCAG)\n\n**Strategy & systems**\n- Product strategy and discovery; systems thinking\n- Stakeholder management and design leadership\n- Data visualisation\n\n**AI**\n- Agentic UX and AI product design\n- Prompt engineering and generative prototyping",
+   "followups": [
+    "What tools does he use?",
+    "How does he design?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "tools",
+   "category": "skills",
+   "keywords": [
+    "tools",
+    "software",
+    "figma",
+    "framer",
+    "miro",
+    "figjam",
+    "adobe",
+    "photoshop",
+    "illustrator",
+    "after effects",
+    "stack",
+    "toolkit",
+    "design tools",
+    "claude",
+    "ai tools",
+    "google ai studio",
+    "prototyping tool"
+   ],
+   "questions": [
+    "what tools does he use",
+    "does he use figma",
+    "what is his design stack",
+    "does he use ai tools"
+   ],
+   "answer": "- **Design:** Figma, Figma AI, FigJam, Framer, Adobe Creative Suite\n- **Collaboration:** Miro, FigJam\n- **AI:** Claude, Google AI Studio, used for research synthesis, prototyping and generative exploration\n\nHe also builds with code where it helps, for example rebuilding his own portfolio site.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "platforms",
+   "category": "skills",
+   "keywords": [
+    "tablet",
+    "ios",
+    "android",
+    "responsive",
+    "web",
+    "desktop",
+    "platforms",
+    "mobile design",
+    "mobile app",
+    "mobile apps",
+    "mobile ux",
+    "ios app",
+    "android app",
+    "tablet app",
+    "native app",
+    "native apps"
+   ],
+   "questions": [
+    "has he designed mobile apps",
+    "does he do tablet design",
+    "web or mobile"
+   ],
+   "answer": "- **Web:** most of his enterprise work\n- **Tablet-first:** the ADEO committee app\n- **Web + mobile:** Enterprise Search, Agent Workforce, HDFC consent\n- **iOS & Android apps:** earlier in his career (hotel booking, alarm and habit-tracking apps)",
+   "followups": [
+    "Tell me about ADEO",
+    "Tell me about his early work"
+   ],
+   "priority": false
+  },
+  {
+   "id": "design-process",
+   "category": "process",
+   "keywords": [
+    "process",
+    "design process",
+    "how does he design",
+    "how he designs",
+    "methodology",
+    "approach",
+    "workflow",
+    "framework",
+    "start a project",
+    "start a new project",
+    "new project",
+    "kick off",
+    "first step",
+    "first thing",
+    "how does vishnu design",
+    "how vishnu designs",
+    "how he designs",
+    "how does he design",
+    "way of working",
+    "steps",
+    "design approach",
+    "design thinking",
+    "double diamond",
+    "ux process",
+    "kaise design",
+    "design kaise"
+   ],
+   "questions": [
+    "how does vishnu design",
+    "what is his design process",
+    "walk me through his process",
+    "what's his approach to a project",
+    "how does he work"
+   ],
+   "answer": "His process moves from understanding to delivery:\n\n1. **Map the system:** who uses it, what each person needs, what depends on what, where it breaks\n2. **Define the roles:** end users, admins, compliance and leaders each get their own experience\n3. **Frame the problems:** a few structural problems, each tied to a product response\n4. **Design one core flow** every role shares (in ADEO: *Analyse → Deliberate → Decide & Record*)\n5. **Decide, and name the cost** of each decision\n6. **Validate** in review cycles with PMs, clients and engineering\n7. **Hand off** documented components to developers",
+   "followups": [
+    "How does he handle trade-offs?",
+    "How does he do research?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "unique-approach",
+   "category": "process",
+   "keywords": [
+    "unique",
+    "different",
+    "stand out",
+    "special",
+    "differentiator",
+    "what makes him",
+    "why him",
+    "edge",
+    "usp",
+    "distinctive",
+    "better than other designers",
+    "known for",
+    "famous for",
+    "best known",
+    "signature"
+   ],
+   "questions": [
+    "what makes vishnu's design approach unique",
+    "how is he different from other designers",
+    "what sets him apart"
+   ],
+   "answer": "Three things stand out:\n\n- **He maps the system before the screens.** Roles, dependencies and failure points come first, so the product holds together as it grows.\n- **He treats trust as a design material.** In AI products, answers carry sources, AI content is labelled, and failures are visible instead of hidden.\n- **He names the cost of every decision.** In the ADEO committee platform he made voting deliberately slower by requiring a rationale, because government decisions deserve that friction.",
+   "followups": [
+    "Tell me about ADEO",
+    "What are his design principles?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "principles",
+   "category": "process",
+   "keywords": [
+    "principles",
+    "philosophy",
+    "beliefs",
+    "values",
+    "mindset",
+    "design philosophy",
+    "guiding",
+    "rules",
+    "what does he believe"
+   ],
+   "questions": [
+    "what are his design principles",
+    "what is his design philosophy",
+    "what does he believe about design"
+   ],
+   "answer": "- **Trust is the product:** people adopt AI they can verify\n- **People stay in control:** AI drafts, humans approve\n- **The right complexity for each user:** simplicity doesn't mean fewer features\n- **Governance from the start:** guardrails and audit trails live inside the workflow\n- **Organise complexity, don't delete it**\n- **Act before the problem:** flag risk early\n- **Every decision has a cost:** name it",
+   "followups": [
+    "How does he design for trust in AI?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "research",
+   "category": "process",
+   "keywords": [
+    "research",
+    "user research",
+    "discovery",
+    "interviews",
+    "personas",
+    "usability testing",
+    "validate",
+    "validation",
+    "user testing",
+    "insights",
+    "requirements",
+    "test his designs",
+    "testing",
+    "test designs",
+    "usability test"
+   ],
+   "questions": [
+    "how does he do user research",
+    "does he do research",
+    "how does he validate designs",
+    "how does he gather requirements"
+   ],
+   "answer": "It depends on the engagement, and he's careful to credit it accurately:\n\n- **UnifyApps projects:** the product team defined the roles and led the research; their findings shaped every design decision\n- **ADEO:** requirements came directly from the client and departments, with validation at every major decision instead of a single research phase\n- **His own discovery:** mapping roles, dependencies and failure points, then turning them into design decisions\n\nHe validates through iterative review cycles with PMs, client stakeholders and engineering.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "tradeoffs",
+   "category": "process",
+   "keywords": [
+    "trade off",
+    "tradeoff",
+    "trade-offs",
+    "tradeoffs",
+    "compromise",
+    "hard decision",
+    "difficult decision",
+    "tough call",
+    "downside",
+    "cost of decision",
+    "decisions"
+   ],
+   "questions": [
+    "how does he handle trade-offs",
+    "give an example of a hard design decision",
+    "what compromises did he make"
+   ],
+   "answer": "He states trade-offs openly in his case studies:\n\n- **ADEO:** members see only their own committees, which keeps them focused, but people on several committees need a separate view\n- **Agent Workforce:** Simple mode hides technical controls, so engineers use Advanced mode instead\n- **Agent Workforce:** execution traces show gaps openly, which looks less polished but prevents confident wrong answers",
+   "followups": [
+    "Tell me about ADEO",
+    "Tell me about the Agent Workforce Platform"
+   ],
+   "priority": false
+  },
+  {
+   "id": "simplicity",
+   "category": "process",
+   "keywords": [
+    "simplicity",
+    "simplify",
+    "complexity",
+    "complex products",
+    "make simple",
+    "reduce complexity",
+    "cognitive",
+    "overwhelming",
+    "progressive disclosure"
+   ],
+   "questions": [
+    "how does he simplify complex products",
+    "how does he handle complexity"
+   ],
+   "answer": "He shows each person **the right amount of complexity** instead of removing capability.\n\nThe **Agent Workforce Platform** is one product with three depths: Simple for product managers, Workflow for operations teams, Advanced for engineers. At **HDFC**, dense compliance content was **reorganised** around how customers think rather than cut.",
+   "followups": [
+    "Tell me about the Agent Workforce Platform"
+   ],
+   "priority": false
+  },
+  {
+   "id": "stakeholders",
+   "category": "process",
+   "keywords": [
+    "stakeholders",
+    "stakeholder management",
+    "executives",
+    "leadership team",
+    "clients",
+    "client management",
+    "senior management",
+    "cxo",
+    "business teams",
+    "competing needs",
+    "alignment",
+    "multiple stakeholders",
+    "work with executives",
+    "work with stakeholders",
+    "work with clients",
+    "work with leadership",
+    "product managers",
+    "product manager",
+    "pms",
+    "pm",
+    "collaborate",
+    "collaboration",
+    "cross functional",
+    "business stakeholders"
+   ],
+   "questions": [
+    "how does he work with stakeholders",
+    "how does he manage executives",
+    "how does he align different teams",
+    "how does he handle competing stakeholder needs"
+   ],
+   "answer": "He works directly with senior stakeholders in iterative review cycles:\n\n- **HDFC Bank:** with the bank's senior management and product team, from brief to final handoff\n- **Sony:** with legal, compliance, broadcast operations, content strategy and governance teams\n- **ADEO:** alongside Frog Design and Nagarro Design for a government client\n\nHe gets everyone aligned on a short list of clear problems and **one shared source of truth**, with a view tailored to each role.",
+   "followups": [
+    "How does he work with engineers?",
+    "Tell me about HDFC Bank"
+   ],
+   "priority": false
+  },
+  {
+   "id": "success-metrics",
+   "category": "process",
+   "keywords": [
+    "measure success",
+    "success metrics",
+    "kpi",
+    "kpis",
+    "how does he measure",
+    "impact of design",
+    "roi of design",
+    "business impact",
+    "outcomes",
+    "results",
+    "metrics"
+   ],
+   "questions": [
+    "how does he measure success",
+    "what impact has his work had",
+    "what results has he delivered"
+   ],
+   "answer": "Results from his case studies, each attributed to its source:\n\n- **ADEO:** committee preparation went from up to 15 working days to **minutes**\n- **Sony:** contract cycle time went from 30–45 days to **18 days** (project documentation)\n- **HDFC Bank:** **400M+** consents captured and **$4M** saved a year (reported by UnifyApps)\n- **Enterprise Search & Agent Workforce:** **~$5.5M** in projected savings (UnifyApps' published figures)",
+   "followups": [
+    "Are these numbers real?",
+    "Tell me about Sony"
+   ],
+   "priority": false
+  },
+  {
+   "id": "ai-experience",
+   "category": "ai",
+   "keywords": [
+    "ai experience",
+    "artificial intelligence",
+    "ai work",
+    "ai products",
+    "ai projects",
+    "llm",
+    "genai",
+    "gen ai",
+    "generative ai",
+    "machine learning",
+    "ml",
+    "ai design",
+    "worked on ai",
+    "ai powered",
+    "gpt",
+    "large language model",
+    "ai native",
+    "ai first products",
+    "projects use ai",
+    "projects uses ai",
+    "which projects ai",
+    "projects with ai",
+    "uses ai"
+   ],
+   "questions": [
+    "does he have ai experience",
+    "what ai products has he designed",
+    "has he worked on generative ai",
+    "tell me about his ai work"
+   ],
+   "answer": "Yes. Most of his recent work involves AI, though he calls himself a **product designer who applies AI when a product needs it**.\n\nAcross his case studies he has designed:\n\n- **AI search** with source-cited answers (Enterprise Search)\n- **AI agent building** with guardrails and traces (Agent Workforce)\n- **AI briefings and live minutes** for government decisions (ADEO)\n- **AI that turns legal text into plain language** (HDFC)\n- **Contract risk, conflict detection and social listening** (Sony)",
+   "followups": [
+    "How does he design for trust in AI?",
+    "Tell me about the Agent Workforce Platform"
+   ],
+   "priority": false
+  },
+  {
+   "id": "ai-trust",
+   "category": "ai",
+   "keywords": [
+    "trust",
+    "trustworthy",
+    "transparency",
+    "explainability",
+    "explainable",
+    "hallucination",
+    "citations",
+    "sources",
+    "trust in ai",
+    "responsible ai",
+    "ethical ai",
+    "confidence score"
+   ],
+   "questions": [
+    "how does he design for trust in ai",
+    "how does he handle ai hallucinations",
+    "how does he make ai explainable"
+   ],
+   "answer": "His central idea is that **in enterprise AI, trust is the product**. In practice:\n\n- **Sources on every answer**, so people can verify instead of guess\n- **AI content clearly labelled**, as in ADEO's briefings\n- **Failures shown openly:** sync failures, unverified agents, gaps in traces\n- **Humans sign off:** AI drafts minutes and summaries; people approve them\n- **Execution traces** that show how an agent reached its answer",
+   "followups": [
+    "Tell me about Enterprise Search"
+   ],
+   "priority": false
+  },
+  {
+   "id": "human-in-loop",
+   "category": "ai",
+   "keywords": [
+    "human in the loop",
+    "hitl",
+    "human review",
+    "human oversight",
+    "approval",
+    "human control",
+    "people in control",
+    "automation vs human",
+    "manual review"
+   ],
+   "questions": [
+    "how does he design human in the loop",
+    "who stays in control of the ai",
+    "how does he balance automation and human review"
+   ],
+   "answer": "AI does the heavy lifting; **people make the consequential decisions**.\n\n- **ADEO:** AI drafts minutes and resolutions, and the committee approves them before they become official\n- **ADEO:** every vote needs a human-written rationale\n- **Agent Workforce:** compliance reviewers approve agents with their guardrails documented\n\nThe aim is to spend human attention only where it's needed.",
+   "followups": [
+    "Tell me about ADEO"
+   ],
+   "priority": false
+  },
+  {
+   "id": "agentic",
+   "category": "ai",
+   "keywords": [
+    "agentic",
+    "agents",
+    "ai agents",
+    "agent",
+    "multi agent",
+    "multi agent orchestration",
+    "agent orchestration",
+    "autonomous",
+    "orchestration",
+    "agentic ai",
+    "agentic ux",
+    "agent design"
+   ],
+   "questions": [
+    "has he designed ai agents",
+    "what agentic work has he done",
+    "does he know agentic ux"
+   ],
+   "answer": "Yes. The **Agent Workforce Platform** is his main agentic work: a platform for building, governing and running AI agents in three modes (**Simple, Workflow, Advanced**), with guardrails, execution traces and reusable skills.\n\nHis **Enterprise Search** platform also includes an **Agent Marketplace** of verified, ready-made agents.",
+   "followups": [
+    "Tell me about the Agent Workforce Platform",
+    "Other agentic projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "ai-governance",
+   "category": "ai",
+   "keywords": [
+    "governance",
+    "guardrails",
+    "compliance",
+    "audit",
+    "audit trail",
+    "pii",
+    "security",
+    "safety",
+    "observability",
+    "traces",
+    "ai governance",
+    "regulation",
+    "regulatory"
+   ],
+   "questions": [
+    "how does he approach ai governance",
+    "how does he design for compliance",
+    "how does he handle ai safety"
+   ],
+   "answer": "He builds governance into **setup**, not after-the-fact review:\n\n- **Agent Workforce:** guardrails and PII rules are set when an agent is created, and every action is traced\n- **HDFC:** consent actions are logged automatically, so the audit trail builds itself\n- **Enterprise Search:** compliance teams see what data the platform can access",
+   "followups": [
+    "Tell me about HDFC Bank"
+   ],
+   "priority": false
+  },
+  {
+   "id": "copilots",
+   "category": "ai",
+   "keywords": [
+    "copilot",
+    "copilots",
+    "chatbot",
+    "chatbots",
+    "assistant",
+    "assistants",
+    "conversational",
+    "conversational ai",
+    "chat interface",
+    "conversational ux",
+    "virtual assistant",
+    "conversational ai experience",
+    "chatbot experience"
+   ],
+   "questions": [
+    "has he designed chatbots",
+    "what is his view on copilots",
+    "has he designed conversational interfaces"
+   ],
+   "answer": "A good copilot, in his view, **helps people finish the task**, not just answer a question.\n\n- **Enterprise Search:** one copilot over Search, Chat, Agents, Spaces and Apps\n- **ADEO:** an assistant that searches five years of decisions mid-session\n- **Sony:** a copilot that checks every scheduled broadcast against its rights contract",
+   "followups": [
+    "Tell me about Enterprise Search",
+    "Other projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "when-not-ai",
+   "category": "ai",
+   "keywords": [
+    "without ai",
+    "no ai",
+    "not ai",
+    "every project",
+    "ai in every",
+    "always use ai",
+    "ai everywhere",
+    "force ai",
+    "when not to use ai",
+    "non ai",
+    "ai overkill",
+    "unnecessary ai",
+    "does everything need ai"
+   ],
+   "questions": [
+    "when does he decide ai is not needed",
+    "has he done non ai projects"
+   ],
+   "answer": "When the problem is **coordination, not intelligence**.\n\nHis **Mphasis visitor management** work uses no AI in its current design. The value comes from QR self-registration, OTP check-in and one shared visit status. AI ideas (ID extraction, visitor forecasting) are noted as future options, not forced in.\n\nThat's why he calls himself a product designer who applies AI **when the product needs it**.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "ai-designer",
+   "category": "ai",
+   "keywords": [
+    "ai designer",
+    "is he an ai designer",
+    "ai ux designer",
+    "ai first",
+    "ai specialist"
+   ],
+   "questions": [
+    "is he an ai designer"
+   ],
+   "answer": "He'd say no. He's a **product designer who applies AI when the product needs it**. He treats AI as specific mechanisms (retrieval, extraction, classification, summarisation, agents, guardrails) and designs each deliberately, rather than treating AI as a feature in itself.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "ai-patterns",
+   "category": "ai",
+   "keywords": [
+    "ai patterns",
+    "patterns",
+    "rag",
+    "retrieval",
+    "document processing",
+    "idp",
+    "ocr",
+    "extraction",
+    "summarization",
+    "summarisation",
+    "anomaly detection",
+    "sentiment analysis",
+    "recommendations",
+    "computer vision",
+    "face verification",
+    "identity verification",
+    "nlp",
+    "natural language processing",
+    "predictive analytics",
+    "forecasting",
+    "ai technologies",
+    "which ai techniques"
+   ],
+   "questions": [
+    "what ai patterns does he use",
+    "has he worked with rag",
+    "has he designed document extraction"
+   ],
+   "answer": "Patterns he returns to:\n\n- **Answers with citations (RAG):** Enterprise Search\n- **The briefing before the document:** ADEO\n- **Three levels of control:** Agent Workforce\n- **Plain-language versions of legal text:** HDFC\n- **Spike, conflict and risk detection:** Sony\n- **Confidence scores and evidence** for human review (used across his client work)",
+   "followups": [
+    "How does he design for trust in AI?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "leadership",
+   "category": "leadership",
+   "keywords": [
+    "leadership",
+    "leader",
+    "lead",
+    "led",
+    "leading",
+    "manage team",
+    "management",
+    "manager",
+    "people management",
+    "manage people",
+    "people manager",
+    "managed designers",
+    "team lead",
+    "design lead",
+    "led a team"
+   ],
+   "questions": [
+    "does he have leadership experience",
+    "has he led teams",
+    "is he a good leader"
+   ],
+   "answer": "Yes:\n\n- Leads design **end to end** on UnifyApps products\n- **Mentors junior designers** (6, per his resume) through critiques and growth planning\n- Runs **several initiatives in parallel**\n- Set up ICD's **design-to-engineering handoff** process\n- Works directly with **client executives**",
+   "followups": [
+    "How does he mentor?",
+    "How does he work with engineers?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "mentoring",
+   "category": "leadership",
+   "keywords": [
+    "mentor",
+    "mentoring",
+    "mentorship",
+    "coach",
+    "coaching",
+    "junior designers",
+    "teach",
+    "critique",
+    "critiques",
+    "grow designers",
+    "feedback",
+    "give feedback",
+    "feedback to juniors",
+    "design reviews",
+    "review designs"
+   ],
+   "questions": [
+    "does he mentor designers",
+    "how does he mentor"
+   ],
+   "answer": "He mentors **junior designers (6, per his resume)** through regular **critiques and growth planning**. He helps them move from screen-level thinking to **systems-level thinking**, and holds quality standards, including WCAG 2.1 accessibility, across their work.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "engineers",
+   "category": "leadership",
+   "keywords": [
+    "engineers",
+    "developers",
+    "engineering",
+    "dev",
+    "devs",
+    "handoff",
+    "hand off",
+    "development team",
+    "tech team",
+    "implementation",
+    "dev handoff",
+    "collaborate with developers",
+    "work with developers",
+    "work with engineers",
+    "work with devs",
+    "documentation",
+    "document",
+    "documents",
+    "specs",
+    "spec"
+   ],
+   "questions": [
+    "how does he work with engineers",
+    "how is his developer handoff",
+    "does he work well with developers"
+   ],
+   "answer": "- He set up ICD's **design-to-engineering handoff and review** workflows, which **reduced rework** and implementation inconsistencies\n- Hands off **documented components and patterns** (Final-for-Dev)\n- Takes engineering constraints seriously and designs decisions that can be built\n- In the Agent Workforce Platform he designed **for engineers as users**: a focused workspace with precise control over models, retrieval and testing",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "design-system",
+   "category": "leadership",
+   "keywords": [
+    "design system",
+    "design systems",
+    "component library",
+    "components",
+    "tokens",
+    "design tokens",
+    "ui kit",
+    "consistency",
+    "scalable design",
+    "pattern library"
+   ],
+   "questions": [
+    "does he have design system experience",
+    "has he built a design system"
+   ],
+   "answer": "Yes. He **owns and scales the UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation.\n\n- **Reused across 60+ enterprise deployments**\n- **Shortens delivery time** and keeps products consistent\n- The Agent Workforce Platform runs **three agent modes on one design system**\n- Shared patterns (search, copilots, approvals, audit trails) let him run several initiatives in parallel",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "accessibility",
+   "category": "leadership",
+   "keywords": [
+    "accessibility",
+    "a11y",
+    "wcag",
+    "inclusive",
+    "inclusive design",
+    "screen reader",
+    "contrast",
+    "accessible",
+    "work accessible",
+    "is it accessible"
+   ],
+   "questions": [
+    "does he care about accessibility",
+    "does he know wcag"
+   ],
+   "answer": "Yes. He **enforces WCAG 2.1** across products and has run **WCAG 2.1 AA accessibility audits** on client dashboards, including CGB's government service dashboard for Qatar, with scored findings and a remediation roadmap.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "multitasking",
+   "category": "leadership",
+   "keywords": [
+    "multiple projects",
+    "parallel",
+    "multitask",
+    "multitasking",
+    "prioritize",
+    "prioritise",
+    "deadlines",
+    "pressure",
+    "workload",
+    "time management",
+    "manage projects"
+   ],
+   "questions": [
+    "how does he manage multiple projects",
+    "how does he handle deadlines"
+   ],
+   "answer": "By **reusing structure**. A strong design system plus shared patterns for search, copilots, approvals and audit trails, together with clear review cycles, let him run **several enterprise initiatives in parallel** without losing quality. At HDFC he delivered against an immovable **regulatory deadline** (DPDP Act).",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "agencies",
+   "category": "leadership",
+   "keywords": [
+    "frog",
+    "frog design",
+    "nagarro",
+    "agency",
+    "agencies",
+    "partner agency",
+    "collaborated with agencies"
+   ],
+   "questions": [
+    "has he worked with other agencies",
+    "did he work with frog design"
+   ],
+   "answer": "Yes. On the **ADEO Committee Board platform** for Abu Dhabi he worked alongside **Frog Design** and **Nagarro Design**, with ICD as design partner to UnifyApps.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "projects-list",
+   "category": "work",
+   "keywords": [
+    "projects",
+    "work",
+    "portfolio",
+    "case studies",
+    "case study",
+    "what has he worked on",
+    "show me his work",
+    "clients",
+    "client list",
+    "list projects",
+    "all projects",
+    "his work",
+    "worked on",
+    "examples",
+    "what he has built",
+    "what has he built",
+    "built",
+    "what he made",
+    "what has he made",
+    "app",
+    "apps",
+    "his apps",
+    "products",
+    "product",
+    "what apps",
+    "which apps",
+    "apps he designed",
+    "applications",
+    "show apps",
+    "case studies list",
+    "major projects",
+    "main projects",
+    "key projects",
+    "featured",
+    "which companies trust",
+    "clients trust",
+    "which clients",
+    "who has he worked for",
+    "who has he designed for",
+    "brands"
+   ],
+   "questions": [
+    "what has vishnu worked on",
+    "show me his portfolio",
+    "show me his projects",
+    "which clients has he worked with",
+    "list his case studies",
+    "what apps has he designed",
+    "show me his apps",
+    "what are his main projects"
+   ],
+   "answer": "Vishnu's portfolio features **five case studies**:\n\n1. **Intelligent Enterprise Search:** AI search across a company's tools, with sources (UnifyApps)\n2. **Committee Board Agentic App:** AI-assisted committee decisions for the Abu Dhabi government (DGE / ADEO)\n3. **Agent Workforce Platform:** build, govern and run AI agents (UnifyApps)\n4. **Consent at the scale of a nation's bank:** DPDP consent management for 30M+ customers (HDFC Bank)\n5. **Intelligence at the core of a media group:** four AI platforms for Sony Pictures Networks India\n\nWhich one would you like to explore?",
+   "followups": [
+    "Tell me about Enterprise Search",
+    "Tell me about ADEO",
+    "Tell me about the Agent Workforce Platform",
+    "Tell me about HDFC Bank",
+    "Other projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "industries",
+   "category": "work",
+   "keywords": [
+    "industries",
+    "industry",
+    "domains",
+    "domain",
+    "sectors",
+    "what sectors",
+    "which sectors",
+    "designed for which",
+    "sector",
+    "verticals",
+    "domain expertise",
+    "which industries"
+   ],
+   "questions": [
+    "which industries has he worked in",
+    "what domains does he know"
+   ],
+   "answer": "**His case studies cover:** enterprise SaaS (UnifyApps), government (Abu Dhabi), banking (HDFC) and media (Sony).\n\n**Beyond them**, his client work includes insurance, retail, manufacturing, aviation, hospitality, HR and automotive.",
+   "followups": [
+    "Other projects",
+    "Tell me about ADEO"
+   ],
+   "priority": false
+  },
+  {
+   "id": "best-problems",
+   "category": "work",
+   "keywords": [
+    "what problems",
+    "kind of problems",
+    "type of problems",
+    "best at solving",
+    "problems he solves",
+    "sweet spot",
+    "speciality",
+    "ideal project",
+    "what kind of work"
+   ],
+   "questions": [
+    "what kinds of problems does he solve best",
+    "what is his sweet spot"
+   ],
+   "answer": "Problems where **information, people and decisions are scattered**:\n\n- **Scattered knowledge:** Enterprise Search brings it into one source with citations\n- **Slow, high-stakes decisions:** ADEO gives AI briefings and structured deliberation\n- **Compliance pressure:** HDFC records consent and creates an audit trail inside the flow\n- **AI that has to be governed:** Agent Workforce controls it with guardrails and traces\n- **Many manual workflows at once:** the Sony platforms cover contracts, board governance, scheduling and social listening",
+   "followups": [
+    "Tell me about Enterprise Search",
+    "Tell me about ADEO",
+    "Tell me about the Agent Workforce Platform"
+   ],
+   "priority": false
+  },
+  {
+   "id": "proudest",
+   "category": "work",
+   "keywords": [
+    "proudest",
+    "favourite project",
+    "favorite project",
+    "best project",
+    "best work",
+    "most proud",
+    "flagship",
+    "signature project",
+    "top project",
+    "strongest case study",
+    "best case study",
+    "strongest project",
+    "strongest work"
+   ],
+   "questions": [
+    "which project is he proudest of",
+    "what is his best work"
+   ],
+   "answer": "I can't speak for him on that, so it's worth asking him directly. Two projects best show his thinking:\n\n- **ADEO:** deliberate, human-centred AI for government decisions\n- **Enterprise Search:** the idea that, in enterprise AI, **trust is the product**",
+   "followups": [
+    "Tell me about ADEO",
+    "Tell me about Enterprise Search"
+   ],
+   "priority": false
+  },
+  {
+   "id": "most-complex",
+   "category": "work",
+   "keywords": [
+    "most complex",
+    "hardest project",
+    "most challenging",
+    "biggest project",
+    "largest project",
+    "toughest",
+    "most difficult",
+    "scale"
+   ],
+   "questions": [
+    "what is the most complex project he worked on",
+    "what was his hardest project"
+   ],
+   "answer": "- **By scope:** **Sony**, four connected platforms for contracts, board governance, broadcast scheduling and social listening\n- **By stakes:** **HDFC**, with a regulatory deadline that couldn't move and 30M+ customers, and **ADEO**, government decisions on 1,000+ proposals a month",
+   "followups": [
+    "Tell me about Sony",
+    "Tell me about HDFC Bank"
+   ],
+   "priority": false
+  },
+  {
+   "id": "common-thread",
+   "category": "work",
+   "keywords": [
+    "common",
+    "common thread",
+    "pattern across",
+    "consistent",
+    "across projects",
+    "similar",
+    "connects",
+    "theme",
+    "recurring"
+   ],
+   "questions": [
+    "what is common across his work",
+    "what connects all his projects"
+   ],
+   "answer": "Across his five case studies:\n\n- **Evidence behind every AI output**\n- **People approve** what matters\n- **One source of truth**, with a view for each role\n- **Governance designed in** from day one",
+   "followups": [
+    "What are his design principles?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "adapt-domains",
+   "category": "work",
+   "keywords": [
+    "adapt",
+    "new domain",
+    "learn domain",
+    "different domains",
+    "unfamiliar",
+    "domain knowledge",
+    "ramp up",
+    "onboard to new"
+   ],
+   "questions": [
+    "how does he adapt to different domains",
+    "how does he learn a new domain"
+   ],
+   "answer": "The domains change, but the **structure of the problems repeats**: scattered information, many roles, approvals, compliance and the need for trust. He learns each domain's constraints (regulation, workflows, vocabulary), then applies the same systems approach and a consistent set of patterns.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "other-projects",
+   "category": "work",
+   "keywords": [
+    "other projects",
+    "more projects",
+    "other work",
+    "other clients",
+    "more clients",
+    "anything else",
+    "what else",
+    "beyond case studies",
+    "besides these",
+    "apart from these",
+    "other than these",
+    "more work",
+    "additional projects",
+    "other companies",
+    "all clients",
+    "full client list",
+    "client work",
+    "other case studies"
+   ],
+   "questions": [
+    "what other projects has he done",
+    "show me more projects",
+    "what else has he worked on",
+    "any other clients"
+   ],
+   "answer": "Beyond the five case studies, Vishnu has designed for **15+ other clients** through ICD and UnifyApps:\n\n- **Banking & insurance:** Mashreq (payments, credit, incidents), Niva Bupa\n- **Government:** Digital Dubai, Digital Ajman, CGB Qatar\n- **Enterprise AI & knowledge:** Lowe's, Stowers Institute, Docebo, Shaw Industries\n- **Operations & finance:** Greif, Tekion, Wasl, Jubilant\n- **HR, workplace & aviation:** Virtusa, Mphasis, Air Arabia\n\nThese aren't public case studies, but I can tell you what each one was about. Just name the client.",
+   "followups": [
+    "Tell me about Mashreq",
+    "Tell me about Digital Dubai",
+    "Tell me about Lowe's",
+    "Tell me about Greif"
+   ],
+   "priority": false
+  },
+  {
+   "id": "other-banking",
+   "category": "work",
+   "keywords": [
+    "other banking projects",
+    "other banking",
+    "more banking",
+    "other bank projects",
+    "other financial projects",
+    "other fintech"
+   ],
+   "questions": [
+    "other banking projects",
+    "any other bank work"
+   ],
+   "answer": "Beyond HDFC, Vishnu designed **three AI products for Mashreq**:\n\n1. **Cash AI:** conversational cross-border payment operations for treasury teams\n2. **Agentic Credit Initiation:** from documents to corporate credit decisions\n3. **AI Incident Investigation:** root-cause analysis for banking service failures\n\nHe also designed **Niva Bupa's** insurance sales platform.",
+   "followups": [
+    "Tell me about Mashreq credit",
+    "Tell me about Cash AI",
+    "Tell me about Niva Bupa"
+   ],
+   "priority": false
+  },
+  {
+   "id": "other-government",
+   "category": "work",
+   "keywords": [
+    "other government projects",
+    "other government",
+    "more government",
+    "other public sector",
+    "other govt projects"
+   ],
+   "questions": [
+    "other government projects",
+    "any other government work"
+   ],
+   "answer": "Beyond ADEO, his government client work includes:\n\n- **Digital Dubai:** supplier onboarding, the Supplier GPT procurement copilot, and a Smart Employee Copilot\n- **Digital Ajman (Ajman One):** an AI gateway for government services and business licence renewals\n- **CGB Qatar (Sharek):** a performance intelligence platform for government services",
+   "followups": [
+    "Tell me about Digital Dubai",
+    "Tell me about Ajman One",
+    "Tell me about Sharek"
+   ],
+   "priority": false
+  },
+  {
+   "id": "other-agentic",
+   "category": "work",
+   "keywords": [
+    "other agentic projects",
+    "other agentic",
+    "more agent projects",
+    "other ai agents",
+    "other agents work",
+    "other ai projects",
+    "more ai projects"
+   ],
+   "questions": [
+    "other agentic projects",
+    "what other ai projects"
+   ],
+   "answer": "Beyond the case studies, his client work includes several agentic products:\n\n- **Mashreq Credit Initiation:** an agent that classifies documents, spreads financials and stress-tests repayment\n- **Mashreq Incident Investigation:** agents that correlate alerts and propose root causes\n- **Supplier GPT (Digital Dubai):** AI-assisted tender submission and invoicing\n- **Ajman One:** guided government journeys, where the user confirms every step\n- **Greif:** agentic review of missed service charges",
+   "followups": [
+    "Tell me about Mashreq credit",
+    "Tell me about Supplier GPT",
+    "Tell me about Greif"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-banking",
+   "category": "domain",
+   "keywords": [
+    "banking",
+    "bank",
+    "banks",
+    "fintech",
+    "finance",
+    "financial services",
+    "bfsi",
+    "payments domain",
+    "financial",
+    "treasury domain"
+   ],
+   "questions": [
+    "what banking experience does he have",
+    "has he worked in fintech",
+    "has he designed for banks"
+   ],
+   "answer": "His banking case study is **HDFC Bank**: consent and preference management for 30M+ customers under India's DPDP Act.\n\nWhat he took from it:\n\n- Regulation is a hard constraint, so compliance should happen naturally inside the workflow\n- Every number must be traceable\n- Customers and operators need to work from the same record",
+   "followups": [
+    "Tell me about HDFC Bank",
+    "Other banking projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-insurance",
+   "category": "domain",
+   "keywords": [
+    "insurance",
+    "insurance domain",
+    "insurtech",
+    "insurance experience",
+    "insurance industry",
+    "insurance project",
+    "insurance app"
+   ],
+   "questions": [
+    "has he worked in insurance"
+   ],
+   "answer": "None of his case studies is in insurance, but his client work includes **Niva Bupa**: an AI-assisted sales platform for health insurance agents, covering premiums, plan comparison, riders, quotes over WhatsApp and AI-written messages.\n\nEarlier in his career he also designed **QuoteBot**, an insurance quote generator.",
+   "followups": [
+    "Tell me about Niva Bupa"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-government",
+   "category": "domain",
+   "keywords": [
+    "government",
+    "public sector",
+    "govtech",
+    "gov tech",
+    "e-government",
+    "citizen",
+    "citizens",
+    "ministry",
+    "public services",
+    "smart government",
+    "government projects"
+   ],
+   "questions": [
+    "what government projects has he done",
+    "has he worked in the public sector",
+    "has he designed for government"
+   ],
+   "answer": "His government case study is the **Committee Board Agentic App for DGE / ADEO, Abu Dhabi**: AI briefings, deliberation, voting and live minutes for 1,000+ proposals a month.\n\nWhat's different about government:\n\n- Accountability matters more than speed\n- AI content must be clearly labelled\n- Every decision needs a recorded rationale",
+   "followups": [
+    "Tell me about ADEO",
+    "Other government projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-media",
+   "category": "domain",
+   "keywords": [
+    "media",
+    "entertainment",
+    "broadcasting",
+    "ott",
+    "television",
+    "tv",
+    "streaming",
+    "media domain"
+   ],
+   "questions": [
+    "has he worked in media"
+   ],
+   "answer": "Yes. **Sony Pictures Networks India** is one of his case studies: four platforms covering **contracts, board governance, sports broadcast scheduling and social intelligence**.",
+   "followups": [
+    "Tell me about Sony"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-manufacturing",
+   "category": "domain",
+   "keywords": [
+    "manufacturing",
+    "industrial",
+    "factory",
+    "plants",
+    "supply chain",
+    "operations domain",
+    "industry 4.0"
+   ],
+   "questions": [
+    "has he worked in manufacturing"
+   ],
+   "answer": "Yes:\n\n- **Greif:** AI revenue recovery and BOM validation across plants\n- **Shaw Industries:** sales intelligence for a flooring manufacturer\n- **Jubilant Ingrevia:** operations, quality control, inventory and procurement workflows",
+   "followups": [
+    "Tell me about Greif"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-retail",
+   "category": "domain",
+   "keywords": [
+    "retail",
+    "ecommerce",
+    "e-commerce",
+    "consumer",
+    "qsr",
+    "food",
+    "restaurants",
+    "stores"
+   ],
+   "questions": [
+    "has he worked in retail"
+   ],
+   "answer": "Yes:\n\n- **Lowe's:** an enterprise AI workspace for employees\n- **Jubilant FoodWorks:** store expansion, workforce, inventory and operations workflows\n- **E-commerce projects** at Brane Enterprises (earlier career)",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "domain-hr",
+   "category": "domain",
+   "keywords": [
+    "hr",
+    "human resources",
+    "hr tech",
+    "hrtech",
+    "workforce",
+    "people ops",
+    "employee experience",
+    "talent"
+   ],
+   "questions": [
+    "has he designed hr products"
+   ],
+   "answer": "Yes:\n\n- **Virtusa:** promotions, HR partner assignment and buddy allocation\n- **Jubilant:** workforce management and employee services\n- **Digital Dubai Smart Employee Copilot:** HR requests via conversation",
+   "followups": [
+    "Tell me about Virtusa"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-sales",
+   "category": "domain",
+   "keywords": [
+    "sales",
+    "crm",
+    "crm tools",
+    "revenue",
+    "go to market",
+    "gtm",
+    "sales enablement",
+    "sales tools",
+    "b2b sales"
+   ],
+   "questions": [
+    "has he designed sales tools"
+   ],
+   "answer": "None of his five case studies is a sales tool, but his client work includes:\n\n- **Shaw Industries:** account intelligence, call analysis, RFP automation\n- **Docebo:** deal-loss analysis, Voice of Customer, sales handoff\n- **Niva Bupa:** insurance sales enablement",
+   "followups": [
+    "Tell me about Shaw Industries",
+    "Tell me about Docebo"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-knowledge",
+   "category": "domain",
+   "keywords": [
+    "knowledge management",
+    "enterprise knowledge",
+    "intranet",
+    "knowledge base",
+    "search experience",
+    "information retrieval"
+   ],
+   "questions": [
+    "has he designed knowledge management tools"
+   ],
+   "answer": "It's one of his core areas. His **Intelligent Enterprise Search** case study connects a company's tools into one index, so people get direct, role-aware answers with sources, plus an agent marketplace.",
+   "followups": [
+    "Tell me about Enterprise Search",
+    "Other projects"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-finance-ops",
+   "category": "domain",
+   "keywords": [
+    "finance operations",
+    "accounting",
+    "reconciliation domain",
+    "fp&a",
+    "budgeting domain",
+    "procurement domain",
+    "erp",
+    "sap"
+   ],
+   "questions": [
+    "has he designed finance operations tools"
+   ],
+   "answer": "His client work includes several finance operations products:\n\n- **Tekion:** reconciliation across bank records, invoices and lockbox files\n- **Wasl:** hotel portfolio budgeting with staged Board approvals\n- **Mashreq Cash AI:** treasury and cross-border payments\n\nIn his case studies, **Sony's contract platform** integrates with SAP S/4.",
+   "followups": [
+    "Tell me about Tekion",
+    "Tell me about Wasl"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-healthcare",
+   "category": "domain",
+   "keywords": [
+    "healthcare",
+    "health",
+    "medical",
+    "hospital",
+    "hospitals",
+    "patients",
+    "patient",
+    "healthtech"
+   ],
+   "questions": [
+    "has he worked in healthcare"
+   ],
+   "answer": "Yes, mostly earlier in his career:\n\n- **Mycarely.in:** a healthcare platform for senior citizens\n- **Salud Interactiva:** an internal portal for a healthcare services provider\n- Healthcare client projects at **Brane Enterprises**\n- **Niva Bupa** health insurance sales (recent)\n- **Air Arabia** onboard medical incident reporting",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "domain-aviation",
+   "category": "domain",
+   "keywords": [
+    "aviation",
+    "airline",
+    "airlines",
+    "aviation domain",
+    "flights",
+    "cabin crew",
+    "airport"
+   ],
+   "questions": [
+    "has he worked in aviation",
+    "has he designed for airlines"
+   ],
+   "answer": "None of his case studies is in aviation, but his client work includes **Air Arabia**: digital cabin crew assessments, flight checks and onboard incident reports, designed to work **offline** in flight.",
+   "followups": [
+    "Tell me about Air Arabia"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-hospitality",
+   "category": "domain",
+   "keywords": [
+    "hospitality",
+    "hotel",
+    "hotels",
+    "real estate",
+    "property",
+    "travel industry"
+   ],
+   "questions": [
+    "has he worked in hospitality",
+    "any hotel projects"
+   ],
+   "answer": "None of his case studies is in hospitality, but his client work includes **Wasl**: a budgeting platform for a hotel portfolio that connects hotel operators, asset managers and the Board, with AI revision summaries.",
+   "followups": [
+    "Tell me about Wasl"
+   ],
+   "priority": false
+  },
+  {
+   "id": "domain-automotive",
+   "category": "domain",
+   "keywords": [
+    "automotive",
+    "cars",
+    "dealership",
+    "dealer",
+    "auto industry"
+   ],
+   "questions": [
+    "has he worked in automotive"
+   ],
+   "answer": "None of his case studies is in automotive, but his client work includes **Tekion**: a workflow platform for dealership operations and financial reconciliation, with a conversational copilot.",
+   "followups": [
+    "Tell me about Tekion"
+   ],
+   "priority": false
+  },
+  {
+   "id": "early-career",
+   "category": "career",
+   "keywords": [
+    "early career",
+    "early work",
+    "old work",
+    "old portfolio",
+    "previous portfolio",
+    "2023 portfolio",
+    "before enterprise",
+    "first projects",
+    "older projects",
+    "behance",
+    "past work",
+    "freelance work"
+   ],
+   "questions": [
+    "what did he work on before enterprise ai",
+    "show me his old portfolio",
+    "what was his early work"
+   ],
+   "answer": "- **Momentable / Nextdecentrum:** NFT marketplace, end to end, plus brand identity\n- **Mycarely.in:** healthcare for senior citizens\n- **Brane Banking & Seamless Loans**\n- **Chicago Park District:** park events and activities\n- **Salud Interactiva:** healthcare services portal\n- **Mobionix & LEAPQUE:** voice AI concepts for hotels and restaurants\n- **QuoteBot:** insurance quote generator\n- **App case studies:** Nest hotel booking, Minder alarm, D.Note driver habits\n\n[See the 2023 portfolio →](https://byvishnudesign.framer.website/)",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "evolution",
+   "category": "career",
+   "keywords": [
+    "evolve",
+    "evolved",
+    "evolution",
+    "growth",
+    "grown",
+    "progression",
+    "always enterprise",
+    "always ai",
+    "transition",
+    "switch to enterprise"
+   ],
+   "questions": [
+    "how has his work evolved",
+    "did he always work on enterprise ai"
+   ],
+   "answer": "No, his path was varied:\n\n1. **Consumer, Web3 and brand work** at Kocha (NFT marketplace, apps, branding)\n2. **20+ low-code client projects** at Brane across e-commerce, finance, healthcare and education\n3. **Large-scale enterprise and AI systems** at ICD / UnifyApps\n\nThe constant: turning complex problems into clear, usable products. That variety gave him range in consumer UX, branding and fast delivery.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "branding",
+   "category": "career",
+   "keywords": [
+    "branding",
+    "brand identity",
+    "logo",
+    "visual design",
+    "graphic design",
+    "illustration"
+   ],
+   "questions": [
+    "does he do branding",
+    "can he do visual design"
+   ],
+   "answer": "Yes. Earlier in his career he did **brand identity** for Momentable, Salud Interactiva, Mobionix, LEAPQUE and QuoteBot, plus illustration (user persona templates, character design). Today his focus is product design, with a strong visual craft underneath.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "hobbies",
+   "category": "personal",
+   "keywords": [
+    "hobbies",
+    "hobby",
+    "outside work",
+    "free time",
+    "interests",
+    "personal life",
+    "fun",
+    "weekend",
+    "passion",
+    "apart from design",
+    "fun fact"
+   ],
+   "questions": [
+    "what does he do outside work",
+    "what are his hobbies",
+    "tell me something fun about him"
+   ],
+   "answer": "- 🎨 **Live sketching and watercolour**\n- ⚽ **Football**\n- ✈️ **Travel**\n- 🚴 **Long bike rides**",
+   "followups": [
+    "Where can I see his art?",
+    "Who are you?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "art",
+   "category": "personal",
+   "keywords": [
+    "art",
+    "painting",
+    "paint",
+    "sketch",
+    "sketching",
+    "watercolor",
+    "watercolour",
+    "artist",
+    "drawing",
+    "instagram",
+    "sketchbook"
+   ],
+   "questions": [
+    "does he paint",
+    "does art influence his design",
+    "where can i see his art"
+   ],
+   "answer": "Mostly **live sketching and watercolour**, with some oil painting. His About page sums him up as *a product designer, a planner and a painter*.\n\n- **Sketchbook:** instagram.com/sketch_b.o.o.k\n- **Paintings:** behance.net/vishnuprasadkp",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "nyrro",
+   "category": "personal",
+   "keywords": [
+    "who are you",
+    "what are you",
+    "nyrro",
+    "your name",
+    "beetle",
+    "why beetle",
+    "what is nyrro",
+    "about you",
+    "mascot"
+   ],
+   "questions": [
+    "who are you",
+    "what is nyrro",
+    "why are you a beetle"
+   ],
+   "answer": "I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nI'm one of his creative side projects, a little beetle inspired by how beetles **defend themselves in nature**, and by the idea of a tiny creature leaving a **paint-like trail** as it moves. Part observation, part imagination, much like his watercolours.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "are-you-ai",
+   "category": "personal",
+   "keywords": [
+    "are you ai",
+    "are you a bot",
+    "are you real",
+    "are you human",
+    "are you chatgpt",
+    "chatgpt",
+    "are you claude",
+    "which model are you",
+    "how do you work",
+    "are you a robot",
+    "this chatbot",
+    "how were you built",
+    "who built you",
+    "who made you",
+    "how was this chatbot built",
+    "built this bot"
+   ],
+   "questions": [
+    "are you an ai",
+    "are you a real person"
+   ],
+   "answer": "I'm a small assistant built on Vishnu's portfolio, case studies and project work. For anything I can't answer, Vishnu is one email away: **vishnuprasadkp98@gmail.com**.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "contact",
+   "category": "hiring",
+   "keywords": [
+    "contact",
+    "email",
+    "email address",
+    "email id",
+    "reach",
+    "get in touch",
+    "talk to him",
+    "connect",
+    "message him",
+    "mail",
+    "how to reach",
+    "contact details",
+    "socials",
+    "linkedin",
+    "contact kaise",
+    "kaise contact",
+    "number do",
+    "best way to contact"
+   ],
+   "questions": [
+    "how can i contact vishnu",
+    "what is his email",
+    "how do i reach him",
+    "is he on linkedin"
+   ],
+   "answer": "- **Email:** vishnuprasadkp98@gmail.com\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)\n- **Behance:** [behance.net/vishnuprasadkp](https://www.behance.net/vishnuprasadkp)",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "resume",
+   "category": "hiring",
+   "keywords": [
+    "resume",
+    "cv",
+    "download resume",
+    "resume pdf",
+    "curriculum vitae"
+   ],
+   "questions": [
+    "can i see his resume",
+    "download cv"
+   ],
+   "answer": "You can view or download his resume here: [vishnuprasad.space/resume](https://vishnuprasad.space/resume)",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "open-to-work",
+   "category": "hiring",
+   "keywords": [
+    "open to work",
+    "available",
+    "availability",
+    "looking for job",
+    "hiring",
+    "hire",
+    "job",
+    "opportunity",
+    "opportunities",
+    "looking for a job",
+    "job hunting",
+    "freelance",
+    "contract work",
+    "consulting",
+    "collaborate",
+    "work with him",
+    "open to opportunities",
+    "can we hire",
+    "how can i hire",
+    "how to hire",
+    "hire vishnu",
+    "hire him",
+    "recruit",
+    "interview him",
+    "schedule a call",
+    "book a call"
+   ],
+   "questions": [
+    "is he open to opportunities",
+    "is vishnu available for hire",
+    "can we work with him",
+    "does he do freelance"
+   ],
+   "answer": "Vishnu is always open to conversations and ideas. The best way to reach him is **vishnuprasadkp98@gmail.com** or LinkedIn.",
+   "followups": [
+    "Why should we hire him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "why-hire",
+   "category": "hiring",
+   "keywords": [
+    "why hire",
+    "why should we hire",
+    "why vishnu",
+    "value",
+    "what can he bring",
+    "fit",
+    "good fit",
+    "right fit",
+    "recommend him",
+    "convince me",
+    "strengths for role",
+    "reasons to hire",
+    "reason to hire",
+    "3 reasons",
+    "three reasons",
+    "good hire",
+    "convince"
+   ],
+   "questions": [
+    "why should we hire vishnu",
+    "what value would he bring",
+    "is he a good fit for our team"
+   ],
+   "answer": "- He's led design on **high-stakes AI products** for HDFC Bank, the Abu Dhabi government and Sony\n- He designs **AI people trust**, with sources, labels and a human in control\n- He works directly with **executives and engineers**, and set up a handoff process that reduced rework\n- His **design system** is reused across 60+ deployments\n- He **mentors** designers and runs several projects in parallel\n\nHe'd be glad to talk: **vishnuprasadkp98@gmail.com**",
+   "followups": [
+    "How can I contact him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "lead-fit",
+   "category": "hiring",
+   "keywords": [
+    "lead role",
+    "lead position",
+    "principal role",
+    "manager role",
+    "head of design",
+    "design manager",
+    "ready for lead",
+    "fit for lead",
+    "lead designer role",
+    "staff designer",
+    "lead a design team",
+    "lead a team",
+    "manage a design team",
+    "build a design team"
+   ],
+   "questions": [
+    "is he a fit for a lead designer role",
+    "is he ready for a lead position"
+   ],
+   "answer": "His work already happens at **lead scope**:\n\n- End-to-end ownership of enterprise and AI products\n- Executive and senior stakeholder management\n- Several initiatives in parallel\n- Design system ownership across 60+ deployments\n- Mentoring designers and setting up team processes\n\nThe fit for a specific role is best discussed with him directly: **vishnuprasadkp98@gmail.com**.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "remote",
+   "category": "hiring",
+   "keywords": [
+    "remote",
+    "relocate",
+    "relocation",
+    "onsite",
+    "hybrid",
+    "work from home",
+    "timezone",
+    "time zone",
+    "travel for work",
+    "international team"
+   ],
+   "questions": [
+    "can he work remotely",
+    "is he open to relocation"
+   ],
+   "answer": "He already works with **international teams**: clients across India, the UAE, Qatar and the US, and co-delivery with Frog Design and Nagarro Design. For specifics on location or working arrangements, please ask him directly at **vishnuprasadkp98@gmail.com**.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "sensitive",
+   "category": "hiring",
+   "keywords": [
+    "salary",
+    "ctc",
+    "compensation",
+    "pay",
+    "package",
+    "expected salary",
+    "current salary",
+    "notice period",
+    "notice",
+    "phone number",
+    "mobile number",
+    "contact number",
+    "whatsapp number",
+    "home address",
+    "where does he live",
+    "why leaving",
+    "charge",
+    "charges",
+    "rates",
+    "rate card",
+    "hourly rate",
+    "fees",
+    "pricing",
+    "how much",
+    "cost to hire",
+    "budget for hiring",
+    "why is he leaving",
+    "age",
+    "married",
+    "lpa",
+    "salary expectation"
+   ],
+   "questions": [
+    "what is his salary expectation",
+    "what is his notice period",
+    "what is his phone number",
+    "why is he leaving his job"
+   ],
+   "answer": "That's best discussed with Vishnu directly. You can reach him at **vishnuprasadkp98@gmail.com**.",
+   "followups": [],
+   "priority": true
+  },
+  {
+   "id": "figma-files",
+   "category": "hiring",
+   "keywords": [
+    "figma file",
+    "figma files",
+    "more screens",
+    "screens",
+    "see designs",
+    "prototype",
+    "nda",
+    "confidential",
+    "full case study",
+    "more details",
+    "deck"
+   ],
+   "questions": [
+    "can i see the figma files",
+    "can i see more screens",
+    "why are details hidden"
+   ],
+   "answer": "Many of his projects are under **NDA**, so detailed files aren't public. The case studies show what can be shared, and Vishnu is happy to walk through more in a conversation.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "competitors",
+   "category": "boundaries",
+   "keywords": [
+    "competitor",
+    "competitors",
+    "compare",
+    "compare to",
+    "compare with",
+    "compared to",
+    "comparison with",
+    "better than",
+    "worse than",
+    "alternative",
+    "microsoft copilot",
+    "glean",
+    "salesforce einstein",
+    "servicenow",
+    "onetrust"
+   ],
+   "questions": [
+    "how does this compare to competitors",
+    "is this better than microsoft copilot",
+    "what are the alternatives"
+   ],
+   "answer": "I'd rather not compare his work with other products. What I can tell you is what Vishnu designed and why it works the way it does. Which project would you like to hear about?",
+   "followups": [],
+   "priority": true
+  },
+  {
+   "id": "working-style",
+   "category": "process",
+   "keywords": [
+    "working style",
+    "work style",
+    "style of working",
+    "detail oriented",
+    "detail-oriented",
+    "attention to detail",
+    "how fast",
+    "speed",
+    "pace",
+    "work ethic",
+    "what is he like to work with",
+    "easy to work with",
+    "personality",
+    "culture fit",
+    "team player"
+   ],
+   "questions": [
+    "what is his working style",
+    "is he detail oriented",
+    "what is he like to work with"
+   ],
+   "answer": "**Structured and collaborative.**\n\n- Works in **iterative review cycles** with PMs, clients and engineers\n- **Writes decisions down**, including the cost of each one\n- **Holds the details:** WCAG 2.1 accessibility and documented developer handoff\n- Builds **reusable patterns**, so speed comes from the system, not from shortcuts\n\nFor a real sense of him as a colleague, the best thing is a conversation with him.",
+   "followups": [
+    "How does he work with engineers?",
+    "How can I contact him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "future-goals",
+   "category": "interview",
+   "keywords": [
+    "5 years",
+    "five years",
+    "future plans",
+    "career goals",
+    "career goal",
+    "see himself",
+    "aspirations",
+    "aspiration",
+    "long term goal",
+    "next step in career",
+    "ambition",
+    "ambitions",
+    "dream job",
+    "what next"
+   ],
+   "questions": [
+    "where does he see himself in 5 years",
+    "what are his career goals"
+   ],
+   "answer": "I don't know that, sorry. 🪲 That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
+   "followups": [
+    "How can I contact him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "weakness",
+   "category": "interview",
+   "keywords": [
+    "weakness",
+    "weaknesses",
+    "improve",
+    "areas of improvement",
+    "flaws",
+    "shortcomings",
+    "what is he bad at",
+    "not good at"
+   ],
+   "questions": [
+    "what is his biggest weakness",
+    "what does he need to improve"
+   ],
+   "answer": "That's a question for Vishnu himself. What his case studies do show is that he's **open about trade-offs**. He names the cost of each decision, like Simple mode feeling limiting to engineers, or ADEO's multi-committee members needing a separate view.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "failure",
+   "category": "interview",
+   "keywords": [
+    "failure",
+    "failed",
+    "mistake",
+    "mistakes",
+    "went wrong",
+    "learned the hard way",
+    "regret",
+    "do differently",
+    "what would he change"
+   ],
+   "questions": [
+    "tell me about a failure",
+    "what would he do differently",
+    "what mistakes has he made"
+   ],
+   "answer": "That's best asked to him directly. His reflections are public, though. Each case study ends with what it taught him, for example:\n\n- *Trust drives adoption more than AI performance* (Enterprise Search)\n- *Important decisions benefit from deliberate interactions, not speed* (ADEO)\n- *Governance works best when built in from the start* (Agent Workforce)",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "conflict",
+   "category": "interview",
+   "keywords": [
+    "conflict",
+    "disagreement",
+    "disagree",
+    "pushback",
+    "push back",
+    "difficult stakeholder",
+    "difficult client",
+    "argument",
+    "convince stakeholders"
+   ],
+   "questions": [
+    "how does he handle disagreement with stakeholders",
+    "how does he deal with difficult clients"
+   ],
+   "answer": "I don't have specific stories about disagreements; that's best asked to him directly. His approach to **alignment** is visible in his work:\n\n- Frame a **small set of clear problems**\n- Make decisions **explicit, with their costs**\n- Give every stakeholder group a **role-specific view on one shared source of truth**",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "solo-or-team",
+   "category": "interview",
+   "keywords": [
+    "alone",
+    "solo",
+    "by himself",
+    "team size",
+    "who else",
+    "credit",
+    "did he design it alone",
+    "individual contribution",
+    "his contribution",
+    "only designer",
+    "other designers",
+    "only one",
+    "whole team",
+    "team members",
+    "how big was the team",
+    "big team",
+    "size of team",
+    "how many people in team"
+   ],
+   "questions": [
+    "did he design these projects alone",
+    "what was his individual contribution"
+   ],
+   "answer": "He **leads design** on them, and is careful about credit:\n\n- **UnifyApps projects:** ICD is the design partner; the product team defined roles and led research\n- **ADEO:** ICD worked alongside **Frog Design** and **Nagarro Design**\n- **His part:** end-to-end design ownership, from client brief to developer handoff",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "outcomes-real",
+   "category": "interview",
+   "keywords": [
+    "are the numbers real",
+    "real results",
+    "verified",
+    "fake",
+    "made up",
+    "credible",
+    "trust the numbers",
+    "where do numbers come from",
+    "attribution",
+    "metrics verified",
+    "numbers verified",
+    "results verified",
+    "these metrics",
+    "these numbers",
+    "genuine"
+   ],
+   "questions": [
+    "are the outcomes real",
+    "where do these numbers come from"
+   ],
+   "answer": "Yes, and they're labelled honestly:\n\n- **Enterprise Search & Agent Workforce:** UnifyApps' published figures from a financial institution's deployment\n- **HDFC:** reported by UnifyApps\n- **Sony:** from project documentation\n- **ADEO:** as reported in the case study\n- **Other client projects:** expected or target outcomes, always presented as such",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "off-topic",
+   "category": "boundaries",
+   "keywords": [
+    "write code",
+    "python",
+    "javascript code",
+    "homework",
+    "essay",
+    "weather",
+    "news",
+    "joke",
+    "recipe",
+    "movie",
+    "cricket score",
+    "stock price",
+    "translate"
+   ],
+   "questions": [
+    "can you write me a python script",
+    "what's the weather today",
+    "tell me a joke"
+   ],
+   "answer": "I'm Nyrro, and I only know about Vishnu and his work. 🪲 Want to see one of his case studies instead?",
+   "followups": [
+    "Show me his case studies",
+    "Who is Vishnu?"
+   ],
+   "priority": false
+  }
+ ],
+ "fallback": {
+  "answer": "I don't know about that, sorry. 🪲 You can get in touch with Vishnu directly at **vishnuprasadkp98@gmail.com**, and he'll be happy to help.",
+  "followups": [
+   "What has he worked on?",
+   "How does he design?",
+   "How can I contact him?"
+  ]
+ },
+ "contactEmail": "vishnuprasadkp98@gmail.com",
+ "whichProjectAnswer": "Which project would you like to know about? Here are his five case studies:",
+ "repeatAnswer": "I've already shared that above ☝️ Is there something more specific you'd like to know?",
+ "exploreChips": [
+  "Tell me about Enterprise Search",
+  "Tell me about ADEO",
+  "Tell me about the Agent Workforce Platform",
+  "Tell me about HDFC Bank",
+  "Tell me about the Sony platforms",
+  "How does he design?",
+  "What AI work has he done?",
+  "Other projects",
+  "How can I contact him?"
+ ]
+}

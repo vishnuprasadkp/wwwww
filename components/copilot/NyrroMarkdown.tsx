@@ -1,0 +1,73 @@
+import { Fragment } from "react";
+
+/** Renders Nyrro's answers: paragraphs, **bold**, _italic_ / *italic*, "- " bullets, "1." lists and [text](https://url) links (opened in a new tab). */
+
+const INLINE = /(\[[^\]]+\]\(https?:[^)\s]+\)|\*\*[^*]+\*\*|(?:^|(?<=[^*\w]))_[^_]+_(?![\w])|\*[^*]+\*)/g;
+
+function Inline({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(INLINE).map((p, i) => {
+        if (!p) return null;
+        const link = p.match(/^\[([^\]]+)\]\((https?:[^)\s]+)\)$/);
+        if (link)
+          return (
+            <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-pigment-soft">
+              {link[1]}
+            </a>
+          );
+        const bold = p.match(/^\*\*([^*]+)\*\*$/);
+        if (bold) return <strong key={i}>{bold[1]}</strong>;
+        const em = p.match(/^_([^_]+)_$/) ?? p.match(/^\*([^*]+)\*$/);
+        if (em) return <em key={i}>{em[1]}</em>;
+        return <Fragment key={i}>{p}</Fragment>;
+      })}
+    </>
+  );
+}
+
+type Block = { kind: "p" | "ul" | "ol"; items: string[] };
+
+function blocks(text: string): Block[] {
+  const out: Block[] = [];
+  for (const raw of text.split("\n")) {
+    const l = raw.trimEnd();
+    const ul = l.match(/^\s*[-•]\s+(.*)/);
+    const ol = l.match(/^\s*\d+\.\s+(.*)/);
+    const kind = ul ? "ul" : ol ? "ol" : "p";
+    if (!l.trim()) {
+      continue;
+    }
+    const item = (ul ?? ol)?.[1] ?? l;
+    const last = out[out.length - 1];
+    if (kind !== "p" && last?.kind === kind) last.items.push(item);
+    else out.push({ kind, items: [item] });
+  }
+  return out;
+}
+
+export default function NyrroMarkdown({ text }: { text: string }) {
+  return (
+    <>
+      {blocks(text).map((b, i) => {
+        const gap = i ? "mt-3" : "";
+        if (b.kind === "p")
+          return (
+            <p key={i} className={gap}>
+              <Inline text={b.items[0]} />
+            </p>
+          );
+        const Tag = b.kind;
+        return (
+          <Tag key={i} className={`${gap} ${b.kind === "ul" ? "list-disc" : "list-decimal"} space-y-1 pl-5`}>
+            {b.items.map((it, j) => (
+              <li key={j}>
+                <Inline text={it} />
+              </li>
+            ))}
+          </Tag>
+        );
+      })}
+    </>
+  );
+}

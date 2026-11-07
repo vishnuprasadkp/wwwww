@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nyrro — test console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#DED6D5; --panel:#F3EFEE; --ink:#3C3A38; --muted:#7A716E; --line:#B7ADAB; --bot:#FFFFFF; --me:#3C3A38; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.55 Inter, system-ui, sans-serif; min-height:100vh; display:flex; justify-content:center; padding:32px 16px; }
+  .wrap { width:100%; max-width:720px; display:flex; flex-direction:column; gap:16px; }
+  header h1 { font:600 30px/1.2 "Playfair Display", serif; margin:0 0 4px; }
+  header p { margin:0; color:var(--muted); }
+  .chat { background:var(--panel); border:1px solid var(--line); border-radius:16px; height:62vh; min-height:420px; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:14px; }
+  .msg { max-width:88%; padding:12px 16px; border-radius:14px; }
+  .msg.bot { background:var(--bot); align-self:flex-start; border:1px solid #E6E0DF; }
+  .msg.me { background:var(--me); color:#fff; align-self:flex-end; }
+  .msg p { margin:0 0 8px; } .msg p:last-child { margin-bottom:0; }
+  .msg ul, .msg ol { margin:4px 0 8px; padding-left:20px; } .msg li { margin:3px 0; }
+  .msg a { color:inherit; text-decoration:underline; text-underline-offset:2px; }
+  .msg em { color:var(--muted); }
+  .meta { font:11px/1.4 "JetBrains Mono", monospace; color:var(--muted); margin-top:6px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .chip { border:1px solid var(--line); background:transparent; border-radius:999px; padding:5px 12px; font:13px Inter, sans-serif; color:var(--ink); cursor:pointer; }
+  .chip:hover { background:var(--bg); }
+  form { display:flex; gap:8px; }
+  input { flex:1; border:1px solid var(--line); background:#fff; border-radius:12px; padding:13px 16px; font:15px Inter, sans-serif; color:var(--ink); outline:none; }
+  input:focus { border-color:var(--ink); }
+  button.send { border:0; background:var(--ink); color:#fff; border-radius:12px; padding:0 20px; font:500 15px Inter, sans-serif; cursor:pointer; }
+  .row { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; font-size:13px; color:var(--muted); }
+  label { display:flex; gap:6px; align-items:center; cursor:pointer; }
+  details { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px 14px; font-size:13px; }
+  details ul { margin:8px 0 0; padding-left:18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Nyrro 🪲</h1>
+    <p>Test console for the portfolio assistant. Ask anything a visitor might ask.</p>
+  </header>
+  <div class="chat" id="chat" aria-live="polite"></div>
+  <form id="f"><input id="q" placeholder="Ask about Vishnu's work…" autocomplete="off" aria-label="Your question"><button class="send">Ask</button></form>
+  <div class="row">
+    <label><input type="checkbox" id="dbg" checked style="width:auto"> Show match details</label>
+    <span id="stats"></span>
+  </div>
+  <details id="missBox"><summary>Unanswered questions this session (<span id="missN">0</span>)</summary><ul id="miss"></ul></details>
+</div>
+<script>
+/*__KB__*/
+/*__MATCHER__*/
+</script>
+<script>
+const misses = [];
+const nyrro = createNyrro(KB, { onMiss: q => { misses.push(q); renderMisses(); } });
+const chat = document.getElementById("chat"), input = document.getElementById("q"), dbg = document.getElementById("dbg");
+document.getElementById("stats").textContent = `${KB.intents.length} topics · ${KB.entities.length} projects`;
+
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function inline(s){
+  return esc(s).replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>").replace(/(^|[^*])_([^_]+)_/g,"$1<em>$2</em>").replace(/\*([^*]+)\*/g,"<em>$1</em>");
+}
+function md(text){
+  const out=[]; let list=null;
+  for (const raw of text.split("\n")) {
+    const l = raw.trimEnd();
+    let m;
+    if ((m = l.match(/^\s*[-•]\s+(.*)/))) { if (list!=="ul"){ if(list) out.push(`</${list}>`); out.push("<ul>"); list="ul"; } out.push(`<li>${inline(m[1])}</li>`); continue; }
+    if ((m = l.match(/^\s*\d+\.\s+(.*)/))) { if (list!=="ol"){ if(list) out.push(`</${list}>`); out.push("<ol>"); list="ol"; } out.push(`<li>${inline(m[1])}</li>`); continue; }
+    if (list){ out.push(`</${list}>`); list=null; }
+    if (l.trim()) out.push(`<p>${inline(l)}</p>`);
+  }
+  if (list) out.push(`</${list}>`);
+  return out.join("");
+}
+function add(role, html, extra){
+  const d=document.createElement("div"); d.className="msg "+role; d.innerHTML=html; if(extra) d.appendChild(extra);
+  chat.appendChild(d); chat.scrollTop=chat.scrollHeight;
+}
+function ask(q){
+  if(!q.trim()) return;
+  add("me", esc(q));
+  const r = nyrro.ask(q);
+  const box=document.createElement("div");
+  if (r.followups && r.followups.length){
+    const c=document.createElement("div"); c.className="chips";
+    r.followups.slice(0,4).forEach(t=>{ const b=document.createElement("button"); b.className="chip"; b.type="button"; b.textContent=t; b.onclick=()=>ask(t); c.appendChild(b); });
+    box.appendChild(c);
+  }
+  if (dbg.checked){ const m=document.createElement("div"); m.className="meta"; const x=r.match; m.textContent=`match: ${x.type}${x.id?" · "+x.id:""}${x.aspect?" · "+x.aspect:""} · score ${x.score}`; box.appendChild(m); }
+  add("bot", md(r.answer), box);
+}
+function renderMisses(){ document.getElementById("missN").textContent=misses.length; document.getElementById("miss").innerHTML=misses.map(m=>`<li>${esc(m)}</li>`).join(""); }
+document.getElementById("f").addEventListener("submit", e=>{ e.preventDefault(); const v=input.value; input.value=""; ask(v); });
+ask("hi");
+</script>
+</body>
+</html>

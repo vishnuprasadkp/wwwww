@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import NyrroMarkdown from "./NyrroMarkdown";
 import { usePathname } from "next/navigation";
 import { pageInfo } from "@/lib/nivvi-pages";
 import MothTrail, { MothIcon } from "@/components/copilot/Moth";
@@ -309,7 +310,7 @@ function useLevels(active: boolean, n = 44) {
   return levels;
 }
 
-const plain = (t: string) => t.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*/g, "");
+const plain = (t: string) => t.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*/g, "").replace(/^\s*([-•]|\d+\.)\s+/gm, "").replace(/(^|\s)[_*]([^_*]+)[_*]/g, "$1$2");
 const stopSpeaking = () => typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.cancel();
 
 /** Best available natural-sounding voice: Indian English first, then other English voices. */
@@ -404,28 +405,24 @@ function NivviPanel() {
     setMessages([...history, { role: "assistant", content: "" }]);
     setBusy(true);
     setSignal({ kind: "send", id: Date.now() });
-    abort.current = new AbortController();
-    let raw = "";
+    // Nyrro answers on the device from the approved knowledge base: no API. It is rebuilt from the whole
+    // conversation each time, so it remembers what was said (no repeats, follow-ups apply to the last project)
+    // and "regenerate" behaves.
+    let finalText = "";
+    let next: string[] = [];
     try {
-      const res = await fetch("/api/nivvi", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ page: topicRef.current ?? pageRef.current, messages: history.map(({ role, content }) => ({ role, content })) }),
-        signal: abort.current.signal,
-      });
-      if (!res.ok || !res.body) throw new Error(await res.text());
-      const reader = res.body.getReader();
-      const dec = new TextDecoder();
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        raw += dec.decode(value, { stream: true });
-        setMessages([...history, { role: "assistant", content: parseReply(raw).text }]);
-      }
-    } catch (e) {
-      if ((e as Error).name !== "AbortError") raw = raw || "I couldn't reach my brain just now — please try again in a moment.";
+      const [{ default: kb }, mod] = await Promise.all([import("@/lib/nyrro/nyrro-knowledge-base.json"), import("@/lib/nyrro/nyrro-matcher")]);
+      const createNyrro = (mod as unknown as { default?: typeof mod.default }).default ?? (mod as unknown as typeof mod.default);
+      const nyrro = createNyrro(kb);
+      const questions = history.filter((m) => m.role === "user").map((m) => m.content);
+      for (const q of questions.slice(0, -1)) nyrro.ask(q);
+      const reply = nyrro.ask(questions[questions.length - 1]);
+      finalText = reply.answer;
+      next = (reply.followups ?? []).slice(0, 4);
+      await new Promise((r) => setTimeout(r, 250));
+    } catch {
+      finalText = "I couldn't reach my notes just now. Please try again, or email Vishnu at vishnuprasadkp98@gmail.com.";
     }
-    const { text: finalText, next } = parseReply(raw);
     setMessages([...history, { role: "assistant", content: finalText, next }]);
     setBusy(false);
     setSignal({ kind: "reply", id: Date.now() });
@@ -603,11 +600,7 @@ function NivviPanel() {
               ) : (
                 <div key={i} data-ledge="msg-a" className="text-[15px] leading-[24px]">
                   {m.content ? (
-                    m.content.split(/\n{2,}/).map((para, j) => (
-                      <p key={j} className={j ? "mt-3" : ""}>
-                        <Rich text={para} onNavigate={() => window.matchMedia("(max-width: 767px)").matches && close()} />
-                      </p>
-                    ))
+                    <NyrroMarkdown text={m.content} />
                   ) : (
                     <span className="inline-flex items-center gap-1 py-2" aria-label="Nyrro is thinking">
                       {[0, 1, 2].map((d) => (
@@ -732,7 +725,7 @@ function NivviPanel() {
           </button>
         </div>
         )}
-        {lastAssistant && <p className="sr-only" aria-live="polite">{lastAssistant.content}</p>}
+        {lastAssistant && <p className="sr-only" aria-live="polite">{plain(lastAssistant.content)}</p>}
       </form>
     </aside>
   );
