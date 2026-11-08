@@ -64,11 +64,11 @@ void main(){
   float gran = noise(gp * 0.45) * 0.6 + noise(gp * 0.9 + 7.0) * 0.4;
   col *= 1.0 + (gran - 0.5) * (0.16 + 0.08 * (1.0 - f));
 
-  // the colour comes in once: it spreads out from a few places until the whole box is covered
+  // the colour comes in once, as a soft wet front that flows across from the left and fills the box
   vec2 a = vUv * vec2(aspect, 1.0);
-  float d = min(min(distance(a, vec2(aspect * 0.22, 0.45)), distance(a, vec2(aspect * 0.55, 0.6))), distance(a, vec2(aspect * 0.85, 0.4)));
-  float edge = reveal * (aspect * 0.55 + 0.9) - d + 0.9 * (fbm(a * 2.2 + seed * 1.3) - 0.5) + 0.4 * (q.x - 0.5);
-  col = mix(paper, col, smoothstep(0.0, 0.3, edge));
+  float front = reveal * (aspect + 1.6) - 0.8 - a.x + 0.35 * (vUv.y - 0.5) * (vUv.y - 0.5);
+  front += 0.55 * (fbm(a * 1.6 + seed * 1.3 + vec2(0.0, t * 4.0)) - 0.5);
+  col = mix(paper, col, smoothstep(0.0, 0.7, front));
 
   // the grain of the paper
   vec2 g = gl_FragCoord.xy;
@@ -137,7 +137,7 @@ export default function HeroInk() {
       // the colour spreads in over the first seven seconds, slowing as it reaches the edges
       const k = Math.min(1, t / 7);
       gl.uniform1f(uTime, t + 20);
-      gl.uniform1f(uReveal, 1 - Math.pow(1 - k, 2.2));
+      gl.uniform1f(uReveal, k * k * (3 - 2 * k)); // eases in and out
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
 

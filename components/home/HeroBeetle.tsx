@@ -40,7 +40,7 @@ const SRC = { core: "/images/site/hero-beetle-v6-core.webp", limbs: "/images/sit
 const BODY_C: Pt = [512, 460];
 const SHOULDER: [Pt, Pt] = [[405, 395], [618, 395]];
 let KB = 0.4; // painting px -> stage px
-const WING_U = 1050; // a wing is this long, in painting px (drawn larger than in the painting, so the wings lead)
+const WING_U = 1320; // a wing is this long, in painting px (drawn larger than in the painting, so the wings lead)
 const BODY_A = 0.55;
 const BODY_S = 0.8; // the body is drawn a little smaller than in the painting, the wings much larger // the body is a little see-through, so it sits in the paint
 const WING_ASPECT = 1282 / 766;
@@ -348,7 +348,7 @@ export default function HeroBeetle() {
     CX = W * 0.5;
     CY = H * 0.5;
     SC = 1;
-    KB = clamp(Math.min(W * 0.7, H * 1.55), 380, 960) / (WING_U * 2);
+    KB = clamp(Math.min(W * 0.7, H * 1.55), 380, 960) / 2100;
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;
@@ -540,6 +540,9 @@ export default function HeroBeetle() {
       const side = Math.random() < 0.5 ? 1 : -1; // it comes in from the right or from the left
       const pose = { x: side > 0 ? W + KB * WING_U * 1.1 : -KB * WING_U * 1.1, y: H * rnd(0.4, 0.6), vx: -80 * side, vy: rnd(-8, 8), ax: 0, ay: 0, tx: W * 0.5, ty: H * 0.5, next: 0, yaw: -1.5708 * side, roll: 0, pitch: 0 };
       let gait = Math.random() * 6.283;
+      let mode: "fly" | "walk" = "fly";
+      let modeUntil = 0;
+      let fold = 0;
       let phase = Math.random() * 6.283;
       let tLast = 0;
       let t0clock = 0;
@@ -575,7 +578,7 @@ export default function HeroBeetle() {
         const src = brush.get(t);
         if (src) cards.push({ sp, src, pivot, p, u, v, spin, alpha, reach });
       };
-      type Moment = { wingAlpha: [number, number]; wingSpin: [number, number]; wingTwist: [number, number]; legSpin: number[]; legZ: number[]; feelSpin: number[]; open: number };
+      type Moment = { wingAlpha: [number, number]; wingSpin: [number, number]; wingTwist: [number, number]; legSpin: number[]; legZ: number[]; feelSpin: number[]; open: number; fold: number };
       const drawBeetle = (g: CanvasRenderingContext2D, t: number, R: Mat, ox: number, oy: number, k: number, o: Moment) => {
         cards.length = 0;
         // wings: the plane of each wing swings up and down about the line of the body
@@ -583,7 +586,7 @@ export default function HeroBeetle() {
           const s = side === 0 ? -1 : 1;
           const a = o.wingAlpha[side];
           const sh = SHOULDER[side];
-          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side]) * Math.PI) / 180, 0.96, [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
+          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side] + 68 * o.fold) * Math.PI) / 180, 0.96 * (1 - 0.88 * o.fold), [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
         }
         // legs hang a little below the body, feelers and head a little above
         legs.forEach((l, i) => card(l.sp, bLegs[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], o.legZ[i]], [1, 0, 0], [0, 1, 0], (o.legSpin[i] * Math.PI) / 180, BODY_A));
@@ -669,43 +672,64 @@ export default function HeroBeetle() {
           }
         }
 
-        // the beetle comes in from one side and wanders all over the box, slowly: it turns to face where it is going
-        // and banks into its turns, so it is seen from one side and then the other
+        // the beetle comes in from one side, flying. Now and then it lands, folds its wings and walks a little on the
+        // paper, then opens its wings and flies off to somewhere else in the box
         const lift = smooth(flyFrom, flyFrom + 1.2, t);
         if (t >= flyFrom) {
+          if (!modeUntil) modeUntil = t + rnd(9, 14);
+          const near = Math.hypot(pose.tx - pose.x, pose.ty - pose.y) < 50;
+          if (mode === "fly" && t > modeUntil && near) {
+            mode = "walk";
+            modeUntil = t + rnd(6, 10);
+            pose.next = t + 1.2; // a moment to settle before it starts walking
+          } else if (mode === "walk" && t > modeUntil) {
+            mode = "fly";
+            modeUntil = t + rnd(10, 18);
+            pose.next = t + 0.9; // it opens its wings first
+          }
           if (t > pose.next) {
-            // somewhere else in the box, not too near where it is now
             let tx = 0;
             let ty = 0;
-            for (let k = 0; k < 6; k++) {
-              tx = W * rnd(0.12, 0.88);
-              ty = H * rnd(0.4, 0.6);
-              if (Math.hypot(tx - pose.x, ty - pose.y) > W * 0.22) break;
+            if (mode === "fly") {
+              // somewhere else in the box, not too near where it is now
+              for (let k = 0; k < 6; k++) {
+                tx = W * rnd(0.12, 0.88);
+                ty = H * rnd(0.4, 0.6);
+                if (Math.hypot(tx - pose.x, ty - pose.y) > W * 0.25) break;
+              }
+              pose.next = t + rnd(4.5, 7.5);
+            } else {
+              // a few steps this way or that
+              tx = clamp(pose.x + rnd(-1, 1) * W * 0.1, W * 0.15, W * 0.85);
+              ty = clamp(pose.y + rnd(-0.12, 0.12) * H, H * 0.38, H * 0.62);
+              pose.next = t + rnd(2.5, 4);
             }
             pose.tx = tx;
             pose.ty = ty;
-            pose.next = t + rnd(4.5, 7.5);
           }
-          const ax = (pose.tx - pose.x) * 0.1 - pose.vx * 0.6;
-          const ay = (pose.ty - pose.y) * 0.1 - pose.vy * 0.6;
+          const walking = mode === "walk" || fold > 0.5;
+          const holding = (mode === "walk" && fold < 0.9) || (mode === "fly" && fold > 0.15); // still folding or opening
+          const gain = holding ? 0 : 1;
+          const ax = ((pose.tx - pose.x) * (walking ? 0.25 : 0.1) - pose.vx * (walking ? 1.2 : 0.6)) * gain - (holding ? pose.vx * 2 : 0);
+          const ay = ((pose.ty - pose.y) * (walking ? 0.25 : 0.1) - pose.vy * (walking ? 1.2 : 0.6)) * gain - (holding ? pose.vy * 2 : 0);
           pose.ax += (ax - pose.ax) * Math.min(1, dt * 2);
           pose.ay += (ay - pose.ay) * Math.min(1, dt * 2);
           pose.vx += pose.ax * dt;
           pose.vy += pose.ay * dt;
           const sp = Math.hypot(pose.vx, pose.vy);
-          const vmax = clamp(W * 0.055, 50, 95);
+          const vmax = walking ? clamp(W * 0.012, 12, 22) : clamp(W * 0.055, 50, 95);
           if (sp > vmax) {
             pose.vx *= vmax / sp;
             pose.vy *= vmax / sp;
           }
           pose.x += pose.vx * dt;
           pose.y += pose.vy * dt;
-          if (sp > 6) pose.yaw += angDiff(Math.atan2(pose.vx, -pose.vy), pose.yaw) * Math.min(1, dt * 1.1);
-          const lateral = pose.ax * Math.cos(pose.yaw) + pose.ay * Math.sin(pose.yaw);
+          if (sp > (walking ? 3 : 6)) pose.yaw += angDiff(Math.atan2(pose.vx, -pose.vy), pose.yaw) * Math.min(1, dt * (walking ? 1.6 : 1.1));
           pose.roll = 0;
-          void lateral;
           pose.pitch = 0;
+          fold += ((mode === "walk" ? 1 : 0) - fold) * Math.min(1, dt * 1.6);
         }
+        const air = lift * (1 - fold); // how far up off the paper it is
 
         // wing beat: slow and smooth; the speed and depth drift, and the outer wing works harder in a turn
         phase += dt * 6.283 * (0.42 + 0.22 * nFreq(t * 0.09)) * (0.3 + 0.7 * lift); // slow, and the pace keeps changing
@@ -716,19 +740,20 @@ export default function HeroBeetle() {
         const wr = wave(-0.05 * nSkew(t * 0.23 + 2));
         const deg = Math.PI / 180;
         // the legs step slowly in two groups of three, like an insect walking
-        gait += dt * 6.283 * 0.5 * (0.85 + 0.2 * nFreq(t * 0.1 + 5));
+        gait += dt * 6.283 * (0.5 + 0.9 * fold) * (0.85 + 0.2 * nFreq(t * 0.1 + 5)); // quicker steps when it walks
         const gph = nLeg.map((_, i) => gait + (i % 2) * Math.PI);
         const moment: Moment = {
-          wingAlpha: [(5 + 13 * beatDepth * (0.5 + 0.5 * Math.sin(phase + 1.3))) * deg, (5 + 13 * beatDepth * (0.5 + 0.5 * Math.sin(phase + 1.3))) * deg],
-          wingSpin: [10 * beatDepth * Math.sin(phase) + 2 * nSkew(t * 0.15) * lift, 10 * beatDepth * Math.sin(phase) - 2 * nSkew(t * 0.15) * lift],
+          wingAlpha: [(5 + 13 * (1 - fold) * beatDepth * (0.5 + 0.5 * Math.sin(phase + 1.3))) * deg, (5 + 13 * (1 - fold) * beatDepth * (0.5 + 0.5 * Math.sin(phase + 1.3))) * deg],
+          wingSpin: [10 * (1 - fold) * beatDepth * Math.sin(phase) + 2 * nSkew(t * 0.15) * lift, 10 * (1 - fold) * beatDepth * Math.sin(phase) - 2 * nSkew(t * 0.15) * lift],
           wingTwist: [0, 0],
-          legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * 12 * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
+          legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * (5 + 11 * fold) * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
           legZ: gph.map((g) => -16 + 18 * Math.max(0, Math.cos(g)) * lift),
           feelSpin: nFeel.map((n, i) => 8 * n(t * 1.1 + i * 3) * (0.4 + 0.6 * lift)),
-          open: 0.12 * easeInOut(clamp01((t - flyFrom + 0.5) / 2.5)),
+          open: 0.12 * easeInOut(clamp01((t - flyFrom + 0.5) / 2.5)) * (1 - fold),
+          fold,
         };
         const bob = 0;
-        const kk = KB * (0.9 + 0.1 * lift) * (1 + 0.02 * nScale(t * 0.18) * lift);
+        const kk = KB * (0.9 + 0.1 * lift) * (0.94 + 0.06 * (1 - fold)) * (1 + 0.02 * nScale(t * 0.18) * lift);
 
         // faint stains left on the paper as it flies, which dry away
         trg.globalCompositeOperation = "destination-out";
@@ -774,9 +799,9 @@ export default function HeroBeetle() {
         // it casts a soft shadow on the paper, further off and softer the higher it is
         sg.save();
         sg.shadowColor = `rgba(72,58,46,${0.2 * lift})`;
-        sg.shadowBlur = (12 + 12 * lift) * ps;
-        sg.shadowOffsetX = 10 * lift * ps;
-        sg.shadowOffsetY = 18 * lift * ps;
+        sg.shadowBlur = (6 + 18 * air) * ps;
+        sg.shadowOffsetX = (3 + 9 * air) * lift * ps;
+        sg.shadowOffsetY = (4 + 16 * air) * lift * ps;
         sg.globalAlpha = lift;
         sg.drawImage(bl, 0, 0, W, H);
         sg.restore();
@@ -804,7 +829,7 @@ export default function HeroBeetle() {
           brushes.forEach((b) => b.update(1e6));
           sg.clearRect(0, 0, W, H);
           washes.forEach((w) => sg.drawImage(w.sp.c, w.sp.ox, w.sp.oy, w.sp.w, w.sp.h));
-          drawBeetle(sg, 1e6, turn(TILT, 0, 0), CX, CY, KB, { wingAlpha: [0.1, 0.1], wingSpin: [0, 0], wingTwist: [0, 0], legSpin: [0, 0, 0, 0, 0, 0], legZ: [-16, -16, -16, -16, -16, -16], feelSpin: [0, 0], open: 0 });
+          drawBeetle(sg, 1e6, turn(TILT, 0, 0), CX, CY, KB, { wingAlpha: [0.1, 0.1], wingSpin: [0, 0], wingTwist: [0, 0], legSpin: [0, 0, 0, 0, 0, 0], legZ: [-16, -16, -16, -16, -16, -16], feelSpin: [0, 0], open: 0, fold: 0 });
           ctx.drawImage(stage, 0, 0, W, H);
           return;
         }
