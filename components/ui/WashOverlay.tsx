@@ -54,14 +54,16 @@ void main(){
   col = mix(col, uMid, smoothstep(0.40, 0.58, f));
   col = mix(col, uDeep, smoothstep(0.58, 0.8, f + 0.25 * (r.x - 0.5)));
   col = mix(col, uGrey, smoothstep(0.6, 0.85, r.y) * smoothstep(0.7, 0.4, f) * 0.35);
-  // the painted ground keeps its own grain; the wash only moves its light and colour, laid over it in soft light:
-  // where the wash matches the ground nothing changes, where it is deeper or paler the ground darkens or lightens
-  vec3 tint = clamp(0.5 + (col - uMid) * 1.35, 0.0, 1.0);
-  // nowhere near the product: it is never touched, not its edge, its corners, its strokes or its shadow
+  // the grain of the paper, as in the painting
+  vec2 gp = gl_FragCoord.xy;
+  float gran = noise(gp * 0.45) * 0.6 + noise(gp * 0.9 + 7.0) * 0.4;
+  col *= 1.0 + (gran - 0.5) * (0.16 + 0.08 * (1.0 - f));
+  col += (hash(gp) - 0.5) * 0.022 + (noise(gp * 0.5) - 0.5) * 0.02;
+  // the whole painted ground is the moving painting; the product, its strokes, corners, text and shadows, is the original
   vec2 iu = crop.xy + vUv * crop.zw;
   float m = texture2D(mask, iu).r;
-  float a = 1.0 - smoothstep(0.02, 0.45, m);
-  gl_FragColor = vec4(tint * a, a);
+  float a = 1.0 - m;
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0) * a, a);
 }`;
 
 type Item = {
@@ -260,5 +262,5 @@ export default function WashOverlay({ mask, palette, fill = false }: { mask: str
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mask]);
 
-  return <canvas ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" style={{ opacity: 0, transition: "opacity 0.9s ease", mixBlendMode: "soft-light" }} />;
+  return <canvas ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" style={{ opacity: 0, transition: "opacity 0.9s ease" }} />;
 }

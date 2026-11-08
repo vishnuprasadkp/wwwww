@@ -5,7 +5,8 @@
    97,
    122,
    97
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/adeo/analysis-1.png": {
   "cover": 0.366,
@@ -13,7 +14,8 @@
    148,
    171,
    148
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/adeo/analysis-2.png": {
   "cover": 0.716,
@@ -21,15 +23,17 @@
    96,
    122,
    96
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/adeo/assistant.png": {
-  "cover": 0.43,
+  "cover": 0.44,
   "ground": [
    145,
    166,
    145
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/adeo/hero.png": {
   "cover": 0.597,
@@ -37,7 +41,8 @@
    100,
    126,
    100
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/adeo/voting-1.png": {
   "cover": 0.213,
@@ -45,7 +50,8 @@
    146,
    169,
    146
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/adeo/voting-2.png": {
   "cover": 0.247,
@@ -53,7 +59,8 @@
    97,
    123,
    97
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/adeo/voting-3.png": {
   "cover": 0.242,
@@ -61,7 +68,8 @@
    149,
    172,
    149
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/adeo/voting-4.png": {
   "cover": 0.097,
@@ -69,15 +77,17 @@
    91,
    116,
    91
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/ai-agent/advanced.png": {
   "cover": 0.666,
   "ground": [
-   125,
-   82,
-   55
-  ]
+   118,
+   77,
+   52
+  ],
+  "v": "2611090518"
  },
  "/images/ai-agent/discovery.png": {
   "cover": 0.308,
@@ -85,7 +95,8 @@
    178,
    133,
    113
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/ai-agent/guardrails.png": {
   "cover": 0.605,
@@ -93,7 +104,8 @@
    178,
    134,
    113
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/ai-agent/hero.png": {
   "cover": 0.336,
@@ -101,7 +113,8 @@
    119,
    77,
    52
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/ai-agent/simple.png": {
   "cover": 0.666,
@@ -109,7 +122,8 @@
    123,
    81,
    55
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/ai-agent/skills.png": {
   "cover": 0.637,
@@ -117,7 +131,8 @@
    122,
    80,
    54
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/ai-agent/workflow.png": {
   "cover": 0.603,
@@ -125,7 +140,8 @@
    183,
    140,
    117
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/connect-1.png": {
   "cover": 0.285,
@@ -133,7 +149,8 @@
    145,
    163,
    171
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/connect-2.png": {
   "cover": 0.759,
@@ -141,7 +158,8 @@
    84,
    103,
    111
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/customise-1.png": {
   "cover": 0.651,
@@ -149,7 +167,8 @@
    146,
    164,
    172
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/customise-2.png": {
   "cover": 0.442,
@@ -157,7 +176,8 @@
    149,
    167,
    175
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/customise-3.png": {
   "cover": 0.439,
@@ -165,7 +185,8 @@
    86,
    104,
    113
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/discovery.png": {
   "cover": 0.195,
@@ -173,7 +194,8 @@
    87,
    106,
    115
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/hero.png": {
   "cover": 0.152,
@@ -181,7 +203,8 @@
    144,
    162,
    170
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/manage-1.png": {
   "cover": 0.023,
@@ -189,7 +212,8 @@
    85,
    103,
    112
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/manage-2.png": {
   "cover": 0.757,
@@ -197,7 +221,8 @@
    146,
    165,
    174
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/marketplace.png": {
   "cover": 0.486,
@@ -205,7 +230,8 @@
    88,
    106,
    115
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/enterprise-search/results.png": {
   "cover": 0.691,
@@ -213,7 +239,8 @@
    85,
    104,
    113
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/hdfc/hero.png": {
   "cover": 0.64,
@@ -221,7 +248,8 @@
    89,
    108,
    117
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/hdfc/overview.png": {
   "cover": 0.705,
@@ -229,7 +257,8 @@
    149,
    167,
    175
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/sony/clm.png": {
   "cover": 0.686,
@@ -237,7 +266,8 @@
    99,
    124,
    99
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/sony/governance.png": {
   "cover": 0.669,
@@ -245,7 +275,8 @@
    153,
    176,
    153
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/sony/hero.png": {
   "cover": 0.367,
@@ -253,7 +284,8 @@
    148,
    171,
    148
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/sony/social.png": {
   "cover": 0.628,
@@ -261,7 +293,8 @@
    147,
    171,
    147
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/sony/sports.png": {
   "cover": 0.697,
@@ -269,7 +302,8 @@
    99,
    125,
    99
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/home/adeo.png": {
   "cover": 0.138,
@@ -277,7 +311,8 @@
    107,
    134,
    107
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/home/ai-agent.png": {
   "cover": 0.29,
@@ -285,7 +320,8 @@
    142,
    93,
    66
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/home/hdfc.png": {
   "cover": 0.265,
@@ -293,7 +329,8 @@
    86,
    104,
    113
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/home/search.png": {
   "cover": 0.101,
@@ -301,7 +338,8 @@
    144,
    162,
    171
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/home/sony.png": {
   "cover": 0.266,
@@ -309,15 +347,17 @@
    149,
    172,
    149
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/next/adeo.png": {
   "cover": 0.186,
   "ground": [
-   108,
-   134,
-   108
-  ]
+   104,
+   129,
+   104
+  ],
+  "v": "2611090518"
  },
  "/images/next/ai-agent.png": {
   "cover": 0.292,
@@ -325,7 +365,8 @@
    145,
    95,
    67
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/next/enterprise-search.png": {
   "cover": 0.115,
@@ -333,7 +374,8 @@
    145,
    164,
    172
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/next/hdfc.png": {
   "cover": 0.392,
@@ -341,7 +383,8 @@
    87,
    104,
    113
-  ]
+  ],
+  "v": "2611090518"
  },
  "/images/next/sony.png": {
   "cover": 0.266,
@@ -349,6 +392,7 @@
    148,
    171,
    148
-  ]
+  ],
+  "v": "2611090518"
  }
 }
