@@ -667,9 +667,9 @@ export default function HeroBeetle() {
         const lift = smooth(flyFrom, flyFrom + 1.8, t);
         pose.x = CX + 14 * nX(t * 0.3) * lift;
         pose.y = CY + 8 * nY(t * 0.25) * lift;
-        pose.yaw = 0.14 * nYaw(t * 0.22) * lift;
-        pose.roll = 0.14 * nRoll(t * 0.3) * lift;
-        pose.pitch = 0.42 + 0.1 * nPitch(t * 0.27) * lift; // seen a little from behind and above, so the wings are seen to rise and fall
+        pose.yaw = 0.06 * nYaw(t * 0.22) * lift;
+        pose.roll = 0.06 * nRoll(t * 0.3) * lift;
+        pose.pitch = 0.04 * nPitch(t * 0.27) * lift; // seen from straight above, so a wing stroke shows as the wing closing and opening, not waving up the page
 
         // wing beat: slow and smooth; the speed and depth drift, and the outer wing works harder in a turn
         phase += dt * 6.283 * (0.9 + 0.1 * nFreq(t * 0.17)) * (0.3 + 0.7 * lift);
@@ -683,9 +683,9 @@ export default function HeroBeetle() {
         gait += dt * 6.283 * 0.5 * (0.85 + 0.2 * nFreq(t * 0.1 + 5));
         const gph = nLeg.map((_, i) => gait + (i % 2) * Math.PI);
         const moment: Moment = {
-          wingAlpha: [(8 * lift + 50 * beatDepth * wl) * deg, (8 * lift + 50 * beatDepth * wr) * deg],
-          wingSpin: [(3 * wl + 10 * Math.cos(phase + 0.25 * nSkew(t * 0.2))) * beatDepth, (3 * wr + 10 * Math.cos(phase - 0.2 * nSkew(t * 0.23 + 2))) * beatDepth],
-          wingTwist: [0.45 * Math.cos(phase) * beatDepth, 0.45 * Math.cos(phase - 0.2 * nSkew(t * 0.23 + 2)) * beatDepth],
+          wingAlpha: [(6 * lift + 40 * beatDepth * wl) * deg, (6 * lift + 40 * beatDepth * wr) * deg],
+          wingSpin: [0.6 * wl * beatDepth, 0.6 * wr * beatDepth],
+          wingTwist: [0.2 * Math.cos(phase) * beatDepth, 0.2 * Math.cos(phase) * beatDepth],
           legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * 12 * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
           legZ: gph.map((g) => -16 + 18 * Math.max(0, Math.cos(g)) * lift),
           feelSpin: nFeel.map((n, i) => 8 * n(t * 1.1 + i * 3) * (0.4 + 0.6 * lift)),
