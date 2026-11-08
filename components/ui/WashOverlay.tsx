@@ -54,25 +54,14 @@ void main(){
   col = mix(col, uMid, smoothstep(0.40, 0.58, f));
   col = mix(col, uDeep, smoothstep(0.58, 0.8, f + 0.25 * (r.x - 0.5)));
   col = mix(col, uGrey, smoothstep(0.6, 0.85, r.y) * smoothstep(0.7, 0.4, f) * 0.35);
-  vec2 gp = gl_FragCoord.xy;
-  float gran = noise(gp * 0.45) * 0.6 + noise(gp * 0.9 + 7.0) * 0.4;
-  col *= 1.0 + (gran - 0.5) * (0.16 + 0.08 * (1.0 - f));
-  col += (hash(gp) - 0.5) * 0.022 + (noise(gp * 0.5) - 0.5) * 0.02;
-
-  // the product stays: the wash is see-through over it
+  // the painted ground keeps its own grain; the wash only moves its light and colour, laid over it in soft light:
+  // where the wash matches the ground nothing changes, where it is deeper or paler the ground darkens or lightens
+  vec3 tint = clamp(0.5 + (col - uMid) * 1.35, 0.0, 1.0);
+  // nowhere near the product: it is never touched, not its edge, its corners, its strokes or its shadow
   vec2 iu = crop.xy + vUv * crop.zw;
   float m = texture2D(mask, iu).r;
-  // a soft shadow under the product, as it had on the painted ground
-  float sh = 0.0;
-  for (int i = 1; i <= 4; i++) {
-    float k = float(i);
-    sh += texture2D(mask, iu + vec2(0.0, k * 3.0) * texel).r;
-    sh += texture2D(mask, iu + vec2(k * 2.0, k * 3.0) * texel).r * 0.5;
-    sh += texture2D(mask, iu + vec2(-k * 2.0, k * 3.0) * texel).r * 0.5;
-  }
-  col *= 1.0 - 0.1 * clamp(sh / 8.0, 0.0, 1.0);
-  float a = 1.0 - smoothstep(0.25, 0.75, m);
-  gl_FragColor = vec4(clamp(col, 0.0, 1.0) * a, a);
+  float a = 1.0 - smoothstep(0.02, 0.45, m);
+  gl_FragColor = vec4(tint * a, a);
 }`;
 
 type Item = {
@@ -271,5 +260,5 @@ export default function WashOverlay({ mask, palette, fill = false }: { mask: str
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mask]);
 
-  return <canvas ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" style={{ opacity: 0, transition: "opacity 0.9s ease" }} />;
+  return <canvas ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" style={{ opacity: 0, transition: "opacity 0.9s ease", mixBlendMode: "soft-light" }} />;
 }

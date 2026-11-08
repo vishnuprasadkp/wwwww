@@ -102,22 +102,10 @@ def mask_for(path):
     prod |= forced
     cover = float(prod.mean())
 
-    # the edge, pixel by pixel: in a thin band round the product each pixel is judged on its own, so the cut follows the
-    # product's real outline and rounded corners exactly, neither biting into it nor leaving a patch of old ground round it
-    up = lambda a: np.pad(np.repeat(np.repeat(a, BLOCK, 0), BLOCK, 1), ((0, h - gh * BLOCK), (0, w - gw * BLOCK)), mode="edge")
-    band = up(dilate(prod, 2) & ~erode(prod, 2) & ~dilate(forced, 2))
-    near = up(dilate(prod, 2))
-    ui = (~ground).astype(np.float32)
-    acc = np.zeros_like(ui)
-    for dy in (-1, 0, 1):
-        for dx in (-1, 0, 1):
-            acc += np.roll(np.roll(ui, dy, 0), dx, 1)
-    pix = (acc / 9 > 0.5) & near
-    full = np.where(band, pix, up(prod))
-    # one pixel more, so the product's anti-aliased edge is always kept whole
-    full = full | np.roll(full, 1, 0) | np.roll(full, -1, 0) | np.roll(full, 1, 1) | np.roll(full, -1, 1)
-    m = Image.fromarray((full * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))
-    m = m.resize((w // 2, h // 2), Image.LANCZOS)
+    # a wide, soft margin round the product: the moving colour only tints the painted ground well away from it, so every
+    # pixel of the product, its strokes, its rounded corners and its shadow stay exactly as they were made
+    prod = dilate(prod, 7)
+    m = Image.fromarray((prod * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(6))
     # the ground's own colour, so the wash is painted in it and meets the kept margin without a seam
     gm = np.median(im[: gh * BLOCK, : gw * BLOCK].reshape(gh, BLOCK, gw, BLOCK, 3).transpose(0, 2, 1, 3, 4)[reach & ~dilate(prod, 4)].reshape(-1, 3), axis=0)
     return m, cover, [round(float(v) * 255) for v in gm]

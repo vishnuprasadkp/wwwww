@@ -74,9 +74,9 @@
  "/images/ai-agent/advanced.png": {
   "cover": 0.666,
   "ground": [
-   118,
-   77,
-   52
+   125,
+   82,
+   55
   ]
  },
  "/images/ai-agent/discovery.png": {
@@ -314,9 +314,9 @@
  "/images/next/adeo.png": {
   "cover": 0.186,
   "ground": [
-   104,
-   129,
-   104
+   108,
+   134,
+   108
   ]
  },
  "/images/next/ai-agent.png": {
