@@ -40,7 +40,8 @@ const SRC = { core: "/images/site/hero-beetle-v6-core.webp", limbs: "/images/sit
 const BODY_C: Pt = [512, 460];
 const SHOULDER: [Pt, Pt] = [[405, 395], [618, 395]];
 let KB = 0.4; // painting px -> stage px
-const WING_U = 640; // a wing is this long, in painting px
+const WING_U = 820; // a wing is this long, in painting px (drawn larger than in the painting, so the wings lead)
+const BODY_A = 0.72; // the body is a little see-through, so it sits in the paint
 const WING_ASPECT = 1282 / 766;
 const WING_BASE: Pt = [0.0603, 0.4627]; // where a wing joins the body, as a fraction of the wing picture
 const TILT = -0.16;
@@ -346,7 +347,7 @@ export default function HeroBeetle() {
     CX = W * 0.5;
     CY = H * 0.5;
     SC = 1;
-    KB = clamp(Math.min(W * 0.3, H * 0.9), 220, 440) / (WING_U * 2);
+    KB = clamp(Math.min(W * 0.42, H * 1.0), 260, 560) / (WING_U * 2);
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;
@@ -474,7 +475,7 @@ export default function HeroBeetle() {
         const sp: Sprite = { c, ox, oy, w: box, h: box };
         washes.push({ sp, brush: new Bloom(sp, s.x, s.y, s.from, s.from + s.dur, R * 1.25) });
       });
-      const washEnd = 9.5;
+      const washEnd = 6.5;
 
       /* ---------------- the beetle's brushes: each part is painted along its own path ---------------- */
       const t0 = washEnd - 1.4; // the beetle starts to be painted while the last wash is still wet
@@ -581,15 +582,15 @@ export default function HeroBeetle() {
           const s = side === 0 ? -1 : 1;
           const a = o.wingAlpha[side];
           const sh = SHOULDER[side];
-          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side]) * Math.PI) / 180, 0.8 + 0.17 * Math.cos(a), [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
+          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side]) * Math.PI) / 180, 0.96, [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
         }
         // legs hang a little below the body, feelers and head a little above
-        legs.forEach((l, i) => card(l.sp, bLegs[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], o.legZ[i]], [1, 0, 0], [0, 1, 0], (o.legSpin[i] * Math.PI) / 180));
+        legs.forEach((l, i) => card(l.sp, bLegs[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], o.legZ[i]], [1, 0, 0], [0, 1, 0], (o.legSpin[i] * Math.PI) / 180, BODY_A));
         const lift = o.open;
-        card(elyL, bElyL, t, [505, 392], [-7, -68, 10], [Math.cos(lift), 0, -Math.sin(lift)], [0, 1, 0], 0, 1, [-45, 120, 0]);
-        card(elyR, bElyR, t, [519, 392], [7, -68, 10], [Math.cos(lift), 0, Math.sin(lift)], [0, 1, 0], 0, 1, [45, 120, 0]);
-        card(head, bHead, t, [512, 300], [0, -160, 16], [1, 0, 0], [0, 1, 0], 0);
-        feelers.forEach((l, i) => card(l.sp, bFeel[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], 18], [1, 0, 0], [0, 1, 0], (o.feelSpin[i] * Math.PI) / 180));
+        card(elyL, bElyL, t, [505, 392], [-7, -68, 10], [Math.cos(lift), 0, -Math.sin(lift)], [0, 1, 0], 0, BODY_A, [-45, 120, 0]);
+        card(elyR, bElyR, t, [519, 392], [7, -68, 10], [Math.cos(lift), 0, Math.sin(lift)], [0, 1, 0], 0, BODY_A, [45, 120, 0]);
+        card(head, bHead, t, [512, 300], [0, -160, 16], [1, 0, 0], [0, 1, 0], 0, BODY_A);
+        feelers.forEach((l, i) => card(l.sp, bFeel[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], 18], [1, 0, 0], [0, 1, 0], (o.feelSpin[i] * Math.PI) / 180, BODY_A));
         // far cards first
         const depth = (c: Card) => apply(R, [c.p[0] + c.reach[0], c.p[1] + c.reach[1], c.p[2] + c.reach[2]])[2] + apply(R, c.p)[2];
         cards.sort((a, b) => depth(a) - depth(b));
@@ -676,7 +677,7 @@ export default function HeroBeetle() {
             let ty = 0;
             for (let k = 0; k < 6; k++) {
               tx = W * rnd(0.12, 0.88);
-              ty = H * rnd(0.26, 0.74);
+              ty = H * rnd(0.4, 0.6);
               if (Math.hypot(tx - pose.x, ty - pose.y) > W * 0.22) break;
             }
             pose.tx = tx;
@@ -699,8 +700,9 @@ export default function HeroBeetle() {
           pose.y += pose.vy * dt;
           if (sp > 6) pose.yaw += angDiff(Math.atan2(pose.vx, -pose.vy), pose.yaw) * Math.min(1, dt * 1.1);
           const lateral = pose.ax * Math.cos(pose.yaw) + pose.ay * Math.sin(pose.yaw);
-          pose.roll += (clamp(lateral * 0.02, -0.5, 0.5) + 0.08 * nRoll(t * 0.3) - pose.roll) * Math.min(1, dt * 1.5);
-          pose.pitch = 0.06 * nPitch(t * 0.27);
+          pose.roll = 0;
+          void lateral;
+          pose.pitch = 0;
         }
 
         // wing beat: slow and smooth; the speed and depth drift, and the outer wing works harder in a turn
@@ -715,15 +717,15 @@ export default function HeroBeetle() {
         gait += dt * 6.283 * 0.5 * (0.85 + 0.2 * nFreq(t * 0.1 + 5));
         const gph = nLeg.map((_, i) => gait + (i % 2) * Math.PI);
         const moment: Moment = {
-          wingAlpha: [(6 * lift + 40 * beatDepth * wl) * deg, (6 * lift + 40 * beatDepth * wr) * deg],
-          wingSpin: [0.6 * wl * beatDepth, 0.6 * wr * beatDepth],
-          wingTwist: [0.2 * Math.cos(phase) * beatDepth, 0.2 * Math.cos(phase) * beatDepth],
+          wingAlpha: [4 * deg, 4 * deg],
+          wingSpin: [1.6 * Math.sin(t * 38) * lift + 2 * wl * beatDepth, 1.6 * Math.sin(t * 38 + 0.7) * lift + 2 * wr * beatDepth],
+          wingTwist: [0, 0],
           legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * 12 * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
           legZ: gph.map((g) => -16 + 18 * Math.max(0, Math.cos(g)) * lift),
           feelSpin: nFeel.map((n, i) => 8 * n(t * 1.1 + i * 3) * (0.4 + 0.6 * lift)),
           open: 0.12 * easeInOut(clamp01((t - flyFrom + 0.5) / 2.5)),
         };
-        const bob = (9 * Math.cos(phase) * beatDepth) * lift;
+        const bob = 0;
         const kk = KB * (0.9 + 0.1 * lift) * (1 + 0.02 * nScale(t * 0.18) * lift);
 
         // faint stains left on the paper as it flies, which dry away
