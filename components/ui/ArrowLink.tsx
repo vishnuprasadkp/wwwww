@@ -22,11 +22,13 @@ export function ArrowLink({
   /** Replaces the arrow (e.g. a printer or download glyph). */
   icon?: React.ReactNode;
 }) {
-  const cls = `group relative inline-flex h-[30px] w-max items-center px-0 font-mono text-[15px] leading-[25px] text-pigment transition-[padding] duration-200 after:pointer-events-none after:absolute after:inset-0 after:border-b-2 after:border-transparent after:transition-colors after:duration-200 hover:px-1 hover:after:border-pigment ${className}`;
+  // With an icon (Print, Download) the box never changes size on hover, so neighbouring buttons stay put:
+  // the text and icon just slide 1px towards each other, and the underline draws.
+  const cls = `group relative inline-flex h-[30px] w-max items-center ${icon ? "px-1" : "px-0 transition-[padding] duration-200 hover:px-1"} font-mono text-[15px] leading-[25px] text-pigment after:pointer-events-none after:absolute after:inset-0 after:border-b-2 after:border-transparent after:transition-colors after:duration-200 hover:after:border-pigment ${className}`;
   const inner = (
-    <span className={`flex items-center transition-[gap] duration-200 ${icon ? "gap-2 group-hover:gap-1.5" : "gap-[17px] group-hover:gap-2"}`}>
-      <span>{children}</span>
-      {icon ?? (
+    <span className={`flex items-center ${icon ? "gap-2" : "gap-[17px] transition-[gap] duration-200 group-hover:gap-2"}`}>
+      <span className={icon ? "transition-transform duration-200 group-hover:translate-x-[1px]" : undefined}>{children}</span>
+      {icon ? <span className="transition-transform duration-200 group-hover:-translate-x-[1px]">{icon}</span> : (
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.73" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={down ? "rotate-90" : ""}>
         {diagonal ? (
           <path d="M 0 6.058 L 12.115 6.058 M 6.058 12.115 L 12.115 6.058 L 6.058 0" transform="translate(1.154 1.154) rotate(-45 6 6)" />
