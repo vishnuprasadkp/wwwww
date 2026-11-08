@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * The painting on the right of the home hero. It is made, live, from the bare paper, every visit, the way a
@@ -23,10 +23,12 @@ import { useEffect, useRef } from "react";
 type Pt = [number, number];
 type V3 = [number, number, number];
 type Rgb = [number, number, number];
-const W = 1400;
-const H = 900;
-const CX = W * 0.58; // where the painting is centred
-const CY = H * 0.5;
+// the size of the painting is the size of the hero section; these are set from it when the painting starts
+let W = 1400;
+let H = 900;
+let CX = W * 0.6;
+let CY = H * 0.5;
+let SC = 1; // how big the pools of paint are, against a 1400 px wide stage
 
 const ORANGE: Rgb[] = [[246, 166, 70], [240, 140, 52], [232, 115, 32], [226, 104, 28], [214, 92, 24]];
 const SLATE: Rgb[] = [[112, 124, 138], [98, 108, 122], [88, 98, 110], [70, 78, 90]];
@@ -37,7 +39,7 @@ const SRC = { core: "/images/site/hero-beetle-v6-core.webp", limbs: "/images/sit
 /** The beetle's own coordinates are those of its painting (a 1024 px square, its middle at 512, 460). */
 const BODY_C: Pt = [512, 460];
 const SHOULDER: [Pt, Pt] = [[405, 395], [618, 395]];
-const KB = 0.66; // painting px -> stage px
+let KB = 0.4; // painting px -> stage px
 const WING_U = 640; // a wing is this long, in painting px
 const WING_ASPECT = 1282 / 766;
 const WING_BASE: Pt = [0.0603, 0.4627]; // where a wing joins the body, as a fraction of the wing picture
@@ -265,6 +267,7 @@ function streak(g: CanvasRenderingContext2D, x: number, y: number, r: number, vx
 
 export default function HeroBeetle() {
   const cvRef = useRef<HTMLCanvasElement>(null);
+  const [key, setKey] = useState(0);
 
   useEffect(() => {
     const cv = cvRef.current;
@@ -274,9 +277,34 @@ export default function HeroBeetle() {
     const cleanup: (() => void)[] = [];
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    cv.width = W;
-    cv.height = H;
+    // the painting fills the whole hero section behind the words
+    const host = cv.parentElement as HTMLElement;
+    const hb = host.getBoundingClientRect();
+    W = Math.max(320, Math.round(hb.width));
+    H = Math.max(360, Math.round(hb.height));
+    CX = W * 0.64;
+    CY = H * 0.5;
+    SC = clamp(Math.max(W, H * 1.6) / 1400, 0.55, 1.25);
+    KB = clamp(Math.min(W * 0.4, H * 0.82), 210, 540) / (WING_U * 2);
+    const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
+    const builtW = W;
+    const builtH = H;
+    cv.width = Math.round(W * ps);
+    cv.height = Math.round(H * ps);
     const ctx = cv.getContext("2d")!;
+    ctx.setTransform(ps, 0, 0, ps, 0, 0);
+    const layer = () => {
+      const c = make(W * ps, H * ps);
+      const g = c.getContext("2d")!;
+      g.setTransform(ps, 0, 0, ps, 0, 0);
+      return [c, g] as const;
+    };
+    const ro = new ResizeObserver(() => {
+      const r = host.getBoundingClientRect();
+      if (Math.abs(r.width - builtW) / builtW > 0.25 || Math.abs(r.height - builtH) / builtH > 0.3) setKey((k) => k + 1);
+    });
+    ro.observe(host);
+    cleanup.push(() => ro.disconnect());
     const seed = Math.floor(Math.random() * 9999);
 
     const build = ([core, limbs, wingImg]: HTMLImageElement[]) => {
@@ -304,9 +332,10 @@ export default function HeroBeetle() {
       const washes: Wash[] = [];
       type Setup = { x: number; y: number; r: number; pig: [Rgb, Rgb]; a: number; from: number; dur: number; veil?: boolean };
       const setup: Setup[] = [];
-      // two big thin veils first, then the pools
-      setup.push({ x: CX - 60, y: CY + 10, r: 470, pig: [SLATE[0], SLATE[1]], a: 0.2, from: 0.1, dur: 3.4, veil: true });
-      setup.push({ x: CX + 170, y: CY - 20, r: 400, pig: [ORANGE[0], ORANGE[1]], a: 0.2, from: 0.5, dur: 3.2, veil: true });
+      // two big thin veils first, over the whole section, then the pools
+      const BIG = Math.max(W, H * 1.6);
+      setup.push({ x: W * 0.5, y: H * 0.5, r: BIG * 0.36, pig: [SLATE[0], SLATE[1]], a: 0.2, from: 0.1, dur: 3.4, veil: true });
+      setup.push({ x: W * 0.74, y: H * 0.46, r: BIG * 0.3, pig: [ORANGE[0], ORANGE[1]], a: 0.2, from: 0.5, dur: 3.2, veil: true });
       const kinds: { pig: [Rgb, Rgb]; a: number }[] = [
         { pig: [SLATE[0], SLATE[3]], a: 0.5 },
         { pig: [ORANGE[1], ORANGE[3]], a: 0.55 },
@@ -318,15 +347,20 @@ export default function HeroBeetle() {
         { pig: [ORANGE[0], ORANGE[1]], a: 0.4 },
         { pig: [SLATE[1], SLATE[0]], a: 0.34 },
         { pig: [ORANGE[3], ORANGE[1]], a: 0.36 },
+        { pig: [ORANGE[1], ORANGE[0]], a: 0.4 },
+        { pig: [SLATE[2], SLATE[1]], a: 0.36 },
       ];
+      // twelve places spread over the whole section, in a random order
+      const cells: Pt[] = [];
+      for (let cy = 0; cy < 3; cy++) for (let cx = 0; cx < 4; cx++) cells.push([(cx + 0.5) / 4, (cy + 0.5) / 3]);
+      cells.sort(() => Math.random() - 0.5);
       let at = 0.9;
-      kinds.forEach((k) => {
-        const ang = Math.random() * 6.283;
-        const dist = rnd(0.04, 0.42);
-        setup.push({ x: CX + Math.cos(ang) * dist * W * 0.5, y: CY + Math.sin(ang) * dist * H * 0.6, r: rnd(190, 350), pig: k.pig, a: k.a * 1.3, from: at, dur: rnd(2.2, 3.4) });
-        at += rnd(0.3, 0.65);
+      kinds.forEach((k, i) => {
+        const c = cells[i];
+        setup.push({ x: W * (c[0] + rnd(-0.09, 0.09)), y: H * (c[1] + rnd(-0.12, 0.12)), r: SC * rnd(190, 330), pig: k.pig, a: k.a * 1.3, from: at, dur: rnd(2.2, 3.4) });
+        at += rnd(0.25, 0.5);
       });
-      const WS = 0.5;
+      const WS = 0.42;
       setup.forEach((s, wi) => {
         const R = s.r;
         const box = R * 3;
@@ -365,7 +399,7 @@ export default function HeroBeetle() {
             a *= 1 - 0.25 * gr * gr; // the grain of the paper
             // the left of the picture fades into the page, where the words are
             const sx = ox + x / WS;
-            a *= smooth(W * 0.1, W * 0.38, sx);
+            a *= (W < 768 ? 0.4 : 0.2) + (W < 768 ? 0.6 : 0.8) * smooth(W * 0.05, W * 0.5, sx);
             d[i + 3] = clamp01(a) * 255;
           }
         }
@@ -392,17 +426,14 @@ export default function HeroBeetle() {
       const bLegs = legs.map((l, i) => stroke(l.sp, l.guide, t0 + 4 + i * 0.3, 0.6, 30, 14));
       const bFeel = feelers.map((l, i) => stroke(l.sp, l.guide, t0 + 5.8 + i * 0.25, 0.6, 32, 12));
       const brushes = [...bWing, bElyL, bElyR, bHead, ...bLegs, ...bFeel];
-      const flyFrom = t0 + 7; // and it lifts off the paper
+      brushes.forEach((b) => b.update(1e6)); // the beetle is already painted; it comes in from the side
+      const flyFrom = washEnd - 1.5;
 
       /* ---------------- the stage ---------------- */
-      const bg = make(W, H); // splatter and drips, once they have landed
-      const bgg = bg.getContext("2d")!;
-      const trail = make(W, H); // faint stains the beetle leaves as it flies; they dry away
-      const trg = trail.getContext("2d")!;
-      const stage = make(W, H);
-      const sg = stage.getContext("2d")!;
-      const bl = make(W, H); // the beetle, drawn on its own so it can cast a shadow
-      const blg = bl.getContext("2d")!;
+      const [bg, bgg] = layer(); // splatter and drips, once they have landed
+      const [trail, trg] = layer(); // faint stains the beetle leaves as it flies; they dry away
+      const [stage, sg] = layer();
+      const [bl, blg] = layer(); // the beetle, drawn on its own so it can cast a shadow
 
       // paint flicked off a brush: it flies, then lands as a blob (or a streak, if it was fast), and a fine mist falls around
       type Drop = { x: number; y: number; vx: number; vy: number; r: number; rgb: Rgb; born: number; life: number; kind: "blob" | "mist" };
@@ -441,7 +472,11 @@ export default function HeroBeetle() {
       const nSkew = wander();
 
       // flight: a soft spring towards a wandering target; the beetle banks into its turns and tips with its speed
-      const pose = { x: CX, y: CY, vx: 0, vy: 0, ax: 0, ay: 0, tx: CX, ty: CY, next: 0, yaw: TILT, roll: 0, pitch: 0 };
+      const pose = { x: W + KB * WING_U * 1.1, y: H * rnd(0.3, 0.7), vx: -80, vy: rnd(-12, 12), ax: 0, ay: 0, tx: W * 0.7, ty: H * 0.5, next: 0, yaw: -0.9, roll: 0, pitch: 0 };
+      type Print = { x: number; y: number; a: number; born: number; rgb: Rgb; s: number };
+      const prints: Print[] = [];
+      const wasDown: boolean[] = [false, false, false, false, false, false];
+      let gait = Math.random() * 6.283;
       let phase = Math.random() * 6.283;
       let tLast = 0;
       let t0clock = 0;
@@ -477,7 +512,7 @@ export default function HeroBeetle() {
         const src = brush.get(t);
         if (src) cards.push({ sp, src, pivot, p, u, v, spin, alpha, reach });
       };
-      type Moment = { wingAlpha: [number, number]; wingSpin: [number, number]; legSpin: number[]; feelSpin: number[]; open: number };
+      type Moment = { wingAlpha: [number, number]; wingSpin: [number, number]; wingTwist: [number, number]; legSpin: number[]; legZ: number[]; feelSpin: number[]; open: number };
       const drawBeetle = (g: CanvasRenderingContext2D, t: number, R: Mat, ox: number, oy: number, k: number, o: Moment) => {
         cards.length = 0;
         // wings: the plane of each wing swings up and down about the line of the body
@@ -485,10 +520,10 @@ export default function HeroBeetle() {
           const s = side === 0 ? -1 : 1;
           const a = o.wingAlpha[side];
           const sh = SHOULDER[side];
-          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, 1, 0], ((6 + o.wingSpin[side]) * Math.PI) / 180, 0.95, [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
+          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side]) * Math.PI) / 180, 0.95, [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
         }
         // legs hang a little below the body, feelers and head a little above
-        legs.forEach((l, i) => card(l.sp, bLegs[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], -16], [1, 0, 0], [0, 1, 0], (o.legSpin[i] * Math.PI) / 180));
+        legs.forEach((l, i) => card(l.sp, bLegs[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], o.legZ[i]], [1, 0, 0], [0, 1, 0], (o.legSpin[i] * Math.PI) / 180));
         const lift = o.open;
         card(elyL, bElyL, t, [505, 392], [-7, -68, 10], [Math.cos(lift), 0, -Math.sin(lift)], [0, 1, 0], 0, 1, [-45, 120, 0]);
         card(elyR, bElyR, t, [519, 392], [7, -68, 10], [Math.cos(lift), 0, Math.sin(lift)], [0, 1, 0], 0, 1, [45, 120, 0]);
@@ -525,7 +560,6 @@ export default function HeroBeetle() {
         tLast = now;
 
         washes.forEach((w) => w.brush.update(t));
-        brushes.forEach((b) => b.update(t));
 
         // splatter is flicked in as each wash goes down, drips run
         for (const f of flickAt) {
@@ -572,11 +606,11 @@ export default function HeroBeetle() {
         }
 
         // flight: the beetle sits where it was painted, then lifts off and drifts, slowly
-        const lift = easeInOut(clamp01((t - flyFrom) / 3.5));
+        const lift = smooth(flyFrom, flyFrom + 1.2, t);
         if (t > pose.next && lift > 0) {
-          pose.tx = CX + rnd(-150, 120);
-          pose.ty = CY + rnd(-110, 110);
-          pose.next = t + rnd(4.5, 8);
+          pose.tx = W * rnd(W < 768 ? 0.15 : 0.34, 0.9);
+          pose.ty = H * rnd(0.16, 0.84);
+          pose.next = t + rnd(5, 8.5);
         }
         const ax = (pose.tx - pose.x) * 0.2 - pose.vx * 0.85;
         const ay = (pose.ty - pose.y) * 0.2 - pose.vy * 0.85;
@@ -585,9 +619,10 @@ export default function HeroBeetle() {
         pose.vx += ax * dt * lift;
         pose.vy += ay * dt * lift;
         const sp = Math.hypot(pose.vx, pose.vy);
-        if (sp > 95) {
-          pose.vx *= 95 / sp;
-          pose.vy *= 95 / sp;
+        const vmax = clamp(W * 0.07, 60, 115);
+        if (sp > vmax) {
+          pose.vx *= vmax / sp;
+          pose.vy *= vmax / sp;
         }
         pose.x += pose.vx * dt * lift;
         pose.y += pose.vy * dt * lift;
@@ -610,10 +645,15 @@ export default function HeroBeetle() {
         const wl = wave(0.25 * nSkew(t * 0.2));
         const wr = wave(-0.2 * nSkew(t * 0.23 + 2));
         const deg = Math.PI / 180;
+        // the legs step slowly in two groups of three, like an insect walking
+        gait += dt * 6.283 * 0.5 * (0.85 + 0.2 * nFreq(t * 0.1 + 5));
+        const gph = nLeg.map((_, i) => gait + (i % 2) * Math.PI);
         const moment: Moment = {
-          wingAlpha: [(14 * lift + 40 * beatDepth * (1 + turnBias) * wl) * deg, (14 * lift + 40 * beatDepth * (1 - turnBias) * wr) * deg],
-          wingSpin: [3 * wl * beatDepth, 3 * wr * beatDepth],
-          legSpin: nLeg.map((n, i) => (6 * n(t * 0.8 + i) + 3 * Math.sin(phase * 0.5 + i)) * lift),
+          wingAlpha: [(12 * lift + 42 * beatDepth * (1 + turnBias) * wl) * deg, (12 * lift + 42 * beatDepth * (1 - turnBias) * wr) * deg],
+          wingSpin: [(3 * wl + 10 * Math.cos(phase + 0.25 * nSkew(t * 0.2))) * beatDepth, (3 * wr + 10 * Math.cos(phase - 0.2 * nSkew(t * 0.23 + 2))) * beatDepth],
+          wingTwist: [0.45 * Math.cos(phase) * beatDepth, 0.45 * Math.cos(phase - 0.2 * nSkew(t * 0.23 + 2)) * beatDepth],
+          legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * 12 * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
+          legZ: gph.map((g) => -16 + 18 * Math.max(0, Math.cos(g)) * lift),
           feelSpin: nFeel.map((n, i) => 8 * n(t * 1.1 + i * 3) * (0.4 + 0.6 * lift)),
           open: 0.12 * easeInOut(clamp01((t - flyFrom + 0.5) / 2.5)),
         };
@@ -639,23 +679,74 @@ export default function HeroBeetle() {
           trg.fill();
         }
 
+        // footprints: each foot that comes down leaves a small print of paint, which fades slowly
+        if (lift > 0.6) {
+          const Rm = turn(pose.yaw, pose.pitch, pose.roll);
+          const head = Math.atan2(pose.vy, pose.vx) + Math.PI / 2;
+          legs.forEach((l, i) => {
+            const down = Math.cos(gph[i]) > 0;
+            if (down && !wasDown[i]) {
+              const tip = l.guide[2];
+              const sr = (moment.legSpin[i] * Math.PI) / 180;
+              const qx = tip[0] - l.pivot[0];
+              const qy = tip[1] - l.pivot[1];
+              const lp: V3 = [l.pivot[0] - BODY_C[0] + qx * Math.cos(sr) - qy * Math.sin(sr), l.pivot[1] - BODY_C[1] + qx * Math.sin(sr) + qy * Math.cos(sr), -16];
+              const P = apply(Rm, lp);
+              const f = 1 / (1 - P[2] / D);
+              const x = pose.x + P[0] * kk * f;
+              const y = pose.y + bob + P[1] * kk * f;
+              if (x > -20 && x < W + 20 && y > -20 && y < H + 20) {
+                prints.push({ x, y, a: head + rnd(-0.25, 0.25), born: t, rgb: i % 2 ? SLATE[3] : ORANGE[4], s: clamp(kk / 0.4, 0.7, 1.5) * 2 });
+                if (prints.length > 110) prints.shift();
+              }
+            }
+            wasDown[i] = down;
+          });
+        }
+
         // compose
         sg.clearRect(0, 0, W, H);
         washes.forEach((w) => {
           const src = w.brush.get(t);
           if (src) sg.drawImage(src, w.sp.ox, w.sp.oy, w.sp.w, w.sp.h);
         });
-        sg.drawImage(bg, 0, 0);
-        sg.drawImage(trail, 0, 0);
+        sg.drawImage(bg, 0, 0, W, H);
+        sg.drawImage(trail, 0, 0, W, H);
+        for (let i = prints.length - 1; i >= 0; i--) {
+          const pr = prints[i];
+          const age = t - pr.born;
+          const al = 0.85 * smooth(0, 0.3, age) * (1 - smooth(8, 20, age));
+          if (al <= 0.003) {
+            if (age > 20) prints.splice(i, 1);
+            continue;
+          }
+          const c = str(pr.rgb);
+          sg.save();
+          sg.translate(pr.x, pr.y);
+          sg.rotate(pr.a);
+          sg.fillStyle = `rgba(${c},${al})`;
+          sg.strokeStyle = `rgba(${str(mix(pr.rgb, [30, 30, 36], 0.4))},${al * 0.7})`;
+          sg.lineWidth = 0.7;
+          sg.beginPath();
+          sg.ellipse(0, 0, 2.3 * pr.s, 3.3 * pr.s, 0, 0, 6.283);
+          sg.fill();
+          sg.stroke();
+          for (const [dx, dy] of [[-2.6, -5], [0, -6.2], [2.6, -5]]) {
+            sg.beginPath();
+            sg.ellipse(dx * pr.s, dy * pr.s, 0.95 * pr.s, 1.3 * pr.s, 0, 0, 6.283);
+            sg.fill();
+          }
+          sg.restore();
+        }
         blg.clearRect(0, 0, W, H);
-        drawBeetle(blg, t, turn(pose.yaw + (1 - lift) * 0, pose.pitch, pose.roll), pose.x, pose.y + bob, kk, moment);
+        if (t >= flyFrom) drawBeetle(blg, t, turn(pose.yaw, pose.pitch, pose.roll), pose.x, pose.y + bob, kk, moment);
         // it casts a soft shadow on the paper, further off and softer the higher it is
         sg.save();
         sg.shadowColor = `rgba(72,58,46,${0.2 * lift})`;
-        sg.shadowBlur = 18 + 26 * lift;
-        sg.shadowOffsetX = 26 * lift;
-        sg.shadowOffsetY = 44 * lift;
-        sg.drawImage(bl, 0, 0);
+        sg.shadowBlur = (12 + 12 * lift) * ps;
+        sg.shadowOffsetX = 10 * lift * ps;
+        sg.shadowOffsetY = 18 * lift * ps;
+        sg.drawImage(bl, 0, 0, W, H);
         sg.restore();
         // paint in the air
         for (const dr of drops) {
@@ -671,7 +762,7 @@ export default function HeroBeetle() {
           sg.fill();
         }
         ctx.clearRect(0, 0, W, H);
-        ctx.drawImage(stage, 0, 0);
+        ctx.drawImage(stage, 0, 0, W, H);
       };
 
       const begin = () => {
@@ -681,8 +772,8 @@ export default function HeroBeetle() {
           brushes.forEach((b) => b.update(1e6));
           sg.clearRect(0, 0, W, H);
           washes.forEach((w) => sg.drawImage(w.sp.c, w.sp.ox, w.sp.oy, w.sp.w, w.sp.h));
-          drawBeetle(sg, 1e6, turn(TILT, 0, 0), CX, CY, KB, { wingAlpha: [0.1, 0.1], wingSpin: [0, 0], legSpin: [0, 0, 0, 0, 0, 0], feelSpin: [0, 0], open: 0 });
-          ctx.drawImage(stage, 0, 0);
+          drawBeetle(sg, 1e6, turn(TILT, 0, 0), CX, CY, KB, { wingAlpha: [0.1, 0.1], wingSpin: [0, 0], wingTwist: [0, 0], legSpin: [0, 0, 0, 0, 0, 0], legZ: [-16, -16, -16, -16, -16, -16], feelSpin: [0, 0], open: 0 });
+          ctx.drawImage(stage, 0, 0, W, H);
           return;
         }
         raf = requestAnimationFrame(frame);
@@ -712,11 +803,11 @@ export default function HeroBeetle() {
       cancelAnimationFrame(raf);
       cleanup.forEach((f) => f());
     };
-  }, []);
+  }, [key]);
 
   return (
-    <div className="hb" aria-hidden="true">
-      <canvas ref={cvRef} />
+    <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+      <canvas ref={cvRef} style={{ width: "100%", height: "100%", display: "block" }} />
     </div>
   );
 }
