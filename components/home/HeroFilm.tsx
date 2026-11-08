@@ -2,12 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass.js";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { SCHEMES, inkPalette } from "@/lib/painting";
 
 /** The AI agent case study's terracotta: its closing painting's wash. */
@@ -39,117 +33,6 @@ const smooth = (a: number, b: number, x: number) => {
 };
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 const lin = (r: number, g: number, b: number) => new THREE.Color().setRGB(r, g, b, THREE.SRGBColorSpace);
-
-/* ---------------- the wash behind everything (the same as the painted box) ---------------- */
-const WASH_FS = `
-varying vec2 vUv;
-uniform float time;
-uniform float aspect;
-uniform float scale;
-uniform vec2 seed;
-uniform vec3 uPale; uniform vec3 uLight; uniform vec3 uMid; uniform vec3 uDeep; uniform vec3 uGrey;
-uniform sampler2D paint;
-float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
-float noise(vec2 p){
-  vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
-  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
-}
-float fbm(vec2 p){ float s = 0.0; float a = 0.5; for (int i = 0; i < 3; i++) { s += a * noise(p); p = p * 2.03 + vec2(17.1, 9.2); a *= 0.5; } return s / 0.875; }
-void main(){
-  // the same moving wash as the painting at the foot of the AI agent case study (HeroInk, its clay palette),
-  // its shapes drawn at the same size on screen as there
-  vec2 p = vec2(vUv.x * aspect, vUv.y) * 0.85 * scale + seed;
-  float t = time * 0.05; // livelier than at the foot of the page: the colour is always visibly on the move
-  p += vec2(t * 0.35, 0.0);
-  vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t * 0.8));
-  vec2 r = vec2(fbm(p + 1.9 * q + vec2(1.7, 9.2) + t * 0.6), fbm(p + 1.9 * q + vec2(8.3, 2.8) - t * 0.5));
-  float f = fbm(p + 2.1 * r + vec2(t * 0.3, -t * 0.2));
-  f = clamp((f - 0.5) * 1.4 + 0.5, 0.0, 1.0);
-  vec3 col = uPale;
-  col = mix(col, uLight, smoothstep(0.22, 0.42, f));
-  col = mix(col, uMid, smoothstep(0.40, 0.58, f));
-  col = mix(col, uDeep, smoothstep(0.58, 0.8, f + 0.25 * (r.x - 0.5)));
-  col = mix(col, uGrey, smoothstep(0.6, 0.85, r.y) * smoothstep(0.7, 0.4, f) * 0.35);
-  // the dark clay the beetle has left behind it, with ragged, pooled edges like wet paint
-  vec2 suv = (vUv - 0.5) * 1.12 + 0.5;
-  vec2 wob = (vec2(fbm(p * 3.0 + t), fbm(p * 3.0 + 7.0 - t)) - 0.5) * 0.035;
-  float pv = texture2D(paint, suv + wob).a;
-  float pig = smoothstep(0.04, 0.5, pv + (fbm(p * 6.0) - 0.5) * 0.12);
-  float rim = smoothstep(0.04, 0.14, pv) * (1.0 - smoothstep(0.16, 0.42, pv));
-  col = mix(col, uDeep * 0.7, pig * 0.7);
-  col *= 1.0 - rim * 0.14;
-  vec2 gp = gl_FragCoord.xy;
-  float gran = noise(gp * 0.45) * 0.6 + noise(gp * 0.9 + 7.0) * 0.4;
-  col *= 1.0 + (gran - 0.5) * (0.16 + 0.08 * (1.0 - f));
-  col += (hash(gp) - 0.5) * 0.022 + (noise(gp * 0.5) - 0.5) * 0.02;
-  gl_FragColor = vec4(pow(clamp(col, 0.0, 1.0), vec3(2.2)), 1.0);
-}`;
-
-/**
- * Turns every frame into a watercolour: the colour is gathered into brush-shaped patches (a small Kuwahara filter), the
- * edges wobble as if painted by hand, pigment pools darker where one colour meets another, the paper's grain shows
- * through, and the colour granulates and bleeds a little.
- */
-const WATERCOLOUR = {
-  uniforms: { tDiffuse: { value: null as THREE.Texture | null }, res: { value: new THREE.Vector2(1, 1) }, time: { value: 0 } },
-  vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
-  fragmentShader: `
-varying vec2 vUv;
-uniform sampler2D tDiffuse;
-uniform vec2 res;
-uniform float time;
-float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
-float noise(vec2 p){
-  vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
-  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
-}
-float fbm(vec2 p){ float s = 0.0; float a = 0.5; for (int i = 0; i < 3; i++) { s += a * noise(p); p *= 2.07; a *= 0.5; } return s / 0.875; }
-vec3 tex(vec2 uv){ return texture2D(tDiffuse, uv).rgb; }
-float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
-void main(){
-  vec2 px = 1.0 / res;
-  // a hand-painted wobble: the picture is nudged by slow noise, a few pixels
-  vec2 uv = vUv + (vec2(fbm(vUv * vec2(9.0, 5.0) + time * 0.03), fbm(vUv * vec2(9.0, 5.0) + 7.3 - time * 0.03)) - 0.5) * px * 10.0;
-  // brush patches: of the four corners around each pixel, keep the calmest one's average colour
-  vec3 m[4]; vec3 s[4];
-  for (int k = 0; k < 4; k++) { m[k] = vec3(0.0); s[k] = vec3(0.0); }
-  const int R = 2;
-  for (int j = -R; j <= R; j++) {
-    for (int i = -R; i <= R; i++) {
-      vec3 c = tex(uv + vec2(float(i), float(j)) * px * 1.2);
-      vec3 c2 = c * c;
-      if (i <= 0 && j <= 0) { m[0] += c; s[0] += c2; }
-      if (i >= 0 && j <= 0) { m[1] += c; s[1] += c2; }
-      if (i <= 0 && j >= 0) { m[2] += c; s[2] += c2; }
-      if (i >= 0 && j >= 0) { m[3] += c; s[3] += c2; }
-    }
-  }
-  float n = float((R + 1) * (R + 1));
-  vec3 col = vec3(0.0);
-  float best = 1e9;
-  for (int k = 0; k < 4; k++) {
-    vec3 mu = m[k] / n;
-    vec3 v = abs(s[k] / n - mu * mu);
-    float sv = v.r + v.g + v.b;
-    if (sv < best) { best = sv; col = mu; }
-  }
-  // pigment pools darker along the edges where colours meet
-  float l = lum(col);
-  float lx = lum(tex(uv + vec2(px.x * 3.0, 0.0))) - lum(tex(uv - vec2(px.x * 3.0, 0.0)));
-  float ly = lum(tex(uv + vec2(0.0, px.y * 3.0))) - lum(tex(uv - vec2(0.0, px.y * 3.0)));
-  float edge = smoothstep(0.02, 0.18, length(vec2(lx, ly)));
-  col *= 1.0 - 0.36 * edge * (0.6 + 0.4 * noise(gl_FragCoord.xy * 0.2));
-  // a little bleeding into the paper: soft, uneven
-  vec3 soft = (tex(uv + vec2(4.0, 1.0) * px) + tex(uv - vec2(3.0, 2.0) * px) + tex(uv + vec2(-1.0, 4.0) * px) + tex(uv + vec2(2.0, -4.0) * px)) * 0.25;
-  col = mix(col, soft, 0.25 * fbm(gl_FragCoord.xy * 0.01 + 3.0));
-  // granulation and the grain of the paper
-  vec2 g = gl_FragCoord.xy;
-  float gran = noise(g * 0.5) * 0.6 + noise(g * 1.1 + 5.0) * 0.4;
-  col *= 1.0 + (gran - 0.5) * 0.16 * (1.0 - l);
-  col += (hash(g) - 0.5) * 0.012;
-  gl_FragColor = vec4(col, 1.0);
-}`,
-};
 
 /** A soft, torn puff of smoke, drawn once into a canvas. */
 function smokeTexture() {
@@ -195,25 +78,11 @@ function smokeTexture() {
   return t;
 }
 
-/** A small soft dot of light for the motes. */
-function dotTexture() {
-  const c = document.createElement("canvas");
-  c.width = c.height = 64;
-  const g = c.getContext("2d")!;
-  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  gr.addColorStop(0, "rgba(255,255,255,1)");
-  gr.addColorStop(0.35, "rgba(255,240,220,0.5)");
-  gr.addColorStop(1, "rgba(255,230,200,0)");
-  g.fillStyle = gr;
-  g.fillRect(0, 0, 64, 64);
-  return new THREE.CanvasTexture(c);
-}
-
 /**
- * The wing, made luminous: its clear membrane is filled in and brightened towards a warm cream light, its veins and
- * slate tips kept; and a blurred copy of it for the halo that melts into the air.
+ * The wing, drawn: no fill at all, only its outline and its veins, in fine white ink strokes taken from the beetle's own
+ * painted wing.
  */
-function luminousWing(img: HTMLImageElement) {
+function drawnWing(img: HTMLImageElement) {
   const w = img.width;
   const h = img.height;
   const c = document.createElement("canvas");
@@ -224,53 +93,37 @@ function luminousWing(img: HTMLImageElement) {
   const d = g.getImageData(0, 0, w, h);
   const p = d.data;
   const a0 = new Float32Array(w * h);
-  for (let i = 0; i < w * h; i++) a0[i] = p[i * 4 + 3] / 255;
-  for (let i = 0; i < p.length; i += 4) {
-    const a = p[i + 3] / 255;
-    if (a <= 0.004) continue;
-    const fill = Math.min(1, a * 3.4); // the membrane, filled in
-    const lum = (p[i] * 0.3 + p[i + 1] * 0.59 + p[i + 2] * 0.11) / 255;
-    // a soft white light over the whole wing…
-    const k = 0.72 + 0.2 * (1 - a);
-    p[i] = p[i] + (252 - p[i]) * k;
-    p[i + 1] = p[i + 1] + (247 - p[i + 1]) * k;
-    p[i + 2] = p[i + 2] + (238 - p[i + 2]) * k;
-    p[i + 3] = 255 * (0.34 + 0.56 * fill);
-    // …and its veins drawn over it in fine strokes of clay ink, as in the sketch
-    const vein = a > 0.45 ? Math.max(0, Math.min(1, (0.62 - lum) * 3)) : 0;
-    if (vein > 0) {
-      p[i] += (118 - p[i]) * vein * 0.75;
-      p[i + 1] += (78 - p[i + 1]) * vein * 0.75;
-      p[i + 2] += (60 - p[i + 2]) * vein * 0.75;
-      p[i + 3] = Math.max(p[i + 3], 255 * vein);
-    }
+  const l0 = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    a0[i] = p[i * 4 + 3] / 255;
+    l0[i] = (p[i * 4] * 0.3 + p[i * 4 + 1] * 0.59 + p[i * 4 + 2] * 0.11) / 255;
   }
-  // the outline: a fine ink line round the edge of the wing
-  const st = Math.max(2, Math.round(w / 400));
+  const out = g.createImageData(w, h);
+  const q = out.data;
+  const ink = (o: number, a: number) => {
+    q[o * 4] = 250;
+    q[o * 4 + 1] = 246;
+    q[o * 4 + 2] = 238;
+    q[o * 4 + 3] = Math.max(q[o * 4 + 3], Math.round(255 * a));
+  };
+  const st = Math.max(3, Math.round(w / 260));
+  // a pressure that rises and falls along the edge, so the outline reads as a hand-drawn stroke
+  const pressure = (x: number, y: number) => 0.55 + 0.45 * Math.sin(x * 0.011 + Math.sin(y * 0.017) * 2.2) * Math.sin(y * 0.009 + 1.3);
   for (let y = st; y < h - st; y++) {
     for (let x = st; x < w - st; x++) {
       const o = y * w + x;
       if (a0[o] < 0.08) continue;
-      if (a0[o - st] < 0.08 || a0[o + st] < 0.08 || a0[o - st * w] < 0.08 || a0[o + st * w] < 0.08) {
-        const q = o * 4;
-        p[q] = 128;
-        p[q + 1] = 86;
-        p[q + 2] = 66;
-        p[q + 3] = 235;
-      }
+      const pr = pressure(x, y);
+      const k = Math.round(st * (0.5 + 0.7 * pr));
+      if (a0[o - k] < 0.08 || a0[o + k] < 0.08 || a0[o - k * w] < 0.08 || a0[o + k * w] < 0.08) ink(o, 0.75 + 0.25 * pr);
+      else if (a0[o] > 0.4 && l0[o] < 0.6) ink(o, Math.min(1, (0.62 - l0[o]) * 3.2) * (0.6 + 0.4 * pr)); // the veins
     }
   }
-  g.putImageData(d, 0, 0);
-  const halo = document.createElement("canvas");
-  halo.width = w;
-  halo.height = h;
-  const hg = halo.getContext("2d")!;
-  hg.filter = `blur(${Math.round(w / 60)}px)`;
-  hg.drawImage(c, 0, 0);
-  const wing = new THREE.CanvasTexture(c);
-  const glow = new THREE.CanvasTexture(halo);
-  wing.colorSpace = glow.colorSpace = THREE.SRGBColorSpace;
-  return { wing, glow };
+  g.putImageData(out, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
 }
 
 /* ---------------- the sketch: the beetle drawn in ink over white, like the drawings in the case studies ---------------- */
@@ -286,82 +139,92 @@ void main(){
 }`;
 const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
-uniform vec3 fill; uniform vec3 ink; uniform vec3 fogColor;
-uniform float fogNear; uniform float fogFar; uniform float time; uniform float veins; uniform float px;
+uniform vec3 ink;
+uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
   return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
-// one set of hatching: parallel strokes at an angle, a little unsteady, each one broken now and then
-float hatch(vec2 fc, float ang, float spacing, float w, float seed){
-  vec2 r = vec2(cos(ang) * fc.x - sin(ang) * fc.y, sin(ang) * fc.x + cos(ang) * fc.y) / spacing;
-  float x = r.y + (noise(r * vec2(0.18, 0.6) + seed) - 0.5) * 0.5;
-  float d = 0.5 - abs(fract(x) - 0.5); // 0 on a stroke, 0.5 halfway between two
-  float line = 1.0 - smoothstep(w * 0.5, w * 0.5 + 0.09, d);
-  float breaks = smoothstep(0.25, 0.45, noise(vec2(r.x * 0.35, floor(x + 0.5)) + seed * 3.0));
-  return line * breaks;
+// a line along whole numbers of x, about wpx pixels wide whatever the size on screen
+float lineAt(float x, float wpx){
+  float d = abs(fract(x + 0.5) - 0.5);
+  float fw = max(fwidth(x), 1e-5);
+  return 1.0 - smoothstep(wpx * 0.5, wpx * 0.5 + 0.9, d / fw);
 }
 void main(){
   vec3 N = normalize(vN); vec3 V = normalize(vV);
-  if (!gl_FrontFacing) N = -N;
+  // the drawing boils a little, as if redrawn a few times a second
+  float boil = floor(time * 5.0);
+  vec2 fc = gl_FragCoord.xy / px;
+  // the pressure of the pen rises and falls along each line, so it swells and tapers like the loader's strokes
+  float pressure = 0.45 + 1.0 * noise(fc * 0.04 + boil * 3.1);
+  // the outline: where the surface turns away from you
+  float ndv = abs(dot(N, V));
+  float fw = max(fwidth(ndv), 1e-4);
+  float wpx = 1.7 * weight * pressure * px;
+  float a = 1.0 - smoothstep(wpx, wpx + 1.0, ndv / fw);
+  a *= 0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0));
   vec3 L = normalize(vec3(-0.45, 0.75, 0.55));
   float n = dot(N, L) * 0.5 + 0.5;
-  // the sketch boils a little, as a drawing redrawn a few times a second
-  float boil = floor(time * 5.0);
-  vec2 fc = gl_FragCoord.xy / px + vec2(hash(vec2(boil, 1.0)), hash(vec2(boil, 2.0))) * 3.0;
-  // white paper, shaded only very softly
-  vec3 col = fill * (0.86 + 0.18 * n);
-  // the outline: where the surface turns away, a line of ink of uneven weight
-  float ndv = abs(dot(N, V));
-  float wob = noise(fc * 0.06 + boil * 1.7);
-  float contour = 1.0 - smoothstep(0.16 + 0.12 * wob, 0.3 + 0.12 * wob, ndv);
-  // hatching in the shade, crossed where it is darkest
-  float shade = 1.0 - n;
-  float h1 = hatch(fc, 0.85, 6.5, 0.32, 1.0) * smoothstep(0.42, 0.62, shade);
-  float h2 = hatch(fc, -0.6, 7.5, 0.28, 5.0) * smoothstep(0.6, 0.78, shade);
-  // on the wing cases: the long lines drawn along them, like the meridians in the drawing
-  float m = 0.0;
-  if (veins > 0.5) {
-    float mx = abs(vObj.x) * 9.0 + (noise(vObj.zz * 6.0 + boil) - 0.5) * 0.25;
-    float md = abs(fract(mx) - 0.5);
-    m = smoothstep(0.42, 0.48, md) * smoothstep(0.02, 0.08, abs(vObj.x));
-    m += 1.0 - smoothstep(0.012, 0.028, abs(vObj.x)); // the seam
+  float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1;
+  // lines drawn across the form, so it reads round: along the wing cases (and the seam), around the body
+  if (merid > 0.0) {
+    a = max(a, lineAt(abs(vObj.x) * merid + jit, 1.2 * pressure * px) * smoothstep(0.03, 0.07, abs(vObj.x)) * (0.5 + 0.5 * n));
+    a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px));
   }
-  float inkAmt = clamp(max(contour, max(max(h1, h2) * 0.85, m * 0.9)), 0.0, 1.0);
-  col = mix(col, ink, inkAmt);
-  col = mix(col, fogColor, smoothstep(fogNear, fogFar, vDepth));
-  gl_FragColor = vec4(col, 1.0);
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * (0.45 + 0.55 * n));
+  // a few quick strokes where the light falls on it
+  if (hatchAmt > 0.0) {
+    float an = 0.85;
+    vec2 r = vec2(cos(an) * fc.x - sin(an) * fc.y, sin(an) * fc.x + cos(an) * fc.y) / 7.0;
+    float x = r.y + (noise(r * vec2(0.18, 0.6) + boil * 0.7) - 0.5) * 0.5;
+    float d = 0.5 - abs(fract(x) - 0.5);
+    float line = 1.0 - smoothstep(0.07, 0.16, d);
+    float brk = smoothstep(0.38, 0.6, noise(vec2(r.x * 0.4, floor(x + 0.5)) + boil * 1.9));
+    a = max(a, line * brk * smoothstep(0.66, 0.86, n) * hatchAmt * 0.75);
+  }
+  // far back in the haze the drawing fades
+  a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
+  // nothing is filled: only the ink shows; the paper is left as it is
+  gl_FragColor = vec4(ink * a, a);
 }`;
 
-type SketchU = { time: { value: number }; fogColor: { value: THREE.Color }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number } };
-function sketchMaterial(shared: SketchU, fill: THREE.Color, ink: THREE.Color, veins = false) {
+type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number } };
+type Lines = { merid?: number; rings?: number; hatch?: number; weight?: number };
+const INK = new THREE.Vector3(0.98, 0.96, 0.92); // white ink, as the drawings on the dark paintings
+function sketchMaterial(shared: SketchU, lines: Lines = {}) {
   return new THREE.ShaderMaterial({
     vertexShader: SKETCH_VS,
     fragmentShader: SKETCH_FS,
-    uniforms: { ...shared, fill: { value: fill }, ink: { value: ink }, veins: { value: veins ? 1 : 0 } },
-    side: THREE.DoubleSide,
+    uniforms: {
+      ...shared,
+      ink: { value: INK },
+      merid: { value: lines.merid ?? 0 },
+      rings: { value: lines.rings ?? 0 },
+      hatchAmt: { value: lines.hatch ?? 0 },
+      weight: { value: lines.weight ?? 1 },
+    },
   });
 }
 
 /* ---------------- the beetle ---------------- */
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
-function buildBeetle(wingTex: THREE.Texture, glowTex: THREE.Texture, sk: SketchU) {
+function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
   const root = new THREE.Group();
   const body = new THREE.Group();
   body.position.y = 0.2; // standing on its feet: they just touch the floor
   root.add(body);
 
-  // drawn, not painted: white paper with dark clay ink, outlined and hatched
-  const INK = lin(0.3, 0.17, 0.12);
-  const WHITE = lin(0.93, 0.91, 0.87); // just under the glow, so the drawing stays crisp
-  const shell = sketchMaterial(sk, WHITE, INK, true);
-  const front = sketchMaterial(sk, WHITE, INK);
-  const black = sketchMaterial(sk, lin(0.36, 0.22, 0.16), INK); // the eyes, filled in ink
-  const cream = sketchMaterial(sk, lin(1, 0.98, 0.95), INK);
-  const legMat = sketchMaterial(sk, lin(0.93, 0.9, 0.85), INK);
-  const amber = sketchMaterial(sk, lin(0.93, 0.85, 0.76), INK);
-  const bellyMat = sketchMaterial(sk, lin(0.9, 0.87, 0.82), INK);
+  // drawn, not painted: only lines of white ink, nothing filled
+  const shell = sketchMaterial(sk, { merid: 7.5, hatch: 1, weight: 1.15 });
+  const front = sketchMaterial(sk, { rings: 9, hatch: 0.7 });
+  const black = sketchMaterial(sk, { weight: 0.9 }); // the eyes
+  const cream = sketchMaterial(sk, { weight: 0.8 });
+  const legMat = sketchMaterial(sk, { weight: 0.9 });
+  const amber = legMat;
+  const bellyMat = sketchMaterial(sk, { rings: 3.2, hatch: 0.6 });
 
   const mapTop = (g: THREE.BufferGeometry, front: number, back: number, halfW: number, rowFront: number, rowBack: number) => {
     const p = g.attributes.position;
@@ -498,9 +361,8 @@ function buildBeetle(wingTex: THREE.Texture, glowTex: THREE.Texture, sk: SketchU
   const wg = new THREE.PlaneGeometry(WL, WL * WING_ASPECT);
   wg.translate(-(WING_BASE[0] - 0.5) * WL, -(0.5 - WING_BASE[1]) * WL * WING_ASPECT, 0);
   wg.rotateX(Math.PI / 2); // flat, the front edge forwards (+z)
-  // the wings are the light of it: painted, glowing, with a soft halo that melts into the air around them
-  const wingMat = new THREE.MeshBasicMaterial({ map: wingTex, color: lin(1, 1, 1), transparent: true, side: THREE.DoubleSide, depthWrite: false });
-  const haloMat = new THREE.MeshBasicMaterial({ map: glowTex, color: lin(1, 0.95, 0.86), transparent: true, opacity: 0.5, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending });
+  // the wings: nothing but their drawn outline and veins
+  const wingMat = new THREE.MeshBasicMaterial({ map: wingTex, transparent: true, side: THREE.DoubleSide, depthWrite: false });
   const wings: THREE.Group[] = [];
   for (const side of [1, -1]) {
     const w = new THREE.Group();
@@ -510,10 +372,6 @@ function buildBeetle(wingTex: THREE.Texture, glowTex: THREE.Texture, sk: SketchU
     m.scale.x = side;
     m.renderOrder = 3;
     w.add(m);
-    const halo = new THREE.Mesh(wg, haloMat);
-    halo.scale.set(side * 1.12, 1.12, 1.12);
-    halo.renderOrder = 4;
-    w.add(halo);
     body.add(w);
     wings.push(w);
   }
@@ -540,7 +398,8 @@ export default function HeroFilm() {
     let raf = 0;
     const cleanup: (() => void)[] = [];
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    renderer.setClearColor(0x000000, 0); // see-through: the painting underneath is the very one from the case study
     const pr = Math.min(window.devicePixelRatio || 1, 1.5);
     renderer.setPixelRatio(pr);
     renderer.setSize(PW, PH);
@@ -563,40 +422,14 @@ export default function HeroFilm() {
 
     /* ---------------- stage, camera, light ---------------- */
     const scene = new THREE.Scene();
-    const FOG = lin(...CLAY.light); // distance fades into the painting's own colour
-    scene.fog = new THREE.Fog(FOG, 6.5, 20);
     const camera = new THREE.PerspectiveCamera(24, aspect, 0.05, 80);
     const CAM = new THREE.Vector3(0, 0.42, 6);
     camera.position.copy(CAM);
     camera.lookAt(0, 0.3, 0);
     scene.add(camera);
 
-    // the wash, hung far behind and moving with the camera so it always fills the view
-    const washMat = new THREE.ShaderMaterial({
-      vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
-      fragmentShader: WASH_FS,
-      uniforms: {
-        time: { value: 0 },
-        aspect: { value: aspect },
-        scale: { value: clamp(PH / 900, 0.3, 1) }, // the agent painting is 900px tall
-        seed: { value: new THREE.Vector2(Math.random() * 50, Math.random() * 50) },
-        uPale: { value: new THREE.Vector3(...CLAY.pale) },
-        uLight: { value: new THREE.Vector3(...CLAY.light) },
-        uMid: { value: new THREE.Vector3(...CLAY.mid) },
-        uDeep: { value: new THREE.Vector3(...CLAY.deep) },
-        uGrey: { value: new THREE.Vector3(...CLAY.grey) },
-      },
-      depthWrite: false,
-      fog: false,
-    });
-    const WD = 40;
-    const wh = 2 * WD * Math.tan(((24 / 2) * Math.PI) / 180) * 1.12;
-    const wash = new THREE.Mesh(new THREE.PlaneGeometry(wh * aspect, wh), washMat);
-    wash.position.set(0, 0, -WD);
-    wash.renderOrder = -10;
-    camera.add(wash);
-
-    // the paint the beetle leaves on the painting: a small canvas it dabs dark clay into as it goes, fading slowly
+    // the paint the beetle leaves on the painting: a small canvas it dabs into as it goes, shown as a faint dark clay
+    // glaze far behind it, its edges ragged like wet paint; it slowly soaks away
     const PCW = 420;
     const PCH = Math.max(60, Math.round(PCW / aspect));
     const pc = document.createElement("canvas");
@@ -605,7 +438,32 @@ export default function HeroFilm() {
     const pg = pc.getContext("2d")!;
     const paintTex = new THREE.CanvasTexture(pc);
     paintTex.minFilter = paintTex.magFilter = THREE.LinearFilter;
-    washMat.uniforms.paint = { value: paintTex };
+    const glazeMat = new THREE.ShaderMaterial({
+      vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
+      fragmentShader: `
+varying vec2 vUv;
+uniform sampler2D paint; uniform vec3 col; uniform float time;
+float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float noise(vec2 p){ vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y); }
+void main(){
+  vec2 w = (vec2(noise(vUv * 14.0 + time * 0.05), noise(vUv * 14.0 + 7.0 - time * 0.05)) - 0.5) * 0.03;
+  float pv = texture2D(paint, vUv + w).a + (noise(vUv * 40.0) - 0.5) * 0.06;
+  float body = smoothstep(0.05, 0.5, pv);
+  float rim = smoothstep(0.05, 0.12, pv) * (1.0 - smoothstep(0.14, 0.32, pv));
+  gl_FragColor = vec4(col, body * 0.07 + rim * 0.035); // very faint: a breath of colour, never a stain
+}`,
+      uniforms: { paint: { value: paintTex }, col: { value: new THREE.Vector3(CLAY.deep[0] * 0.7, CLAY.deep[1] * 0.7, CLAY.deep[2] * 0.7) }, time: { value: 0 } },
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+    });
+    const GD = 40;
+    const gh = 2 * GD * Math.tan(((24 / 2) * Math.PI) / 180);
+    const glaze = new THREE.Mesh(new THREE.PlaneGeometry(gh * aspect, gh), glazeMat);
+    glaze.position.set(0, 0, -GD);
+    glaze.renderOrder = -10;
+    camera.add(glaze);
     let paintFade = 0;
     const ndc = new THREE.Vector3();
     const dab = (x: number, y: number, r: number, a: number) => {
@@ -619,15 +477,15 @@ export default function HeroFilm() {
       pg.fill();
     };
 
-    // the drawing's shared settings: the clock it boils to, and the distance it fades into the painting's colour
-    const sketchU = { time: { value: 0 }, fogColor: { value: lin(...CLAY.light) }, fogNear: { value: 6.5 }, fogFar: { value: 20 }, px: { value: pr } };
+    // the drawing's shared settings: the clock it boils to, and how it fades into the haze far back
+    const sketchU = { time: { value: 0 }, fogNear: { value: 6.5 }, fogFar: { value: 20 }, px: { value: pr } };
 
-    scene.add(new THREE.HemisphereLight(lin(1, 0.93, 0.85), lin(0.45, 0.28, 0.2), 1.1));
-    const key1 = new THREE.DirectionalLight(lin(1, 0.95, 0.88), 2.2);
+    // one light, only for the beetle's soft shadow on the floor
+    const key1 = new THREE.DirectionalLight(0xffffff, 1);
     key1.position.set(-3, 6, 5);
     key1.castShadow = true;
     key1.shadow.mapSize.set(1024, 1024);
-    key1.shadow.radius = 6;
+    key1.shadow.radius = 8;
     key1.shadow.bias = -0.0005;
     const sc = key1.shadow.camera as THREE.OrthographicCamera;
     sc.left = -3;
@@ -638,19 +496,10 @@ export default function HeroFilm() {
     sc.far = 20;
     scene.add(key1);
     scene.add(key1.target);
-    // the stage light behind it: it rims the shell and glows through the smoke
-    const back = new THREE.DirectionalLight(lin(1, 0.78, 0.55), 2.6);
-    back.position.set(1.5, 3, -8);
-    scene.add(back);
-    const front = new THREE.PointLight(lin(1, 0.85, 0.7), 4, 6, 1.5);
-    front.position.set(0, 1.2, 4);
-    scene.add(front);
-
-    // the floor only shows the beetle's shadow, so the wash stays the floor and the sky
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.32, color: lin(0.25, 0.12, 0.06) }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.14, color: lin(0.25, 0.12, 0.06) }));
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
-    floor.material.depthWrite = false; // the floor never hides any part of the beetle
+    floor.material.depthWrite = false;
     floor.renderOrder = -5;
     scene.add(floor);
 
@@ -669,33 +518,29 @@ export default function HeroFilm() {
       scene.add(s);
       puffs.push({ s, base, drift: rnd(0.08, 0.25) * (Math.random() < 0.5 ? -1 : 1), spin: rnd(-0.05, 0.05), size, phase: rnd(0, 6.28) });
     }
-    const N = 260;
-    const motePos = new Float32Array(N * 3);
-    const moteSeed = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) {
-      moteSeed[i * 3] = rnd(-6, 6);
-      moteSeed[i * 3 + 1] = rnd(0, 2.6);
-      moteSeed[i * 3 + 2] = rnd(-12, 4.5);
-    }
-    const moteGeo = new THREE.BufferGeometry();
-    moteGeo.setAttribute("position", new THREE.BufferAttribute(motePos, 3));
-    const moteMat = new THREE.PointsMaterial({ map: dotTexture(), color: lin(1, 0.9, 0.75), size: 0.06, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, fog: false });
-    const motes = new THREE.Points(moteGeo, moteMat);
-    scene.add(motes);
-
-    /* ---------------- post: a lens with a shallow depth of field and a soft glow ---------------- */
-    const composer = new EffectComposer(renderer);
-    composer.setPixelRatio(pr);
-    composer.setSize(PW, PH);
-    composer.addPass(new RenderPass(scene, camera));
-    const bokeh = new BokehPass(scene, camera, { focus: 6.2, aperture: 0.003, maxblur: 0.012 });
-    composer.addPass(bokeh);
-    const paintPass = new ShaderPass(WATERCOLOUR);
-    paintPass.uniforms.res.value.set(PW * pr, PH * pr);
-    composer.addPass(paintPass);
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(PW, PH), 0.22, 0.8, 0.82));
-    composer.addPass(new OutputPass());
-    const bokehU = bokeh.uniforms as unknown as { focus: { value: number }; aperture: { value: number } };
+    /* ---------------- strokes in the air: short pen marks instead of bubbles ---------------- */
+    const strokeMat = new THREE.ShaderMaterial({
+      vertexShader: "attribute float alpha; varying float vA; void main(){ vA = alpha; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
+      fragmentShader: "varying float vA; void main(){ gl_FragColor = vec4(0.98, 0.95, 0.9, vA); }",
+      transparent: true,
+      depthWrite: false,
+    });
+    const makeStrokes = (n: number) => {
+      const pos = new Float32Array(n * 6);
+      const alpha = new Float32Array(n * 2);
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+      geo.setAttribute("alpha", new THREE.BufferAttribute(alpha, 1));
+      const lines = new THREE.LineSegments(geo, strokeMat);
+      lines.frustumCulled = false;
+      lines.renderOrder = 6;
+      scene.add(lines);
+      return { pos, alpha, geo };
+    };
+    // drifting in the air all the time: a few short marks, like the quick strokes round a sketch
+    const N = 110;
+    const air = makeStrokes(N);
+    const airSeed = Array.from({ length: N }, () => ({ x: rnd(-6, 6), y: rnd(0, 2.4), z: rnd(-9, 3.5), len: rnd(0.04, 0.12), ang: rnd(-0.6, 0.6), ph: rnd(0, 6.28), a: rnd(0.18, 0.45) }));
 
     /* ---------------- the film ---------------- */
     let beetle: ReturnType<typeof buildBeetle> | null = null;
@@ -812,8 +657,8 @@ export default function HeroFilm() {
         w.visible = unfold > 0.02;
       });
 
-      // light dust streams off the wings as they move and drifts away into the air
-      emitCarry += dt * 110 * unfold;
+      // short pen strokes flick off the wings as they beat and drift away into the air
+      emitCarry += dt * 34 * unfold;
       while (emitCarry >= 1) {
         emitCarry -= 1;
         const wi = Math.random() < 0.5 ? 0 : 1;
@@ -824,56 +669,57 @@ export default function HeroFilm() {
         spawn(emitAt, t);
       }
 
-      // the lens follows it
       b.root.getWorldPosition(wp);
-      bokehU.focus.value = Math.max(6.2, camera.position.distanceTo(wp)); // the lens stays focused a little beyond it: when it comes close it goes soft, as in flight
       key1.position.set(wp.x - 3, 6, wp.z + 5);
       key1.target.position.copy(wp);
     };
 
-    /* ---------------- dust from the wings ---------------- */
-    const DN = 600;
-    const dustPos = new Float32Array(DN * 3);
-    const dustCol = new Float32Array(DN * 3);
+    /* ---------------- strokes off the wings ---------------- */
+    const DN = 220;
+    const dust = makeStrokes(DN);
     const dustVel = new Float32Array(DN * 3);
+    const dustDir = new Float32Array(DN * 3);
     const dustBorn = new Float32Array(DN).fill(-99);
     const dustLife = new Float32Array(DN).fill(1);
-    const dustTone = new Float32Array(DN);
+    const dustLen = new Float32Array(DN);
     let dustNext = 0;
-    const dustGeo = new THREE.BufferGeometry();
-    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
-    dustGeo.setAttribute("color", new THREE.BufferAttribute(dustCol, 3));
-    const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ map: dotTexture(), size: 0.075, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
-    dust.frustumCulled = false;
-    scene.add(dust);
     const spawn = (at: THREE.Vector3, t: number) => {
       const i = dustNext;
       dustNext = (dustNext + 1) % DN;
-      dustPos[i * 3] = at.x;
-      dustPos[i * 3 + 1] = at.y;
-      dustPos[i * 3 + 2] = at.z;
-      dustVel[i * 3] = rnd(-0.08, 0.08);
-      dustVel[i * 3 + 1] = rnd(-0.12, 0.02);
-      dustVel[i * 3 + 2] = rnd(-0.08, 0.08);
+      dust.pos[i * 6] = at.x;
+      dust.pos[i * 6 + 1] = at.y;
+      dust.pos[i * 6 + 2] = at.z;
+      dustVel[i * 3] = rnd(-0.1, 0.1);
+      dustVel[i * 3 + 1] = rnd(-0.14, 0.03);
+      dustVel[i * 3 + 2] = rnd(-0.1, 0.1);
+      const a = rnd(0, 6.283);
+      const e = rnd(-0.5, 0.5);
+      dustDir[i * 3] = Math.cos(a) * Math.cos(e);
+      dustDir[i * 3 + 1] = Math.sin(e);
+      dustDir[i * 3 + 2] = Math.sin(a) * Math.cos(e);
+      dustLen[i] = rnd(0.05, 0.16);
       dustBorn[i] = t;
-      dustLife[i] = rnd(1.8, 3.6);
-      dustTone[i] = Math.random();
+      dustLife[i] = rnd(1.4, 3);
     };
     const stepDust = (t: number, dt: number) => {
       for (let i = 0; i < DN; i++) {
         const age = t - dustBorn[i];
         const life = dustLife[i];
-        const a = age < 0 || age > life ? 0 : Math.sin((age / life) * Math.PI) * 0.9;
-        dustPos[i * 3] += dustVel[i * 3] * dt;
-        dustPos[i * 3 + 1] += dustVel[i * 3 + 1] * dt;
-        dustPos[i * 3 + 2] += dustVel[i * 3 + 2] * dt;
-        const tone = dustTone[i];
-        dustCol[i * 3] = a * 1.0;
-        dustCol[i * 3 + 1] = a * (0.78 + 0.18 * tone);
-        dustCol[i * 3 + 2] = a * (0.55 + 0.3 * tone);
+        const a = age < 0 || age > life ? 0 : Math.sin((age / life) * Math.PI) * 0.75;
+        const o = i * 6;
+        dust.pos[o] += dustVel[i * 3] * dt;
+        dust.pos[o + 1] += dustVel[i * 3 + 1] * dt;
+        dust.pos[o + 2] += dustVel[i * 3 + 2] * dt;
+        // the stroke draws itself out, then shortens as it fades
+        const len = dustLen[i] * Math.min(1, age * 3) * (0.4 + 0.6 * a);
+        dust.pos[o + 3] = dust.pos[o] + dustDir[i * 3] * len;
+        dust.pos[o + 4] = dust.pos[o + 1] + dustDir[i * 3 + 1] * len;
+        dust.pos[o + 5] = dust.pos[o + 2] + dustDir[i * 3 + 2] * len;
+        dust.alpha[i * 2] = a;
+        dust.alpha[i * 2 + 1] = a * 0.35; // a stroke thins out towards its end
       }
-      dustGeo.attributes.position.needsUpdate = true;
-      dustGeo.attributes.color.needsUpdate = true;
+      dust.geo.attributes.position.needsUpdate = true;
+      dust.geo.attributes.alpha.needsUpdate = true;
     };
     let wingPhase = 0;
 
@@ -881,10 +727,10 @@ export default function HeroFilm() {
     const step = (t: number) => {
       const dt = clamp(t - tLast, 0, 0.1);
       tLast = t;
-      washMat.uniforms.time.value = t + 20;
-      // smoke rolls in after the colour, then keeps drifting
-      const smokeIn = smooth(0.3, 2.8, t) * (1 - 0.75 * smooth(T_STOP, T_STOP + 6, t)); // the smoke thins once it has arrived, so the moving colour shows
+      // smoke rolls in for the entrance, then clears away completely, leaving the painting as it is
+      const smokeIn = smooth(0.3, 2.8, t) * (1 - smooth(T_STOP - 1, T_STOP + 4, t));
       for (const p of puffs) {
+        p.s.visible = smokeIn > 0.002;
         p.s.position.set(p.base.x + Math.sin(t * 0.05 + p.phase) * 1.2 + t * p.drift * 0.3, p.base.y + Math.sin(t * 0.13 + p.phase) * 0.08, p.base.z);
         if (p.s.position.x > 8) p.base.x -= 16;
         if (p.s.position.x < -8) p.base.x += 16;
@@ -892,28 +738,42 @@ export default function HeroFilm() {
         const near = clamp((p.base.z + 14) / 17, 0, 1);
         p.s.material.opacity = smokeIn * (0.18 + 0.2 * (1 - near)) * (0.75 + 0.25 * Math.sin(t * 0.3 + p.phase));
       }
+      // the marks in the air drift slowly and come and go
+      const airIn = smooth(0.8, 3, t);
       for (let i = 0; i < N; i++) {
-        const sx = moteSeed[i * 3];
-        const sy = moteSeed[i * 3 + 1];
-        const sz = moteSeed[i * 3 + 2];
-        motePos[i * 3] = sx + Math.sin(t * 0.21 + i) * 0.3;
-        motePos[i * 3 + 1] = sy + ((t * 0.05 + i * 0.37) % 2.6) * 0.15 + Math.sin(t * 0.4 + i * 1.7) * 0.06;
-        motePos[i * 3 + 2] = sz + Math.cos(t * 0.17 + i) * 0.3;
+        const m = airSeed[i];
+        const x = m.x + Math.sin(t * 0.13 + m.ph) * 0.4 + t * 0.04;
+        const wx = ((x + 6) % 12 + 12) % 12 - 6;
+        const y = m.y + Math.sin(t * 0.21 + m.ph * 1.7) * 0.12;
+        const z = m.z + Math.cos(t * 0.1 + m.ph) * 0.3;
+        const an = m.ang + Math.sin(t * 0.3 + m.ph) * 0.3;
+        const o = i * 6;
+        air.pos[o] = wx;
+        air.pos[o + 1] = y;
+        air.pos[o + 2] = z;
+        air.pos[o + 3] = wx + Math.cos(an) * m.len;
+        air.pos[o + 4] = y + Math.sin(an) * m.len;
+        air.pos[o + 5] = z;
+        const fade = clamp((z + 9) / 4, 0, 1); // faint far back
+        const tw = 0.5 + 0.5 * Math.sin(t * 0.5 + m.ph * 3);
+        air.alpha[i * 2] = airIn * m.a * tw * fade;
+        air.alpha[i * 2 + 1] = airIn * m.a * tw * fade * 0.3;
       }
-      moteGeo.attributes.position.needsUpdate = true;
-      moteMat.opacity = smooth(0.8, 3, t) * (0.65 + 0.15 * Math.sin(t * 1.3));
+      air.geo.attributes.position.needsUpdate = true;
+      air.geo.attributes.alpha.needsUpdate = true;
       // a slow, breathing camera, as if held
       camera.position.set(CAM.x + Math.sin(t * 0.21) * 0.06, CAM.y + Math.sin(t * 0.17) * 0.03, CAM.z);
       camera.lookAt(0, 0.3, 0);
       pose(t, dt);
       stepDust(t, dt);
       sketchU.time.value = t;
-      // the beetle leaves dark clay on the painting as it walks and flies; old paint slowly soaks away
+      glazeMat.uniforms.time.value = t;
+      // the beetle leaves a breath of dark clay on the painting as it goes; old paint slowly soaks away
       paintFade += dt;
       if (paintFade > 0.25) {
         paintFade = 0;
         pg.globalCompositeOperation = "destination-out";
-        pg.fillStyle = "rgba(0,0,0,0.018)";
+        pg.fillStyle = "rgba(0,0,0,0.02)";
         pg.fillRect(0, 0, PCW, PCH);
         pg.globalCompositeOperation = "source-over";
       }
@@ -923,10 +783,10 @@ export default function HeroFilm() {
         const y = (0.5 - ndc.y * 0.5) * PCH;
         const near = clamp(5.5 / Math.max(1, camera.position.distanceTo(wp)), 0.3, 1.6);
         const flying = t > T_LIFT ? 1 : 0;
-        const n = Math.ceil(dt * 30);
+        const n = Math.ceil(dt * 20);
         for (let i = 0; i < n; i++) {
           const spread = PCH * 0.22 * near * (0.4 + flying);
-          dab(x + rnd(-1, 1) * spread * 1.4, y + rnd(-0.4, 0.8) * spread, PCH * rnd(0.05, 0.13) * near, 0.05 + 0.03 * flying);
+          dab(x + rnd(-1, 1) * spread * 1.4, y + rnd(-0.4, 0.8) * spread, PCH * rnd(0.05, 0.13) * near, 0.04);
         }
       }
       paintTex.needsUpdate = true;
@@ -945,12 +805,9 @@ export default function HeroFilm() {
       clock += Math.min(0.05, (now - tPrev) / 1000);
       tPrev = now;
       step(clock);
-      paintPass.uniforms.time.value = clock;
-      composer.render();
+      renderer.render(scene, camera);
     };
 
-    step(0);
-    composer.render(); // the painting shows at once, before the beetle has loaded
 
     const img = (src: string) =>
       new Promise<HTMLImageElement>((res, rej) => {
@@ -961,18 +818,17 @@ export default function HeroFilm() {
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      const lum = luminousWing(wingImg);
-      beetle = buildBeetle(lum.wing, lum.glow, sketchU);
+      beetle = buildBeetle(drawnWing(wingImg), sketchU);
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
       step(0);
-      composer.render();
+      renderer.render(scene, camera);
       const begin = () => {
         if (!alive) return;
         if (still) {
           step(T_STOP + 0.8);
-          composer.render();
+          renderer.render(scene, camera);
           return;
         }
         raf = requestAnimationFrame(frame);

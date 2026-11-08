@@ -23,6 +23,7 @@ uniform float time;
 uniform float reveal;
 uniform float aspect;
 uniform vec2 seed;
+uniform float scale;
 uniform vec3 uPale; uniform vec3 uLight; uniform vec3 uMid; uniform vec3 uDeep; uniform vec3 uGrey;
 
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
@@ -38,7 +39,7 @@ float fbm(vec2 p){
 }
 
 void main(){
-  vec2 p = vec2(vUv.x * aspect, vUv.y) * 0.85 + seed;
+  vec2 p = vec2(vUv.x * aspect, vUv.y) * 0.85 * scale + seed;
   float t = time * 0.022; // slow
   // the flow: noise, bent by noise, bent again, all drifting slowly
   vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t * 0.8));
@@ -90,7 +91,11 @@ export const TERRACOTTA: InkPalette = {
  * `spread`: the colour first spreads in over bare paper (the home hero); without it the wash is there from the start
  * and only moves (the paintings at the foot of the pages).
  */
-export default function HeroInk({ palette = TERRACOTTA, spread = true }: { palette?: InkPalette; spread?: boolean }) {
+/**
+ * `refHeight`: draw the shapes at the size they have in a box this many pixels tall, so a shorter box shows the same
+ * painting (the home hero shows the AI agent case study's 900px painting, at its size).
+ */
+export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight }: { palette?: InkPalette; spread?: boolean; refHeight?: number }) {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const [key, setKey] = useState(0);
 
@@ -144,6 +149,7 @@ export default function HeroInk({ palette = TERRACOTTA, spread = true }: { palet
     const uTime = u("time");
     const uReveal = u("reveal");
     gl.uniform1f(u("aspect"), W / H);
+    gl.uniform1f(u("scale"), refHeight ? Math.min(1, Math.max(0.2, H / refHeight)) : 1);
     gl.uniform2f(u("seed"), Math.random() * 50, Math.random() * 50);
     gl.uniform3f(u("uPale"), ...palette.pale);
     gl.uniform3f(u("uLight"), ...palette.light);

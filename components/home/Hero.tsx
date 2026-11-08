@@ -1,4 +1,6 @@
 import HeroFilm from "./HeroFilm";
+import HeroInk from "./HeroInk";
+import { SCHEMES, inkPalette } from "@/lib/painting";
 import LogoMarquee from "./LogoMarquee";
 
 export default function Hero() {
@@ -13,6 +15,8 @@ export default function Hero() {
         </div>
       </div>
       <div className="relative" style={{ height: "clamp(260px, 24.5vw, 470px)", background: "#8c5a40" }}>
+        {/* the painting from the foot of the AI agent case study, exactly; the beetle film is drawn over it */}
+        <HeroInk palette={inkPalette(SCHEMES.clay)} spread={false} refHeight={900} />
         <HeroFilm />
       </div>
       <LogoMarquee />
