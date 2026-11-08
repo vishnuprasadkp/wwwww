@@ -346,7 +346,7 @@ export default function HeroBeetle() {
     CX = W * 0.5;
     CY = H * 0.5;
     SC = 1;
-    KB = clamp(Math.min(W * 0.6, H * 1.5), 260, 760) / (WING_U * 2);
+    KB = clamp(Math.min(W * 0.3, H * 0.9), 220, 440) / (WING_U * 2);
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;
@@ -474,7 +474,7 @@ export default function HeroBeetle() {
         const sp: Sprite = { c, ox, oy, w: box, h: box };
         washes.push({ sp, brush: new Bloom(sp, s.x, s.y, s.from, s.from + s.dur, R * 1.25) });
       });
-      const washEnd = 7;
+      const washEnd = 9.5;
 
       /* ---------------- the beetle's brushes: each part is painted along its own path ---------------- */
       const t0 = washEnd - 1.4; // the beetle starts to be painted while the last wash is still wet
@@ -536,7 +536,7 @@ export default function HeroBeetle() {
 
       // flight: a soft spring towards a wandering target; the beetle banks into its turns and tips with its speed
       const side = Math.random() < 0.5 ? 1 : -1; // it comes in from the right or from the left
-      const pose = { x: side > 0 ? W + KB * WING_U * 1.1 : -KB * WING_U * 1.1, y: H * rnd(0.4, 0.6), vx: -80 * side, vy: rnd(-8, 8), ax: 0, ay: 0, tx: W * 0.5, ty: H * 0.5, next: 0, yaw: -0.9 * side, roll: 0, pitch: 0 };
+      const pose = { x: side > 0 ? W + KB * WING_U * 1.1 : -KB * WING_U * 1.1, y: H * rnd(0.4, 0.6), vx: -80 * side, vy: rnd(-8, 8), ax: 0, ay: 0, tx: W * 0.5, ty: H * 0.5, next: 0, yaw: -1.5708 * side, roll: 0, pitch: 0 };
       let gait = Math.random() * 6.283;
       let phase = Math.random() * 6.283;
       let tLast = 0;
@@ -666,13 +666,42 @@ export default function HeroBeetle() {
           }
         }
 
-        // the beetle hovers in the middle of the box: it rises into view, then stays, swaying and tipping a little as it beats its wings
-        const lift = smooth(flyFrom, flyFrom + 1.8, t);
-        pose.x = CX + 14 * nX(t * 0.3) * lift;
-        pose.y = CY + 8 * nY(t * 0.25) * lift;
-        pose.yaw = 0.16 * nYaw(t * 0.22) * lift;
-        pose.roll = 0.62 * nRoll(t * 0.2) * lift; // it turns about its own long axis, showing one side and then the other
-        pose.pitch = 0.4 * nPitch(t * 0.17) * lift; // and tips its head up and down // seen from straight above, so a wing stroke shows as the wing closing and opening, not waving up the page
+        // the beetle comes in from one side and wanders all over the box, slowly: it turns to face where it is going
+        // and banks into its turns, so it is seen from one side and then the other
+        const lift = smooth(flyFrom, flyFrom + 1.2, t);
+        if (t >= flyFrom) {
+          if (t > pose.next) {
+            // somewhere else in the box, not too near where it is now
+            let tx = 0;
+            let ty = 0;
+            for (let k = 0; k < 6; k++) {
+              tx = W * rnd(0.12, 0.88);
+              ty = H * rnd(0.26, 0.74);
+              if (Math.hypot(tx - pose.x, ty - pose.y) > W * 0.22) break;
+            }
+            pose.tx = tx;
+            pose.ty = ty;
+            pose.next = t + rnd(4.5, 7.5);
+          }
+          const ax = (pose.tx - pose.x) * 0.1 - pose.vx * 0.6;
+          const ay = (pose.ty - pose.y) * 0.1 - pose.vy * 0.6;
+          pose.ax += (ax - pose.ax) * Math.min(1, dt * 2);
+          pose.ay += (ay - pose.ay) * Math.min(1, dt * 2);
+          pose.vx += pose.ax * dt;
+          pose.vy += pose.ay * dt;
+          const sp = Math.hypot(pose.vx, pose.vy);
+          const vmax = clamp(W * 0.055, 50, 95);
+          if (sp > vmax) {
+            pose.vx *= vmax / sp;
+            pose.vy *= vmax / sp;
+          }
+          pose.x += pose.vx * dt;
+          pose.y += pose.vy * dt;
+          if (sp > 6) pose.yaw += angDiff(Math.atan2(pose.vx, -pose.vy), pose.yaw) * Math.min(1, dt * 1.1);
+          const lateral = pose.ax * Math.cos(pose.yaw) + pose.ay * Math.sin(pose.yaw);
+          pose.roll += (clamp(lateral * 0.02, -0.5, 0.5) + 0.08 * nRoll(t * 0.3) - pose.roll) * Math.min(1, dt * 1.5);
+          pose.pitch = 0.06 * nPitch(t * 0.27);
+        }
 
         // wing beat: slow and smooth; the speed and depth drift, and the outer wing works harder in a turn
         phase += dt * 6.283 * (0.9 + 0.1 * nFreq(t * 0.17)) * (0.3 + 0.7 * lift);
@@ -702,7 +731,7 @@ export default function HeroBeetle() {
         trg.fillStyle = "rgba(0,0,0,0.01)";
         trg.fillRect(0, 0, W, H);
         trg.globalCompositeOperation = "source-over";
-        if (lift > 0.3 && t - stain > 0.14) {
+        if (false && lift > 0.3 && t - stain > 0.14) {
           stain = t;
           const px = pose.x + gauss() * 24;
           const py = pose.y + bob + gauss() * 24;

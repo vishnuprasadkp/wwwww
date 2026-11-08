@@ -38,9 +38,24 @@ void main(){
 }`,
   advect: `${HEAD}
 uniform sampler2D uVelocity; uniform sampler2D uSource; uniform vec2 texel; uniform float dt; uniform float dissipation;
+uniform vec2 srcTexel; uniform float diffuse; uniform float sharp;
 void main(){
   vec2 coord = vUv - dt * texture(uVelocity, vUv).xy * texel;
-  o = texture(uSource, coord) / (1.0 + dissipation * dt);
+  vec4 c = texture(uSource, coord);
+  if (sharp > 0.5) {
+    // MacCormack: trace back again and correct the error, so the folds of colour stay crisp instead of blurring away
+    vec2 back = coord + dt * texture(uVelocity, coord).xy * texel;
+    vec4 err = texture(uSource, vUv) - texture(uSource, back);
+    vec2 h = srcTexel * 0.5;
+    vec4 a1 = texture(uSource, coord + vec2(-h.x, -h.y)); vec4 a2 = texture(uSource, coord + vec2(h.x, -h.y));
+    vec4 a3 = texture(uSource, coord + vec2(-h.x, h.y)); vec4 a4 = texture(uSource, coord + vec2(h.x, h.y));
+    vec4 lo = min(min(a1, a2), min(a3, a4)); vec4 hi = max(max(a1, a2), max(a3, a4));
+    c = clamp(c + 0.5 * err, lo, hi);
+  }
+  // the colour bleeds outwards into the wet paper around it, softly
+  vec2 e = srcTexel * 1.5;
+  vec4 a = 0.25 * (texture(uSource, coord + vec2(e.x, 0.0)) + texture(uSource, coord - vec2(e.x, 0.0)) + texture(uSource, coord + vec2(0.0, e.y)) + texture(uSource, coord - vec2(0.0, e.y)));
+  o = mix(c, a, diffuse) / (1.0 + dissipation * dt);
 }`,
   divergence: `${HEAD}
 uniform sampler2D uVelocity;
@@ -100,9 +115,11 @@ void main(){
   float dt = dot(texture(uDye, vT).rg, vec2(1.0)); float db = dot(texture(uDye, vB).rg, vec2(1.0));
   vec2 g = vec2(dr - dl, dt - db);
   // ink absorbs light: slate takes most from the reds, orange takes the blues
-  vec3 As = vec3(1.25, 1.1, 0.9);
+  vec3 As = vec3(1.05, 0.92, 0.75);
   vec3 Ao = vec3(0.1, 0.85, 2.3);
-  vec3 T = exp(-(d.r * As + d.g * Ao));
+  // a thick layer of pigment saturates instead of going black
+  vec2 k = 1.35 * (1.0 - exp(-max(d.rg, 0.0) * 0.8));
+  vec3 T = exp(-(k.x * As + k.y * Ao));
   vec3 paper = vec3(0.915, 0.905, 0.885);
   vec2 px = gl_FragCoord.xy;
   float grain = (hash(px) - 0.5) * 0.028 + (noise(px * 0.6) - 0.5) * 0.03 + (noise(px * 0.06) - 0.5) * 0.02;
@@ -146,6 +163,13 @@ export default function HeroInk() {
       return () => cleanup.forEach((f) => f());
     }
     gl.getExtension("OES_texture_float_linear");
+    // if the browser takes the graphics context away, start again on a fresh canvas
+    const lost = (e: Event) => {
+      e.preventDefault();
+      setKey((k) => k + 1);
+    };
+    cv.addEventListener("webglcontextlost", lost);
+    cleanup.push(() => cv.removeEventListener("webglcontextlost", lost));
 
     const compile = (type: number, src: string) => {
       const s = gl.createShader(type)!;
@@ -251,7 +275,7 @@ export default function HeroInk() {
       d.swap();
     };
 
-    const step = (dt: number) => {
+    const step = (dt: number, bleed: number) => {
       gl.disable(gl.BLEND);
       gl.useProgram(P.curl.p);
       gl.uniform2f(P.curl.u.texel, ...simTexel);
@@ -263,7 +287,7 @@ export default function HeroInk() {
       gl.uniform2f(P.vorticity.u.texel, ...simTexel);
       bind(vel.r, 0, P.vorticity.u.uVelocity);
       bind(curlT, 1, P.vorticity.u.uCurl);
-      gl.uniform1f(P.vorticity.u.curl, 26);
+      gl.uniform1f(P.vorticity.u.curl, 7);
       gl.uniform1f(P.vorticity.u.dt, dt);
       target(vel.w);
       draw();
@@ -306,14 +330,20 @@ export default function HeroInk() {
       gl.uniform1f(P.advect.u.dt, dt);
       bind(vel.r, 0, P.advect.u.uVelocity);
       bind(vel.r, 1, P.advect.u.uSource);
-      gl.uniform1f(P.advect.u.dissipation, 0.25);
+      gl.uniform1f(P.advect.u.dissipation, 0.6);
+      gl.uniform2f(P.advect.u.srcTexel, ...simTexel);
+      gl.uniform1f(P.advect.u.diffuse, 0);
+      gl.uniform1f(P.advect.u.sharp, 0);
       target(vel.w);
       draw();
       vel.swap();
 
       bind(vel.r, 0, P.advect.u.uVelocity);
       bind(dye.r, 1, P.advect.u.uSource);
-      gl.uniform1f(P.advect.u.dissipation, 0.1); // the water slowly takes the colour away
+      gl.uniform1f(P.advect.u.dissipation, 0); // the paint stays; it only spreads and moves
+      gl.uniform2f(P.advect.u.srcTexel, ...dyeTexel);
+      gl.uniform1f(P.advect.u.diffuse, Math.min(0.5, bleed * dt * 60));
+      gl.uniform1f(P.advect.u.sharp, 1);
       target(dye.w);
       draw();
       dye.swap();
@@ -327,27 +357,38 @@ export default function HeroInk() {
       draw();
     };
 
-    /* the drops: ink falls in at the top and opens into a plume; the water is stirred now and then */
+    /* the paint: it is laid in once, at a few places across the box, poured slowly so it opens and spreads wide;
+       then no more comes. The water keeps turning gently, so the colour keeps moving and folding into itself. */
     const rnd = (a: number, b: number) => a + Math.random() * (b - a);
-    let colourFlip = Math.random() < 0.5;
-    const drop = (slate: boolean, x = rnd(0.06, 0.94)) => {
-      const y = rnd(0.62, 0.92);
-      const amt = rnd(1.1, 2);
-      const c: [number, number, number] = slate ? [amt, 0, 0] : [0, amt, 0];
-      const r = rnd(0.012, 0.03);
-      const vx = rnd(-90, 90);
-      const vy = -rnd(260, 480); // falling
-      splat(vel, x, y, [vx, vy, 0], r * 1.6);
-      splat(dye, x, y, c, r);
-      // a smaller trailing drop, so the plume has a tail of filaments
-      splat(dye, x + rnd(-0.01, 0.01), y + rnd(0.05, 0.2), c.map((v) => v * 0.6) as [number, number, number], r * 0.5);
+    const n = Math.max(4, Math.round(aspect * 1.2));
+    const first = Math.random() < 0.5;
+    const pours = Array.from({ length: n }, (_, i) => ({
+      x: (i + 0.5) / n + rnd(-0.15, 0.15) / n,
+      y: i % 2 ? rnd(0.3, 0.45) : rnd(0.55, 0.7),
+      from: 0.2 + i * rnd(0.55, 0.85) + rnd(0, 0.3),
+      dur: rnd(2.8, 4.2),
+      slate: i % 2 === 0 ? first : !first,
+      rate: rnd(0.9, 1.4),
+      r: rnd(0.018, 0.032),
+      swirl: rnd(-1, 1) < 0 ? -1 : 1,
+      drift: rnd(0, 6.283),
+    }));
+    pours.sort(() => Math.random() - 0.5).forEach((p, i) => (p.from = 0.2 + i * 0.7 + rnd(0, 0.3)));
+    const pour = (p: (typeof pours)[number], dt: number, k: number) => {
+      const c: [number, number, number] = p.slate ? [p.rate * dt * 1.6, 0, 0] : [0, p.rate * dt * 1.6, 0];
+      const x = p.x + 0.012 * Math.cos(k * 3 + p.drift);
+      const y = p.y + 0.03 * Math.sin(k * 3 + p.drift);
+      splat(dye, x, y, c, p.r * (0.6 + 0.8 * k));
+      // a slow turn in the water where it pours, so it opens in curls rather than a flat disc
+      const a = p.drift + k * 4;
+      splat(vel, x + 0.02 * Math.cos(a), y + 0.06 * Math.sin(a), [-Math.sin(a) * 14 * p.swirl, Math.cos(a) * 14 * p.swirl, 0], p.r * 1.5);
     };
     const stir = () => {
       const x = rnd(0.04, 0.96);
-      const y = rnd(0.2, 0.9);
+      const y = rnd(0.15, 0.85);
       const a = rnd(0, 6.283);
-      const s = rnd(80, 200);
-      splat(vel, x, y, [Math.cos(a) * s, Math.sin(a) * s, 0], rnd(0.006, 0.02));
+      const s = rnd(6, 14);
+      splat(vel, x, y, [Math.cos(a) * s, Math.sin(a) * s, 0], rnd(0.008, 0.025));
     };
 
     let raf = 0;
@@ -355,30 +396,21 @@ export default function HeroInk() {
     let visible = true;
     let tPrev = 0;
     let clock = 0;
-    let nextDrop = 0;
     let nextStir = 0;
-    // the first drops go in across the whole box, so the colour opens everywhere
-    const opening = Array.from({ length: 10 }, (_, i) => ({ t: 0.1 + i * 0.5 + rnd(0, 0.3), x: (i + 0.5) / 10 + rnd(-0.04, 0.04), slate: i % 2 === 0, done: false }));
-    if (Math.random() < 0.5) opening.forEach((o) => (o.slate = !o.slate));
 
     const advance = (dt: number) => {
       clock += dt;
-      for (const o of opening) {
-        if (!o.done && clock >= o.t) {
-          o.done = true;
-          drop(o.slate, o.x);
-        }
-      }
-      if (clock > 4.5 && clock >= nextDrop) {
-        colourFlip = !colourFlip;
-        drop(colourFlip);
-        nextDrop = clock + rnd(1.5, 2.6);
+      for (const p of pours) {
+        const k = (clock - p.from) / p.dur;
+        if (k >= 0 && k <= 1) pour(p, dt, k);
       }
       if (clock >= nextStir) {
         stir();
-        nextStir = clock + rnd(0.5, 1.1);
+        nextStir = clock + rnd(1.5, 2.5);
       }
-      step(dt);
+      // the paper is wettest at first, so the colour bleeds most then, and less and less as it settles
+      const bleed = 0.02 * Math.exp(-clock / 4);
+      step(dt, bleed);
     };
 
     const frame = (now: number) => {
@@ -424,13 +456,12 @@ export default function HeroInk() {
       alive = false;
       cancelAnimationFrame(raf);
       cleanup.forEach((f) => f());
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [key]);
 
   return (
     <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-      <canvas ref={cvRef} style={{ width: "100%", height: "100%", display: "block" }} />
+      <canvas key={key} ref={cvRef} style={{ width: "100%", height: "100%", display: "block" }} />
     </div>
   );
 }
