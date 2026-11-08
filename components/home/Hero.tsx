@@ -1,17 +1,21 @@
 import HeroBeetle from "./HeroBeetle";
 import LogoMarquee from "./LogoMarquee";
 
+const fade = "linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent), linear-gradient(to right, transparent, #000 4%, #000 96%, transparent)";
+
 export default function Hero() {
   return (
     <section className="flex min-h-[max(560px,calc(100svh-107px))] flex-col overflow-x-clip">
-      <div className="relative flex flex-1 flex-col px-5 py-16 max-md:justify-center md:flex-row md:items-center md:px-8">
-        <HeroBeetle />
-        <div className="relative z-10">
+      <div className="flex flex-1 flex-col justify-end px-5 pb-10 pt-16 md:px-8">
+        <div>
           <h1 className="font-serif text-[1.875rem] leading-[40px] md:text-[2.5rem] md:leading-[1.35]">I’m Vishnu.</h1>
           <p className="mt-2 max-w-[35rem] text-[17px] leading-[26px] md:text-lg md:leading-[1.5]">
             A Product Designer with over 5 years of experience. I design experiences for the complex systems that run real work.
           </p>
         </div>
+      </div>
+      <div className="relative" style={{ height: "clamp(320px, 36vw, 500px)", WebkitMaskImage: fade, maskImage: fade, WebkitMaskComposite: "source-in", maskComposite: "intersect" }}>
+        <HeroBeetle />
       </div>
       <LogoMarquee />
     </section>

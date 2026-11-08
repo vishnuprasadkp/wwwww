@@ -174,6 +174,67 @@ class Brush {
   }
 }
 
+/** Paint spreading from a point like ink dropped in water: several lobes grow outwards at their own pace, softly feathered, and the wash is uncovered behind the front. */
+class Bloom {
+  mask: HTMLCanvasElement;
+  g: CanvasRenderingContext2D;
+  tmp: HTMLCanvasElement;
+  tg: CanvasRenderingContext2D;
+  done = false;
+  private f = 0.25;
+  private scale: number;
+  private lobes: { a: number; d: number; k: number }[];
+  constructor(public sp: Sprite, private cx: number, private cy: number, private from: number, private to: number, private rmax: number) {
+    this.scale = sp.c.width / sp.w;
+    this.mask = make(sp.c.width * this.f, sp.c.height * this.f);
+    this.g = this.mask.getContext("2d")!;
+    this.tmp = make(sp.c.width, sp.c.height);
+    this.tg = this.tmp.getContext("2d")!;
+    this.lobes = Array.from({ length: 8 }, () => ({ a: rnd(0, 6.283), d: rnd(0, 0.4), k: rnd(0.7, 1.15) }));
+  }
+  update(t: number) {
+    if (this.done) return;
+    const p = clamp01((t - this.from) / (this.to - this.from));
+    if (p <= 0) return;
+    const g = this.g;
+    if (p >= 1) {
+      g.globalCompositeOperation = "source-over";
+      g.fillStyle = "#fff";
+      g.fillRect(0, 0, this.mask.width, this.mask.height);
+      this.done = true;
+      return;
+    }
+    const grow = Math.sqrt(p) * (1 - 0.25 * (1 - p)); // quick at first, then it slows as the water thins
+    g.globalCompositeOperation = "source-over";
+    g.clearRect(0, 0, this.mask.width, this.mask.height);
+    g.globalCompositeOperation = "lighter";
+    const k = this.scale * this.f;
+    for (const l of this.lobes) {
+      const x = (this.cx + Math.cos(l.a) * l.d * this.rmax * grow - this.sp.ox) * k;
+      const y = (this.cy + Math.sin(l.a) * l.d * this.rmax * grow - this.sp.oy) * k;
+      const r = this.rmax * l.k * grow * k;
+      const gr = g.createRadialGradient(x, y, 0, x, y, Math.max(1, r));
+      gr.addColorStop(0, "rgba(255,255,255,1)");
+      gr.addColorStop(0.55, "rgba(255,255,255,0.85)");
+      gr.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = gr;
+      g.beginPath();
+      g.arc(x, y, Math.max(1, r), 0, 6.283);
+      g.fill();
+    }
+  }
+  get(t: number): HTMLCanvasElement | null {
+    if (this.done) return this.sp.c;
+    if (t < this.from) return null;
+    this.tg.globalCompositeOperation = "source-over";
+    this.tg.clearRect(0, 0, this.tmp.width, this.tmp.height);
+    this.tg.drawImage(this.sp.c, 0, 0);
+    this.tg.globalCompositeOperation = "destination-in";
+    this.tg.drawImage(this.mask, 0, 0, this.tmp.width, this.tmp.height);
+    return this.tmp;
+  }
+}
+
 /** A piece cut out of a painting: the box (x0, y0)-(x1, y1), kept only inside `poly` if given. */
 function cut(img: HTMLImageElement, x0: number, y0: number, x1: number, y1: number, poly?: Pt[]): Sprite {
   const c = make(x1 - x0, y1 - y0);
@@ -282,10 +343,10 @@ export default function HeroBeetle() {
     const hb = host.getBoundingClientRect();
     W = Math.max(320, Math.round(hb.width));
     H = Math.max(360, Math.round(hb.height));
-    CX = W * 0.64;
+    CX = W * 0.5;
     CY = H * 0.5;
-    SC = clamp(Math.max(W, H * 1.6) / 1400, 0.55, 1.25);
-    KB = clamp(Math.min(W * 0.4, H * 0.82), 210, 540) / (WING_U * 2);
+    SC = 1;
+    KB = clamp(Math.min(W * 0.36, H * 0.74), 190, 420) / (WING_U * 2);
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;
@@ -328,39 +389,38 @@ export default function HeroBeetle() {
       const wing: Sprite = { c: wc, ox: -WING_BASE[0] * WING_U, oy: -WING_BASE[1] * WING_H, w: WING_U, h: WING_H };
 
       /* ---------------- the washes: random pools of slate and orange, each painted with its own brush ---------------- */
-      type Wash = { sp: Sprite; brush: Brush };
+      type Wash = { sp: Sprite; brush: Bloom };
       const washes: Wash[] = [];
       type Setup = { x: number; y: number; r: number; pig: [Rgb, Rgb]; a: number; from: number; dur: number; veil?: boolean };
       const setup: Setup[] = [];
-      // two big thin veils first, over the whole section, then the pools
-      const BIG = Math.max(W, H * 1.6);
-      setup.push({ x: W * 0.5, y: H * 0.5, r: BIG * 0.36, pig: [SLATE[0], SLATE[1]], a: 0.2, from: 0.1, dur: 3.4, veil: true });
-      setup.push({ x: W * 0.74, y: H * 0.46, r: BIG * 0.3, pig: [ORANGE[0], ORANGE[1]], a: 0.2, from: 0.5, dur: 3.2, veil: true });
+      // thin veils over the whole band first, then pools of pigment spread over it
+      const VR = Math.min(W * 0.28, H * 1.5);
+      setup.push({ x: W * 0.32, y: H * 0.5, r: VR, pig: [SLATE[0], SLATE[1]], a: 0.22, from: 0.1, dur: 4, veil: true });
+      setup.push({ x: W * 0.7, y: H * 0.5, r: VR, pig: [ORANGE[0], ORANGE[1]], a: 0.22, from: 0.6, dur: 4, veil: true });
       const kinds: { pig: [Rgb, Rgb]; a: number }[] = [
-        { pig: [SLATE[0], SLATE[3]], a: 0.5 },
-        { pig: [ORANGE[1], ORANGE[3]], a: 0.55 },
-        { pig: [SLATE[1], SLATE[2]], a: 0.45 },
-        { pig: [ORANGE[0], ORANGE[2]], a: 0.5 },
-        { pig: [SLATE[0], SLATE[2]], a: 0.5 },
-        { pig: [ORANGE[2], ORANGE[4]], a: 0.42 },
-        { pig: [SLATE[3], SLATE[2]], a: 0.38 },
-        { pig: [ORANGE[0], ORANGE[1]], a: 0.4 },
-        { pig: [SLATE[1], SLATE[0]], a: 0.34 },
-        { pig: [ORANGE[3], ORANGE[1]], a: 0.36 },
-        { pig: [ORANGE[1], ORANGE[0]], a: 0.4 },
-        { pig: [SLATE[2], SLATE[1]], a: 0.36 },
+        { pig: [SLATE[0], SLATE[3]], a: 0.6 },
+        { pig: [ORANGE[1], ORANGE[3]], a: 0.62 },
+        { pig: [SLATE[1], SLATE[2]], a: 0.55 },
+        { pig: [ORANGE[0], ORANGE[2]], a: 0.58 },
+        { pig: [SLATE[0], SLATE[2]], a: 0.56 },
+        { pig: [ORANGE[2], ORANGE[4]], a: 0.5 },
+        { pig: [SLATE[3], SLATE[2]], a: 0.5 },
+        { pig: [ORANGE[0], ORANGE[1]], a: 0.5 },
+        { pig: [SLATE[1], SLATE[0]], a: 0.44 },
+        { pig: [ORANGE[3], ORANGE[1]], a: 0.46 },
       ];
-      // twelve places spread over the whole section, in a random order
+      // places spread along the band, in a random order
+      const cols = Math.max(4, Math.round(W / 330));
       const cells: Pt[] = [];
-      for (let cy = 0; cy < 3; cy++) for (let cx = 0; cx < 4; cx++) cells.push([(cx + 0.5) / 4, (cy + 0.5) / 3]);
+      for (let k = 0; k < kinds.length; k++) cells.push([((k % cols) + 0.5) / cols, k < cols ? 0.34 : 0.68]);
       cells.sort(() => Math.random() - 0.5);
       let at = 0.9;
       kinds.forEach((k, i) => {
-        const c = cells[i];
-        setup.push({ x: W * (c[0] + rnd(-0.09, 0.09)), y: H * (c[1] + rnd(-0.12, 0.12)), r: SC * rnd(190, 330), pig: k.pig, a: k.a * 1.3, from: at, dur: rnd(2.2, 3.4) });
-        at += rnd(0.25, 0.5);
+        const c = cells[i % cells.length];
+        setup.push({ x: W * (c[0] + rnd(-0.04, 0.04)), y: H * (c[1] + rnd(-0.1, 0.1)), r: clamp(H * rnd(0.5, 0.78), 150, 360), pig: k.pig, a: k.a, from: at, dur: rnd(3, 4.5) });
+        at += rnd(0.3, 0.55);
       });
-      const WS = 0.42;
+      const WS = 0.5;
       setup.forEach((s, wi) => {
         const R = s.r;
         const box = R * 3;
@@ -379,7 +439,11 @@ export default function HeroBeetle() {
             const dx = (x - px / 2) / (R * WS);
             const dy = (y - px / 2) / (R * WS);
             const rr = dx * dx * 0.9 + dy * dy * 1.1;
-            const f = fbm((x + wx) / cell, (y + wy) / cell, sd) * 1.35 - 0.3 - rr * 0.95;
+            // fingers of pigment creeping out from the middle, like ink opening in water
+            const ang = Math.atan2(dy, dx);
+            const dist = Math.sqrt(rr);
+            const fing = fbm(Math.cos(ang) * 2.4 + 5, Math.sin(ang) * 2.4 + dist * 1.6, sd + 11, 3) - 0.5;
+            const f = fbm((x + wx) / cell, (y + wy) / cell, sd) * 1.35 - 0.3 - rr * 0.95 + (s.veil ? 0 : 0.5 * fing * smooth(0.15, 0.75, dist));
             const e = smooth(0, s.veil ? 0.14 : 0.06, f);
             if (e <= 0) continue;
             const dens = smooth(0, 0.55, f);
@@ -389,7 +453,7 @@ export default function HeroBeetle() {
             const n4 = fbm(x / (cell * 0.2) + 70, y / (cell * 0.2), sd + 8, 2);
             const t = smooth(0.25, 0.75, n3);
             const i = (y * px + x) * 4;
-            const dark = 1 - 0.34 * rim;
+            const dark = (1 - 0.34 * rim) * (1 - 0.26 * dens * n2 * (s.veil ? 0 : 1));
             d[i] = (s.pig[0][0] + (s.pig[1][0] - s.pig[0][0]) * t) * dark;
             d[i + 1] = (s.pig[0][1] + (s.pig[1][1] - s.pig[0][1]) * t) * dark;
             d[i + 2] = (s.pig[0][2] + (s.pig[1][2] - s.pig[0][2]) * t) * dark;
@@ -397,21 +461,13 @@ export default function HeroBeetle() {
             let a = s.a * e * (0.3 + 0.7 * dens) * (0.62 + 0.38 * n2) + (s.veil ? 0 : rim * 0.26 * e);
             if (n4 > 0.7 && !s.veil) a *= 0.5; // salt: little lights where the paint was pushed away
             a *= 1 - 0.25 * gr * gr; // the grain of the paper
-            // the left of the picture fades into the page, where the words are
-            const sx = ox + x / WS;
-            a *= (W < 768 ? 0.4 : 0.2) + (W < 768 ? 0.6 : 0.8) * smooth(W * 0.05, W * 0.5, sx);
             d[i + 3] = clamp01(a) * 255;
           }
         }
         const c = make(px, px);
         c.getContext("2d")!.putImageData(data, 0, 0);
         const sp: Sprite = { c, ox, oy, w: box, h: box };
-        const guide: Pt[] = Array.from({ length: 40 }, (_, i) => {
-          const a = Math.random() * 6.283;
-          const dd = R * 1.2 * Math.sqrt((i + 1) / 40);
-          return [s.x + Math.cos(a) * dd, s.y + Math.sin(a) * dd * 0.9] as Pt;
-        });
-        washes.push({ sp, brush: new Brush(sp, guide, s.from, s.from + s.dur, R * 0.55, 56) });
+        washes.push({ sp, brush: new Bloom(sp, s.x, s.y, s.from, s.from + s.dur, R * 1.25) });
       });
       const washEnd = Math.max(...setup.map((s) => s.from + s.dur));
 
@@ -472,10 +528,8 @@ export default function HeroBeetle() {
       const nSkew = wander();
 
       // flight: a soft spring towards a wandering target; the beetle banks into its turns and tips with its speed
-      const pose = { x: W + KB * WING_U * 1.1, y: H * rnd(0.3, 0.7), vx: -80, vy: rnd(-12, 12), ax: 0, ay: 0, tx: W * 0.7, ty: H * 0.5, next: 0, yaw: -0.9, roll: 0, pitch: 0 };
-      type Print = { x: number; y: number; a: number; born: number; rgb: Rgb; s: number };
-      const prints: Print[] = [];
-      const wasDown: boolean[] = [false, false, false, false, false, false];
+      const side = Math.random() < 0.5 ? 1 : -1; // it comes in from the right or from the left
+      const pose = { x: side > 0 ? W + KB * WING_U * 1.1 : -KB * WING_U * 1.1, y: H * rnd(0.4, 0.6), vx: -80 * side, vy: rnd(-8, 8), ax: 0, ay: 0, tx: W * 0.5, ty: H * 0.5, next: 0, yaw: -0.9 * side, roll: 0, pitch: 0 };
       let gait = Math.random() * 6.283;
       let phase = Math.random() * 6.283;
       let tLast = 0;
@@ -520,7 +574,7 @@ export default function HeroBeetle() {
           const s = side === 0 ? -1 : 1;
           const a = o.wingAlpha[side];
           const sh = SHOULDER[side];
-          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side]) * Math.PI) / 180, 0.95, [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
+          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side]) * Math.PI) / 180, 0.8 + 0.17 * Math.cos(a), [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
         }
         // legs hang a little below the body, feelers and head a little above
         legs.forEach((l, i) => card(l.sp, bLegs[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], o.legZ[i]], [1, 0, 0], [0, 1, 0], (o.legSpin[i] * Math.PI) / 180));
@@ -608,8 +662,8 @@ export default function HeroBeetle() {
         // flight: the beetle sits where it was painted, then lifts off and drifts, slowly
         const lift = smooth(flyFrom, flyFrom + 1.2, t);
         if (t > pose.next && lift > 0) {
-          pose.tx = W * rnd(W < 768 ? 0.15 : 0.34, 0.9);
-          pose.ty = H * rnd(0.16, 0.84);
+          pose.tx = W * rnd(0.16, 0.84);
+          pose.ty = H * rnd(0.36, 0.64);
           pose.next = t + rnd(5, 8.5);
         }
         const ax = (pose.tx - pose.x) * 0.2 - pose.vx * 0.85;
@@ -628,14 +682,14 @@ export default function HeroBeetle() {
         pose.y += pose.vy * dt * lift;
         // it turns to face the way it is going, slowly, and leans into the turn
         const aim = sp > 12 ? Math.atan2(pose.vx, -pose.vy) : pose.yaw;
-        const yawGoal = clamp(aim * 0.6 + TILT * 0.3, -1.1, 1.1) + 0.55 * nYaw(t * 0.2) * lift;
+        const yawGoal = clamp(aim * 0.8, -1.35, 1.35) + 0.3 * nYaw(t * 0.2) * lift;
         pose.yaw += angDiff(yawGoal, pose.yaw) * Math.min(1, dt * 0.9) * lift;
         const lateral = pose.ax * Math.cos(pose.yaw) + pose.ay * Math.sin(pose.yaw);
         const forward = -pose.ax * Math.sin(pose.yaw) + pose.ay * Math.cos(pose.yaw);
-        const rollGoal = clamp(lateral * 0.03, -0.6, 0.6) + 0.62 * nRoll(t * 0.3) * lift;
-        const pitchGoal = clamp(-forward * 0.015, -0.3, 0.3) + 0.42 * nPitch(t * 0.27) * lift;
-        pose.roll += (clamp(rollGoal, -0.95, 0.95) - pose.roll) * Math.min(1, dt * 1.3);
-        pose.pitch += (clamp(pitchGoal, -0.6, 0.6) - pose.pitch) * Math.min(1, dt * 1.3);
+        const rollGoal = clamp(lateral * 0.02, -0.3, 0.3) + 0.3 * nRoll(t * 0.3) * lift;
+        const pitchGoal = clamp(-forward * 0.01, -0.2, 0.2) + 0.2 * nPitch(t * 0.27) * lift;
+        pose.roll += (clamp(rollGoal, -0.5, 0.5) - pose.roll) * Math.min(1, dt * 1.3);
+        pose.pitch += (clamp(pitchGoal, -0.32, 0.32) - pose.pitch) * Math.min(1, dt * 1.3);
 
         // wing beat: slow and smooth; the speed and depth drift, and the outer wing works harder in a turn
         phase += dt * 6.283 * (0.78 + 0.2 * nFreq(t * 0.17)) * (0.3 + 0.7 * lift);
@@ -679,31 +733,6 @@ export default function HeroBeetle() {
           trg.fill();
         }
 
-        // footprints: each foot that comes down leaves a small print of paint, which fades slowly
-        if (lift > 0.6) {
-          const Rm = turn(pose.yaw, pose.pitch, pose.roll);
-          const head = Math.atan2(pose.vy, pose.vx) + Math.PI / 2;
-          legs.forEach((l, i) => {
-            const down = Math.cos(gph[i]) > 0;
-            if (down && !wasDown[i]) {
-              const tip = l.guide[2];
-              const sr = (moment.legSpin[i] * Math.PI) / 180;
-              const qx = tip[0] - l.pivot[0];
-              const qy = tip[1] - l.pivot[1];
-              const lp: V3 = [l.pivot[0] - BODY_C[0] + qx * Math.cos(sr) - qy * Math.sin(sr), l.pivot[1] - BODY_C[1] + qx * Math.sin(sr) + qy * Math.cos(sr), -16];
-              const P = apply(Rm, lp);
-              const f = 1 / (1 - P[2] / D);
-              const x = pose.x + P[0] * kk * f;
-              const y = pose.y + bob + P[1] * kk * f;
-              if (x > -20 && x < W + 20 && y > -20 && y < H + 20) {
-                prints.push({ x, y, a: head + rnd(-0.25, 0.25), born: t, rgb: i % 2 ? SLATE[3] : ORANGE[4], s: clamp(kk / 0.4, 0.7, 1.5) * 2 });
-                if (prints.length > 110) prints.shift();
-              }
-            }
-            wasDown[i] = down;
-          });
-        }
-
         // compose
         sg.clearRect(0, 0, W, H);
         washes.forEach((w) => {
@@ -712,32 +741,6 @@ export default function HeroBeetle() {
         });
         sg.drawImage(bg, 0, 0, W, H);
         sg.drawImage(trail, 0, 0, W, H);
-        for (let i = prints.length - 1; i >= 0; i--) {
-          const pr = prints[i];
-          const age = t - pr.born;
-          const al = 0.85 * smooth(0, 0.3, age) * (1 - smooth(8, 20, age));
-          if (al <= 0.003) {
-            if (age > 20) prints.splice(i, 1);
-            continue;
-          }
-          const c = str(pr.rgb);
-          sg.save();
-          sg.translate(pr.x, pr.y);
-          sg.rotate(pr.a);
-          sg.fillStyle = `rgba(${c},${al})`;
-          sg.strokeStyle = `rgba(${str(mix(pr.rgb, [30, 30, 36], 0.4))},${al * 0.7})`;
-          sg.lineWidth = 0.7;
-          sg.beginPath();
-          sg.ellipse(0, 0, 2.3 * pr.s, 3.3 * pr.s, 0, 0, 6.283);
-          sg.fill();
-          sg.stroke();
-          for (const [dx, dy] of [[-2.6, -5], [0, -6.2], [2.6, -5]]) {
-            sg.beginPath();
-            sg.ellipse(dx * pr.s, dy * pr.s, 0.95 * pr.s, 1.3 * pr.s, 0, 0, 6.283);
-            sg.fill();
-          }
-          sg.restore();
-        }
         blg.clearRect(0, 0, W, H);
         if (t >= flyFrom) drawBeetle(blg, t, turn(pose.yaw, pose.pitch, pose.roll), pose.x, pose.y + bob, kk, moment);
         // it casts a soft shadow on the paper, further off and softer the higher it is
