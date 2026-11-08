@@ -1,4 +1,4 @@
-import HeroBeetle from "./HeroBeetle";
+import HeroBeetle3D from "./HeroBeetle3D";
 import HeroInk from "./HeroInk";
 import LogoMarquee from "./LogoMarquee";
 
@@ -15,7 +15,7 @@ export default function Hero() {
       </div>
       <div className="relative" style={{ height: "clamp(260px, 24.5vw, 470px)", marginTop: "clamp(24px, 4vw, 64px)", background: "rgba(110,106,100,0.12)" }}>
         <HeroInk spread={false} />
-        <HeroBeetle />
+        <HeroBeetle3D />
       </div>
       <LogoMarquee />
     </section>
