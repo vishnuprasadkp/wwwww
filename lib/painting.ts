@@ -64,3 +64,22 @@ export function inkPalette(s: Scheme): InkPalette {
 }
 
 export const schemeForClosing = (closing: string): Scheme => SCHEMES[SCHEME_FOR_CLOSING[closing] ?? "charcoal"];
+
+/** Which case an image belongs to, by its folder (or, for the home and next-project cards, its name). */
+const SCHEME_FOR_CASE: Record<string, keyof typeof SCHEMES> = {
+  adeo: "moss",
+  "ai-agent": "clay",
+  "enterprise-search": "mist",
+  search: "mist",
+  hdfc: "slate",
+  sony: "sage",
+};
+
+/** The scheme of the case an image shows, or null for images outside the case studies. */
+export function schemeForImage(file: string): Scheme | null {
+  const m = file.match(/^\/images\/([^/]+)\/([^/.]+)\.png$/);
+  if (!m) return null;
+  const key = m[1] === "home" || m[1] === "next" ? m[2] : m[1];
+  const s = SCHEME_FOR_CASE[key];
+  return s ? SCHEMES[s] : null;
+}

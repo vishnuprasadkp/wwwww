@@ -1,4 +1,7 @@
 import variants from "@/content/variants.json";
+import masks from "@/content/masks.json";
+import WashOverlay from "./WashOverlay";
+import { schemeForImage, inkPalette } from "@/lib/painting";
 
 type V = { w: number; h: number; avif: number[]; webp: number[] };
 const table = variants as Record<string, V>;
@@ -26,7 +29,9 @@ export default function Pic({ file, sizes, alt = "", priority, eager, sync, fill
   const v = table[file];
   if (!v) throw new Error(`No optimised variants for ${file} — run: node scripts/optimize.mjs`);
   const set = (list: number[], ext: "avif" | "webp") => list.map((w) => `${optPath(file, w, ext)} ${w}w`).join(", ");
-  return (
+  // a case study image: its painted background moves, like the painting at the foot of its case; the product stays still
+  const sc = file in masks ? schemeForImage(file) : null;
+  const pic = (
     <picture className="contents">
       <source type="image/avif" srcSet={set(v.avif, "avif")} sizes={sizes} />
       <img
@@ -39,8 +44,24 @@ export default function Pic({ file, sizes, alt = "", priority, eager, sync, fill
         loading="eager"
         decoding={sync ? "sync" : "async"}
         {...(priority ? { fetchPriority: "high" as const } : {})}
-        className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : className}
+        className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : sc ? `block ${className}` : className}
       />
     </picture>
+  );
+  if (!sc) return pic;
+  const overlay = <WashOverlay mask={file.replace(/^\/images\//, "/images/_mask/")} palette={inkPalette(sc)} fill={fill} />;
+  if (fill) {
+    return (
+      <>
+        {pic}
+        {overlay}
+      </>
+    );
+  }
+  return (
+    <span className="relative block">
+      {pic}
+      {overlay}
+    </span>
   );
 }
