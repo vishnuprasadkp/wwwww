@@ -212,3 +212,32 @@ html[data-motion] main :where(h1, h2, h3, h4, .font-serif, p, dd, dt, li, figcap
 html[data-motion] main :where(img) { opacity: 0; }
 /* the lines of a heading each come up out of their own mask: room for the tails of letters so they are not cut */
 .split-line-mask { padding-bottom: 0.16em; margin-bottom: -0.16em; }
+
+/* ---- Home hero: the watercolour beetle (components/home/HeroBeetle.tsx) ---- */
+.hb { position: relative; aspect-ratio: 1; width: 100%; pointer-events: none; }
+.hb-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; will-change: transform, opacity; }
+.hb .hb-layer svg, .hb svg.hb-layer, .hb .hb-wing, .hb .hb-body { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.hb-fly > svg { will-change: transform; }
+.hb-fly { transform-origin: 50% 50%; }
+/* nothing moves until the opening loader has gone */
+.hb *, .hb { animation-play-state: paused; }
+html:not([data-loading]) .hb *, html:not([data-loading]) .hb { animation-play-state: running; }
+
+@keyframes hb-bloom { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+@keyframes hb-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025) translate(0.4%, -0.6%); } }
+@keyframes hb-fly-in { from { opacity: 0; transform: translate(-10%, 13%) scale(0.8) rotate(-7deg); } to { opacity: 1; transform: none; } }
+@keyframes hb-float { 0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); } 50% { transform: translate3d(0.6%, -2.4%, 0) rotate(1.1deg); } }
+@keyframes hb-wing-l { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-4.5deg); } }
+@keyframes hb-wing-r { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(4.5deg); } }
+@keyframes hb-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(1.2%, -1.8%); } }
+@keyframes hb-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.hb-wash { opacity: 0; animation: hb-bloom 4.4s cubic-bezier(0.22, 0.7, 0.2, 1) var(--d) forwards, hb-breathe 10s ease-in-out calc(var(--d) + 5s) infinite; }
+.hb-drift { opacity: 0; animation: hb-fade 3s ease-out var(--d) forwards, hb-drift 9s ease-in-out calc(var(--d) + 3s) infinite; }
+.hb-fly { opacity: 0; animation: hb-fly-in 4.2s cubic-bezier(0.2, 0.7, 0.2, 1) 1.5s forwards, hb-float 8s ease-in-out 5.7s infinite; }
+.hb-wing-l { animation: hb-wing-l 2.6s ease-in-out 5.7s infinite; }
+.hb-wing-r { animation: hb-wing-r 2.6s ease-in-out 5.7s infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .hb *, .hb { animation: none !important; }
+  .hb-wash, .hb-drift, .hb-fly { opacity: 1; }
+}
