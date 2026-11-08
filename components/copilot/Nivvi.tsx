@@ -311,7 +311,19 @@ function useLevels(active: boolean, n = 44) {
 }
 
 const plain = (t: string) => t.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*/g, "").replace(/^\s*([-•]|\d+\.)\s+/gm, "").replace(/(^|\s)[_*]([^_*]+)[_*]/g, "$1$2");
-const stopSpeaking = () => typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.cancel();
+/** Nyrro's voice: a recording of the answer (public/nyrro-audio, made by scripts/nyrro-audio.py), named by this hash of the answer text. */
+const fnv1a = (text: string) => {
+  let h = 0x811c9dc5;
+  for (const b of new TextEncoder().encode(text)) h = Math.imul(h ^ b, 0x01000193);
+  return (h >>> 0).toString(16).padStart(8, "0");
+};
+let recording: HTMLAudioElement | null = null;
+const stopSpeaking = () => {
+  if (typeof window === "undefined") return;
+  recording?.pause();
+  recording = null;
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+};
 
 /** Best available clear, warm female voice: natural/neural ones first, Indian English preferred, male voices last. */
 function pickVoice(): SpeechSynthesisVoice | undefined {
@@ -472,29 +484,47 @@ function NivviPanel() {
 
   /** Reads an answer aloud (tap again to stop). */
   const speak = (i: number, text: string) => {
-    if (!("speechSynthesis" in window)) return;
     if (speaking === i) {
       stopSpeaking();
       setSpeaking(null);
       return;
     }
     stopSpeaking();
-    // Speak sentence by sentence: long single utterances get cut off in Chrome.
-    const parts = plain(text).split(/(?<=[.!?])\s+/).filter(Boolean);
-    const voice = pickVoice();
     setSpeaking(i);
-    parts.forEach((part, k) => {
-      const u = new SpeechSynthesisUtterance(part);
-      if (voice) {
-        u.voice = voice;
-        u.lang = voice.lang;
+    // Browser voice: only used if there is no recording for this answer (for example a reply that is built on the fly).
+    const browserVoice = () => {
+      if (!("speechSynthesis" in window)) return setSpeaking(null);
+      // Speak sentence by sentence: long single utterances get cut off in Chrome.
+      const parts = plain(text).split(/(?<=[.!?])\s+/).filter(Boolean);
+      const voice = pickVoice();
+      parts.forEach((part, k) => {
+        const u = new SpeechSynthesisUtterance(part);
+        if (voice) {
+          u.voice = voice;
+          u.lang = voice.lang;
+        }
+        u.rate = 0.95;
+        u.pitch = 1.1;
+        u.volume = 1;
+        u.onend = () => k === parts.length - 1 && setSpeaking((c) => (c === i ? null : c));
+        u.onerror = () => setSpeaking(null);
+        window.speechSynthesis.speak(u);
+      });
+    };
+    const a = new Audio(`/nyrro-audio/${fnv1a(text)}.m4a`);
+    recording = a;
+    a.onended = () => setSpeaking((c) => (c === i ? null : c));
+    a.onerror = () => {
+      if (recording === a) {
+        recording = null;
+        browserVoice();
       }
-      u.rate = 0.95;
-      u.pitch = 1.1;
-      u.volume = 1;
-      u.onend = () => k === parts.length - 1 && setSpeaking((c) => (c === i ? null : c));
-      u.onerror = () => setSpeaking(null);
-      window.speechSynthesis.speak(u);
+    };
+    a.play().catch(() => {
+      if (recording === a) {
+        recording = null;
+        browserVoice();
+      }
     });
   };
 
