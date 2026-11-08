@@ -213,22 +213,6 @@ html[data-motion] main :where(img) { opacity: 0; }
 /* the lines of a heading each come up out of their own mask: room for the tails of letters so they are not cut */
 .split-line-mask { padding-bottom: 0.16em; margin-bottom: -0.16em; }
 
-/* ---- Home hero: the flying beetle (components/home/HeroBeetle.tsx; its motion is driven from there) ---- */
-.hb { position: relative; aspect-ratio: 1; width: 100%; pointer-events: none; }
-.hb-wash, .hb-fly, .hb-body, .hb-part, .hb-wing, .hb-wing-in { position: absolute; will-change: transform; }
-/* the paint canvas is 4:3 and bigger than the box, so the colour spreads well beyond the beetle */
-.hb-wash { width: 160%; left: -34%; top: -12%; aspect-ratio: 4 / 3; mix-blend-mode: multiply; opacity: 0.72; }
-.hb-wash canvas { width: 100%; height: 100%; display: block; }
-.hb-fly { inset: 8% 0 -8% 0; opacity: 0; mix-blend-mode: multiply; }
-/* the body is one side-view image, 120% of the box wide, cut into parts that move on their own: core, feelers, legs */
-.hb-body { width: 120%; left: -10%; top: 10%; aspect-ratio: 3 / 2; transform-origin: 56% 18.6%; }
-.hb-part { inset: 0; background: url("/images/site/hero-beetle-side-body.webp") center / 100% 100% no-repeat; }
-.hb-core { clip-path: polygon(0 0, 100% 0, 100% 28%, 75.5% 28%, 75.5% 45%, 100% 45%, 100% 51%, 0 51%); }
-.hb-ant { clip-path: polygon(75.5% 28%, 100% 28%, 100% 45%, 75.5% 45%); transform-origin: 75.5% 38%; }
-.hb-leg { clip-path: polygon(0 49%, 100% 49%, 100% 100%, 0 100%); transform-origin: 46% 49%; }
-/* a wing is drawn from its base at the left edge (forewing above, hindwing below). Its base is put on the beetle's shoulder
-   and the wing is flipped so it points backwards; the script lifts and lowers it */
-.hb-wing { width: 49%; aspect-ratio: 1331 / 706; left: 55.6%; top: 12%; transform-origin: 3.2% 49.2%; transform: scaleX(-1); }
-.hb-wing-f { opacity: 0.6; }
-.hb-wing-in { inset: 0; background: url("/images/site/hero-beetle-side-wing.webp") center / 100% 100% no-repeat; transform-origin: 3.2% 49.2%; opacity: 0; transform: rotate(-60deg); }
-@media (prefers-reduced-motion: reduce) { .hb-wash, .hb-fly, .hb-wing-in { transition: none; } }
+/* ---- Home hero: the painted beetle (components/home/HeroBeetle.tsx draws and animates it on a canvas) ---- */
+.hb { position: relative; aspect-ratio: 4 / 3; width: 100%; pointer-events: none; }
+.hb canvas { width: 100%; height: 100%; display: block; mix-blend-mode: multiply; }

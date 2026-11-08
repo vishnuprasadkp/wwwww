@@ -3,215 +3,284 @@
 import { useEffect, useRef } from "react";
 
 /**
- * The beetle on the right of the home hero: a watercolour of a beetle in flight seen from the side, in orange and slate grey.
+ * The painting on the right of the home hero: a loose watercolour of a beetle in flight, in slate grey and orange.
  *
- * Two things are generated live so they never repeat:
- *  - the paint: a big painted wash (public/images/site/hero-beetle-side-wash.webp) is laid down by soft "brush dabs" that
- *    open in random places, starting near the middle and spreading outwards, like wet paint blooming on paper;
- *  - the movement: wing beat, body sway, legs and feelers are driven by smooth random noise (each visit is different).
- * The beetle fades in once the paint is well under way. Nothing starts until the opening loader has gone, and with
- * reduced motion the finished painting is shown still.
+ * Everything on it is generated live, the way paint would be laid down:
+ *  - first the washes: soft "brush dabs" open at random places on the paper and spread outwards, so the colour flows;
+ *  - then the beetle is painted in the same way, body first and then the wings reaching out from its shoulders;
+ *  - when it is done the wings open and it hovers, its wings, body and feelers following smooth random noise, so the
+ *    movement is never the same twice.
+ * It is drawn on one canvas from four painted layers (public/images/site/hero-beetle-v5-*.webp, the paper turned into
+ * transparency so it sits on the page's own paper). Nothing starts until the opening loader has gone; with reduced
+ * motion the finished painting is shown still.
  */
 
-const WASH = "/images/site/hero-beetle-side-wash.webp";
+const SRC = { wash: "/images/site/hero-beetle-v5-wash.webp", body: "/images/site/hero-beetle-v5-body.webp", wing: "/images/site/hero-beetle-v5-wing.webp" };
+
+const W = 1200;
+const H = 900;
+const MW = 256; // the reveal masks are small and get scaled up, which keeps the edges of the paint soft
+const MH = 192;
+const BODY_K = 0.62; // body image (1024 square) scale
+const BODY_C: [number, number] = [600, 500]; // where the body's centre (512, 460 in its image) sits on the canvas
+const SHOULDER_L: [number, number] = [BODY_C[0] + (405 - 512) * BODY_K, BODY_C[1] + (395 - 460) * BODY_K];
+const SHOULDER_R: [number, number] = [BODY_C[0] + (618 - 512) * BODY_K, BODY_C[1] + (395 - 460) * BODY_K];
+const WING_W = 540;
+const WING_H = WING_W / 1.674;
+const WING_BASE: [number, number] = [0.0603 * WING_W, 0.4627 * WING_H];
+const TILT = (-9 * Math.PI) / 180;
 
 /** Smooth, never-repeating wander in about -1..1: three sines at unrelated speeds, each with its own random start. */
 const wander = (seed: number[]) => (t: number) => (Math.sin(t * 0.91 + seed[0]) + 0.7 * Math.sin(t * 1.73 + seed[1]) + 0.4 * Math.sin(t * 2.89 + seed[2])) / 2.1;
 const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+const load = (src: string) =>
+  new Promise<HTMLImageElement>((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = rej;
+    i.src = src;
+  });
+const make = (w: number, h: number) => {
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  return c;
+};
+
+type Dab = { x: number; y: number; r: number; t0: number; dur: number };
+/** Opens soft dabs of "paint" on a small mask, one after another, between `from` and `to` seconds. */
+class Painter {
+  mask = make(MW, MH);
+  g = this.mask.getContext("2d")!;
+  dabs: Dab[] = [];
+  done = false;
+  constructor(private spots: [number, number][], private count: number, private from: number, private to: number, private rMin: number, private rMax: number, private centre: [number, number], private spread: number) {}
+  update(t: number) {
+    if (this.done || !this.spots.length) return;
+    const k = clamp01((t - this.from) / (this.to - this.from));
+    const want = Math.floor(Math.pow(k, 1.1) * this.count);
+    while (this.dabs.length < want) {
+      // early dabs stay near the middle, later ones reach further out
+      const reach = 0.2 + 0.8 * clamp01((t - this.from) / ((this.to - this.from) * 0.85));
+      let pick = this.spots[Math.floor(Math.random() * this.spots.length)];
+      for (let n = 0; n < 8; n++) {
+        const c = this.spots[Math.floor(Math.random() * this.spots.length)];
+        if (Math.hypot((c[0] - this.centre[0]) * 1.33, c[1] - this.centre[1]) / this.spread <= reach) {
+          pick = c;
+          break;
+        }
+      }
+      this.dabs.push({ x: pick[0], y: pick[1], r: this.rMin + Math.random() * (this.rMax - this.rMin), t0: t, dur: 1.4 + Math.random() * 2.2 });
+    }
+    let live = false;
+    for (const b of this.dabs) {
+      const u = clamp01((t - b.t0) / b.dur);
+      if (u >= 1) continue;
+      live = true;
+      const r = Math.max(1, easeOut(u) * b.r);
+      const cx = b.x * MW;
+      const cy = b.y * MH;
+      const gr = this.g.createRadialGradient(cx, cy, 0, cx, cy, r);
+      gr.addColorStop(0, "rgba(255,255,255,0.36)");
+      gr.addColorStop(0.55, "rgba(255,255,255,0.24)");
+      gr.addColorStop(1, "rgba(255,255,255,0)");
+      this.g.fillStyle = gr;
+      this.g.beginPath();
+      this.g.arc(cx, cy, r, 0, 6.283);
+      this.g.fill();
+    }
+    if (!live && this.dabs.length >= this.count) this.finish();
+  }
+  finish() {
+    this.g.fillStyle = "#fff";
+    this.g.fillRect(0, 0, MW, MH);
+    this.done = true;
+  }
+}
 
 export default function HeroBeetle() {
-  const root = useRef<HTMLDivElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
+  const cvRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const host = root.current;
-    const cv = canvas.current;
-    if (!host || !cv) return;
-    const q = (s: string) => host.querySelector<HTMLElement>(s)!;
-    const wash = q(".hb-wash");
-    const fly = q(".hb-fly");
-    const body = q(".hb-body");
-    const wingN = q(".hb-wing-n .hb-wing-in");
-    const wingF = q(".hb-wing-f .hb-wing-in");
-    const legs = q(".hb-leg");
-    const ants = q(".hb-ant");
+    const cv = cvRef.current;
+    if (!cv) return;
+    let alive = true;
+    let raf = 0;
+    const cleanup: (() => void)[] = [];
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // ---- the paint -------------------------------------------------------------------------------------------
-    const W = 1024;
-    const H = 768;
-    cv.width = W;
-    cv.height = H;
-    const ctx = cv.getContext("2d")!;
-    const mask = document.createElement("canvas");
-    mask.width = 256;
-    mask.height = 192;
-    const mctx = mask.getContext("2d")!;
-    const painted = document.createElement("canvas"); // the wash with its edges dissolved, ready to be uncovered
-    painted.width = W;
-    painted.height = H;
-    const img = new Image();
-    let spots: [number, number][] = [];
-    type Dab = { x: number; y: number; r: number; t0: number; dur: number };
-    const dabs: Dab[] = [];
-    let washReady = false;
-    let paintDone = false;
-
-    const prepare = () => {
-      const p = painted.getContext("2d")!;
-      p.drawImage(img, 0, 0, W, H);
-      // the edges of the picture dissolve into the page, and more so on the left, where the words are
-      p.globalCompositeOperation = "destination-in";
-      const g = p.createRadialGradient(W * 0.56, H * 0.5, W * 0.1, W * 0.56, H * 0.5, W * 0.5);
-      g.addColorStop(0, "rgba(0,0,0,1)");
-      g.addColorStop(0.55, "rgba(0,0,0,0.7)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      p.fillStyle = g;
-      p.fillRect(0, 0, W, H);
-      const l = p.createLinearGradient(0, 0, W * 0.5, 0);
-      l.addColorStop(0, "rgba(0,0,0,0)");
-      l.addColorStop(1, "rgba(0,0,0,1)");
-      p.fillStyle = l;
-      p.fillRect(0, 0, W, H);
-      p.globalCompositeOperation = "source-over";
-      // where there is paint to uncover
-      const sm = document.createElement("canvas");
-      sm.width = 64;
-      sm.height = 48;
-      const s = sm.getContext("2d")!;
-      s.drawImage(painted, 0, 0, 64, 48);
-      const d = s.getImageData(0, 0, 64, 48).data;
-      for (let y = 0; y < 48; y++) for (let x = 0; x < 64; x++) if (d[(y * 64 + x) * 4 + 3] > 40) spots.push([(x + 0.5) / 64, (y + 0.5) / 48]);
-      washReady = true;
-    };
-
-    const draw = () => {
-      ctx.globalCompositeOperation = "source-over";
-      ctx.clearRect(0, 0, W, H);
-      ctx.drawImage(painted, 0, 0);
-      ctx.globalCompositeOperation = "destination-in";
+    Promise.all([load(SRC.wash), load(SRC.body), load(SRC.wing)]).then(([washImg, bodyImg, wingImg]) => {
+      if (!alive) return;
+      cv.width = W;
+      cv.height = H;
+      const ctx = cv.getContext("2d")!;
       ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(mask, 0, 0, W, H);
-      ctx.globalCompositeOperation = "source-over";
-    };
 
-    // ---- the movement ----------------------------------------------------------------------------------------
-    const rnd = () => Math.random() * 6.283;
-    const nX = wander([rnd(), rnd(), rnd()]);
-    const nY = wander([rnd(), rnd(), rnd()]);
-    const nPitch = wander([rnd(), rnd(), rnd()]);
-    const nFreq = wander([rnd(), rnd(), rnd()]);
-    const nAmp = wander([rnd(), rnd(), rnd()]);
-    const nLeg = wander([rnd(), rnd(), rnd()]);
-    const nAnt = wander([rnd(), rnd(), rnd()]);
-    const nWash = wander([rnd(), rnd(), rnd()]);
-
-    let raf = 0;
-    let started = false;
-    let t0 = 0;
-    let last = 0;
-    let phase = Math.random() * 6.283;
-
-    const frame = (now: number) => {
-      raf = requestAnimationFrame(frame);
-      if (!t0) t0 = last = now;
-      const t = (now - t0) / 1000;
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now;
-
-      // paint: dabs open one after another, near the middle first and then further out
-      if (washReady && !paintDone) {
-        const spawn = Math.min(240, Math.floor(Math.pow(t / 8.5, 1.1) * 240));
-        while (dabs.length < spawn && spots.length) {
-          const reach = 0.25 + 0.75 * clamp01(t / 7);
-          let pick = spots[Math.floor(Math.random() * spots.length)];
-          for (let k = 0; k < 6; k++) {
-            const c = spots[Math.floor(Math.random() * spots.length)];
-            const dist = Math.hypot((c[0] - 0.6) * 1.33, c[1] - 0.5) / 0.7;
-            if (dist <= reach) {
-              pick = c;
-              break;
-            }
-          }
-          dabs.push({ x: pick[0], y: pick[1], r: 9 + Math.random() * 21, t0: t, dur: 1.4 + Math.random() * 2.2 });
-        }
-        let live = false;
-        for (const b of dabs) {
-          const k = clamp01((t - b.t0) / b.dur);
-          if (k >= 1) continue;
-          live = true;
-          const r = Math.max(1, easeOut(k) * b.r);
-          const cx = b.x * 256;
-          const cy = b.y * 192;
-          const g = mctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-          g.addColorStop(0, "rgba(255,255,255,0.36)");
-          g.addColorStop(0.55, "rgba(255,255,255,0.24)");
-          g.addColorStop(1, "rgba(255,255,255,0)");
-          mctx.fillStyle = g;
-          mctx.beginPath();
-          mctx.arc(cx, cy, r, 0, 6.283);
-          mctx.fill();
-        }
-        draw();
-        if (!live && dabs.length >= 240) {
-          mctx.fillStyle = "#fff";
-          mctx.fillRect(0, 0, 256, 192);
-          draw();
-          paintDone = true;
-        }
+      // the wash, with its edges dissolved into the page (more on the left, where the words are)
+      const wash = make(W, H);
+      {
+        const p = wash.getContext("2d")!;
+        p.drawImage(washImg, 0, 0, W, H);
+        p.globalCompositeOperation = "destination-in";
+        const g = p.createRadialGradient(W * 0.56, H * 0.5, W * 0.12, W * 0.56, H * 0.5, W * 0.56);
+        g.addColorStop(0, "rgba(0,0,0,1)");
+        g.addColorStop(0.6, "rgba(0,0,0,0.8)");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        p.fillStyle = g;
+        p.fillRect(0, 0, W, H);
+        const l = p.createLinearGradient(0, 0, W * 0.4, 0);
+        l.addColorStop(0, "rgba(0,0,0,0)");
+        l.addColorStop(1, "rgba(0,0,0,1)");
+        p.fillStyle = l;
+        p.fillRect(0, 0, W, H);
       }
 
-      // the beetle fades in once the paint is well under way, and the wings open a little later
-      const appear = easeOut(clamp01((t - 3.6) / 5.5));
-      const wings = easeOut(clamp01((t - 5.6) / 3.4));
-      fly.style.opacity = String(appear);
+      // ---- the beetle, drawn from its parts for a given moment ----
+      const bodyDraw = (g: CanvasRenderingContext2D, k: number) => g.drawImage(bodyImg, BODY_C[0] - 512 * k, BODY_C[1] - 460 * k, 1024 * k, 1024 * k);
+      const drawWing = (g: CanvasRenderingContext2D, shoulder: [number, number], side: number, deg: number, fold: number, a: number) => {
+        g.save();
+        g.globalAlpha = a;
+        g.translate(shoulder[0], shoulder[1]);
+        g.scale(side, 1);
+        g.rotate((deg * Math.PI) / 180);
+        g.scale(fold, 1);
+        g.drawImage(wingImg, -WING_BASE[0], -WING_BASE[1], WING_W, WING_H);
+        g.restore();
+      };
+      const beetle = make(W, H);
+      const bg = beetle.getContext("2d")!;
+      const drawBeetle = (o: { dx: number; dy: number; rot: number; wingL: [number, number]; wingR: [number, number]; open: number; ant: number; k: number }) => {
+        bg.clearRect(0, 0, W, H);
+        bg.save();
+        bg.translate(BODY_C[0] + o.dx, BODY_C[1] + o.dy);
+        bg.rotate(TILT + o.rot);
+        bg.scale(o.k, o.k);
+        bg.translate(-BODY_C[0], -BODY_C[1]);
+        // wings first (under the shoulders), folded and turned away until they open
+        const lift = 58 * (1 - o.open);
+        drawWing(bg, SHOULDER_L, -1, 9 + lift + o.wingL[0], Math.max(0.06, o.open * o.wingL[1]), 0.5 + 0.5 * o.open);
+        drawWing(bg, SHOULDER_R, 1, 9 + lift + o.wingR[0], Math.max(0.06, o.open * o.wingR[1]), 0.5 + 0.5 * o.open);
+        // body: head and feelers swing a little on their own
+        bg.save();
+        bg.beginPath();
+        bg.rect(0, 0, W, BODY_C[1] + (215 - 460) * BODY_K);
+        bg.clip();
+        bg.translate(BODY_C[0], BODY_C[1] + (215 - 460) * BODY_K);
+        bg.rotate(o.ant);
+        bg.translate(-BODY_C[0], -(BODY_C[1] + (215 - 460) * BODY_K));
+        bodyDraw(bg, BODY_K);
+        bg.restore();
+        bg.save();
+        bg.beginPath();
+        bg.rect(0, BODY_C[1] + (215 - 460) * BODY_K, W, H);
+        bg.clip();
+        bodyDraw(bg, BODY_K);
+        bg.restore();
+        bg.restore();
+      };
+      const rest = { dx: 0, dy: 0, rot: 0, wingL: [0, 1] as [number, number], wingR: [0, 1] as [number, number], open: 1, ant: 0, k: 1 };
 
-      // wing beat: speed, depth and rests wander, so no two beats are the same
-      phase += dt * 6.283 * (1.25 + 0.5 * nFreq(t * 0.22));
-      const depth = 0.55 + 0.45 * (0.5 + 0.5 * nAmp(t * 0.13));
-      const s = Math.sin(phase) + 0.22 * Math.sin(2 * phase + 0.6);
-      const near = -36 + 30 * s * depth * wings - (1 - wings) * -60;
-      const far = -31 + 28 * Math.sin(phase - 0.55) * depth * wings - (1 - wings) * -60;
-      wingN.style.transform = `rotate(${near}deg)`;
-      wingF.style.transform = `rotate(${far}deg)`;
-      wingN.style.opacity = wingF.style.opacity = String(wings);
+      // where there is paint to uncover, for the washes and for the beetle
+      const spotsOf = (src: HTMLCanvasElement, thr: number) => {
+        const sm = make(64, 48);
+        const s = sm.getContext("2d")!;
+        s.drawImage(src, 0, 0, 64, 48);
+        const d = s.getImageData(0, 0, 64, 48).data;
+        const out: [number, number][] = [];
+        for (let y = 0; y < 48; y++) for (let x = 0; x < 64; x++) if (d[(y * 64 + x) * 4 + 3] > thr) out.push([(x + 0.5) / 64, (y + 0.5) / 48]);
+        return out;
+      };
+      drawBeetle(rest);
+      const washSpots = spotsOf(wash, 40);
+      const beetleSpots = spotsOf(beetle, 30);
+      const washPaint = new Painter(washSpots, 230, 0.2, 7, 9, 28, [0.56, 0.5], 0.7);
+      const beetlePaint = new Painter(beetleSpots, 190, 2.8, 8.2, 5, 16, [BODY_C[0] / W, BODY_C[1] / H], 0.62);
+      const tmp = make(W, H);
+      const tg = tmp.getContext("2d")!;
+      tg.imageSmoothingQuality = "high";
 
-      // the body hovers and sways; it drops a little on each upstroke
-      const bx = 2.4 * nX(t * 0.5);
-      const by = 2.8 * nY(t * 0.42) + 1.1 * s * depth * appear;
-      const pitch = 3.2 * nPitch(t * 0.6) + 1.2 * s * depth;
-      body.style.transform = `translate(${bx}%, ${by}%) rotate(${pitch}deg)`;
-      legs.style.transform = `rotate(${2.6 * nLeg(t * 1.3) + 1.2 * Math.sin(phase + 1)}deg)`;
-      ants.style.transform = `rotate(${4.2 * nAnt(t * 1.7)}deg)`;
-      wash.style.transform = `scale(${1 + 0.018 * nWash(t * 0.35)}) translate(${0.8 * nWash(t * 0.21 + 3)}%, ${0.8 * nWash(t * 0.17 + 5)}%)`;
-      // the wings follow the body
-      const follow = `translate(${bx}%, ${by}%) rotate(${pitch}deg)`;
-      wingN.parentElement!.style.transform = `${follow} scaleX(-1)`;
-      wingF.parentElement!.style.transform = `${follow} translate(0.8%, -1%) scaleX(-1)`;
-    };
+      const layer = (src: HTMLCanvasElement, p: Painter, dx = 0, dy = 0) => {
+        if (p.done) {
+          ctx.drawImage(src, dx, dy);
+          return;
+        }
+        tg.globalCompositeOperation = "source-over";
+        tg.clearRect(0, 0, W, H);
+        tg.drawImage(src, dx, dy);
+        tg.globalCompositeOperation = "destination-in";
+        tg.drawImage(p.mask, 0, 0, W, H);
+        ctx.drawImage(tmp, 0, 0);
+      };
 
-    const begin = () => {
-      if (started) return;
-      started = true;
-      if (still) {
-        mctx.fillStyle = "#fff";
-        mctx.fillRect(0, 0, 256, 192);
-        draw();
-        fly.style.opacity = "1";
-        wingN.style.opacity = wingF.style.opacity = "1";
-        wingN.style.transform = "rotate(-36deg)";
-        wingF.style.transform = "rotate(-31deg)";
-        return;
-      }
-      raf = requestAnimationFrame(frame);
-    };
+      // ---- movement: smooth random noise, fresh each visit ----
+      const rnd = () => Math.random() * 6.283;
+      const nX = wander([rnd(), rnd(), rnd()]);
+      const nY = wander([rnd(), rnd(), rnd()]);
+      const nRot = wander([rnd(), rnd(), rnd()]);
+      const nFreq = wander([rnd(), rnd(), rnd()]);
+      const nAmp = wander([rnd(), rnd(), rnd()]);
+      const nAnt = wander([rnd(), rnd(), rnd()]);
+      const nSkew = wander([rnd(), rnd(), rnd()]);
+      const nWash = wander([rnd(), rnd(), rnd()]);
+      let phase = Math.random() * 6.283;
+      let t0 = 0;
+      let last = 0;
+      let visible = true;
 
-    img.onload = () => {
-      prepare();
-      if (still) {
-        draw();
-      }
+      const frame = (now: number) => {
+        raf = requestAnimationFrame(frame);
+        if (!visible) {
+          last = now;
+          return;
+        }
+        if (!t0) t0 = last = now;
+        const t = (now - t0) / 1000;
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        washPaint.update(t);
+        beetlePaint.update(t);
+
+        // the wings open after the beetle is mostly painted; once open, the beat's speed, depth and shape wander
+        const open = easeOut(clamp01((t - 6.6) / 3.6));
+        phase += dt * 6.283 * (1.1 + 0.45 * nFreq(t * 0.2));
+        const depth = 0.55 + 0.45 * (0.5 + 0.5 * nAmp(t * 0.12));
+        const s = Math.sin(phase) + 0.2 * Math.sin(2 * phase + 0.7);
+        const beat = (ph: number, shape: number): [number, number] => {
+          const v = Math.sin(phase + ph) + 0.2 * Math.sin(2 * (phase + ph) + 0.7);
+          return [shape * 9 * v * depth, 1 - 0.38 * (0.5 + 0.5 * v) * depth];
+        };
+        drawBeetle({
+          dx: 14 * nX(t * 0.45),
+          dy: 16 * nY(t * 0.38) + 6 * s * depth * open,
+          rot: ((2.4 * nRot(t * 0.5) + 0.9 * s * depth * open) * Math.PI) / 180,
+          wingL: beat(0.35 * nSkew(t * 0.3), 1),
+          wingR: beat(-0.2 * nSkew(t * 0.27 + 2), 1),
+          open,
+          ant: (3.2 * nAnt(t * 1.6) * Math.PI) / 180,
+          k: 1,
+        });
+        ctx.clearRect(0, 0, W, H);
+        layer(wash, washPaint, 6 * nWash(t * 0.3), 5 * nWash(t * 0.23 + 4));
+        layer(beetle, beetlePaint);
+      };
+
+      const begin = () => {
+        if (!alive) return;
+        if (still) {
+          washPaint.finish();
+          beetlePaint.finish();
+          drawBeetle({ ...rest, wingL: [0, 0.8], wingR: [0, 0.8] });
+          ctx.drawImage(wash, 0, 0);
+          ctx.drawImage(beetle, 0, 0);
+          return;
+        }
+        raf = requestAnimationFrame(frame);
+        const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
+        io.observe(cv);
+        cleanup.push(() => io.disconnect());
+      };
+
       const html = document.documentElement;
       if (!html.hasAttribute("data-loading")) begin();
       else {
@@ -224,33 +293,18 @@ export default function HeroBeetle() {
         mo.observe(html, { attributes: true, attributeFilter: ["data-loading"] });
         cleanup.push(() => mo.disconnect());
       }
-    };
-    const cleanup: (() => void)[] = [];
-    img.src = WASH;
+    });
+
     return () => {
+      alive = false;
       cancelAnimationFrame(raf);
       cleanup.forEach((f) => f());
     };
   }, []);
 
   return (
-    <div ref={root} className="hb" aria-hidden="true">
-      <div className="hb-wash">
-        <canvas ref={canvas} />
-      </div>
-      <div className="hb-fly">
-        <div className="hb-wing hb-wing-f">
-          <div className="hb-wing-in" />
-        </div>
-        <div className="hb-wing hb-wing-n">
-          <div className="hb-wing-in" />
-        </div>
-        <div className="hb-body">
-          <div className="hb-part hb-core" />
-          <div className="hb-part hb-ant" />
-          <div className="hb-part hb-leg" />
-        </div>
-      </div>
+    <div className="hb" aria-hidden="true">
+      <canvas ref={cvRef} />
     </div>
   );
 }
