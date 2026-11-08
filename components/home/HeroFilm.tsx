@@ -58,12 +58,23 @@ void main(){
   vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t * 0.8));
   vec2 r = vec2(fbm(p + 1.9 * q + vec2(1.7, 9.2) + t * 0.6), fbm(p + 1.9 * q + vec2(8.3, 2.8) - t * 0.5));
   float f = clamp((fbm(p + 2.1 * r + vec2(t * 0.3, -t * 0.2)) - 0.5) * 1.75 + 0.5, 0.0, 1.0);
-  vec3 col = vec3(0.84, 0.70, 0.58);
-  col = mix(col, vec3(0.76, 0.54, 0.39), smoothstep(0.2, 0.4, f));
-  col = mix(col, vec3(0.66, 0.39, 0.24), smoothstep(0.38, 0.56, f));
-  col = mix(col, vec3(0.50, 0.26, 0.16), smoothstep(0.56, 0.78, f + 0.25 * (r.x - 0.5)));
-  // a little soft grey drifting through
-  col = mix(col, vec3(0.6, 0.55, 0.52), smoothstep(0.62, 0.86, r.y) * smoothstep(0.7, 0.4, f) * 0.4);
+  float f2 = fbm(p * 1.05 + 1.6 * r + vec2(3.1, -t * 0.4));
+  float f3 = fbm(p * 0.8 + 1.2 * q + vec2(-t * 0.35, 6.4));
+  vec2 g0 = gl_FragCoord.xy;
+  // pigment settles into the grain: a mottle that changes with the paint, not with time
+  float gran = noise(g0 * 0.35 + 3.0) * 0.55 + noise(g0 * 0.8) * 0.3 + noise(p * 18.0) * 0.15;
+  // a watercolour is built of transparent glazes laid one over another; each one is a wet shape that pools darker
+  // at its edge as it dries, and each moves slowly, spreading and bleeding into the others
+  vec3 col = vec3(0.87, 0.71, 0.58); // the first wash of light orange
+  // glaze: mask is the wet shape; rim is the darker line where the pigment pooled at its edge
+  #define GLAZE(F, TH, PIG, AMT) { float mk = smoothstep(TH, TH + 0.12, F); float rim = smoothstep(TH, TH + 0.025, F) * (1.0 - smoothstep(TH + 0.03, TH + 0.16, F)); col *= mix(vec3(1.0), PIG, clamp(mk * AMT * (0.78 + 0.4 * (gran - 0.5)) + rim * 0.45, 0.0, 1.0)); }
+  GLAZE(f, 0.34, vec3(0.86, 0.66, 0.52), 1.0)      // orange
+  GLAZE(f2, 0.55, vec3(0.86, 0.66, 0.54), 0.7)     // a second orange, crossing the first
+  GLAZE(f, 0.6 + 0.12 * (r.x - 0.5), vec3(0.7, 0.45, 0.33), 1.0) // dark orange in the deep places
+  GLAZE(f3, 0.58, vec3(0.86, 0.85, 0.85), 0.8)    // a little cool grey drifting through
+  // where the water ran back into drying paint it pushed the colour out, leaving pale soft blooms
+  float bloom = smoothstep(0.62, 0.8, fbm(p * 2.2 + r * 1.4 + vec2(t * 0.2, 11.0)));
+  col = mix(col, col * 1.08 + 0.04, bloom * 0.5);
   // light glowing from behind the smoke, low in the middle
   float glow = exp(-pow((vUv.x - 0.5) * aspect * 0.55, 2.0) - pow((vUv.y - 0.42) * 2.2, 2.0));
   col = mix(col, vec3(1.0, 0.86, 0.7), glow * 0.28);
@@ -71,9 +82,7 @@ void main(){
   vec3 paper = vec3(0.935, 0.918, 0.89);
   float m = smoothstep(0.0, 0.35, appear * 1.35 - fbm(p * 1.3 + 4.0) * 0.35);
   col = mix(paper, col, m);
-  vec2 g = gl_FragCoord.xy;
-  float gran = noise(g * 0.45) * 0.6 + noise(g * 0.9 + 7.0) * 0.4;
-  col *= 1.0 + (gran - 0.5) * 0.12 * m;
+  col *= 1.0 + (hash(g0) - 0.5) * 0.03 * m; // the tooth of the paper
   gl_FragColor = vec4(pow(col, vec3(2.2)), 1.0);
 }`;
 
@@ -219,11 +228,12 @@ function luminousWing(img: HTMLImageElement) {
     const a = p[i + 3] / 255;
     if (a <= 0.004) continue;
     const fill = Math.min(1, a * 3.4); // the membrane, filled in
-    const k = 0.6 * (1 - a); // the thin membrane takes a cool slate-lavender, so it stands out against the warm wash
-    p[i] = p[i] + (150 - p[i]) * k;
-    p[i + 1] = p[i + 1] + (160 - p[i + 1]) * k;
-    p[i + 2] = p[i + 2] + (192 - p[i + 2]) * k;
-    p[i + 3] = 255 * (0.3 + 0.62 * fill);
+    // a soft white light: the whole wing is lifted towards a warm white, its veins kept only as a faint cream trace
+    const k = 0.72 + 0.2 * (1 - a);
+    p[i] = p[i] + (252 - p[i]) * k;
+    p[i + 1] = p[i + 1] + (247 - p[i + 1]) * k;
+    p[i + 2] = p[i + 2] + (238 - p[i + 2]) * k;
+    p[i + 3] = 255 * (0.34 + 0.56 * fill);
   }
   g.putImageData(d, 0, 0);
   const halo = document.createElement("canvas");
@@ -349,7 +359,7 @@ function buildBeetle(coreTex: THREE.Texture, wingTex: THREE.Texture, glowTex: TH
   }
 
   // six legs: thigh, shin and foot, jointed
-  type Leg = { yawBase: number; hip: THREE.Group; root: THREE.Group; side: number; phase: number };
+  type Leg = { yawBase: number; hip: THREE.Group; knee: THREE.Group; root: THREE.Group; side: number; phase: number; row: number };
   const legs: Leg[] = [];
   const seg = (len: number, r: number, mat = legMat) => {
     const g = new THREE.CylinderGeometry(r * 0.8, r, len, 8);
@@ -381,18 +391,18 @@ function buildBeetle(coreTex: THREE.Texture, wingTex: THREE.Texture, glowTex: TH
       knee.add(ankle);
       ankle.add(seg(0.1, 0.012, amber));
       body.add(root);
-      legs.push({ yawBase, hip, root, side, phase: (i % 2 === 0) === side > 0 ? 0 : Math.PI });
+      legs.push({ yawBase, hip, knee, root, side, phase: (i % 2 === 0) === side > 0 ? 0 : Math.PI, row: i });
     }
   });
 
   // wings: the beetle's own painted wings, folded under the cases until it flies
-  const WL = 2.75; // large: the wings lead
+  const WL = 3.1; // large: the wings lead
   const wg = new THREE.PlaneGeometry(WL, WL * WING_ASPECT);
   wg.translate(-(WING_BASE[0] - 0.5) * WL, -(0.5 - WING_BASE[1]) * WL * WING_ASPECT, 0);
   wg.rotateX(Math.PI / 2); // flat, the front edge forwards (+z)
   // the wings are the light of it: painted, glowing, with a soft halo that melts into the air around them
   const wingMat = new THREE.MeshBasicMaterial({ map: wingTex, color: lin(1, 1, 1), transparent: true, side: THREE.DoubleSide, depthWrite: false });
-  const haloMat = new THREE.MeshBasicMaterial({ map: glowTex, color: lin(1, 0.88, 0.7), transparent: true, opacity: 0.55, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending });
+  const haloMat = new THREE.MeshBasicMaterial({ map: glowTex, color: lin(1, 0.95, 0.86), transparent: true, opacity: 0.5, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending });
   const wings: THREE.Group[] = [];
   for (const side of [1, -1]) {
     const w = new THREE.Group();
@@ -411,7 +421,7 @@ function buildBeetle(coreTex: THREE.Texture, wingTex: THREE.Texture, glowTex: TH
   }
 
   // a larger beetle overall, its body a touch smaller against its wings
-  root.scale.setScalar(1.3);
+  root.scale.setScalar(1.6);
   body.scale.setScalar(0.88);
   return { root, body, cases, wings, legs, antennae, head, WL };
 }
@@ -544,7 +554,7 @@ export default function HeroFilm() {
     composer.setPixelRatio(pr);
     composer.setSize(PW, PH);
     composer.addPass(new RenderPass(scene, camera));
-    const bokeh = new BokehPass(scene, camera, { focus: 6, aperture: 0.0035, maxblur: 0.009 });
+    const bokeh = new BokehPass(scene, camera, { focus: 6.2, aperture: 0.003, maxblur: 0.012 });
     composer.addPass(bokeh);
     const paintPass = new ShaderPass(WATERCOLOUR);
     paintPass.uniforms.res.value.set(PW * pr, PH * pr);
@@ -565,21 +575,20 @@ export default function HeroFilm() {
         }),
       );
 
-    const WALK_FROM = -11; // far back in the smoke
-    const WALK_TO = 3.5; // close in front of you
-    const T_COLOUR = 2.6;
-    const T_WALK0 = 2.2;
-    const WALK_SPEED = 1.15;
+    const WALK_FROM = -6; // far back in the smoke
+    const WALK_TO = 3.2; // close in front of you
+    const T_WALK0 = 1.2;
+    const WALK_SPEED = 1.25;
     const T_STOP = T_WALK0 + (WALK_TO - WALK_FROM) / WALK_SPEED;
-    const T_OPEN = T_STOP + 1.2;
-    const T_LIFT = T_OPEN + 1.5;
+    const T_OPEN = T_STOP + 0.8;
+    const T_LIFT = T_OPEN + 1.3;
 
     // after the intro it flies freely about the box, slowly, for as long as you look
     const T_FREE = T_LIFT + 2.8;
     const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0 };
     const pickTarget = (t: number) => {
       // somewhere in view: nearer or further, left or right, a little higher or lower
-      const z = rnd(-1, 1.8);
+      const z = rnd(-1.8, 1.2);
       const d = CAM.z - z;
       const hh = d * Math.tan((12 * Math.PI) / 180);
       fly.target.set(rnd(-0.5, 0.5) * hh * aspect, 0.12 + rnd(0, 0.3) * hh, z); // low in the box, so its raised wings have the room above it
@@ -606,7 +615,7 @@ export default function HeroFilm() {
 
       if (k < T_FREE) {
         // it rises to your eye level and hovers there facing you, wings spread
-        b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 2.4 * lift); // it drifts back as it rises, so its wings fill the frame // it drifts back as it rises, so its wings fill the frame
+        b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 3.0 * lift); // it drifts back as it rises, so its wings fill the frame // it drifts back as it rises, so its wings fill the frame
         b.root.rotation.set(0.55 * lift, Math.cos(walkT * 0.55) * 0.25 * (1 - slow) + 0.38 * Math.sin((k - T_LIFT) * 0.45) * lift, 0.06 * Math.sin(k * 1.1) * lift); // tipped up as beetles fly, turning slowly so the wings face you
       } else {
         if (!fly.on) {
@@ -640,15 +649,26 @@ export default function HeroFilm() {
       b.body.rotation.z = walking ? 0.03 * Math.sin(gait) : 0;
       b.head.rotation.y = 0.12 * Math.sin(k * 0.7) * (1 - open);
       b.head.rotation.x = -0.1 * smooth(T_STOP, T_STOP + 0.6, k) * (1 - open); // it looks up at you
+      // the antennae feel the air all the time: a slow searching sway, quicker while it walks, swept back in flight
+      const airborne = lift;
       b.antennae.forEach((a, i) => {
-        a.rotation.y = (i === 0 ? 1 : -1) * (0.15 + 0.12 * Math.sin(k * 1.6 + i));
-        a.rotation.x = -0.15 + 0.1 * Math.sin(k * 1.2 + i * 2);
+        const sd = i === 0 ? 1 : -1;
+        const w = walking ? 2.6 : 1.4;
+        a.rotation.y = sd * (0.18 + 0.2 * Math.sin(k * w + i * 1.3) + 0.25 * airborne);
+        a.rotation.x = -0.15 + 0.16 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * airborne;
       });
+      const st = walking ? 1 - slow * 0.8 : 0;
       for (const L of b.legs) {
         const g = gait + L.phase;
-        const st = walking ? 1 - slow * 0.8 : 0;
-        L.root.rotation.y = L.yawBase + (L.side > 0 ? -1 : 1) * 0.32 * Math.sin(g) * st;
-        L.hip.rotation.z = 0.35 + 0.28 * Math.max(0, Math.cos(g)) * st - 0.35 * lift; // in the air the legs hang softly
+        const sd = L.side > 0 ? -1 : 1;
+        // walking: each leg swings forward lifted, then pushes back planted (a tripod gait)
+        const swing = Math.sin(g) * st;
+        const up = Math.max(0, Math.cos(g)) * st;
+        // flying: the legs hang and paddle softly in the air, each a little out of time with the next
+        const paddle = Math.sin(k * 1.6 + L.row * 1.1 + (L.side > 0 ? 0 : 0.6)) * airborne;
+        L.root.rotation.y = L.yawBase + sd * (0.45 * swing + 0.18 * paddle);
+        L.hip.rotation.z = 0.35 + 0.42 * up - 0.4 * airborne + 0.12 * paddle;
+        L.knee.rotation.z = -1.85 - 0.3 * up + 0.35 * airborne + 0.15 * paddle;
       }
       // wing cases lift and part; wings unfold from under them and beat, slowly
       b.cases.forEach((c, i) => {
@@ -681,7 +701,7 @@ export default function HeroFilm() {
 
       // the lens follows it
       b.root.getWorldPosition(wp);
-      bokehU.focus.value = camera.position.distanceTo(wp);
+      bokehU.focus.value = Math.max(6.2, camera.position.distanceTo(wp)); // the lens stays focused a little beyond it: when it comes close it goes soft, as in flight
       key1.position.set(wp.x - 3, 6, wp.z + 5);
       key1.target.position.copy(wp);
     };
@@ -736,11 +756,11 @@ export default function HeroFilm() {
     const step = (t: number) => {
       const dt = clamp(t - tLast, 0, 0.1);
       tLast = t;
-      const appear = smooth(0, T_COLOUR, t);
+      const appear = 1; // the painting is there the moment the page is
       washMat.uniforms.time.value = t + 20;
       washMat.uniforms.appear.value = appear;
       // smoke rolls in after the colour, then keeps drifting
-      const smokeIn = smooth(0.8, 4.5, t) * (1 - 0.75 * smooth(T_STOP, T_STOP + 6, t)); // the smoke thins once it has arrived, so the moving colour shows
+      const smokeIn = smooth(0.3, 2.8, t) * (1 - 0.75 * smooth(T_STOP, T_STOP + 6, t)); // the smoke thins once it has arrived, so the moving colour shows
       for (const p of puffs) {
         p.s.position.set(p.base.x + Math.sin(t * 0.05 + p.phase) * 1.2 + t * p.drift * 0.3, p.base.y + Math.sin(t * 0.13 + p.phase) * 0.08, p.base.z);
         if (p.s.position.x > 8) p.base.x -= 16;
@@ -758,7 +778,7 @@ export default function HeroFilm() {
         motePos[i * 3 + 2] = sz + Math.cos(t * 0.17 + i) * 0.3;
       }
       moteGeo.attributes.position.needsUpdate = true;
-      moteMat.opacity = smooth(1.5, 4, t) * (0.65 + 0.15 * Math.sin(t * 1.3));
+      moteMat.opacity = smooth(0.8, 3, t) * (0.65 + 0.15 * Math.sin(t * 1.3));
       // a slow, breathing camera, as if held
       camera.position.set(CAM.x + Math.sin(t * 0.21) * 0.06, CAM.y + Math.sin(t * 0.17) * 0.03, CAM.z);
       camera.lookAt(0, 0.3, 0);
@@ -782,6 +802,9 @@ export default function HeroFilm() {
       paintPass.uniforms.time.value = clock;
       composer.render();
     };
+
+    step(0);
+    composer.render(); // the painting shows at once, before the beetle has loaded
 
     const img = (src: string) =>
       new Promise<HTMLImageElement>((res, rej) => {

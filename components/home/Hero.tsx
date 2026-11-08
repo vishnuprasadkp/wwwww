@@ -12,7 +12,7 @@ export default function Hero() {
           </p>
         </div>
       </div>
-      <div className="relative" style={{ height: "clamp(260px, 24.5vw, 470px)", marginTop: "clamp(24px, 4vw, 64px)", background: "rgba(110,106,100,0.12)" }}>
+      <div className="relative" style={{ height: "clamp(260px, 24.5vw, 470px)", background: "#c99a7c" }}>
         <HeroFilm />
       </div>
       <LogoMarquee />
