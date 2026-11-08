@@ -144,6 +144,70 @@ function drawnWing(img: HTMLImageElement) {
   return t;
 }
 
+/**
+ * The wing as a cloud of fine dots, like sand blown into the shape of a petal: dense along the veins and the edge, thin in
+ * the membrane. Each dot is placed on the wing's own arched surface; the dots along its edge are marked, so they can drift
+ * off and dissolve into the air.
+ */
+function stippledWing(img: HTMLImageElement, WL: number, N: number) {
+  const W = 420;
+  const H = Math.round((W * img.height) / img.width);
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+  const g = c.getContext("2d")!;
+  g.drawImage(img, 0, 0, W, H);
+  const d = g.getImageData(0, 0, W, H).data;
+  g.clearRect(0, 0, W, H);
+  g.filter = "blur(4px)";
+  g.drawImage(img, 0, 0, W, H);
+  const bd = g.getImageData(0, 0, W, H).data;
+  const A = (x: number, y: number) => (x < 0 || y < 0 || x >= W || y >= H ? 0 : d[(y * W + x) * 4 + 3] / 255);
+  const L = (o: number, src: Uint8ClampedArray) => (src[o * 4] * 0.3 + src[o * 4 + 1] * 0.59 + src[o * 4 + 2] * 0.11) / 255;
+  const HW = WL * WING_ASPECT;
+  const pos: number[] = [];
+  const seed: number[] = [];
+  const edge: number[] = [];
+  let tries = 0;
+  while (pos.length / 3 < N && tries < N * 60) {
+    tries++;
+    const x = Math.floor(Math.random() * W);
+    const y = Math.floor(Math.random() * H);
+    const a = A(x, y);
+    if (a < 0.06) continue;
+    const o = y * W + x;
+    const u = x / W;
+    if (u < WING_BASE[0] + 0.02) continue;
+    const vein = Math.max(0, Math.min(1, (L(o, bd) - L(o, d) - 0.03) * 8));
+    let e = 0;
+    for (let k = 0; k < 8; k++) {
+      const an = (k / 8) * Math.PI * 2;
+      if (A(Math.round(x + Math.cos(an) * 7), Math.round(y + Math.sin(an) * 7)) < 0.06) e = 1;
+    }
+    // where it meets the body it is barely there; it thickens outwards
+    const root = Math.min(1, (u - WING_BASE[0]) / 0.18);
+    const dens = (0.16 + 0.7 * vein + 0.75 * e) * root;
+    if (Math.random() > dens) continue;
+    const px = (u - WING_BASE[0]) * WL;
+    const pz = (WING_BASE[1] - y / H) * HW;
+    const cc = 1 - y / H;
+    const xn = px / WL;
+    const py = 0.07 * WL * Math.sin(Math.PI * cc) * Math.min(1, xn * 2.5) + 0.08 * WL * xn * xn + (Math.random() - 0.5) * 0.012 * WL;
+    pos.push(px, py, pz);
+    // outward from the middle of the wing, a little up: the way its loose dust drifts
+    const ox = px - 0.45 * WL;
+    const oz = pz;
+    const ol = Math.hypot(ox, oz) || 1;
+    seed.push(0.6 + Math.random() * (e ? 1.3 : 0.9), Math.random(), ox / ol + (Math.random() - 0.5) * 0.6, oz / ol + (Math.random() - 0.5) * 0.6);
+    edge.push(e ? 0.55 + 0.45 * Math.random() : Math.random() < 0.05 * xn ? 0.6 : 0);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute("aSeed", new THREE.Float32BufferAttribute(seed, 4));
+  geo.setAttribute("aEdge", new THREE.Float32BufferAttribute(edge, 1));
+  return geo;
+}
+
 /* ---------------- the sketch: the beetle drawn in ink over white, like the drawings in the case studies ---------------- */
 const SKETCH_VS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
@@ -193,15 +257,15 @@ void main(){
     a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px));
   }
   if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * (0.45 + 0.55 * n));
-  // a few quick strokes where the light falls on it
+  // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
-    float an = 0.85;
-    vec2 r = vec2(cos(an) * fc.x - sin(an) * fc.y, sin(an) * fc.x + cos(an) * fc.y) / 7.0;
-    float x = r.y + (noise(r * vec2(0.18, 0.6) + boil * 0.7) - 0.5) * 0.5;
-    float d = 0.5 - abs(fract(x) - 0.5);
-    float line = 1.0 - smoothstep(0.07, 0.16, d);
-    float brk = smoothstep(0.38, 0.6, noise(vec2(r.x * 0.4, floor(x + 0.5)) + boil * 1.9));
-    a = max(a, line * brk * smoothstep(0.66, 0.86, n) * hatchAmt * 0.75);
+    vec2 q = fc / 3.2;
+    vec2 cell = floor(q);
+    vec2 jit = vec2(hash(cell + 1.7), hash(cell + 8.3)) - 0.5;
+    float dd = length(fract(q) - 0.5 - jit * 0.5);
+    float dotv = 1.0 - smoothstep(0.16, 0.3, dd);
+    float dens = smoothstep(0.5, 0.95, n) * 0.6 * hatchAmt;
+    a = max(a, dotv * step(hash(cell + 3.1), dens) * 0.85);
   }
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
@@ -229,10 +293,10 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
 
 /* ---------------- the beetle ---------------- */
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
-function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
+function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number) {
   const root = new THREE.Group();
   const body = new THREE.Group();
-  body.position.y = 0.2; // standing on its feet: they just touch the floor
+  body.position.y = 0.27; // standing tall on its feet: they just touch the floor
   root.add(body);
 
   // drawn, not painted: only lines of white ink, nothing filled
@@ -375,14 +439,14 @@ function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
       const hip = new THREE.Group();
       hip.rotation.z = 0.35;
       root.add(hip);
-      hip.add(seg(0.2, 0.022));
+      hip.add(seg(0.24, 0.022));
       const knee = new THREE.Group();
-      knee.position.x = 0.2;
+      knee.position.x = 0.24;
       knee.rotation.z = -1.85;
       hip.add(knee);
-      knee.add(seg(0.22, 0.015));
+      knee.add(seg(0.31, 0.015));
       const ankle = new THREE.Group();
-      ankle.position.x = 0.22;
+      ankle.position.x = 0.31;
       ankle.rotation.z = 0.95;
       knee.add(ankle);
       ankle.add(seg(0.1, 0.012, amber));
@@ -419,12 +483,43 @@ function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
       void main(){
         vec4 c = texture2D(map, vUv);
         float facing = abs(dot(normalize(vN), normalize(vV)));
-        float a = c.a * smoothstep(0.05, 0.28, facing) * smoothstep(2.4, 3.6, vD) * (1.0 - smoothstep(fogNear, fogFar, vD));
+        float a = 0.32 * c.a * smoothstep(0.05, 0.28, facing) * smoothstep(2.4, 3.6, vD) * (1.0 - smoothstep(fogNear, fogFar, vD)); // only a faint trace of the drawing under the dust
         gl_FragColor = vec4(c.rgb, a);
       }`,
     uniforms: { map: { value: wingTex }, fogNear: sk.fogNear, fogFar: sk.fogFar },
     transparent: true,
     side: THREE.DoubleSide,
+    depthWrite: false,
+  });
+  // the wing itself: fine dust, held in its shape, its edges drifting off into the air
+  const dustMat = new THREE.ShaderMaterial({
+    vertexShader: `attribute vec4 aSeed; attribute float aEdge;
+      uniform float time; uniform float proj; uniform float px; uniform float WL;
+      varying float vA; varying float vT;
+      void main(){
+        vec3 p = position;
+        float life = fract(time * 0.16 + aSeed.y);
+        // the loose dust at the edge streams off and fades; it is always being replaced
+        p += vec3(aSeed.z, 0.25, aSeed.w) * life * life * 0.16 * WL * aEdge;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+        float depth = -mv.z;
+        gl_PointSize = max(1.0, aSeed.x * 0.0085 * WL * proj / depth);
+        vec3 n = normalize(normalMatrix * vec3(0.0, 1.0, 0.0));
+        float facing = abs(dot(n, normalize(-mv.xyz)));
+        float tw = 0.75 + 0.25 * sin(time * 2.3 + aSeed.y * 40.0);
+        vA = mix(1.0, 1.0 - life, aEdge) * tw * mix(0.4, 1.0, smoothstep(0.05, 0.3, facing)) * smoothstep(1.6, 3.0, depth);
+        vT = aSeed.y;
+      }`,
+    fragmentShader: `uniform float open; uniform float fogNear; uniform float fogFar; varying float vA; varying float vT;
+      void main(){
+        float r = length(gl_PointCoord - 0.5);
+        float a = (1.0 - smoothstep(0.18, 0.5, r)) * vA * open * 0.85;
+        vec3 col = mix(vec3(1.0, 0.97, 0.92), vec3(0.96, 0.84, 0.72), step(0.7, vT));
+        gl_FragColor = vec4(col, a);
+      }`,
+    uniforms: { time: sk.time, proj: { value: proj }, px: sk.px, WL: { value: WL }, open: { value: 0 }, fogNear: sk.fogNear, fogFar: sk.fogFar },
+    transparent: true,
     depthWrite: false,
   });
   const wings: THREE.Group[] = [];
@@ -436,14 +531,21 @@ function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
     m.scale.x = side;
     m.renderOrder = 3;
     w.add(m);
+    const dots = new THREE.Points(wingDots, dustMat);
+    dots.scale.x = side;
+    dots.renderOrder = 4;
+    dots.frustumCulled = false;
+    w.add(dots);
     body.add(w);
     wings.push(w);
   }
 
   // a larger beetle overall, its body a touch smaller against its wings
+  // the body smaller, the wings as large as before
   root.scale.setScalar(1.85);
-  body.scale.setScalar(0.88);
-  return { root, body, cases, wings, legs, antennae, head, WL };
+  body.scale.setScalar(0.72);
+  for (const w of wings) w.scale.setScalar(0.88 / 0.72);
+  return { root, body, cases, wings, legs, antennae, head, WL, dustMat };
 }
 
 export default function HeroFilm() {
@@ -584,8 +686,9 @@ void main(){
     }
     /* ---------------- strokes in the air: short pen marks instead of bubbles ---------------- */
     const strokeMat = new THREE.ShaderMaterial({
-      vertexShader: "attribute float alpha; varying float vA; void main(){ vA = alpha; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
-      fragmentShader: "varying float vA; void main(){ gl_FragColor = vec4(0.98, 0.95, 0.9, vA); }",
+      vertexShader: "attribute float alpha; uniform float proj; varying float vA; void main(){ vA = alpha; vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_Position = projectionMatrix * mv; gl_PointSize = max(1.0, 0.022 * proj / -mv.z); }",
+      fragmentShader: "varying float vA; void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(0.98, 0.95, 0.9, vA * (1.0 - smoothstep(0.15, 0.5, r))); }",
+      uniforms: { proj: { value: (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)) } },
       transparent: true,
       depthWrite: false,
     });
@@ -595,14 +698,14 @@ void main(){
       const geo = new THREE.BufferGeometry();
       geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
       geo.setAttribute("alpha", new THREE.BufferAttribute(alpha, 1));
-      const lines = new THREE.LineSegments(geo, strokeMat);
+      const lines = new THREE.Points(geo, strokeMat); // fine dust, each mote a pair of dots
       lines.frustumCulled = false;
       lines.renderOrder = 6;
       scene.add(lines);
       return { pos, alpha, geo };
     };
     // drifting in the air all the time: a few short marks, like the quick strokes round a sketch
-    const N = 240;
+    const N = 420;
     const air = makeStrokes(N);
     const airSeed = Array.from({ length: N }, () => ({ x: rnd(-6, 6), y: rnd(0, 2.4), z: rnd(-9, 3.5), len: rnd(0.04, 0.12), ang: rnd(-0.6, 0.6), ph: rnd(0, 6.28), a: rnd(0.25, 0.6) }));
 
@@ -831,7 +934,7 @@ void main(){
       b.root.visible = k > T_WALK0 - 0.1;
 
       // body sway with each step
-      b.body.position.y = 0.2 + (walking ? 0.008 * Math.sin(gait * 2) * walkAmt : 0);
+      b.body.position.y = 0.27 + (walking ? 0.008 * Math.sin(gait * 2) * walkAmt : 0);
       b.body.rotation.z = walking ? 0.03 * Math.sin(gait) * walkAmt : 0;
       b.head.rotation.y = (0.12 + 0.1 * fs.peek) * Math.sin(k * 0.7) * (1 - open);
       // it looks up at you; on the frame it turns its head right round to you
@@ -870,18 +973,19 @@ void main(){
       });
       wingPhase += dt * 6.283 * 0.85 * unfold; // under one beat a second: slow and wide
       const beat = Math.sin(wingPhase) * unfold;
+      b.dustMat.uniforms.open.value = unfold;
       b.wings.forEach((w, i) => {
         const s = i === 0 ? 1 : -1;
         const fold = 1 - unfold;
         w.rotation.y = s * (1.62 * fold + (0.8 - 0.16 * Math.cos(wingPhase)) * unfold); // swept back, so their faces catch the eye
         w.rotation.z = s * (0.42 + 0.34 * beat) * unfold; // a slow, wide beat that stays above level: the wings never dip towards the floor
         w.position.y = 0.17 - 0.06 * fold;
-        w.scale.setScalar(0.5 + 0.5 * unfold);
+        w.scale.setScalar((0.5 + 0.5 * unfold) * (0.88 / 0.72)); // as large as before, against the smaller body
         w.visible = unfold > 0.02;
       });
 
       // short pen strokes flick off the wings as they beat and drift away into the air
-      emitCarry += dt * 90 * unfold;
+      emitCarry += dt * 160 * unfold;
       while (emitCarry >= 1) {
         emitCarry -= 1;
         const wi = Math.random() < 0.5 ? 0 : 1;
@@ -898,7 +1002,7 @@ void main(){
     };
 
     /* ---------------- strokes off the wings ---------------- */
-    const DN = 600;
+    const DN = 1000;
     const dust = makeStrokes(DN);
     const dustVel = new Float32Array(DN * 3);
     const dustDir = new Float32Array(DN * 3);
@@ -1041,7 +1145,7 @@ void main(){
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      beetle = buildBeetle(drawnWing(wingImg), sketchU);
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.1, 9000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
