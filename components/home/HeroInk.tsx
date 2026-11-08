@@ -23,6 +23,7 @@ uniform float time;
 uniform float reveal;
 uniform float aspect;
 uniform vec2 seed;
+uniform vec3 uPale; uniform vec3 uLight; uniform vec3 uMid; uniform vec3 uDeep; uniform vec3 uGrey;
 
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
@@ -47,11 +48,7 @@ void main(){
 
   // a full, rich wash of burnt orange: deep in places, lighter where the water thinned it, a touch of grey
   vec3 paper = vec3(0.935, 0.918, 0.89);
-  vec3 pale = vec3(0.80, 0.63, 0.50);
-  vec3 light = vec3(0.74, 0.52, 0.38);
-  vec3 mid = vec3(0.66, 0.39, 0.25);
-  vec3 deep = vec3(0.56, 0.30, 0.19);
-  vec3 grey = vec3(0.58, 0.50, 0.46);
+  vec3 pale = uPale; vec3 light = uLight; vec3 mid = uMid; vec3 deep = uDeep; vec3 grey = uGrey;
 
   vec3 col = pale;
   col = mix(col, light, smoothstep(0.22, 0.42, f));
@@ -76,7 +73,24 @@ void main(){
   gl_FragColor = vec4(col, 1.0);
 }`;
 
-export default function HeroInk() {
+type Rgb = [number, number, number];
+/** The five tones of a wash, palest to deepest, plus a grey that drifts through, each as 0..1 RGB. */
+export type InkPalette = { pale: Rgb; light: Rgb; mid: Rgb; deep: Rgb; grey: Rgb };
+
+/** The home hero's burnt orange. */
+export const TERRACOTTA: InkPalette = {
+  pale: [0.8, 0.63, 0.5],
+  light: [0.74, 0.52, 0.38],
+  mid: [0.66, 0.39, 0.25],
+  deep: [0.56, 0.3, 0.19],
+  grey: [0.58, 0.5, 0.46],
+};
+
+/**
+ * `spread`: the colour first spreads in over bare paper (the home hero); without it the wash is there from the start
+ * and only moves (the paintings at the foot of the pages).
+ */
+export default function HeroInk({ palette = TERRACOTTA, spread = true }: { palette?: InkPalette; spread?: boolean }) {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const [key, setKey] = useState(0);
 
@@ -131,11 +145,16 @@ export default function HeroInk() {
     const uReveal = u("reveal");
     gl.uniform1f(u("aspect"), W / H);
     gl.uniform2f(u("seed"), Math.random() * 50, Math.random() * 50);
+    gl.uniform3f(u("uPale"), ...palette.pale);
+    gl.uniform3f(u("uLight"), ...palette.light);
+    gl.uniform3f(u("uMid"), ...palette.mid);
+    gl.uniform3f(u("uDeep"), ...palette.deep);
+    gl.uniform3f(u("uGrey"), ...palette.grey);
     gl.viewport(0, 0, cv.width, cv.height);
 
     const draw = (t: number) => {
       // the colour spreads in over the first seven seconds, slowing as it reaches the edges
-      const k = Math.min(1, t / 7);
+      const k = spread ? Math.min(1, t / 7) : 1;
       gl.uniform1f(uTime, t + 20);
       gl.uniform1f(uReveal, k * k * (3 - 2 * k)); // eases in and out
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -189,6 +208,7 @@ export default function HeroInk() {
       cancelAnimationFrame(raf);
       cleanup.forEach((f) => f());
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   return (

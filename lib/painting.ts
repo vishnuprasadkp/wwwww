@@ -1,4 +1,5 @@
 import type { MothColors } from "@/components/copilot/Moth";
+import type { InkPalette } from "@/components/home/HeroInk";
 
 /**
  * The painting section at the foot of every page: its ground, its moth and the paint the moth sprays, each taken from the
@@ -49,5 +50,17 @@ export const SCHEME_FOR_CLOSING: Record<string, keyof typeof SCHEMES> = {
   "hdfc-closing": "slate", // HDFC: the slate
   "sony-closing": "sage", // Sony: the sage
 };
+
+/**
+ * The moving wash behind a painting, made only from that painting's own colours: its ground in the middle, deepened
+ * towards its dark colour and lightened towards its paint colour. A grey ground stays grey, a green one green.
+ */
+export function inkPalette(s: Scheme): InkPalette {
+  const g = hex(s.bg).map((v) => v / 255) as Rgb;
+  const d = hex(s.moth.hind).map((v) => v / 255) as Rgb;
+  const l = s.paint.map((v) => v / 255) as Rgb;
+  const lerp = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+  return { pale: lerp(g, l, 0.28), light: lerp(g, l, 0.12), mid: g, deep: lerp(g, d, 0.4), grey: lerp(g, d, 0.18) };
+}
 
 export const schemeForClosing = (closing: string): Scheme => SCHEMES[SCHEME_FOR_CLOSING[closing] ?? "charcoal"];

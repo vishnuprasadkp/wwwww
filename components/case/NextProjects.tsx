@@ -3,14 +3,17 @@ import Pic from "@/components/ui/Pic";
 import { getAsset } from "@/lib/assets";
 import type { CaseMeta } from "@/lib/cases";
 import PaintingMoth from "@/components/layout/PaintingMoth";
-import { schemeForClosing } from "@/lib/painting";
+import HeroInk from "@/components/home/HeroInk";
+import { schemeForClosing, inkPalette } from "@/lib/painting";
 
 export default function NextProjects({ closing, next }: { closing: string; next: CaseMeta[] }) {
+  const sc = schemeForClosing(closing);
   return (
     <div className="mt-16 md:mt-[160px] lg:mt-[292px]">
       <div className="relative h-[420px] w-full md:h-[900px]">
         <Pic file={getAsset(closing).file} sizes="100vw" fill />
-        <PaintingMoth scheme={schemeForClosing(closing)} />
+        <HeroInk palette={inkPalette(sc)} spread={false} />
+        <PaintingMoth scheme={sc} />
       </div>
       <section className="mt-16 md:mt-[100px] lg:mt-[140px]">
         <div className="border-b border-rule px-5 pb-[22px] pt-[21px] md:px-8">

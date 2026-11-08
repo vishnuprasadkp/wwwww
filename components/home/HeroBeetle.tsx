@@ -348,7 +348,7 @@ export default function HeroBeetle() {
     CX = W * 0.5;
     CY = H * 0.5;
     SC = 1;
-    KB = clamp(Math.min(W * 0.85, H * 1.95), 460, 1200) / 2100;
+    KB = clamp(Math.min(W * 0.85, H * 2.4), 460, 1200) / 2100;
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;
@@ -540,9 +540,11 @@ export default function HeroBeetle() {
       const side = Math.random() < 0.5 ? 1 : -1; // it comes in from the right or from the left
       const pose = { x: side > 0 ? W + KB * WING_U * 1.1 : -KB * WING_U * 1.1, y: H * rnd(0.4, 0.6), vx: -80 * side, vy: rnd(-8, 8), ax: 0, ay: 0, tx: W * 0.5, ty: H * 0.5, next: 0, yaw: -1.5708 * side, roll: 0, pitch: 0 };
       let gait = Math.random() * 6.283;
-      let mode: "fly" | "walk" = "fly";
+      let mode: "intro" | "fly" | "walk" | "away" = "intro";
+      let outbound = false;
+      let flights = 0;
       let modeUntil = 0;
-      let fold = 0;
+      let fold = 1;
       let phase = Math.random() * 6.283;
       let tLast = 0;
       let t0clock = 0;
@@ -586,7 +588,7 @@ export default function HeroBeetle() {
           const s = side === 0 ? -1 : 1;
           const a = o.wingAlpha[side];
           const sh = SHOULDER[side];
-          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side] + 68 * o.fold) * Math.PI) / 180, 0.72 * (1 - 0.9 * o.fold), [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
+          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side] + 68 * o.fold) * Math.PI) / 180, 0.72 * (1 - o.fold), [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
         }
         // legs hang a little below the body, feelers and head a little above
         legs.forEach((l, i) => card(l.sp, bLegs[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], o.legZ[i]], [1, 0, 0], [0, 1, 0], (o.legSpin[i] * Math.PI) / 180, BODY_A));
@@ -672,64 +674,113 @@ export default function HeroBeetle() {
           }
         }
 
-        // the beetle comes in from one side, flying. Now and then it lands, folds its wings and walks a little on the
-        // paper, then opens its wings and flies off to somewhere else in the box
+        // First it is seen from the front, close up, wings folded, as if it has just looked up at you. Then it opens
+        // its wings, tips over and flies off out of the box, and comes back. After that it flies from place to place in
+        // long, easy curves, now and then lands and walks a little, and sometimes leaves the box for a few seconds.
         const lift = smooth(flyFrom, flyFrom + 1.2, t);
-        if (t >= flyFrom) {
-          if (!modeUntil) modeUntil = t + rnd(3, 4.5);
+        let intro = 0; // 1 while it faces you, falling to 0 as it takes off
+        if (t >= flyFrom && mode === "intro") {
+          const k = t - flyFrom;
+          const go = smooth(3.2, 5.2, k); // it takes off
+          intro = 1 - go;
+          fold = 1 - smooth(2.6, 4.2, k);
+          pose.x = W * 0.62 + W * 0.04 * go;
+          pose.y = H * 0.56 - H * 0.08 * go;
+          pose.yaw = 0.12 * nYaw(t * 0.3) * intro + 0.5 * go;
+          pose.pitch = -0.95 * intro; // tipped towards you, head first
+          pose.roll = 0.06 * nRoll(t * 0.4) * intro;
+          if (k > 5.2) {
+            // off it goes, out of the box
+            mode = "fly";
+            pose.vx = 60;
+            pose.vy = -20;
+            pose.tx = W + KB * WING_U * 1.6;
+            pose.ty = H * rnd(0.1, 0.4);
+            pose.next = t + 99;
+            outbound = true;
+          }
+        } else if (t >= flyFrom) {
+          const margin = KB * WING_U * 1.3;
+          const outside = pose.x < -margin || pose.x > W + margin || pose.y < -margin || pose.y > H + margin;
+          if (mode === "fly" && outbound && outside) {
+            mode = "away";
+            modeUntil = t + rnd(1.8, 3.5); // not gone for long
+          } else if (mode === "away" && t > modeUntil) {
+            // back it comes, sometimes from the other side
+            if (Math.random() < 0.5) {
+              pose.x = pose.x < W / 2 ? W + margin : -margin;
+              pose.y = H * rnd(0.2, 0.8);
+            }
+            mode = "fly";
+            outbound = false;
+            flights = 0;
+            modeUntil = t + rnd(6, 9);
+            pose.next = 0;
+          }
           const near = Math.hypot(pose.tx - pose.x, pose.ty - pose.y) < 90;
-          if (mode === "fly" && t > modeUntil && near) {
+          if (mode === "fly" && !outbound && t > modeUntil && near) {
             mode = "walk";
-            modeUntil = t + rnd(7, 11);
+            modeUntil = t + rnd(6, 9);
             pose.next = t + 1.2; // a moment to settle before it starts walking
           } else if (mode === "walk" && t > modeUntil) {
             mode = "fly";
             modeUntil = t + rnd(7, 11);
             pose.next = t + 0.9; // it opens its wings first
           }
-          if (t > pose.next) {
-            let tx = 0;
-            let ty = 0;
+          if (t > pose.next && mode !== "away") {
+            let tx = pose.tx;
+            let ty = pose.ty;
             if (mode === "fly" && t > modeUntil) {
-              // it is coming in to land: keep the place it is heading for
-              tx = pose.tx;
-              ty = pose.ty;
+              // coming in to land: keep the place it is heading for
               pose.next = t + 1;
             } else if (mode === "fly") {
-              // somewhere else in the box, not too near where it is now
-              for (let k = 0; k < 6; k++) {
-                tx = W * rnd(0.12, 0.88);
-                ty = H * rnd(0.4, 0.6);
-                if (Math.hypot(tx - pose.x, ty - pose.y) > W * 0.25) break;
+              flights++;
+              if (flights > 2 && Math.random() < 0.45) {
+                // off out of the box for a moment
+                const side = Math.floor(rnd(0, 4));
+                tx = side === 0 ? -margin * 1.3 : side === 1 ? W + margin * 1.3 : W * rnd(0.2, 0.8);
+                ty = side === 2 ? -margin * 1.3 : side === 3 ? H + margin * 1.3 : H * rnd(0.2, 0.8);
+                outbound = true;
+                pose.next = t + 99;
+              } else {
+                // somewhere else in the box, well away from here, so it flies in long easy lines
+                for (let k = 0; k < 8; k++) {
+                  tx = W * rnd(0.1, 0.9);
+                  ty = H * rnd(0.15, 0.85);
+                  if (Math.hypot(tx - pose.x, ty - pose.y) > W * 0.35) break;
+                }
+                pose.next = t + rnd(6, 9);
               }
-              pose.next = t + rnd(4.5, 7.5);
             } else {
-              // a few steps this way or that
-              tx = clamp(pose.x + rnd(-1, 1) * W * 0.1, W * 0.15, W * 0.85);
-              ty = clamp(pose.y + rnd(-0.12, 0.12) * H, H * 0.38, H * 0.62);
-              pose.next = t + rnd(2.5, 4);
+              // a few steps on
+              const h = pose.yaw + rnd(-0.5, 0.5);
+              const d = W * rnd(0.04, 0.1);
+              tx = clamp(pose.x + Math.sin(h) * d, W * 0.1, W * 0.9);
+              ty = clamp(pose.y - Math.cos(h) * d, H * 0.2, H * 0.8);
+              pose.next = t + rnd(3, 5);
             }
             pose.tx = tx;
             pose.ty = ty;
           }
           const walking = mode === "walk" || fold > 0.5;
-          const holding = (mode === "walk" && fold < 0.9) || (mode === "fly" && fold > 0.15); // still folding or opening
+          const holding = (mode === "walk" && fold < 0.9) || (mode === "fly" && fold > 0.15) || mode === "away";
           const gain = holding ? 0 : 1;
-          const ax = ((pose.tx - pose.x) * (walking ? 0.25 : 0.1) - pose.vx * (walking ? 1.2 : 0.6)) * gain - (holding ? pose.vx * 2 : 0);
-          const ay = ((pose.ty - pose.y) * (walking ? 0.25 : 0.1) - pose.vy * (walking ? 1.2 : 0.6)) * gain - (holding ? pose.vy * 2 : 0);
-          pose.ax += (ax - pose.ax) * Math.min(1, dt * 2);
-          pose.ay += (ay - pose.ay) * Math.min(1, dt * 2);
+          const ax = ((pose.tx - pose.x) * (walking ? 0.25 : 0.08) - pose.vx * (walking ? 1.2 : 0.5)) * gain - (holding ? pose.vx * 2 : 0);
+          const ay = ((pose.ty - pose.y) * (walking ? 0.25 : 0.08) - pose.vy * (walking ? 1.2 : 0.5)) * gain - (holding ? pose.vy * 2 : 0);
+          pose.ax += (ax - pose.ax) * Math.min(1, dt * 1.5);
+          pose.ay += (ay - pose.ay) * Math.min(1, dt * 1.5);
           pose.vx += pose.ax * dt;
           pose.vy += pose.ay * dt;
           const sp = Math.hypot(pose.vx, pose.vy);
-          const vmax = walking ? clamp(W * 0.012, 12, 22) : clamp(W * 0.055, 50, 95);
+          const vmax = walking ? clamp(W * 0.012, 12, 22) : clamp(W * 0.06, 55, 105) * (outbound ? 1.5 : 1);
           if (sp > vmax) {
             pose.vx *= vmax / sp;
             pose.vy *= vmax / sp;
           }
           pose.x += pose.vx * dt;
           pose.y += pose.vy * dt;
-          if (sp > (walking ? 3 : 6)) pose.yaw += angDiff(Math.atan2(pose.vx, -pose.vy), pose.yaw) * Math.min(1, dt * (walking ? 1.6 : 1.1));
+          // it turns only as much as its path bends, and slowly, so it is not forever spinning
+          if (sp > (walking ? 4 : 20)) pose.yaw += angDiff(Math.atan2(pose.vx, -pose.vy), pose.yaw) * Math.min(1, dt * (walking ? 1.2 : 0.55));
           pose.roll = 0;
           pose.pitch = 0;
           fold += ((mode === "walk" ? 1 : 0) - fold) * Math.min(1, dt * 1.6);
@@ -751,14 +802,14 @@ export default function HeroBeetle() {
           wingAlpha: [(5 + 13 * (1 - fold) * beatDepth * (0.5 + 0.5 * Math.sin(phase + 1.3))) * deg, (5 + 13 * (1 - fold) * beatDepth * (0.5 + 0.5 * Math.sin(phase + 1.3))) * deg],
           wingSpin: [10 * (1 - fold) * beatDepth * Math.sin(phase) + 2 * nSkew(t * 0.15) * lift, 10 * (1 - fold) * beatDepth * Math.sin(phase) - 2 * nSkew(t * 0.15) * lift],
           wingTwist: [0, 0],
-          legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * (5 + 11 * fold) * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
+          legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * (5 + 11 * fold * (1 - intro)) * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
           legZ: gph.map((g) => -16 + 18 * Math.max(0, Math.cos(g)) * lift),
           feelSpin: nFeel.map((n, i) => 8 * n(t * 1.1 + i * 3) * (0.4 + 0.6 * lift)),
           open: 0.12 * easeInOut(clamp01((t - flyFrom + 0.5) / 2.5)) * (1 - fold),
           fold,
         };
         const bob = 0;
-        const kk = KB * (0.9 + 0.1 * lift) * (0.94 + 0.06 * (1 - fold)) * (1 + 0.02 * nScale(t * 0.18) * lift);
+        const kk = KB * (0.9 + 0.1 * lift) * (0.94 + 0.06 * (1 - fold)) * (1 + 0.18 * intro) * (1 + 0.02 * nScale(t * 0.18) * lift);
 
         // faint stains left on the paper as it flies, which dry away
         trg.globalCompositeOperation = "destination-out";

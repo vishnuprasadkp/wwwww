@@ -2,8 +2,9 @@
 
 import Pic from "@/components/ui/Pic";
 import PaintingMoth from "@/components/layout/PaintingMoth";
+import HeroInk from "@/components/home/HeroInk";
 import NyrroNote from "@/components/layout/NyrroNote";
-import { SCHEMES } from "@/lib/painting";
+import { SCHEMES, inkPalette } from "@/lib/painting";
 import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 
@@ -18,6 +19,7 @@ export default function Footer() {
       {art && (
         <div className="relative h-[420px] w-full md:h-[900px]">
           <Pic file="/images/site/footer-bg.png" sizes="100vw" fill />
+          <HeroInk palette={inkPalette(SCHEMES.charcoal)} spread={false} />
           <PaintingMoth scheme={SCHEMES.charcoal} />
           <NyrroNote />
         </div>
