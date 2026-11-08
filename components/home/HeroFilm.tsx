@@ -8,6 +8,10 @@ import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { SCHEMES, inkPalette } from "@/lib/painting";
+
+/** The AI agent case study's terracotta: its closing painting's wash. */
+const CLAY = inkPalette(SCHEMES.clay);
 
 /**
  * The home hero as a short film, like a car being revealed on a stage.
@@ -41,9 +45,10 @@ const lin = (r: number, g: number, b: number) => new THREE.Color().setRGB(r, g, 
 const WASH_FS = `
 varying vec2 vUv;
 uniform float time;
-uniform float appear;
 uniform float aspect;
+uniform float scale;
 uniform vec2 seed;
+uniform vec3 uPale; uniform vec3 uLight; uniform vec3 uMid; uniform vec3 uDeep; uniform vec3 uGrey;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
@@ -51,39 +56,24 @@ float noise(vec2 p){
 }
 float fbm(vec2 p){ float s = 0.0; float a = 0.5; for (int i = 0; i < 3; i++) { s += a * noise(p); p = p * 2.03 + vec2(17.1, 9.2); a *= 0.5; } return s / 0.875; }
 void main(){
-  vec2 p = vec2(vUv.x * aspect, vUv.y) * 0.85 + seed;
-  // the colour is always moving: it flows slowly sideways and folds into itself, like wet paint on tilted paper
-  float t = time * 0.04;
-  p += vec2(t * 0.9, sin(t * 0.7) * 0.25);
+  // the same moving wash as the painting at the foot of the AI agent case study (HeroInk, its clay palette),
+  // its shapes drawn at the same size on screen as there
+  vec2 p = vec2(vUv.x * aspect, vUv.y) * 0.85 * scale + seed;
+  float t = time * 0.022;
   vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t * 0.8));
   vec2 r = vec2(fbm(p + 1.9 * q + vec2(1.7, 9.2) + t * 0.6), fbm(p + 1.9 * q + vec2(8.3, 2.8) - t * 0.5));
-  float f = clamp((fbm(p + 2.1 * r + vec2(t * 0.3, -t * 0.2)) - 0.5) * 1.75 + 0.5, 0.0, 1.0);
-  float f2 = fbm(p * 1.05 + 1.6 * r + vec2(3.1, -t * 0.4));
-  float f3 = fbm(p * 0.8 + 1.2 * q + vec2(-t * 0.35, 6.4));
-  vec2 g0 = gl_FragCoord.xy;
-  // pigment settles into the grain: a mottle that changes with the paint, not with time
-  float gran = noise(g0 * 0.35 + 3.0) * 0.55 + noise(g0 * 0.8) * 0.3 + noise(p * 18.0) * 0.15;
-  // a watercolour is built of transparent glazes laid one over another; each one is a wet shape that pools darker
-  // at its edge as it dries, and each moves slowly, spreading and bleeding into the others
-  vec3 col = vec3(0.87, 0.71, 0.58); // the first wash of light orange
-  // glaze: mask is the wet shape; rim is the darker line where the pigment pooled at its edge
-  #define GLAZE(F, TH, PIG, AMT) { float mk = smoothstep(TH, TH + 0.12, F); float rim = smoothstep(TH, TH + 0.025, F) * (1.0 - smoothstep(TH + 0.03, TH + 0.16, F)); col *= mix(vec3(1.0), PIG, clamp(mk * AMT * (0.78 + 0.4 * (gran - 0.5)) + rim * 0.45, 0.0, 1.0)); }
-  GLAZE(f, 0.34, vec3(0.86, 0.66, 0.52), 1.0)      // orange
-  GLAZE(f2, 0.55, vec3(0.86, 0.66, 0.54), 0.7)     // a second orange, crossing the first
-  GLAZE(f, 0.6 + 0.12 * (r.x - 0.5), vec3(0.7, 0.45, 0.33), 1.0) // dark orange in the deep places
-  GLAZE(f3, 0.58, vec3(0.86, 0.85, 0.85), 0.8)    // a little cool grey drifting through
-  // where the water ran back into drying paint it pushed the colour out, leaving pale soft blooms
-  float bloom = smoothstep(0.62, 0.8, fbm(p * 2.2 + r * 1.4 + vec2(t * 0.2, 11.0)));
-  col = mix(col, col * 1.08 + 0.04, bloom * 0.5);
-  // light glowing from behind the smoke, low in the middle
-  float glow = exp(-pow((vUv.x - 0.5) * aspect * 0.55, 2.0) - pow((vUv.y - 0.42) * 2.2, 2.0));
-  col = mix(col, vec3(1.0, 0.86, 0.7), glow * 0.28);
-  // the colour blooms in from the paper, everywhere at once, unevenly
-  vec3 paper = vec3(0.935, 0.918, 0.89);
-  float m = smoothstep(0.0, 0.35, appear * 1.35 - fbm(p * 1.3 + 4.0) * 0.35);
-  col = mix(paper, col, m);
-  col *= 1.0 + (hash(g0) - 0.5) * 0.03 * m; // the tooth of the paper
-  gl_FragColor = vec4(pow(col, vec3(2.2)), 1.0);
+  float f = fbm(p + 2.1 * r + vec2(t * 0.3, -t * 0.2));
+  f = clamp((f - 0.5) * 1.4 + 0.5, 0.0, 1.0);
+  vec3 col = uPale;
+  col = mix(col, uLight, smoothstep(0.22, 0.42, f));
+  col = mix(col, uMid, smoothstep(0.40, 0.58, f));
+  col = mix(col, uDeep, smoothstep(0.58, 0.8, f + 0.25 * (r.x - 0.5)));
+  col = mix(col, uGrey, smoothstep(0.6, 0.85, r.y) * smoothstep(0.7, 0.4, f) * 0.35);
+  vec2 gp = gl_FragCoord.xy;
+  float gran = noise(gp * 0.45) * 0.6 + noise(gp * 0.9 + 7.0) * 0.4;
+  col *= 1.0 + (gran - 0.5) * (0.16 + 0.08 * (1.0 - f));
+  col += (hash(gp) - 0.5) * 0.022 + (noise(gp * 0.5) - 0.5) * 0.02;
+  gl_FragColor = vec4(pow(clamp(col, 0.0, 1.0), vec3(2.2)), 1.0);
 }`;
 
 /**
@@ -465,7 +455,7 @@ export default function HeroFilm() {
 
     /* ---------------- stage, camera, light ---------------- */
     const scene = new THREE.Scene();
-    const FOG = lin(0.78, 0.6, 0.48);
+    const FOG = lin(...CLAY.light); // distance fades into the painting's own colour
     scene.fog = new THREE.Fog(FOG, 6.5, 20);
     const camera = new THREE.PerspectiveCamera(24, aspect, 0.05, 80);
     const CAM = new THREE.Vector3(0, 0.42, 6);
@@ -477,7 +467,17 @@ export default function HeroFilm() {
     const washMat = new THREE.ShaderMaterial({
       vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
       fragmentShader: WASH_FS,
-      uniforms: { time: { value: 0 }, appear: { value: 0 }, aspect: { value: aspect }, seed: { value: new THREE.Vector2(Math.random() * 40, Math.random() * 40) } },
+      uniforms: {
+        time: { value: 0 },
+        aspect: { value: aspect },
+        scale: { value: clamp(PH / 900, 0.3, 1) }, // the agent painting is 900px tall
+        seed: { value: new THREE.Vector2(Math.random() * 50, Math.random() * 50) },
+        uPale: { value: new THREE.Vector3(...CLAY.pale) },
+        uLight: { value: new THREE.Vector3(...CLAY.light) },
+        uMid: { value: new THREE.Vector3(...CLAY.mid) },
+        uDeep: { value: new THREE.Vector3(...CLAY.deep) },
+        uGrey: { value: new THREE.Vector3(...CLAY.grey) },
+      },
       depthWrite: false,
       fog: false,
     });
@@ -525,7 +525,7 @@ export default function HeroFilm() {
     type Puff = { s: THREE.Sprite; base: THREE.Vector3; drift: number; spin: number; size: number; phase: number };
     const puffs: Puff[] = [];
     for (let i = 0; i < 70; i++) {
-      const mat = new THREE.SpriteMaterial({ map: smokeTex, color: lin(1, 0.9, 0.8), transparent: true, opacity: 0, depthWrite: false, fog: false });
+      const mat = new THREE.SpriteMaterial({ map: smokeTex, color: lin(...CLAY.pale).multiplyScalar(1.25), transparent: true, opacity: 0, depthWrite: false, fog: false });
       const s = new THREE.Sprite(mat);
       const base = new THREE.Vector3(rnd(-7, 7), rnd(0.05, i < 50 ? 0.7 : 2.2), rnd(-14, 3.5));
       const size = rnd(1.6, 4.2) * (i < 50 ? 1 : 1.5);
@@ -756,9 +756,7 @@ export default function HeroFilm() {
     const step = (t: number) => {
       const dt = clamp(t - tLast, 0, 0.1);
       tLast = t;
-      const appear = 1; // the painting is there the moment the page is
       washMat.uniforms.time.value = t + 20;
-      washMat.uniforms.appear.value = appear;
       // smoke rolls in after the colour, then keeps drifting
       const smokeIn = smooth(0.3, 2.8, t) * (1 - 0.75 * smooth(T_STOP, T_STOP + 6, t)); // the smoke thins once it has arrived, so the moving colour shows
       for (const p of puffs) {
