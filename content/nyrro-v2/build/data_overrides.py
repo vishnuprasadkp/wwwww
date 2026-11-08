@@ -231,6 +231,8 @@ K("title-seniority", "his role", "role in these projects", "what is his role", "
 K("ai-trust", "design for trust", "designing for trust", "how does he build trust", "trust in design")
 K("sensitive", "how old is he", "his age", "age", "date of birth", "birthday", "dob", "married", "marital status")
 K("education", "certification", "certifications", "certificate", "courses", "course")
+K("greeting", "whats up", "what is up", "wassup", "wats up")
+K("capabilities", "help me please", "please help", "i need help", "can you help", "help please", "need your help")
 K("skills", "ux designer", "ui designer", "ui or ux", "ux or ui", "ux designer or ui designer", "what kind of skills")
 K("why-hire", "reasons to hire", "reason to hire", "3 reasons", "three reasons", "good hire", "convince")
 K("unique-approach", "known for", "famous for", "best known", "signature")

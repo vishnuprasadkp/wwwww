@@ -1408,11 +1408,13 @@
     "yo",
     "sup",
     "hey there",
-    "anyone there"
+    "anyone there",
+    "whats up",
+    "what is up",
+    "wassup",
+    "wats up"
    ],
    "questions": [
-    "hi",
-    "hello there",
     "hey nyrro"
    ],
    "answer": "Hi! I'm **Nyrro**, Vishnu's guide on this site.\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
@@ -4110,6 +4112,325 @@
     "Tell me about HDFC Bank",
     "What are his case studies?",
     "How does he lead?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "smalltalk-how-are-you",
+   "category": "conversation",
+   "keywords": [
+    "how are you",
+    "how are you doing",
+    "how are u",
+    "how r u",
+    "how do you do",
+    "how is it going",
+    "hows it going",
+    "how have you been",
+    "how is life",
+    "hows life",
+    "hi how are you",
+    "hello how are you",
+    "hey how are you",
+    "hi nyrro how are you",
+    "hello nyrro how are you",
+    "hey nyrro how are you",
+    "hi there how are you",
+    "hey there how are you",
+    "good morning how are you",
+    "good evening how are you",
+    "you good",
+    "are you ok",
+    "are you okay",
+    "are you fine",
+    "how you doing",
+    "how is your day",
+    "hows your day",
+    "how was your day"
+   ],
+   "questions": [
+    "how are you?",
+    "how are you doing today",
+    "how's it going"
+   ],
+   "answer": "I'm good, thank you for asking! How are you?\n\nWhenever you're ready, ask me about Vishnu's work, how he designs, or the clients he's worked with.",
+   "followups": [
+    "Who is Vishnu?",
+    "What has he worked on?",
+    "How can I contact him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "smalltalk-reply",
+   "category": "conversation",
+   "keywords": [
+    "i am fine",
+    "im fine",
+    "i am good",
+    "im good",
+    "i am great",
+    "im great",
+    "i am doing well",
+    "im doing well",
+    "doing well",
+    "doing good",
+    "doing great",
+    "i am ok",
+    "im ok",
+    "i am okay",
+    "im okay",
+    "not bad",
+    "all good",
+    "fine thanks",
+    "good thanks",
+    "im good how are you",
+    "i am good how are you",
+    "fine and you",
+    "good and you",
+    "fine you",
+    "good you"
+   ],
+   "questions": [
+    "i'm good, how are you?",
+    "I am fine",
+    "doing great, and you?"
+   ],
+   "answer": "Glad to hear it! What would you like to know about Vishnu?",
+   "followups": [
+    "Who is Vishnu?",
+    "What has he worked on?",
+    "What are his core skills?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "smalltalk-nice-to-meet",
+   "category": "conversation",
+   "keywords": [
+    "nice to meet you",
+    "pleased to meet you",
+    "good to meet you",
+    "glad to meet you",
+    "nice meeting you"
+   ],
+   "questions": [
+    "nice to meet you",
+    "pleased to meet you"
+   ],
+   "answer": "Nice to meet you too! I'm Nyrro, Vishnu's guide on this site. Ask me anything about his work.",
+   "followups": [
+    "Who is Vishnu?",
+    "What has he worked on?",
+    "How does he design?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "compliment",
+   "category": "conversation",
+   "keywords": [
+    "great portfolio",
+    "nice portfolio",
+    "beautiful portfolio",
+    "love your portfolio",
+    "love this site",
+    "love this website",
+    "nice website",
+    "great website",
+    "beautiful website",
+    "nice site",
+    "great site",
+    "good site",
+    "good work",
+    "great work",
+    "nice work",
+    "awesome work",
+    "amazing work",
+    "impressive",
+    "impressive work",
+    "i like his work",
+    "i love his work",
+    "i like your work",
+    "love his work",
+    "well done",
+    "good job",
+    "great job",
+    "nicely done",
+    "you are awesome",
+    "you are great",
+    "you are amazing",
+    "you are cool",
+    "you are smart",
+    "you are sweet",
+    "you are helpful",
+    "youre awesome",
+    "youre great",
+    "youre cute",
+    "so cute",
+    "cute",
+    "awesome",
+    "amazing",
+    "brilliant",
+    "love it",
+    "like it"
+   ],
+   "questions": [
+    "great portfolio!",
+    "I love your work",
+    "you're awesome",
+    "nice website"
+   ],
+   "answer": "That's kind of you to say, thank you! Vishnu would be glad to hear it from you directly: **vishnuprasadkp98@gmail.com**.\n\nIs there anything else you'd like to know about his work?",
+   "followups": [
+    "What has he worked on?",
+    "How does he design?",
+    "How can I contact him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "capabilities",
+   "category": "conversation",
+   "keywords": [
+    "what can you do",
+    "what do you do",
+    "what can you help with",
+    "what can i ask",
+    "what can i ask you",
+    "what should i ask",
+    "what to ask",
+    "how can you help",
+    "can you help me",
+    "help me",
+    "need help",
+    "help",
+    "how do i use this",
+    "how does this work chat",
+    "what do you know",
+    "what do you know about",
+    "what are you for",
+    "your purpose",
+    "what is your job",
+    "what is your role here",
+    "help me please",
+    "please help",
+    "i need help",
+    "can you help",
+    "help please",
+    "need your help"
+   ],
+   "questions": [
+    "what can you do?",
+    "what can I ask you?",
+    "can you help me?"
+   ],
+   "answer": "I can tell you about Vishnu:\n\n- His **case studies** and the clients he has designed for\n- How he **designs**, especially AI products\n- His **experience, skills and tools**\n- How to **reach him**\n\nJust ask in your own words.",
+   "followups": [
+    "What has he worked on?",
+    "Who is Vishnu?",
+    "How does he design?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "laugh",
+   "category": "conversation",
+   "keywords": [
+    "lol",
+    "haha",
+    "hahaha",
+    "hehe",
+    "lmao",
+    "funny",
+    "that is funny",
+    "thats funny",
+    "so funny",
+    "you are funny",
+    "youre funny",
+    "rofl"
+   ],
+   "questions": [
+    "lol",
+    "haha that's funny"
+   ],
+   "answer": "Glad you enjoyed that! Ask me anything about Vishnu's work whenever you like.",
+   "followups": [
+    "What has he worked on?",
+    "Who is Vishnu?",
+    "How can I contact him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "sorry",
+   "category": "conversation",
+   "keywords": [
+    "sorry",
+    "my bad",
+    "apologies",
+    "i am sorry",
+    "im sorry",
+    "excuse me",
+    "pardon",
+    "never mind",
+    "nevermind",
+    "forget it",
+    "ignore that",
+    "oops"
+   ],
+   "questions": [
+    "sorry",
+    "never mind"
+   ],
+   "answer": "No need to apologise! Ask away whenever you're ready.",
+   "followups": [
+    "Who is Vishnu?",
+    "What has he worked on?",
+    "How can I contact him?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "nyrro-home",
+   "category": "conversation",
+   "keywords": [
+    "where do you live",
+    "where are you from",
+    "where are you",
+    "do you sleep",
+    "what do you eat",
+    "do you have a family",
+    "do you have friends",
+    "how old are you",
+    "what is your age",
+    "are you a boy",
+    "are you a girl",
+    "are you male",
+    "are you female",
+    "your gender",
+    "do you have a name",
+    "what is your favourite colour",
+    "what is your favorite color",
+    "what is your favourite food",
+    "do you like",
+    "what do you like",
+    "are you real",
+    "are you alive",
+    "do you have feelings",
+    "are you happy",
+    "are you sad"
+   ],
+   "questions": [
+    "where do you live?",
+    "how old are you?",
+    "what do you eat?"
+   ],
+   "answer": "I'm a small beetle who lives right here on this site, so my world is mostly Vishnu's portfolio. I'm happiest when someone asks about his work.",
+   "followups": [
+    "Why a beetle?",
+    "What has he worked on?",
+    "Who is Vishnu?"
    ],
    "priority": false
   }
