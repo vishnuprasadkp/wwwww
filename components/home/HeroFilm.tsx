@@ -28,7 +28,6 @@ const CLAY = inkPalette(SCHEMES.clay);
  * still frame of the beetle close up is drawn.
  */
 
-const CORE = "/images/site/hero-beetle-v7-core.webp";
 const WING = "/images/site/hero-beetle-v7-wing.webp";
 const WING_BASE = [0.0603, 0.4627];
 const WING_ASPECT = 766 / 1282;
@@ -49,6 +48,7 @@ uniform float aspect;
 uniform float scale;
 uniform vec2 seed;
 uniform vec3 uPale; uniform vec3 uLight; uniform vec3 uMid; uniform vec3 uDeep; uniform vec3 uGrey;
+uniform sampler2D paint;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
@@ -59,7 +59,8 @@ void main(){
   // the same moving wash as the painting at the foot of the AI agent case study (HeroInk, its clay palette),
   // its shapes drawn at the same size on screen as there
   vec2 p = vec2(vUv.x * aspect, vUv.y) * 0.85 * scale + seed;
-  float t = time * 0.022;
+  float t = time * 0.05; // livelier than at the foot of the page: the colour is always visibly on the move
+  p += vec2(t * 0.35, 0.0);
   vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t * 0.8));
   vec2 r = vec2(fbm(p + 1.9 * q + vec2(1.7, 9.2) + t * 0.6), fbm(p + 1.9 * q + vec2(8.3, 2.8) - t * 0.5));
   float f = fbm(p + 2.1 * r + vec2(t * 0.3, -t * 0.2));
@@ -69,6 +70,14 @@ void main(){
   col = mix(col, uMid, smoothstep(0.40, 0.58, f));
   col = mix(col, uDeep, smoothstep(0.58, 0.8, f + 0.25 * (r.x - 0.5)));
   col = mix(col, uGrey, smoothstep(0.6, 0.85, r.y) * smoothstep(0.7, 0.4, f) * 0.35);
+  // the dark clay the beetle has left behind it, with ragged, pooled edges like wet paint
+  vec2 suv = (vUv - 0.5) * 1.12 + 0.5;
+  vec2 wob = (vec2(fbm(p * 3.0 + t), fbm(p * 3.0 + 7.0 - t)) - 0.5) * 0.035;
+  float pv = texture2D(paint, suv + wob).a;
+  float pig = smoothstep(0.04, 0.5, pv + (fbm(p * 6.0) - 0.5) * 0.12);
+  float rim = smoothstep(0.04, 0.14, pv) * (1.0 - smoothstep(0.16, 0.42, pv));
+  col = mix(col, uDeep * 0.7, pig * 0.7);
+  col *= 1.0 - rim * 0.14;
   vec2 gp = gl_FragCoord.xy;
   float gran = noise(gp * 0.45) * 0.6 + noise(gp * 0.9 + 7.0) * 0.4;
   col *= 1.0 + (gran - 0.5) * (0.16 + 0.08 * (1.0 - f));
@@ -104,10 +113,10 @@ void main(){
   // brush patches: of the four corners around each pixel, keep the calmest one's average colour
   vec3 m[4]; vec3 s[4];
   for (int k = 0; k < 4; k++) { m[k] = vec3(0.0); s[k] = vec3(0.0); }
-  const int R = 4;
+  const int R = 2;
   for (int j = -R; j <= R; j++) {
     for (int i = -R; i <= R; i++) {
-      vec3 c = tex(uv + vec2(float(i), float(j)) * px * 1.6);
+      vec3 c = tex(uv + vec2(float(i), float(j)) * px * 1.2);
       vec3 c2 = c * c;
       if (i <= 0 && j <= 0) { m[0] += c; s[0] += c2; }
       if (i >= 0 && j <= 0) { m[1] += c; s[1] += c2; }
@@ -214,16 +223,42 @@ function luminousWing(img: HTMLImageElement) {
   g.drawImage(img, 0, 0);
   const d = g.getImageData(0, 0, w, h);
   const p = d.data;
+  const a0 = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) a0[i] = p[i * 4 + 3] / 255;
   for (let i = 0; i < p.length; i += 4) {
     const a = p[i + 3] / 255;
     if (a <= 0.004) continue;
     const fill = Math.min(1, a * 3.4); // the membrane, filled in
-    // a soft white light: the whole wing is lifted towards a warm white, its veins kept only as a faint cream trace
+    const lum = (p[i] * 0.3 + p[i + 1] * 0.59 + p[i + 2] * 0.11) / 255;
+    // a soft white light over the whole wing…
     const k = 0.72 + 0.2 * (1 - a);
     p[i] = p[i] + (252 - p[i]) * k;
     p[i + 1] = p[i + 1] + (247 - p[i + 1]) * k;
     p[i + 2] = p[i + 2] + (238 - p[i + 2]) * k;
     p[i + 3] = 255 * (0.34 + 0.56 * fill);
+    // …and its veins drawn over it in fine strokes of clay ink, as in the sketch
+    const vein = a > 0.45 ? Math.max(0, Math.min(1, (0.62 - lum) * 3)) : 0;
+    if (vein > 0) {
+      p[i] += (118 - p[i]) * vein * 0.75;
+      p[i + 1] += (78 - p[i + 1]) * vein * 0.75;
+      p[i + 2] += (60 - p[i + 2]) * vein * 0.75;
+      p[i + 3] = Math.max(p[i + 3], 255 * vein);
+    }
+  }
+  // the outline: a fine ink line round the edge of the wing
+  const st = Math.max(2, Math.round(w / 400));
+  for (let y = st; y < h - st; y++) {
+    for (let x = st; x < w - st; x++) {
+      const o = y * w + x;
+      if (a0[o] < 0.08) continue;
+      if (a0[o - st] < 0.08 || a0[o + st] < 0.08 || a0[o - st * w] < 0.08 || a0[o + st * w] < 0.08) {
+        const q = o * 4;
+        p[q] = 128;
+        p[q + 1] = 86;
+        p[q + 2] = 66;
+        p[q + 3] = 235;
+      }
+    }
   }
   g.putImageData(d, 0, 0);
   const halo = document.createElement("canvas");
@@ -238,22 +273,95 @@ function luminousWing(img: HTMLImageElement) {
   return { wing, glow };
 }
 
+/* ---------------- the sketch: the beetle drawn in ink over white, like the drawings in the case studies ---------------- */
+const SKETCH_VS = `
+varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
+void main(){
+  vObj = position;
+  vN = normalize(normalMatrix * normal);
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  vV = normalize(-mv.xyz);
+  vDepth = -mv.z;
+  gl_Position = projectionMatrix * mv;
+}`;
+const SKETCH_FS = `
+varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
+uniform vec3 fill; uniform vec3 ink; uniform vec3 fogColor;
+uniform float fogNear; uniform float fogFar; uniform float time; uniform float veins; uniform float px;
+float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float noise(vec2 p){
+  vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+// one set of hatching: parallel strokes at an angle, a little unsteady, each one broken now and then
+float hatch(vec2 fc, float ang, float spacing, float w, float seed){
+  vec2 r = vec2(cos(ang) * fc.x - sin(ang) * fc.y, sin(ang) * fc.x + cos(ang) * fc.y) / spacing;
+  float x = r.y + (noise(r * vec2(0.18, 0.6) + seed) - 0.5) * 0.5;
+  float d = 0.5 - abs(fract(x) - 0.5); // 0 on a stroke, 0.5 halfway between two
+  float line = 1.0 - smoothstep(w * 0.5, w * 0.5 + 0.09, d);
+  float breaks = smoothstep(0.25, 0.45, noise(vec2(r.x * 0.35, floor(x + 0.5)) + seed * 3.0));
+  return line * breaks;
+}
+void main(){
+  vec3 N = normalize(vN); vec3 V = normalize(vV);
+  if (!gl_FrontFacing) N = -N;
+  vec3 L = normalize(vec3(-0.45, 0.75, 0.55));
+  float n = dot(N, L) * 0.5 + 0.5;
+  // the sketch boils a little, as a drawing redrawn a few times a second
+  float boil = floor(time * 5.0);
+  vec2 fc = gl_FragCoord.xy / px + vec2(hash(vec2(boil, 1.0)), hash(vec2(boil, 2.0))) * 3.0;
+  // white paper, shaded only very softly
+  vec3 col = fill * (0.86 + 0.18 * n);
+  // the outline: where the surface turns away, a line of ink of uneven weight
+  float ndv = abs(dot(N, V));
+  float wob = noise(fc * 0.06 + boil * 1.7);
+  float contour = 1.0 - smoothstep(0.16 + 0.12 * wob, 0.3 + 0.12 * wob, ndv);
+  // hatching in the shade, crossed where it is darkest
+  float shade = 1.0 - n;
+  float h1 = hatch(fc, 0.85, 6.5, 0.32, 1.0) * smoothstep(0.42, 0.62, shade);
+  float h2 = hatch(fc, -0.6, 7.5, 0.28, 5.0) * smoothstep(0.6, 0.78, shade);
+  // on the wing cases: the long lines drawn along them, like the meridians in the drawing
+  float m = 0.0;
+  if (veins > 0.5) {
+    float mx = abs(vObj.x) * 9.0 + (noise(vObj.zz * 6.0 + boil) - 0.5) * 0.25;
+    float md = abs(fract(mx) - 0.5);
+    m = smoothstep(0.42, 0.48, md) * smoothstep(0.02, 0.08, abs(vObj.x));
+    m += 1.0 - smoothstep(0.012, 0.028, abs(vObj.x)); // the seam
+  }
+  float inkAmt = clamp(max(contour, max(max(h1, h2) * 0.85, m * 0.9)), 0.0, 1.0);
+  col = mix(col, ink, inkAmt);
+  col = mix(col, fogColor, smoothstep(fogNear, fogFar, vDepth));
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+type SketchU = { time: { value: number }; fogColor: { value: THREE.Color }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number } };
+function sketchMaterial(shared: SketchU, fill: THREE.Color, ink: THREE.Color, veins = false) {
+  return new THREE.ShaderMaterial({
+    vertexShader: SKETCH_VS,
+    fragmentShader: SKETCH_FS,
+    uniforms: { ...shared, fill: { value: fill }, ink: { value: ink }, veins: { value: veins ? 1 : 0 } },
+    side: THREE.DoubleSide,
+  });
+}
+
 /* ---------------- the beetle ---------------- */
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
-function buildBeetle(coreTex: THREE.Texture, wingTex: THREE.Texture, glowTex: THREE.Texture) {
+function buildBeetle(wingTex: THREE.Texture, glowTex: THREE.Texture, sk: SketchU) {
   const root = new THREE.Group();
   const body = new THREE.Group();
   body.position.y = 0.2; // standing on its feet: they just touch the floor
   root.add(body);
 
-  // painted, not plastic: each part is mostly its own watercolour, lit only softly so it keeps a little roundness
-  const painted = (map: THREE.Texture, tint = 1) => new THREE.MeshLambertMaterial({ map, color: lin(tint, tint, tint), emissive: lin(0.62, 0.6, 0.58), emissiveMap: map, side: THREE.DoubleSide });
-  const shell = painted(coreTex);
-  const black = new THREE.MeshLambertMaterial({ color: lin(0.24, 0.25, 0.3), emissive: lin(0.12, 0.12, 0.15) });
-  const front = painted(coreTex);
-  const cream = new THREE.MeshLambertMaterial({ color: lin(0.93, 0.86, 0.72), emissive: lin(0.45, 0.4, 0.33) });
-  const legMat = new THREE.MeshLambertMaterial({ color: lin(0.36, 0.34, 0.38), emissive: lin(0.14, 0.13, 0.15) });
-  const amber = new THREE.MeshLambertMaterial({ color: lin(0.72, 0.42, 0.22), emissive: lin(0.3, 0.16, 0.08) });
+  // drawn, not painted: white paper with dark clay ink, outlined and hatched
+  const INK = lin(0.3, 0.17, 0.12);
+  const WHITE = lin(0.93, 0.91, 0.87); // just under the glow, so the drawing stays crisp
+  const shell = sketchMaterial(sk, WHITE, INK, true);
+  const front = sketchMaterial(sk, WHITE, INK);
+  const black = sketchMaterial(sk, lin(0.36, 0.22, 0.16), INK); // the eyes, filled in ink
+  const cream = sketchMaterial(sk, lin(1, 0.98, 0.95), INK);
+  const legMat = sketchMaterial(sk, lin(0.93, 0.9, 0.85), INK);
+  const amber = sketchMaterial(sk, lin(0.93, 0.85, 0.76), INK);
+  const bellyMat = sketchMaterial(sk, lin(0.9, 0.87, 0.82), INK);
 
   const mapTop = (g: THREE.BufferGeometry, front: number, back: number, halfW: number, rowFront: number, rowBack: number) => {
     const p = g.attributes.position;
@@ -272,7 +380,7 @@ function buildBeetle(coreTex: THREE.Texture, wingTex: THREE.Texture, glowTex: TH
   // abdomen
   const bellyG = new THREE.SphereGeometry(1, 32, 20);
   mapTop(bellyG, 1, -1, 1, 420, 760);
-  const belly = new THREE.Mesh(bellyG, painted(coreTex, 0.7));
+  const belly = new THREE.Mesh(bellyG, bellyMat);
   belly.scale.set(0.3, 0.09, 0.42);
   belly.position.set(0, -0.02, -0.06);
   belly.castShadow = true;
@@ -488,6 +596,32 @@ export default function HeroFilm() {
     wash.renderOrder = -10;
     camera.add(wash);
 
+    // the paint the beetle leaves on the painting: a small canvas it dabs dark clay into as it goes, fading slowly
+    const PCW = 420;
+    const PCH = Math.max(60, Math.round(PCW / aspect));
+    const pc = document.createElement("canvas");
+    pc.width = PCW;
+    pc.height = PCH;
+    const pg = pc.getContext("2d")!;
+    const paintTex = new THREE.CanvasTexture(pc);
+    paintTex.minFilter = paintTex.magFilter = THREE.LinearFilter;
+    washMat.uniforms.paint = { value: paintTex };
+    let paintFade = 0;
+    const ndc = new THREE.Vector3();
+    const dab = (x: number, y: number, r: number, a: number) => {
+      const gr = pg.createRadialGradient(x, y, 0, x, y, r);
+      gr.addColorStop(0, `rgba(255,255,255,${a})`);
+      gr.addColorStop(0.6, `rgba(255,255,255,${a * 0.6})`);
+      gr.addColorStop(1, "rgba(255,255,255,0)");
+      pg.fillStyle = gr;
+      pg.beginPath();
+      pg.arc(x, y, r, 0, Math.PI * 2);
+      pg.fill();
+    };
+
+    // the drawing's shared settings: the clock it boils to, and the distance it fades into the painting's colour
+    const sketchU = { time: { value: 0 }, fogColor: { value: lin(...CLAY.light) }, fogNear: { value: 6.5 }, fogFar: { value: 20 }, px: { value: pr } };
+
     scene.add(new THREE.HemisphereLight(lin(1, 0.93, 0.85), lin(0.45, 0.28, 0.2), 1.1));
     const key1 = new THREE.DirectionalLight(lin(1, 0.95, 0.88), 2.2);
     key1.position.set(-3, 6, 5);
@@ -564,16 +698,7 @@ export default function HeroFilm() {
     const bokehU = bokeh.uniforms as unknown as { focus: { value: number }; aperture: { value: number } };
 
     /* ---------------- the film ---------------- */
-    const loader = new THREE.TextureLoader();
     let beetle: ReturnType<typeof buildBeetle> | null = null;
-    const tex = (src: string) =>
-      new Promise<THREE.Texture>((res) =>
-        loader.load(src, (t) => {
-          t.colorSpace = THREE.SRGBColorSpace;
-          t.anisotropy = 8;
-          res(t);
-        }),
-      );
 
     const WALK_FROM = -6; // far back in the smoke
     const WALK_TO = 3.2; // close in front of you
@@ -782,6 +907,29 @@ export default function HeroFilm() {
       camera.lookAt(0, 0.3, 0);
       pose(t, dt);
       stepDust(t, dt);
+      sketchU.time.value = t;
+      // the beetle leaves dark clay on the painting as it walks and flies; old paint slowly soaks away
+      paintFade += dt;
+      if (paintFade > 0.25) {
+        paintFade = 0;
+        pg.globalCompositeOperation = "destination-out";
+        pg.fillStyle = "rgba(0,0,0,0.018)";
+        pg.fillRect(0, 0, PCW, PCH);
+        pg.globalCompositeOperation = "source-over";
+      }
+      if (beetle && beetle.root.visible && dt > 0) {
+        ndc.copy(wp).project(camera);
+        const x = (ndc.x * 0.5 + 0.5) * PCW;
+        const y = (0.5 - ndc.y * 0.5) * PCH;
+        const near = clamp(5.5 / Math.max(1, camera.position.distanceTo(wp)), 0.3, 1.6);
+        const flying = t > T_LIFT ? 1 : 0;
+        const n = Math.ceil(dt * 30);
+        for (let i = 0; i < n; i++) {
+          const spread = PCH * 0.22 * near * (0.4 + flying);
+          dab(x + rnd(-1, 1) * spread * 1.4, y + rnd(-0.4, 0.8) * spread, PCH * rnd(0.05, 0.13) * near, 0.05 + 0.03 * flying);
+        }
+      }
+      paintTex.needsUpdate = true;
     };
 
     let clock = 0;
@@ -811,10 +959,10 @@ export default function HeroFilm() {
         i.onerror = rej;
         i.src = src;
       });
-    Promise.all([tex(CORE), img(WING)]).then(([core, wingImg]) => {
+    img(WING).then((wingImg) => {
       if (!alive) return;
       const lum = luminousWing(wingImg);
-      beetle = buildBeetle(core, lum.wing, lum.glow);
+      beetle = buildBeetle(lum.wing, lum.glow, sketchU);
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
