@@ -25,6 +25,14 @@ const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img
 // a picture eases up into place while it fades in, the same way every time: no mask, no drift while it is scrolled
 const COVERED = { opacity: 0, y: 40 };
 const REVEAL = { opacity: 1, y: 0, duration: 1.4, ease: "expo.out", clearProps: "transform" };
+// what moves when a picture arrives: the picture, or, for a case study picture with its moving painted background, the
+// picture and its background together (the product never slides about inside its background)
+const mover = (img: HTMLImageElement): HTMLElement => {
+  const w = img.closest<HTMLElement>("[data-wash]");
+  if (!w) return img;
+  img.style.opacity = "1";
+  return w;
+};
 
 let pendingHash = ""; // an anchor on the page we are going to ("#cases"): the new page opens at its top, then glides there
 
@@ -167,7 +175,7 @@ export default function Motion() {
         const img = card.querySelector<HTMLImageElement>("img");
         const parts: gsap.core.Tween[] = [];
         const play = () => parts.forEach((t) => t.play());
-        if (img) parts.push(gsap.fromTo(img, COVERED, { ...REVEAL, paused: true }));
+        if (img) parts.push(gsap.fromTo(mover(img), COVERED, { ...REVEAL, paused: true }));
         ScrollTrigger.create({ trigger: card, start: "top 88%", once: true, onEnter: () => void (img ? ready(img).then(play) : play()) });
       });
 
@@ -177,9 +185,11 @@ export default function Motion() {
         if (img.closest("[data-card]")) return; // arrives with its card
         if (!big) {
           img.style.opacity = "1";
+          const w = img.closest<HTMLElement>("[data-wash]");
+          if (w) w.style.opacity = "1";
           return;
         }
-        const tw = gsap.fromTo(img, COVERED, { ...REVEAL, paused: true });
+        const tw = gsap.fromTo(mover(img), COVERED, { ...REVEAL, paused: true });
         ScrollTrigger.create({ trigger: img, start: "top 92%", once: true, onEnter: () => void ready(img).then(() => tw.play()) });
       });
     };

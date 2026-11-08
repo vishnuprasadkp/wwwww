@@ -84,6 +84,7 @@ type Item = {
   img: HTMLImageElement | null;
   tex: WebGLTexture | null;
   visible: boolean;
+  shown: boolean;
 };
 
 const STILL = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -149,8 +150,8 @@ const shared = (() => {
     upload(it);
     const box = it.cv.getBoundingClientRect();
     if (!box.width || !box.height) return;
-    // drawn at a modest size: the wash is soft, and the copy is scaled up smoothly
-    const k = Math.min(1, 720 / box.width) * Math.min(1.5, window.devicePixelRatio || 1);
+    // drawn at the screen's own sharpness, so the grain of the paint is as crisp as in the painted original
+    const k = Math.min(1.5, window.devicePixelRatio || 1) * Math.min(1, 1500 / box.width);
     const W = Math.max(2, Math.round(box.width * k));
     const H = Math.max(2, Math.round(box.height * k));
     if (it.cv.width !== W || it.cv.height !== H) {
@@ -192,6 +193,10 @@ const shared = (() => {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     it.ctx.clearRect(0, 0, W, H);
     it.ctx.drawImage(glc, 0, 0);
+    if (!it.shown) {
+      it.shown = true;
+      it.cv.style.opacity = "1"; // it fades in over the painted original, so nothing jumps
+    }
   };
 
   const frame = (now: number) => {
@@ -249,9 +254,9 @@ export default function WashOverlay({ mask, palette, fill = false }: { mask: str
     if (!cv) return;
     const ctx = cv.getContext("2d");
     if (!ctx) return;
-    const it: Item = { cv, ctx, palette, seed: [Math.random() * 50, Math.random() * 50], fill, img: null, tex: null, visible: false };
+    const it: Item = { cv, ctx, palette, seed: [Math.random() * 50, Math.random() * 50], fill, img: null, tex: null, visible: false, shown: false };
     if (!shared.add(it)) return;
-    const io = new IntersectionObserver(([e]) => (it.visible = e.isIntersecting), { rootMargin: "100px" });
+    const io = new IntersectionObserver(([e]) => (it.visible = e.isIntersecting), { rootMargin: "600px" });
     io.observe(cv);
     const img = new Image();
     img.onload = () => {
@@ -266,5 +271,5 @@ export default function WashOverlay({ mask, palette, fill = false }: { mask: str
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mask]);
 
-  return <canvas ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" />;
+  return <canvas ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" style={{ opacity: 0, transition: "opacity 0.9s ease" }} />;
 }

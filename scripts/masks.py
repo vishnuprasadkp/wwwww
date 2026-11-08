@@ -98,8 +98,14 @@ def mask_for(path):
         cx = np.clip(xx, x0 + r, x1 - r)
         cy = np.clip(yy, y0 + r, y1 - r)
         prod |= (xx >= x0) & (xx <= x1) & (yy >= y0) & (yy <= y1) & (np.hypot(xx - cx, yy - cy) <= r)
-    m = Image.fromarray((prod * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.8))
-    return m, float(prod.mean())
+    # a margin round the product, so the moving wash never touches it: the product's own edge, corners and shadow stay
+    # exactly as they were painted, and the wash fades in softly beyond them
+    cover = float(prod.mean())
+    prod = dilate(prod, 3)
+    m = Image.fromarray((prod * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2.2))
+    # the ground's own colour, so the wash is painted in it and meets the kept margin without a seam
+    gm = np.median(im[: gh * BLOCK, : gw * BLOCK].reshape(gh, BLOCK, gw, BLOCK, 3).transpose(0, 2, 1, 3, 4)[reach & ~dilate(prod, 4)].reshape(-1, 3), axis=0)
+    return m, cover, [round(float(v) * 255) for v in gm]
 
 
 def main():
@@ -109,12 +115,12 @@ def main():
         for f in sorted(glob.glob(os.path.join(ROOT, "public/images", folder, "*.png"))):
             if os.path.basename(f) in SKIP:
                 continue
-            m, cover = mask_for(f)
+            m, cover, ground = mask_for(f)
             rel = os.path.relpath(f, os.path.join(ROOT, "public/images"))
             dst = os.path.join(OUT, rel)
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             m.save(dst, optimize=True)
-            report["/images/" + rel] = round(cover, 3)
+            report["/images/" + rel] = {"cover": round(cover, 3), "ground": ground}
             print(rel, round(cover, 3))
     with open(os.path.join(ROOT, "content/masks.json"), "w") as fh:
         json.dump(report, fh, indent=1)

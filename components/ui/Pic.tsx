@@ -49,17 +49,17 @@ export default function Pic({ file, sizes, alt = "", priority, eager, sync, fill
     </picture>
   );
   if (!sc) return pic;
-  const overlay = <WashOverlay mask={file.replace(/^\/images\//, "/images/_mask/")} palette={inkPalette(sc)} fill={fill} />;
+  const overlay = <WashOverlay mask={file.replace(/^\/images\//, "/images/_mask/")} palette={inkPalette(sc, (masks as unknown as Record<string, { ground: [number, number, number] }>)[file].ground)} fill={fill} />;
   if (fill) {
     return (
-      <>
+      <span data-wash className="absolute inset-0 block">
         {pic}
         {overlay}
-      </>
+      </span>
     );
   }
   return (
-    <span className="relative block">
+    <span data-wash className="relative block">
       {pic}
       {overlay}
     </span>

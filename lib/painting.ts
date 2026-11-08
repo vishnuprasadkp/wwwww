@@ -55,8 +55,8 @@ export const SCHEME_FOR_CLOSING: Record<string, keyof typeof SCHEMES> = {
  * The moving wash behind a painting, made only from that painting's own colours: its ground in the middle, deepened
  * towards its dark colour and lightened towards its paint colour. A grey ground stays grey, a green one green.
  */
-export function inkPalette(s: Scheme): InkPalette {
-  const g = hex(s.bg).map((v) => v / 255) as Rgb;
+export function inkPalette(s: Scheme, ground?: Rgb): InkPalette {
+  const g = (ground ?? hex(s.bg)).map((v) => v / 255) as Rgb;
   const d = hex(s.moth.hind).map((v) => v / 255) as Rgb;
   const l = s.paint.map((v) => v / 255) as Rgb;
   const lerp = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
