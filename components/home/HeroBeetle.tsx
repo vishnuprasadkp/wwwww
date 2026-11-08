@@ -348,7 +348,7 @@ export default function HeroBeetle() {
     CX = W * 0.5;
     CY = H * 0.5;
     SC = 1;
-    KB = clamp(Math.min(W * 0.52, H * 1.15), 300, 700) / (WING_U * 2);
+    KB = clamp(Math.min(W * 0.7, H * 1.55), 380, 960) / (WING_U * 2);
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;

@@ -38,36 +38,37 @@ float fbm(vec2 p){
 
 void main(){
   vec2 p = vec2(vUv.x * aspect, vUv.y) * 0.85 + seed;
-  float t = time * 0.045;
+  float t = time * 0.022; // slow
   // the flow: noise, bent by noise, bent again, all drifting slowly
   vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, 1.3) - t * 0.8));
   vec2 r = vec2(fbm(p + 1.9 * q + vec2(1.7, 9.2) + t * 0.6), fbm(p + 1.9 * q + vec2(8.3, 2.8) - t * 0.5));
   float f = fbm(p + 2.1 * r + vec2(t * 0.3, -t * 0.2));
-  f = clamp((f - 0.5) * 1.7 + 0.52, 0.0, 1.0); // more range: deep orange and pale light both
+  f = clamp((f - 0.5) * 1.4 + 0.5, 0.0, 1.0);
 
+  // a full, rich wash of burnt orange: deep in places, lighter where the water thinned it, a touch of grey
   vec3 paper = vec3(0.935, 0.918, 0.89);
-  vec3 light = vec3(0.97, 0.80, 0.60);
-  vec3 orange = vec3(0.93, 0.55, 0.24);
-  vec3 dark = vec3(0.66, 0.27, 0.10);
-  vec3 grey = vec3(0.60, 0.59, 0.58);
+  vec3 pale = vec3(0.80, 0.63, 0.50);
+  vec3 light = vec3(0.74, 0.52, 0.38);
+  vec3 mid = vec3(0.66, 0.39, 0.25);
+  vec3 deep = vec3(0.56, 0.30, 0.19);
+  vec3 grey = vec3(0.58, 0.50, 0.46);
 
-  vec3 col = paper;
-  col = mix(col, light, smoothstep(0.24, 0.48, f));
-  col = mix(col, orange, smoothstep(0.42, 0.66, f) * 0.9);
-  col = mix(col, dark, smoothstep(0.56, 0.8, f + 0.3 * (r.x - 0.5)) * 0.85);
-  // a little grey drifts through, where the colours meet
-  col = mix(col, grey, smoothstep(0.58, 0.82, r.y) * smoothstep(0.75, 0.45, f) * 0.45);
-  // soft white light running through it
-  float glow = smoothstep(0.55, 0.85, q.y) * smoothstep(0.35, 0.6, 1.0 - f);
-  col = mix(col, vec3(0.99, 0.96, 0.92), glow * 0.55);
-  // a little less than full strength, so it stays light, like a wash
-  col = mix(paper, col, 0.9);
+  vec3 col = pale;
+  col = mix(col, light, smoothstep(0.22, 0.42, f));
+  col = mix(col, mid, smoothstep(0.40, 0.58, f));
+  col = mix(col, deep, smoothstep(0.58, 0.8, f + 0.25 * (r.x - 0.5)));
+  col = mix(col, grey, smoothstep(0.6, 0.85, r.y) * smoothstep(0.7, 0.4, f) * 0.35);
+
+  // the pigment settles into the grain of the paper: a fine mottle, stronger where the paint is thin
+  vec2 gp = gl_FragCoord.xy;
+  float gran = noise(gp * 0.45) * 0.6 + noise(gp * 0.9 + 7.0) * 0.4;
+  col *= 1.0 + (gran - 0.5) * (0.16 + 0.08 * (1.0 - f));
 
   // the colour comes in once: it spreads out from a few places until the whole box is covered
   vec2 a = vUv * vec2(aspect, 1.0);
   float d = min(min(distance(a, vec2(aspect * 0.22, 0.45)), distance(a, vec2(aspect * 0.55, 0.6))), distance(a, vec2(aspect * 0.85, 0.4)));
-  float edge = reveal * (aspect * 0.55 + 0.6) - d + 0.35 * (q.x - 0.5);
-  col = mix(paper, col, smoothstep(0.0, 0.45, edge));
+  float edge = reveal * (aspect * 0.55 + 0.9) - d + 0.9 * (fbm(a * 2.2 + seed * 1.3) - 0.5) + 0.4 * (q.x - 0.5);
+  col = mix(paper, col, smoothstep(0.0, 0.3, edge));
 
   // the grain of the paper
   vec2 g = gl_FragCoord.xy;
@@ -86,8 +87,8 @@ export default function HeroInk() {
     const hb = host.getBoundingClientRect();
     const W = Math.max(300, Math.round(hb.width));
     const H = Math.max(240, Math.round(hb.height));
-    // the colour is soft, so it is drawn at a lower resolution and scaled up
-    const ps = 0.75;
+    // drawn sharp enough for the grain of the paper to show
+    const ps = Math.min(window.devicePixelRatio || 1, 1.5);
     cv.width = Math.round(W * ps);
     cv.height = Math.round(H * ps);
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
