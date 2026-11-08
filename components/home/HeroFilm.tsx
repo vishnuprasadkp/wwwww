@@ -108,7 +108,12 @@ function drawnWing(img: HTMLImageElement) {
   const bd = bg.getImageData(0, 0, w, h).data;
   const out = g.createImageData(w, h);
   const q = out.data;
+  const root = (x: number) => {
+    const u = (x / w - WING_BASE[0]) / 0.16;
+    return u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u); // the wing fades in from where it meets the body
+  };
   const ink = (o: number, a: number) => {
+    a *= root(o % w);
     q[o * 4] = 250;
     q[o * 4 + 1] = 246;
     q[o * 4 + 2] = 238;
@@ -371,9 +376,23 @@ function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
 
   // wings: the beetle's own painted wings, folded under the cases until it flies
   const WL = 3.1; // large: the wings lead
-  const wg = new THREE.PlaneGeometry(WL, WL * WING_ASPECT);
+  const wg = new THREE.PlaneGeometry(WL, WL * WING_ASPECT, 28, 14);
   wg.translate(-(WING_BASE[0] - 0.5) * WL, -(0.5 - WING_BASE[1]) * WL * WING_ASPECT, 0);
   wg.rotateX(Math.PI / 2); // flat, the front edge forwards (+z)
+  // a real wing is not flat: it arches along its chord and its tip curls up a little, so it keeps its shape seen from the side
+  {
+    const pa = wg.attributes.position;
+    const zs: number[] = [];
+    for (let i = 0; i < pa.count; i++) zs.push(pa.getZ(i));
+    const z0 = Math.min(...zs);
+    const z1 = Math.max(...zs);
+    for (let i = 0; i < pa.count; i++) {
+      const x = pa.getX(i) / WL;
+      const c = (pa.getZ(i) - z0) / (z1 - z0);
+      pa.setY(i, 0.07 * WL * Math.sin(Math.PI * c) * Math.min(1, x * 2.5) + 0.08 * WL * x * x);
+    }
+    wg.computeVertexNormals();
+  }
   // the wings: nothing but their drawn outline and veins
   const wingMat = new THREE.MeshBasicMaterial({ map: wingTex, transparent: true, side: THREE.DoubleSide, depthWrite: false });
   const wings: THREE.Group[] = [];
@@ -390,7 +409,7 @@ function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
   }
 
   // a larger beetle overall, its body a touch smaller against its wings
-  root.scale.setScalar(1.6);
+  root.scale.setScalar(1.85);
   body.scale.setScalar(0.88);
   return { root, body, cases, wings, legs, antennae, head, WL };
 }
@@ -551,9 +570,9 @@ void main(){
       return { pos, alpha, geo };
     };
     // drifting in the air all the time: a few short marks, like the quick strokes round a sketch
-    const N = 110;
+    const N = 240;
     const air = makeStrokes(N);
-    const airSeed = Array.from({ length: N }, () => ({ x: rnd(-6, 6), y: rnd(0, 2.4), z: rnd(-9, 3.5), len: rnd(0.04, 0.12), ang: rnd(-0.6, 0.6), ph: rnd(0, 6.28), a: rnd(0.18, 0.45) }));
+    const airSeed = Array.from({ length: N }, () => ({ x: rnd(-6, 6), y: rnd(0, 2.4), z: rnd(-9, 3.5), len: rnd(0.04, 0.12), ang: rnd(-0.6, 0.6), ph: rnd(0, 6.28), a: rnd(0.25, 0.6) }));
 
     /* ---------------- the film ---------------- */
     let beetle: ReturnType<typeof buildBeetle> | null = null;
@@ -581,24 +600,118 @@ void main(){
     const emitAt = new THREE.Vector3();
     let emitCarry = 0;
 
+    /* after the intro: it flies, and now and then comes down to walk a little on the floor, or lands on the frame itself, on
+       the glass between you, at an edge or a corner, and peeps in at you; then it takes off again */
+    type Mode = "fly" | "land" | "walk" | "perch" | "takeoff";
+    const fs = {
+      mode: "fly" as Mode,
+      t0: 0,
+      dur: 1,
+      until: 0,
+      after: "walk" as "walk" | "perch",
+      fromP: new THREE.Vector3(),
+      toP: new THREE.Vector3(),
+      fromQ: new THREE.Quaternion(),
+      toQ: new THREE.Quaternion(),
+      arc: 0,
+      air: 1,
+      walk: 0,
+      gait: 0,
+      yaw: 0,
+      peek: 0,
+      lastPerch: -1,
+    };
+    const qTmp = new THREE.Quaternion();
+    const eTmp = new THREE.Euler();
+    const mTmp = new THREE.Matrix4();
+    const vA = new THREE.Vector3();
+    const vB = new THREE.Vector3();
+    const vC = new THREE.Vector3();
+    const fwd = new THREE.Vector3();
+    const qFromEuler = (x: number, y: number, z: number) => new THREE.Quaternion().setFromEuler(eTmp.set(x, y, z));
+    // a point on the frame, at depth d from you: n = where on the screen (-1..1)
+    const onFrame = (nx: number, ny: number, d: number, out: THREE.Vector3) => {
+      camera.getWorldDirection(fwd);
+      vA.set(nx, ny, 0.5).unproject(camera).sub(camera.position).normalize();
+      return out.copy(camera.position).addScaledVector(vA, d / vA.dot(fwd));
+    };
+    const planLanding = (t: number, b: NonNullable<typeof beetle>) => {
+      fs.fromP.copy(b.root.position);
+      fs.fromQ.copy(b.root.quaternion);
+      fs.t0 = t;
+      fs.mode = "land";
+      if (fs.after === "walk") {
+        // down onto the floor, somewhere in view, facing you more or less
+        const z = rnd(-1.5, 1.2);
+        const d = CAM.z - z;
+        const hw = d * Math.tan((12 * Math.PI) / 180) * aspect;
+        fs.toP.set(rnd(-0.45, 0.45) * hw, 0, z);
+        fs.yaw = rnd(-1.3, 1.3);
+        fs.toQ.copy(qFromEuler(0, fs.yaw, 0));
+        fs.arc = 0.35;
+        fs.dur = 2.8;
+      } else {
+        // onto the frame: an edge or a corner, on the glass between you, its head turned in towards you
+        const spots: [number, number][] = [[-1, rnd(-0.5, 0.55)], [1, rnd(-0.5, 0.55)], [rnd(-0.6, 0.6), 1], [rnd(-0.6, 0.6), -1], [-1, 1], [1, 1], [-1, -1], [1, -1]];
+        let pick = Math.floor(Math.random() * spots.length);
+        if (pick === fs.lastPerch) pick = (pick + 1 + Math.floor(Math.random() * (spots.length - 1))) % spots.length;
+        fs.lastPerch = pick;
+        const [nx, ny] = spots[pick];
+        const d = rnd(4.1, 4.8);
+        const P = onFrame(nx, ny, d, vB);
+        const C = onFrame(0, 0, d, vC);
+        camera.getWorldDirection(fwd);
+        const inward = C.clone().sub(P);
+        inward.addScaledVector(fwd, -inward.dot(fwd)).normalize();
+        // its back away from you, its feet on the glass, its head pointing in from the edge
+        const up = fwd.clone(); // away from you
+        const zA = inward.clone().applyAxisAngle(up, rnd(-0.35, 0.35));
+        const xA = new THREE.Vector3().crossVectors(up, zA).normalize();
+        mTmp.makeBasis(xA, up, zA);
+        fs.toQ.setFromRotationMatrix(mTmp);
+        // mostly beyond the edge: its head and front half come into the frame
+        fs.toP.copy(P).addScaledVector(inward, 0.2);
+        fs.arc = 0;
+        fs.dur = 3.2;
+      }
+    };
+    const planTakeoff = (t: number, b: NonNullable<typeof beetle>) => {
+      fs.fromP.copy(b.root.position);
+      fs.fromQ.copy(b.root.quaternion);
+      fs.t0 = t;
+      fs.dur = 2;
+      fs.mode = "takeoff";
+      // up and away into the box, towards its middle
+      const goal = new THREE.Vector3(rnd(-0.8, 0.8), rnd(0.25, 0.55), rnd(-1.2, 0.6));
+      fs.toP.copy(fs.fromP).lerp(goal, 0.45);
+      fs.toP.y = Math.max(fs.toP.y, fs.fromP.y + 0.35);
+      const dir = goal.clone().sub(fs.fromP);
+      fs.yaw = Math.atan2(dir.x, dir.z);
+      fs.toQ.copy(qFromEuler(0.4, fs.yaw, 0));
+    };
+
     const pose = (t: number, dt: number) => {
       if (!beetle) return;
       const b = beetle;
       const k = t;
       // walking towards you
       const walkT = clamp(k - T_WALK0, 0, T_STOP - T_WALK0);
-      const walking = k > T_WALK0 && k < T_STOP;
+      const walking0 = k > T_WALK0 && k < T_STOP;
       const slow = smooth(T_STOP - 1.4, T_STOP, k); // it slows as it arrives
       const zWalk = WALK_FROM + walkT * WALK_SPEED - slow * 0.25;
       const meander = Math.sin(walkT * 0.55) * 0.35 * (1 - slow);
       // opening and lifting off
-      const open = smooth(T_OPEN, T_OPEN + 1.0, k);
-      const unfold = smooth(T_OPEN + 0.5, T_OPEN + 1.6, k);
-      const lift = smooth(T_LIFT, T_LIFT + 2.2, k);
+      let open = smooth(T_OPEN, T_OPEN + 1.0, k);
+      let unfold = smooth(T_OPEN + 0.5, T_OPEN + 1.6, k);
+      let lift = smooth(T_LIFT, T_LIFT + 2.2, k);
+      let walking = walking0;
+      let walkAmt = walking0 ? 1 - slow * 0.8 : 0;
+      let gait = walkT * 6.283 * 1.35;
+      let lookIn = smooth(T_STOP, T_STOP + 0.6, k) * (1 - open);
 
       if (k < T_FREE) {
         // it rises to your eye level and hovers there facing you, wings spread
-        b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 3.0 * lift); // it drifts back as it rises, so its wings fill the frame // it drifts back as it rises, so its wings fill the frame
+        b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 3.4 * lift); // it drifts back as it rises, so its wings fill the frame
         b.root.rotation.set(0.55 * lift, Math.cos(walkT * 0.55) * 0.25 * (1 - slow) + 0.38 * Math.sin((k - T_LIFT) * 0.45) * lift, 0.06 * Math.sin(k * 1.1) * lift); // tipped up as beetles fly, turning slowly so the wings face you
       } else {
         if (!fly.on) {
@@ -607,31 +720,90 @@ void main(){
           fly.v.set(0, 0, 0);
           fly.yaw = b.root.rotation.y;
           pickTarget(t);
+          fs.until = t + rnd(7, 10);
+          fs.after = Math.random() < 0.5 ? "walk" : "perch";
         }
-        if (t > fly.next || fly.p.distanceTo(fly.target) < 0.4) pickTarget(t);
-        // a slow glide towards where it is going; it only ever eases
-        const want = fly.target.clone().sub(fly.p);
-        const dist = want.length();
-        want.normalize().multiplyScalar(0.42 * clamp(dist / 1.2, 0.25, 1));
-        const ease = smooth(T_FREE, T_FREE + 3, t); // it sets off gently
-        fly.v.lerp(want, Math.min(1, dt * 0.7));
-        fly.p.addScaledVector(fly.v, dt * ease);
-        const sp = Math.hypot(fly.v.x, fly.v.z);
-        const yawGoal = sp > 0.05 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;
-        const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 0.6);
-        fly.yaw += dy;
-        fly.roll += (clamp((-dy / Math.max(dt, 1e-3)) * 0.9, -0.5, 0.5) - fly.roll) * Math.min(1, dt * 1.2);
-        b.root.position.set(fly.p.x, fly.p.y + 0.04 * Math.sin(t * 1.3), fly.p.z);
-        b.root.rotation.set(0.55 + (0.32 + 0.06 * Math.sin(t * 0.6) - 0.55) * ease, fly.yaw, fly.roll); // eases from the hover's tilt into a level glide
+        if (fs.mode === "fly") {
+          if (t > fly.next || fly.p.distanceTo(fly.target) < 0.4) pickTarget(t);
+          // a slow glide towards where it is going; it only ever eases
+          const want = fly.target.clone().sub(fly.p);
+          const dist = want.length();
+          want.normalize().multiplyScalar(0.42 * clamp(dist / 1.2, 0.25, 1));
+          const ease = smooth(T_FREE, T_FREE + 3, t); // it sets off gently
+          fly.v.lerp(want, Math.min(1, dt * 0.7));
+          fly.p.addScaledVector(fly.v, dt * ease);
+          const sp = Math.hypot(fly.v.x, fly.v.z);
+          const yawGoal = sp > 0.05 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;
+          const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 0.6);
+          fly.yaw += dy;
+          fly.roll += (clamp((-dy / Math.max(dt, 1e-3)) * 0.9, -0.5, 0.5) - fly.roll) * Math.min(1, dt * 1.2);
+          b.root.position.set(fly.p.x, fly.p.y + 0.04 * Math.sin(t * 1.3), fly.p.z);
+          b.root.quaternion.copy(qFromEuler(0.55 + (0.32 + 0.06 * Math.sin(t * 0.6) - 0.55) * ease, fly.yaw, fly.roll));
+          fs.air = 1;
+          if (t > fs.until) planLanding(t, b);
+        } else if (fs.mode === "land" || fs.mode === "takeoff") {
+          const u = clamp((t - fs.t0) / fs.dur, 0, 1);
+          const e = u * u * (3 - 2 * u);
+          b.root.position.lerpVectors(fs.fromP, fs.toP, e);
+          b.root.position.y += Math.sin(Math.PI * u) * fs.arc;
+          qTmp.slerpQuaternions(fs.fromQ, fs.toQ, smooth(fs.mode === "land" ? 0.15 : 0, fs.mode === "land" ? 0.85 : 0.7, u));
+          b.root.quaternion.copy(qTmp);
+          // landing: the wings fold as it touches down; taking off: they open before it rises
+          fs.air = fs.mode === "land" ? 1 - smooth(0.7, 1, u) : smooth(0, 0.3, u);
+          if (u >= 1) {
+            if (fs.mode === "land") {
+              fs.mode = fs.after;
+              fs.until = t + (fs.after === "walk" ? rnd(4, 6) : rnd(4.5, 6.5));
+            } else {
+              fs.mode = "fly";
+              fly.p.copy(b.root.position);
+              fly.v.copy(fs.toP).sub(fs.fromP).multiplyScalar(0.25);
+              fly.yaw = fs.yaw;
+              fly.roll = 0;
+              pickTarget(t);
+              fs.until = t + rnd(9, 14);
+              fs.after = fs.after === "walk" ? (Math.random() < 0.7 ? "perch" : "walk") : Math.random() < 0.6 ? "walk" : "perch";
+            }
+          }
+        } else if (fs.mode === "walk") {
+          // a little stroll on the floor: it turns now and then and keeps inside the frame
+          const d = CAM.z - b.root.position.z;
+          const hw = d * Math.tan((12 * Math.PI) / 180) * aspect * 0.5;
+          const p = b.root.position;
+          const out = Math.abs(p.x) > hw || p.z > 2 || p.z < -2.5;
+          const goalYaw = out ? Math.atan2(-p.x, -p.z + 0.5) : fs.yaw + Math.sin(t * 0.7) * 0.6 * dt;
+          fs.yaw += Math.atan2(Math.sin(goalYaw - fs.yaw), Math.cos(goalYaw - fs.yaw)) * Math.min(1, dt * (out ? 1.2 : 1));
+          const sp = 0.3 * (1 - smooth(fs.until - 0.6, fs.until, t)); // it slows to a stop before it takes off
+          p.x += Math.sin(fs.yaw) * sp * dt;
+          p.z += Math.cos(fs.yaw) * sp * dt;
+          p.y = 0;
+          b.root.quaternion.copy(qFromEuler(0, fs.yaw, 0));
+          fs.gait += dt * 6.283 * 1.35 * (1 - smooth(fs.until - 0.6, fs.until, t));
+          fs.air = 0;
+          if (t > fs.until) planTakeoff(t, b);
+        } else {
+          // on the frame, peeping in at you; it breathes, its antennae feel the air
+          fs.air = 0;
+          if (t > fs.until) planTakeoff(t, b);
+        }
+        // its wings and cases follow how much it is in the air; legs too
+        open = smooth(0, 0.6, fs.air);
+        unfold = smooth(0.25, 1, fs.air);
+        lift = fs.air;
+        walking = fs.mode === "walk";
+        walkAmt = walking ? 1 - smooth(fs.until - 0.6, fs.until, t) : 0;
+        gait = fs.gait;
+        fs.peek += ((fs.mode === "perch" ? 1 : 0) - fs.peek) * Math.min(1, dt * 1.5);
+        lookIn = fs.peek;
       }
       b.root.visible = k > T_WALK0 - 0.1;
 
       // body sway with each step
-      const gait = walkT * 6.283 * 1.35;
-      b.body.position.y = 0.2 + (walking ? 0.008 * Math.sin(gait * 2) : 0);
-      b.body.rotation.z = walking ? 0.03 * Math.sin(gait) : 0;
-      b.head.rotation.y = 0.12 * Math.sin(k * 0.7) * (1 - open);
-      b.head.rotation.x = -0.1 * smooth(T_STOP, T_STOP + 0.6, k) * (1 - open); // it looks up at you
+      b.body.position.y = 0.2 + (walking ? 0.008 * Math.sin(gait * 2) * walkAmt : 0);
+      b.body.rotation.z = walking ? 0.03 * Math.sin(gait) * walkAmt : 0;
+      b.head.rotation.y = (0.12 + 0.1 * fs.peek) * Math.sin(k * 0.7) * (1 - open);
+      // it looks up at you; on the frame it turns its head right round to you
+      b.head.rotation.x = (-0.1 * (1 - fs.peek) + 0.55 * fs.peek) * (k < T_FREE ? lookIn : 1) * (1 - open);
       // the antennae feel the air all the time: a slow searching sway, quicker while it walks, swept back in flight
       const airborne = lift;
       b.antennae.forEach((a, i) => {
@@ -640,7 +812,7 @@ void main(){
         a.rotation.y = sd * (0.18 + 0.2 * Math.sin(k * w + i * 1.3) + 0.25 * airborne);
         a.rotation.x = -0.15 + 0.16 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * airborne;
       });
-      const st = walking ? 1 - slow * 0.8 : 0;
+      const st = walking ? walkAmt : 0;
       for (const L of b.legs) {
         const g = gait + L.phase;
         const sd = L.side > 0 ? -1 : 1;
@@ -671,7 +843,7 @@ void main(){
       });
 
       // short pen strokes flick off the wings as they beat and drift away into the air
-      emitCarry += dt * 34 * unfold;
+      emitCarry += dt * 90 * unfold;
       while (emitCarry >= 1) {
         emitCarry -= 1;
         const wi = Math.random() < 0.5 ? 0 : 1;
@@ -688,7 +860,7 @@ void main(){
     };
 
     /* ---------------- strokes off the wings ---------------- */
-    const DN = 220;
+    const DN = 600;
     const dust = makeStrokes(DN);
     const dustVel = new Float32Array(DN * 3);
     const dustDir = new Float32Array(DN * 3);
