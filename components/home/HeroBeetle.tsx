@@ -40,8 +40,9 @@ const SRC = { core: "/images/site/hero-beetle-v6-core.webp", limbs: "/images/sit
 const BODY_C: Pt = [512, 460];
 const SHOULDER: [Pt, Pt] = [[405, 395], [618, 395]];
 let KB = 0.4; // painting px -> stage px
-const WING_U = 820; // a wing is this long, in painting px (drawn larger than in the painting, so the wings lead)
-const BODY_A = 0.72; // the body is a little see-through, so it sits in the paint
+const WING_U = 1050; // a wing is this long, in painting px (drawn larger than in the painting, so the wings lead)
+const BODY_A = 0.55;
+const BODY_S = 0.8; // the body is drawn a little smaller than in the painting, the wings much larger // the body is a little see-through, so it sits in the paint
 const WING_ASPECT = 1282 / 766;
 const WING_BASE: Pt = [0.0603, 0.4627]; // where a wing joins the body, as a fraction of the wing picture
 const TILT = -0.16;
@@ -347,7 +348,7 @@ export default function HeroBeetle() {
     CX = W * 0.5;
     CY = H * 0.5;
     SC = 1;
-    KB = clamp(Math.min(W * 0.42, H * 1.0), 260, 560) / (WING_U * 2);
+    KB = clamp(Math.min(W * 0.52, H * 1.15), 300, 700) / (WING_U * 2);
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;
@@ -595,13 +596,14 @@ export default function HeroBeetle() {
         const depth = (c: Card) => apply(R, [c.p[0] + c.reach[0], c.p[1] + c.reach[1], c.p[2] + c.reach[2]])[2] + apply(R, c.p)[2];
         cards.sort((a, b) => depth(a) - depth(b));
         for (const c of cards) {
-          const P = apply(R, c.p);
+          const P = apply(R, [c.p[0] * BODY_S, c.p[1] * BODY_S, c.p[2] * BODY_S]);
           const f = 1 / (1 - P[2] / D);
           const U = apply(R, c.u);
           const V = apply(R, c.v);
+          const ks = k * f * (c.sp === wing ? 1 : BODY_S);
           g.save();
           g.translate(ox + P[0] * k * f, oy + P[1] * k * f);
-          g.transform(U[0] * k * f, U[1] * k * f, V[0] * k * f, V[1] * k * f, 0, 0);
+          g.transform(U[0] * ks, U[1] * ks, V[0] * ks, V[1] * ks, 0, 0);
           if (c.spin) g.rotate(c.spin);
           g.globalAlpha = c.alpha;
           g.drawImage(c.src, c.sp.ox - c.pivot[0], c.sp.oy - c.pivot[1], c.sp.w, c.sp.h);
@@ -706,8 +708,8 @@ export default function HeroBeetle() {
         }
 
         // wing beat: slow and smooth; the speed and depth drift, and the outer wing works harder in a turn
-        phase += dt * 6.283 * (0.9 + 0.1 * nFreq(t * 0.17)) * (0.3 + 0.7 * lift);
-        const beatDepth = (0.9 + 0.1 * nAmp(t * 0.1)) * lift;
+        phase += dt * 6.283 * (0.42 + 0.22 * nFreq(t * 0.09)) * (0.3 + 0.7 * lift); // slow, and the pace keeps changing
+        const beatDepth = (0.55 + 0.45 * (0.5 + 0.5 * nAmp(t * 0.07))) * lift; // sometimes it glides, sometimes it sweeps wide
         const wave = (ph: number) => Math.sin(phase + ph) + 0.18 * Math.sin(2 * (phase + ph) + 0.6);
         const turnBias = 0;
         const wl = wave(0.05 * nSkew(t * 0.2));
@@ -717,8 +719,8 @@ export default function HeroBeetle() {
         gait += dt * 6.283 * 0.5 * (0.85 + 0.2 * nFreq(t * 0.1 + 5));
         const gph = nLeg.map((_, i) => gait + (i % 2) * Math.PI);
         const moment: Moment = {
-          wingAlpha: [4 * deg, 4 * deg],
-          wingSpin: [1.6 * Math.sin(t * 38) * lift + 2 * wl * beatDepth, 1.6 * Math.sin(t * 38 + 0.7) * lift + 2 * wr * beatDepth],
+          wingAlpha: [(5 + 13 * beatDepth * (0.5 + 0.5 * Math.sin(phase + 1.3))) * deg, (5 + 13 * beatDepth * (0.5 + 0.5 * Math.sin(phase + 1.3))) * deg],
+          wingSpin: [10 * beatDepth * Math.sin(phase) + 2 * nSkew(t * 0.15) * lift, 10 * beatDepth * Math.sin(phase) - 2 * nSkew(t * 0.15) * lift],
           wingTwist: [0, 0],
           legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * 12 * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
           legZ: gph.map((g) => -16 + 18 * Math.max(0, Math.cos(g)) * lift),
