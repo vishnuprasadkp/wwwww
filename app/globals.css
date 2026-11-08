@@ -213,23 +213,37 @@ html[data-motion] main :where(img) { opacity: 0; }
 /* the lines of a heading each come up out of their own mask: room for the tails of letters so they are not cut */
 .split-line-mask { padding-bottom: 0.16em; margin-bottom: -0.16em; }
 
-/* ---- Home hero: the watercolour beetle (components/home/HeroBeetle.tsx) ---- */
+/* ---- Home hero: the flying beetle (components/home/HeroBeetle.tsx) ---- */
 @property --hb-r { syntax: "<percentage>"; inherits: false; initial-value: 135%; }
-.hb { position: relative; aspect-ratio: 1; width: 100%; pointer-events: none; }
-.hb-art {
-  position: absolute; inset: 0; will-change: transform;
-  background: url("/images/site/hero-beetle.webp") center / contain no-repeat;
-  /* the paint spreads outwards from the beetle: a soft-edged circle that grows */
+.hb { position: relative; aspect-ratio: 1; width: 100%; pointer-events: none; animation: hb-drift 11s ease-in-out 6s infinite paused; }
+.hb-wash, .hb-fly, .hb-body, .hb-wing, .hb-wing-in { position: absolute; will-change: transform; }
+.hb-wash, .hb-fly, .hb-body { inset: 0; }
+.hb-wash { inset: -7%; background: url("/images/site/hero-beetle-wash.webp") center / contain no-repeat; opacity: 0;
+  /* the paint spreads outwards: a soft-edged circle that grows */
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 var(--hb-r), transparent calc(var(--hb-r) + 24%));
   mask-image: radial-gradient(circle at 50% 50%, #000 var(--hb-r), transparent calc(var(--hb-r) + 24%));
-  opacity: 0;
-  /* nothing moves until the opening loader has gone */
-  animation: hb-reveal 6s cubic-bezier(0.3, 0.55, 0.2, 1) 0.4s both paused, hb-fly-in 5.2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.4s both paused, hb-float 9s ease-in-out 5.6s infinite paused;
-}
-html:not([data-loading]) .hb-art { animation-play-state: running; }
+  animation: hb-reveal 6.5s cubic-bezier(0.3, 0.55, 0.2, 1) 0.3s both paused, hb-breathe 12s ease-in-out 7s infinite paused; }
+.hb-fly { opacity: 0; animation: hb-fly-in 4.6s cubic-bezier(0.2, 0.7, 0.2, 1) 1.3s both paused, hb-bob 1.7s ease-in-out 5.9s infinite paused; }
+.hb-body { background: url("/images/site/hero-beetle-body.webp") center / contain no-repeat; }
+/* each wing is drawn from its base at the left edge; its base is placed on the beetle's shoulder, and the left wing is the right one flipped about that base */
+.hb-wing { width: 72%; aspect-ratio: 1504 / 603; top: 32.6%; transform-origin: 3.9% 41%; }
+.hb-wing-r { left: 52.1%; }
+.hb-wing-l { left: 42.3%; transform: scaleX(-1); }
+.hb-wing-in { inset: 0; background: url("/images/site/hero-beetle-wing.webp") center / 100% 100% no-repeat; transform-origin: 3.9% 41%; opacity: 0;
+  animation: hb-unfold 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) 3.4s both paused, hb-flap 1.7s ease-in-out 5.9s infinite paused; }
+/* nothing moves until the opening loader has gone */
+html:not([data-loading]) .hb, html:not([data-loading]) .hb * { animation-play-state: running; }
+
 @keyframes hb-reveal { from { --hb-r: -24%; opacity: 0; } 12% { opacity: 1; } to { --hb-r: 135%; opacity: 1; } }
-@keyframes hb-fly-in { from { transform: translate(-7%, 9%) scale(0.9) rotate(-5deg); } to { transform: none; } }
-@keyframes hb-float { 0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); } 50% { transform: translate3d(0.7%, -2.2%, 0) rotate(1.1deg) scale(1.012); } }
+@keyframes hb-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03) translate(0.5%, -0.8%); } }
+@keyframes hb-fly-in { from { opacity: 0; transform: translate(-9%, 12%) scale(0.88) rotate(-6deg); } to { opacity: 1; transform: none; } }
+@keyframes hb-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-1.8%) rotate(0.5deg); } }
+@keyframes hb-drift { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(0.8%, -1.6%) rotate(1deg); } }
+@keyframes hb-unfold { from { opacity: 0; transform: rotate(62deg) scaleX(0.1); } to { opacity: 1; transform: rotate(14deg) scaleX(1); } }
+@keyframes hb-flap { 0%, 100% { opacity: 1; transform: rotate(14deg) scaleX(1) scaleY(1); } 50% { opacity: 1; transform: rotate(-7deg) scaleX(0.58) scaleY(1.05); } }
 @media (prefers-reduced-motion: reduce) {
-  .hb-art { animation: none; opacity: 1; -webkit-mask-image: none; mask-image: none; }
+  .hb, .hb *, .hb-wash, .hb-fly { animation: none !important; }
+  .hb-wash, .hb-fly, .hb-wing-in { opacity: 1; }
+  .hb-wash { -webkit-mask-image: none; mask-image: none; }
+  .hb-wing-in { transform: rotate(14deg); }
 }
