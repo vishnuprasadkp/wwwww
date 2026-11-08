@@ -186,7 +186,8 @@ function stippledWing(img: HTMLImageElement, WL: number, N: number) {
     }
     // where it meets the body it is barely there; it thickens outwards
     const root = Math.min(1, (u - WING_BASE[0]) / 0.18);
-    const dens = (0.16 + 0.7 * vein + 0.75 * e) * root;
+    if (!e) continue; // only along the edge: the wing itself is drawn, its rim is dust
+    const dens = 0.85 * root;
     if (Math.random() > dens) continue;
     const px = (u - WING_BASE[0]) * WL;
     const pz = (WING_BASE[1] - y / H) * HW;
@@ -199,7 +200,7 @@ function stippledWing(img: HTMLImageElement, WL: number, N: number) {
     const oz = pz;
     const ol = Math.hypot(ox, oz) || 1;
     seed.push(0.6 + Math.random() * (e ? 1.3 : 0.9), Math.random(), ox / ol + (Math.random() - 0.5) * 0.6, oz / ol + (Math.random() - 0.5) * 0.6);
-    edge.push(e ? 0.55 + 0.45 * Math.random() : Math.random() < 0.05 * xn ? 0.6 : 0);
+    edge.push(Math.random() < 0.35 ? 0.15 : 0.55 + 0.45 * Math.random()); // some hold the rim, most drift off
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
@@ -326,16 +327,17 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   const bellyG = new THREE.SphereGeometry(1, 32, 20);
   mapTop(bellyG, 1, -1, 1, 420, 760);
   const belly = new THREE.Mesh(bellyG, bellyMat);
-  belly.scale.set(0.3, 0.09, 0.42);
-  belly.position.set(0, -0.02, -0.06);
+  belly.scale.set(0.32, 0.17, 0.44); // a full, rounded underside
+  belly.position.set(0, 0.0, -0.08);
   belly.castShadow = true;
   body.add(belly);
 
   // wing cases: two half domes hinged at the front of the seam
   const cases: THREE.Group[] = [];
   for (const side of [1, -1]) {
-    const g = new THREE.SphereGeometry(1, 48, 28, side > 0 ? Math.PI / 2 : -Math.PI / 2, Math.PI, 0, Math.PI / 2);
-    g.scale(0.4, 0.22, 0.47); // a low, true-to-life dome: it stays modest when it lifts
+    // a high, full oval: the beetle's round back; it curves on down past its widest point, so it hugs the body
+    const g = new THREE.SphereGeometry(1, 48, 28, side > 0 ? Math.PI / 2 : -Math.PI / 2, Math.PI, 0, Math.PI * 0.6);
+    g.scale(0.42, 0.4, 0.5);
     g.translate(0, 0.0, -0.06);
     mapTop(g, 0.41, -0.53, 0.4, 381, 794);
     const hinge = new THREE.Group();
@@ -350,7 +352,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
 
   // the shield, black and glossy with two cream patches
   const shieldG = new THREE.SphereGeometry(1, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2);
-  shieldG.scale(0.33, 0.16, 0.17);
+  shieldG.scale(0.33, 0.22, 0.17);
   mapTop(shieldG, 0.17, -0.17, 0.34 * 0.72, 250, 381);
   const shield = new THREE.Mesh(shieldG, front);
   shield.position.set(0, 0.0, 0.44);
@@ -483,7 +485,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
       void main(){
         vec4 c = texture2D(map, vUv);
         float facing = abs(dot(normalize(vN), normalize(vV)));
-        float a = 0.32 * c.a * smoothstep(0.05, 0.28, facing) * smoothstep(2.4, 3.6, vD) * (1.0 - smoothstep(fogNear, fogFar, vD)); // only a faint trace of the drawing under the dust
+        float a = c.a * smoothstep(0.05, 0.28, facing) * smoothstep(2.4, 3.6, vD) * (1.0 - smoothstep(fogNear, fogFar, vD)); // the wing is drawn; the dust lives only round its edge
         gl_FragColor = vec4(c.rgb, a);
       }`,
     uniforms: { map: { value: wingTex }, fogNear: sk.fogNear, fogFar: sk.fogFar },
@@ -969,7 +971,7 @@ void main(){
       // wing cases lift and part; wings unfold from under them and beat, slowly
       b.cases.forEach((c, i) => {
         const s = i === 0 ? 1 : -1;
-        c.rotation.set(0.42 * open, s * 0.3 * open, -s * 0.55 * open); // lifted and parted, but held close
+        c.rotation.set(0.4 * open, s * 0.22 * open, -s * 0.85 * open); // lifted and swung well apart, so the wings come out clear of them
       });
       wingPhase += dt * 6.283 * 0.85 * unfold; // under one beat a second: slow and wide
       const beat = Math.sin(wingPhase) * unfold;
@@ -979,7 +981,7 @@ void main(){
         const fold = 1 - unfold;
         w.rotation.y = s * (1.62 * fold + (0.8 - 0.16 * Math.cos(wingPhase)) * unfold); // swept back, so their faces catch the eye
         w.rotation.z = s * (0.42 + 0.34 * beat) * unfold; // a slow, wide beat that stays above level: the wings never dip towards the floor
-        w.position.y = 0.17 - 0.06 * fold;
+        w.position.y = 0.12 + 0.22 * unfold; // the wings rise out between the parted cases, above the back, never through it
         w.scale.setScalar((0.5 + 0.5 * unfold) * (0.88 / 0.72)); // as large as before, against the smaller body
         w.visible = unfold > 0.02;
       });
@@ -1145,7 +1147,7 @@ void main(){
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.1, 9000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.1, 5000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
