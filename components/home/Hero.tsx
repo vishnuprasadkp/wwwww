@@ -1,4 +1,5 @@
 import HeroBeetle from "./HeroBeetle";
+import HeroInk from "./HeroInk";
 import LogoMarquee from "./LogoMarquee";
 
 export default function Hero() {
@@ -13,6 +14,7 @@ export default function Hero() {
         </div>
       </div>
       <div className="relative" style={{ height: "clamp(320px, 36vw, 500px)", background: "rgba(110,106,100,0.12)" }}>
+        <HeroInk />
         <HeroBeetle />
       </div>
       <LogoMarquee />

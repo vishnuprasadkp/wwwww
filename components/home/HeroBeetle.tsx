@@ -424,6 +424,7 @@ export default function HeroBeetle() {
         setup.push({ x: W * (c[0] + rnd(-0.04, 0.04)), y: H * (c[1] + rnd(-0.1, 0.1)), r: clamp(H * rnd(0.7, 1.0), 200, 480), pig: k.pig, a: k.a, from: at, dur: rnd(3, 4.5) });
         at += rnd(0.3, 0.55);
       });
+      setup.length = 0; // the paint behind is the fluid ink in HeroInk; this layer is only the beetle
       const WS = 0.4;
       setup.forEach((s, wi) => {
         const R = s.r;
@@ -457,13 +458,13 @@ export default function HeroBeetle() {
             const n4 = fbm(x / (cell * 0.2) + 70, y / (cell * 0.2), sd + 8, 2);
             const t = smooth(0.25, 0.75, n3);
             const i = (y * px + x) * 4;
-            const dark = (1 - 0.34 * rim) * (1 - 0.26 * dens * n2 * (s.veil ? 0 : 1));
+            const dark = (1 - 0.2 * rim) * (1 - 0.26 * dens * n2 * (s.veil ? 0 : 1));
             d[i] = (s.pig[0][0] + (s.pig[1][0] - s.pig[0][0]) * t) * dark;
             d[i + 1] = (s.pig[0][1] + (s.pig[1][1] - s.pig[0][1]) * t) * dark;
             d[i + 2] = (s.pig[0][2] + (s.pig[1][2] - s.pig[0][2]) * t) * dark;
             const gr = hash(x, y, sd + 3);
-            let a = s.a * e * (0.3 + 0.7 * dens) * (0.62 + 0.38 * n2) + (s.veil ? 0 : rim * 0.26 * e);
-            if (n4 > 0.7 && !s.veil) a *= 0.5; // salt: little lights where the paint was pushed away
+            let a = s.a * e * (0.3 + 0.7 * dens) * (0.62 + 0.38 * n2) + (s.veil ? 0 : rim * 0.12 * e);
+            if (n4 > 0.78 && !s.veil) a *= 0.75; // salt: little lights where the paint was pushed away
             a *= 1 - 0.25 * gr * gr; // the grain of the paper
             d[i + 3] = clamp01(a) * 255;
           }
@@ -473,7 +474,7 @@ export default function HeroBeetle() {
         const sp: Sprite = { c, ox, oy, w: box, h: box };
         washes.push({ sp, brush: new Bloom(sp, s.x, s.y, s.from, s.from + s.dur, R * 1.25) });
       });
-      const washEnd = Math.max(...setup.map((s) => s.from + s.dur));
+      const washEnd = 7;
 
       /* ---------------- the beetle's brushes: each part is painted along its own path ---------------- */
       const t0 = washEnd - 1.4; // the beetle starts to be painted while the last wash is still wet
@@ -514,11 +515,13 @@ export default function HeroBeetle() {
       };
       type Drip = { x: number; y: number; len: number; max: number; speed: number; rgb: Rgb; w: number; from: number; bead: boolean };
       const drips: Drip[] = [];
-      const flickAt = setup.filter((s) => !s.veil).map((s) => ({ t: s.from + s.dur * 0.6, x: s.x, y: s.y, pig: s.pig, done: false }));
+      const flickAt: { t: number; x: number; y: number; pig: [Rgb, Rgb]; done: boolean }[] = [];
       setup.forEach((s, i) => {
-        if (!s.veil && i % 2 === 0) drips.push({ x: s.x + rnd(-s.r * 0.5, s.r * 0.5), y: s.y + s.r * 0.7, len: 0, max: rnd(30, 110), speed: rnd(12, 28), rgb: pigOf(s), w: rnd(1.2, 2.4), from: s.from + s.dur, bead: false });
+        if (false && !s.veil && i % 2 === 0) drips.push({ x: s.x + rnd(-s.r * 0.5, s.r * 0.5), y: s.y + s.r * 0.7, len: 0, max: rnd(30, 110), speed: rnd(12, 28), rgb: pigOf(s), w: rnd(1.2, 2.4), from: s.from + s.dur, bead: false });
       });
 
+      // after it is laid down the paint never stops: every wash drifts, turns, swells and thins, slowly, and the colours run into each other
+      const mot = washes.map(() => ({ ax: rnd(40, 90), ay: rnd(18, 40), fx: rnd(0.12, 0.26), fy: rnd(0.1, 0.22), p1: rnd(0, 6.283), p2: rnd(0, 6.283), rot: rnd(0.08, 0.2), fr: rnd(0.07, 0.15), fs: rnd(0.1, 0.2), p3: rnd(0, 6.283) }));
       const nX = wander();
       const nY = wander();
       const nRoll = wander();
@@ -667,9 +670,9 @@ export default function HeroBeetle() {
         const lift = smooth(flyFrom, flyFrom + 1.8, t);
         pose.x = CX + 14 * nX(t * 0.3) * lift;
         pose.y = CY + 8 * nY(t * 0.25) * lift;
-        pose.yaw = 0.06 * nYaw(t * 0.22) * lift;
-        pose.roll = 0.06 * nRoll(t * 0.3) * lift;
-        pose.pitch = 0.04 * nPitch(t * 0.27) * lift; // seen from straight above, so a wing stroke shows as the wing closing and opening, not waving up the page
+        pose.yaw = 0.16 * nYaw(t * 0.22) * lift;
+        pose.roll = 0.62 * nRoll(t * 0.2) * lift; // it turns about its own long axis, showing one side and then the other
+        pose.pitch = 0.4 * nPitch(t * 0.17) * lift; // and tips its head up and down // seen from straight above, so a wing stroke shows as the wing closing and opening, not waving up the page
 
         // wing beat: slow and smooth; the speed and depth drift, and the outer wing works harder in a turn
         phase += dt * 6.283 * (0.9 + 0.1 * nFreq(t * 0.17)) * (0.3 + 0.7 * lift);
@@ -715,10 +718,22 @@ export default function HeroBeetle() {
 
         // compose
         sg.clearRect(0, 0, W, H);
-        washes.forEach((w) => {
+        sg.globalCompositeOperation = "multiply";
+        washes.forEach((w, i) => {
           const src = w.brush.get(t);
-          if (src) sg.drawImage(src, w.sp.ox, w.sp.oy, w.sp.w, w.sp.h);
+          if (!src) return;
+          const m = mot[i];
+          const k = smooth(setup[i].from + 1, setup[i].from + setup[i].dur + 3, t); // the drifting starts as the wash settles
+          sg.save();
+          sg.translate(w.sp.ox + w.sp.w / 2 + m.ax * k * Math.sin(t * m.fx + m.p1), w.sp.oy + w.sp.h / 2 + m.ay * k * Math.sin(t * m.fy + m.p2));
+          sg.rotate(m.rot * k * Math.sin(t * m.fr + m.p3));
+          const sc = 1 + 0.1 * k * Math.sin(t * m.fs + m.p1 * 2);
+          sg.scale(sc, sc);
+          sg.globalAlpha = 1 - 0.2 * k * (0.5 + 0.5 * Math.sin(t * m.fs * 1.3 + m.p2));
+          sg.drawImage(src, -w.sp.w / 2, -w.sp.h / 2, w.sp.w, w.sp.h);
+          sg.restore();
         });
+        sg.globalCompositeOperation = "source-over";
         sg.drawImage(bg, 0, 0, W, H);
         sg.drawImage(trail, 0, 0, W, H);
         blg.clearRect(0, 0, W, H);
