@@ -238,6 +238,7 @@ float lineAt(float x, float wpx){
 }
 void main(){
   vec3 N = normalize(vN); vec3 V = normalize(vV);
+  if (!gl_FrontFacing) N = -N;
   // the drawing boils a little, as if redrawn a few times a second
   float boil = floor(time * 5.0);
   vec2 fc = gl_FragCoord.xy / px;
@@ -281,6 +282,7 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
   return new THREE.ShaderMaterial({
     vertexShader: SKETCH_VS,
     fragmentShader: SKETCH_FS,
+    side: THREE.DoubleSide, // the inside of the shell is drawn too, so an open or turned shell never shows an empty hole
     uniforms: {
       ...shared,
       ink: { value: INK },
@@ -335,8 +337,14 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   // wing cases: two half domes hinged at the front of the seam
   const cases: THREE.Group[] = [];
   for (const side of [1, -1]) {
-    // a high, full oval: the beetle's round back; it curves on down past its widest point, so it hugs the body
-    const g = new THREE.SphereGeometry(1, 48, 28, side > 0 ? Math.PI / 2 : -Math.PI / 2, Math.PI, 0, Math.PI * 0.6);
+    // a high, full oval: each case is one closed half of the round body, so from no side is there an open rim or a
+    // glimpse of the parts inside; the underside is a flatter curve
+    const g = new THREE.SphereGeometry(1, 48, 32, side > 0 ? Math.PI / 2 : -Math.PI / 2, Math.PI, 0, Math.PI);
+    {
+      const pa = g.attributes.position;
+      for (let i = 0; i < pa.count; i++) if (pa.getY(i) < 0) pa.setY(i, pa.getY(i) * 0.45);
+      g.computeVertexNormals();
+    }
     g.scale(0.42, 0.4, 0.5);
     g.translate(0, 0.0, -0.06);
     mapTop(g, 0.41, -0.53, 0.4, 381, 794);
@@ -545,8 +553,8 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   // a larger beetle overall, its body a touch smaller against its wings
   // the body smaller, the wings as large as before
   root.scale.setScalar(1.85);
-  body.scale.setScalar(0.72);
-  for (const w of wings) w.scale.setScalar(0.88 / 0.72);
+  body.scale.setScalar(0.6);
+  for (const w of wings) w.scale.setScalar(0.88 / 0.6);
   return { root, body, cases, wings, legs, antennae, head, WL, dustMat };
 }
 
@@ -591,7 +599,7 @@ export default function HeroFilm() {
     /* ---------------- stage, camera, light ---------------- */
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(24, aspect, 0.05, 80);
-    const CAM = new THREE.Vector3(0, 0.42, 6);
+    const CAM = new THREE.Vector3(0, 0.75, 6); // aimed a little up: the beetle keeps to the lower part of the frame, its wings have the sky above it
     camera.position.copy(CAM);
     camera.lookAt(0, 0.3, 0);
     scene.add(camera);
@@ -664,7 +672,7 @@ void main(){
     sc.far = 20;
     scene.add(key1);
     scene.add(key1.target);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.14, color: lin(0.25, 0.12, 0.06) }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.3, color: lin(0.2, 0.1, 0.05) }));
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     floor.material.depthWrite = false;
@@ -727,10 +735,10 @@ void main(){
     const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0 };
     const pickTarget = (t: number) => {
       // somewhere in view: nearer or further, left or right, a little higher or lower
-      const z = rnd(-1.8, 1.2);
+      const z = rnd(-2.6, 0.6);
       const d = CAM.z - z;
       const hh = d * Math.tan((12 * Math.PI) / 180);
-      fly.target.set(rnd(-0.5, 0.5) * hh * aspect, 0.12 + rnd(0, 0.3) * hh, z); // low in the box, so its raised wings have the room above it
+      fly.target.set(rnd(-0.72, 0.72) * hh * aspect, 0.02 + rnd(0, 0.18) * hh, z); // low in the box and all across it, so its raised wings are always in view
       fly.next = t + rnd(6, 9);
     };
     const wp = new THREE.Vector3();
@@ -848,7 +856,7 @@ void main(){
 
       if (k < T_FREE) {
         // it rises to your eye level and hovers there facing you, wings spread
-        b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 3.4 * lift); // it drifts back as it rises, so its wings fill the frame
+        b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 4.2 * lift); // it drifts back as it rises, so its whole wings are in the frame
         b.root.rotation.set(0.55 * lift, Math.cos(walkT * 0.55) * 0.25 * (1 - slow) + 0.38 * Math.sin((k - T_LIFT) * 0.45) * lift, 0.06 * Math.sin(k * 1.1) * lift); // tipped up as beetles fly, turning slowly so the wings face you
       } else {
         if (!fly.on) {
@@ -980,9 +988,9 @@ void main(){
         const s = i === 0 ? 1 : -1;
         const fold = 1 - unfold;
         w.rotation.y = s * (1.62 * fold + (0.8 - 0.16 * Math.cos(wingPhase)) * unfold); // swept back, so their faces catch the eye
-        w.rotation.z = s * (0.42 + 0.34 * beat) * unfold; // a slow, wide beat that stays above level: the wings never dip towards the floor
+        w.rotation.z = s * (0.32 + 0.3 * beat) * unfold; // a slow, wide beat that stays above level: the wings never dip towards the floor
         w.position.y = 0.12 + 0.22 * unfold; // the wings rise out between the parted cases, above the back, never through it
-        w.scale.setScalar((0.5 + 0.5 * unfold) * (0.88 / 0.72)); // as large as before, against the smaller body
+        w.scale.setScalar((0.5 + 0.5 * unfold) * (0.88 / 0.6)); // as large as before, against the smaller body
         w.visible = unfold > 0.02;
       });
 
@@ -999,7 +1007,7 @@ void main(){
       }
 
       b.root.getWorldPosition(wp);
-      key1.position.set(wp.x - 3, 6, wp.z + 5);
+      key1.position.set(wp.x - 0.7, 7, wp.z + 1.4); // light from almost overhead: the shadow lies right under its body and legs
       key1.target.position.copy(wp);
     };
 
@@ -1091,8 +1099,11 @@ void main(){
       air.geo.attributes.position.needsUpdate = true;
       air.geo.attributes.alpha.needsUpdate = true;
       // a slow, breathing camera, as if held
-      camera.position.set(CAM.x + Math.sin(t * 0.21) * 0.06, CAM.y + Math.sin(t * 0.17) * 0.03, CAM.z);
-      camera.lookAt(0, 0.3, 0);
+      // for the walk-in it looks along the floor; once the beetle is up it tilts slowly up, so the beetle keeps to the lower
+      // part of the frame and its wings have the whole sky above it
+      const up = smooth(T_LIFT, T_LIFT + 3.5, t);
+      camera.position.set(CAM.x + Math.sin(t * 0.21) * 0.06, 0.42 + (CAM.y - 0.42) * up + Math.sin(t * 0.17) * 0.03, CAM.z);
+      camera.lookAt(0, 0.3 + 0.75 * up, 0);
       pose(t, dt);
       stepDust(t, dt);
       sketchU.time.value = t;
