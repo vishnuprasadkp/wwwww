@@ -93,16 +93,31 @@ def mask_for(path):
         reach = nxt
     prod = ~reach
     prod = erode(dilate(prod, 2), 2)  # close small gaps along the product's edges
+    forced = np.zeros_like(prod)
     for x0, y0, x1, y1, r in OVERRIDES.get(os.path.relpath(path, os.path.join(ROOT, "public/images")), []):
         yy, xx = np.mgrid[0:gh, 0:gw] * BLOCK
         cx = np.clip(xx, x0 + r, x1 - r)
         cy = np.clip(yy, y0 + r, y1 - r)
-        prod |= (xx >= x0) & (xx <= x1) & (yy >= y0) & (yy <= y1) & (np.hypot(xx - cx, yy - cy) <= r)
-    # a margin round the product, so the moving wash never touches it: the product's own edge, corners and shadow stay
-    # exactly as they were painted, and the wash fades in softly beyond them
+        forced |= (xx >= x0) & (xx <= x1) & (yy >= y0) & (yy <= y1) & (np.hypot(xx - cx, yy - cy) <= r)
+    prod |= forced
     cover = float(prod.mean())
-    prod = dilate(prod, 3)
-    m = Image.fromarray((prod * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2.2))
+
+    # the edge, pixel by pixel: in a thin band round the product each pixel is judged on its own, so the cut follows the
+    # product's real outline and rounded corners exactly, neither biting into it nor leaving a patch of old ground round it
+    up = lambda a: np.pad(np.repeat(np.repeat(a, BLOCK, 0), BLOCK, 1), ((0, h - gh * BLOCK), (0, w - gw * BLOCK)), mode="edge")
+    band = up(dilate(prod, 2) & ~erode(prod, 2) & ~dilate(forced, 2))
+    near = up(dilate(prod, 2))
+    ui = (~ground).astype(np.float32)
+    acc = np.zeros_like(ui)
+    for dy in (-1, 0, 1):
+        for dx in (-1, 0, 1):
+            acc += np.roll(np.roll(ui, dy, 0), dx, 1)
+    pix = (acc / 9 > 0.5) & near
+    full = np.where(band, pix, up(prod))
+    # one pixel more, so the product's anti-aliased edge is always kept whole
+    full = full | np.roll(full, 1, 0) | np.roll(full, -1, 0) | np.roll(full, 1, 1) | np.roll(full, -1, 1)
+    m = Image.fromarray((full * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))
+    m = m.resize((w // 2, h // 2), Image.LANCZOS)
     # the ground's own colour, so the wash is painted in it and meets the kept margin without a seam
     gm = np.median(im[: gh * BLOCK, : gw * BLOCK].reshape(gh, BLOCK, gw, BLOCK, 3).transpose(0, 2, 1, 3, 4)[reach & ~dilate(prod, 4)].reshape(-1, 3), axis=0)
     return m, cover, [round(float(v) * 255) for v in gm]

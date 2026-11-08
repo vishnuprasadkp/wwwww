@@ -139,7 +139,7 @@ function drawnWing(img: HTMLImageElement) {
   }
   g.putImageData(out, 0, 0);
   const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
+  t.colorSpace = THREE.NoColorSpace; // drawn as is, by its own shader
   t.anisotropy = 8;
   return t;
 }
@@ -323,16 +323,33 @@ function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
   mouth.position.set(0, -0.06, 0.1);
   head.add(mouth);
 
-  // antennae: little chains of beads, the last ones amber
+  // antennae: each a slender line in five jointed pieces, ending in a small club; every joint bends, so they curl and feel the air
   const antennae: THREE.Group[] = [];
+  const antSeg = (len: number, r0: number, r1: number) => {
+    const g = new THREE.CylinderGeometry(r1, r0, len, 8);
+    g.rotateX(Math.PI / 2);
+    g.translate(0, 0, len / 2);
+    return g;
+  };
   for (const s of [1, -1]) {
     const a = new THREE.Group();
     a.position.set(s * 0.06, 0.05, 0.1);
-    for (let i = 0; i < 9; i++) {
-      const b = new THREE.Mesh(new THREE.SphereGeometry(i > 5 ? 0.02 : 0.013, 10, 8), i > 5 ? amber : legMat);
-      b.position.set(s * (0.02 * i + 0.002 * i * i), 0.012 * i - 0.0012 * i * i, 0.03 * i);
-      a.add(b);
-    }
+    const joints: THREE.Group[] = [];
+    let parent: THREE.Group = a;
+    const lens = [0.07, 0.065, 0.06, 0.055, 0.05];
+    lens.forEach((len, i) => {
+      const j = new THREE.Group();
+      if (i > 0) j.position.z = lens[i - 1];
+      j.add(new THREE.Mesh(antSeg(len, 0.012 - i * 0.0012, 0.011 - i * 0.0012), legMat));
+      parent.add(j);
+      joints.push(j);
+      parent = j;
+    });
+    const club = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 10), amber);
+    club.scale.set(0.02, 0.016, 0.042);
+    club.position.z = lens[lens.length - 1] + 0.03;
+    parent.add(club);
+    a.userData.joints = joints;
     head.add(a);
     antennae.push(a);
   }
@@ -394,7 +411,22 @@ function buildBeetle(wingTex: THREE.Texture, sk: SketchU) {
     wg.computeVertexNormals();
   }
   // the wings: nothing but their drawn outline and veins
-  const wingMat = new THREE.MeshBasicMaterial({ map: wingTex, transparent: true, side: THREE.DoubleSide, depthWrite: false });
+  // seen edge-on, or right up against the lens, a drawn wing becomes a fan of sharp streaks: there it softly fades away
+  const wingMat = new THREE.ShaderMaterial({
+    vertexShader: `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vD;
+      void main(){ vUv = uv; vN = normalize(normalMatrix * normal); vec4 mv = modelViewMatrix * vec4(position, 1.0); vV = normalize(-mv.xyz); vD = -mv.z; gl_Position = projectionMatrix * mv; }`,
+    fragmentShader: `uniform sampler2D map; uniform float fogNear; uniform float fogFar; varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vD;
+      void main(){
+        vec4 c = texture2D(map, vUv);
+        float facing = abs(dot(normalize(vN), normalize(vV)));
+        float a = c.a * smoothstep(0.05, 0.28, facing) * smoothstep(2.4, 3.6, vD) * (1.0 - smoothstep(fogNear, fogFar, vD));
+        gl_FragColor = vec4(c.rgb, a);
+      }`,
+    uniforms: { map: { value: wingTex }, fogNear: sk.fogNear, fogFar: sk.fogFar },
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+  });
   const wings: THREE.Group[] = [];
   for (const side of [1, -1]) {
     const w = new THREE.Group();
@@ -669,8 +701,8 @@ void main(){
         const xA = new THREE.Vector3().crossVectors(up, zA).normalize();
         mTmp.makeBasis(xA, up, zA);
         fs.toQ.setFromRotationMatrix(mTmp);
-        // mostly beyond the edge: its head and front half come into the frame
-        fs.toP.copy(P).addScaledVector(inward, 0.2);
+        // mostly beyond the edge: only its head comes into the frame
+        fs.toP.copy(P).addScaledVector(inward, -0.78);
         fs.arc = 0;
         fs.dur = 3.2;
       }
@@ -809,8 +841,14 @@ void main(){
       b.antennae.forEach((a, i) => {
         const sd = i === 0 ? 1 : -1;
         const w = walking ? 2.6 : 1.4;
-        a.rotation.y = sd * (0.18 + 0.2 * Math.sin(k * w + i * 1.3) + 0.25 * airborne);
-        a.rotation.x = -0.15 + 0.16 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * airborne;
+        a.rotation.y = sd * (0.35 + 0.15 * Math.sin(k * w + i * 1.3) + 0.25 * airborne);
+        a.rotation.x = -0.35 + 0.12 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * airborne;
+        // a wave runs along each antenna, joint by joint, so it curls and uncurls as it feels the air
+        (a.userData.joints as THREE.Group[]).forEach((j, n) => {
+          const ph = k * w * 1.1 - n * 0.7 + i * 2.1;
+          j.rotation.y = n === 0 ? 0 : sd * (0.12 + 0.12 * Math.sin(ph));
+          j.rotation.x = n === 0 ? 0 : 0.1 + 0.1 * Math.sin(ph * 0.8 + 1.3) - 0.08 * airborne;
+        });
       });
       const st = walking ? walkAmt : 0;
       for (const L of b.legs) {
