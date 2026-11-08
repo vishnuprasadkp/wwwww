@@ -98,6 +98,14 @@ function drawnWing(img: HTMLImageElement) {
     a0[i] = p[i * 4 + 3] / 255;
     l0[i] = (p[i * 4] * 0.3 + p[i * 4 + 1] * 0.59 + p[i * 4 + 2] * 0.11) / 255;
   }
+  // the same wing, blurred: a vein is a thin line darker than what is round it; a dark patch is not a vein
+  const bc = document.createElement("canvas");
+  bc.width = w;
+  bc.height = h;
+  const bg = bc.getContext("2d")!;
+  bg.filter = `blur(${Math.max(3, Math.round(w / 220))}px)`;
+  bg.drawImage(img, 0, 0);
+  const bd = bg.getImageData(0, 0, w, h).data;
   const out = g.createImageData(w, h);
   const q = out.data;
   const ink = (o: number, a: number) => {
@@ -116,7 +124,12 @@ function drawnWing(img: HTMLImageElement) {
       const pr = pressure(x, y);
       const k = Math.round(st * (0.5 + 0.7 * pr));
       if (a0[o - k] < 0.08 || a0[o + k] < 0.08 || a0[o - k * w] < 0.08 || a0[o + k * w] < 0.08) ink(o, 0.75 + 0.25 * pr);
-      else if (a0[o] > 0.4 && l0[o] < 0.6) ink(o, Math.min(1, (0.62 - l0[o]) * 3.2) * (0.6 + 0.4 * pr)); // the veins
+      else if (a0[o] > 0.3) {
+        // the veins: only thin dark lines, never a filled patch
+        const bl = (bd[o * 4] * 0.3 + bd[o * 4 + 1] * 0.59 + bd[o * 4 + 2] * 0.11) / 255;
+        const v = (bl - l0[o] - 0.05) * 7;
+        if (v > 0) ink(o, Math.min(1, v) * (0.55 + 0.45 * pr));
+      }
     }
   }
   g.putImageData(out, 0, 0);
