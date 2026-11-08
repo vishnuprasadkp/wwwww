@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
  *     They are generated from noise at run time (pigment that pools darker at the edge, thins where it is wet, leaves
  *     bare paper and salt-speckles, has the grain of the paper in it), different every time. Splatter is flicked in
  *     with the paint's own colours: blobs with a darker rim, streaks where it was thrown fast, a fine mist, and drips.
- *  2. The beetle: a painted beetle (public/images/site/hero-beetle-v6-*.webp), taken apart into its wings, wing cases,
+ *  2. The beetle: a painted beetle (public/images/site/hero-beetle-v7-*.webp), taken apart into its wings, wing cases,
  *     head, six legs and two feelers. Each part is painted in by its own brush stroke, one after another.
  *  3. Then it lifts off the paper and flies, slowly. It is a small 3D puppet: every part is a card in space, turned by
  *     yaw, pitch and roll and drawn with a little perspective, so it banks into its turns, tips its nose, shows one side
@@ -35,13 +35,13 @@ const SLATE: Rgb[] = [[112, 124, 138], [98, 108, 122], [88, 98, 110], [70, 78, 9
 const str = (c: Rgb) => `${Math.round(c[0])},${Math.round(c[1])},${Math.round(c[2])}`;
 const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 
-const SRC = { core: "/images/site/hero-beetle-v6-core.webp", limbs: "/images/site/hero-beetle-v6-limbs.webp", wing: "/images/site/hero-beetle-v6-wing.webp" };
+const SRC = { core: "/images/site/hero-beetle-v7-core.webp", limbs: "/images/site/hero-beetle-v7-limbs.webp", wing: "/images/site/hero-beetle-v7-wing.webp" };
 /** The beetle's own coordinates are those of its painting (a 1024 px square, its middle at 512, 460). */
 const BODY_C: Pt = [512, 460];
 const SHOULDER: [Pt, Pt] = [[405, 395], [618, 395]];
 let KB = 0.4; // painting px -> stage px
 const WING_U = 1320; // a wing is this long, in painting px (drawn larger than in the painting, so the wings lead)
-const BODY_A = 0.55;
+const BODY_A = 0.42;
 const BODY_S = 0.8; // the body is drawn a little smaller than in the painting, the wings much larger // the body is a little see-through, so it sits in the paint
 const WING_ASPECT = 1282 / 766;
 const WING_BASE: Pt = [0.0603, 0.4627]; // where a wing joins the body, as a fraction of the wing picture
@@ -348,7 +348,7 @@ export default function HeroBeetle() {
     CX = W * 0.5;
     CY = H * 0.5;
     SC = 1;
-    KB = clamp(Math.min(W * 0.7, H * 1.55), 380, 960) / 2100;
+    KB = clamp(Math.min(W * 0.85, H * 1.95), 460, 1200) / 2100;
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;
@@ -586,7 +586,7 @@ export default function HeroBeetle() {
           const s = side === 0 ? -1 : 1;
           const a = o.wingAlpha[side];
           const sh = SHOULDER[side];
-          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side] + 68 * o.fold) * Math.PI) / 180, 0.96 * (1 - 0.88 * o.fold), [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
+          card(wing, bWing[side], t, [0, 0], [sh[0] - BODY_C[0], sh[1] - BODY_C[1], 0], [s * Math.cos(a), 0, Math.sin(a)], [0, Math.cos(o.wingTwist[side]), Math.sin(o.wingTwist[side])], ((6 + o.wingSpin[side] + 68 * o.fold) * Math.PI) / 180, 0.72 * (1 - 0.9 * o.fold), [s * WING_U * 0.5 * Math.cos(a), 0, WING_U * 0.5 * Math.sin(a)]);
         }
         // legs hang a little below the body, feelers and head a little above
         legs.forEach((l, i) => card(l.sp, bLegs[i], t, l.pivot, [l.pivot[0] - BODY_C[0], l.pivot[1] - BODY_C[1], o.legZ[i]], [1, 0, 0], [0, 1, 0], (o.legSpin[i] * Math.PI) / 180, BODY_A));
@@ -676,21 +676,26 @@ export default function HeroBeetle() {
         // paper, then opens its wings and flies off to somewhere else in the box
         const lift = smooth(flyFrom, flyFrom + 1.2, t);
         if (t >= flyFrom) {
-          if (!modeUntil) modeUntil = t + rnd(9, 14);
-          const near = Math.hypot(pose.tx - pose.x, pose.ty - pose.y) < 50;
+          if (!modeUntil) modeUntil = t + rnd(3, 4.5);
+          const near = Math.hypot(pose.tx - pose.x, pose.ty - pose.y) < 90;
           if (mode === "fly" && t > modeUntil && near) {
             mode = "walk";
-            modeUntil = t + rnd(6, 10);
+            modeUntil = t + rnd(7, 11);
             pose.next = t + 1.2; // a moment to settle before it starts walking
           } else if (mode === "walk" && t > modeUntil) {
             mode = "fly";
-            modeUntil = t + rnd(10, 18);
+            modeUntil = t + rnd(7, 11);
             pose.next = t + 0.9; // it opens its wings first
           }
           if (t > pose.next) {
             let tx = 0;
             let ty = 0;
-            if (mode === "fly") {
+            if (mode === "fly" && t > modeUntil) {
+              // it is coming in to land: keep the place it is heading for
+              tx = pose.tx;
+              ty = pose.ty;
+              pose.next = t + 1;
+            } else if (mode === "fly") {
               // somewhere else in the box, not too near where it is now
               for (let k = 0; k < 6; k++) {
                 tx = W * rnd(0.12, 0.88);
