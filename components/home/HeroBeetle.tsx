@@ -35,7 +35,8 @@ const SLATE: Rgb[] = [[112, 124, 138], [98, 108, 122], [88, 98, 110], [70, 78, 9
 const str = (c: Rgb) => `${Math.round(c[0])},${Math.round(c[1])},${Math.round(c[2])}`;
 const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 
-const SRC = { core: "/images/site/hero-beetle-v7-core.webp", limbs: "/images/site/hero-beetle-v7-limbs.webp", wing: "/images/site/hero-beetle-v7-wing.webp" };
+const SRC = { core: "/images/site/hero-beetle-v7-core.webp", limbs: "/images/site/hero-beetle-v7-limbs.webp", wing: "/images/site/hero-beetle-v7-wing.webp", front: "/images/site/hero-beetle-v7-front.webp", frontFly: "/images/site/hero-beetle-v7-front-fly.webp" };
+const INTRO_END = 5.2; // seconds the face-to-face opening lasts
 /** The beetle's own coordinates are those of its painting (a 1024 px square, its middle at 512, 460). */
 const BODY_C: Pt = [512, 460];
 const SHOULDER: [Pt, Pt] = [[405, 395], [618, 395]];
@@ -370,7 +371,7 @@ export default function HeroBeetle() {
     cleanup.push(() => ro.disconnect());
     const seed = Math.floor(Math.random() * 9999);
 
-    const build = ([core, limbs, wingImg]: HTMLImageElement[]) => {
+    const build = ([core, limbs, wingImg, frontImg, frontFlyImg]: HTMLImageElement[]) => {
       if (!alive) return;
 
       /* ---------------- the beetle, taken apart ---------------- */
@@ -476,7 +477,7 @@ export default function HeroBeetle() {
         const sp: Sprite = { c, ox, oy, w: box, h: box };
         washes.push({ sp, brush: new Bloom(sp, s.x, s.y, s.from, s.from + s.dur, R * 1.25) });
       });
-      const washEnd = 6.5;
+      const washEnd = 2.3;
 
       /* ---------------- the beetle's brushes: each part is painted along its own path ---------------- */
       const t0 = washEnd - 1.4; // the beetle starts to be painted while the last wash is still wet
@@ -616,6 +617,35 @@ export default function HeroBeetle() {
         }
       };
 
+      /* ---------------- the opening: face to face ---------------- */
+      // It stands looking straight at you, breathing a little, its feelers twitching. Then the wing cases lift, the wings
+      // open and flutter, and it flies straight at you, growing and fading as it passes.
+      const drawIntro = (g: CanvasRenderingContext2D, k: number) => {
+        const hgt = H * 0.86;
+        const fadeIn = smooth(0, 0.9, k);
+        const open = smooth(2.9, 3.5, k);
+        const go = smooth(3.6, INTRO_END, k);
+        const scale = (0.95 + 0.05 * fadeIn) * (1 + 0.012 * Math.sin(k * 2.3)) * (1 + 2.2 * go * go);
+        const cx = W * 0.5 + W * 0.012 * Math.sin(k * 0.8);
+        const cy = H * 0.54 - H * 0.12 * go + H * 0.008 * Math.sin(k * 2.3);
+        const alpha = 0.82 * fadeIn * (1 - smooth(4.3, INTRO_END, k));
+        if (alpha <= 0.01) return;
+        g.save();
+        if (open < 1) {
+          const w = (hgt * frontImg.width) / frontImg.height;
+          g.globalAlpha = alpha * (1 - open);
+          g.drawImage(frontImg, cx - (w * scale) / 2, cy - (hgt * scale) / 2, w * scale, hgt * scale);
+        }
+        if (open > 0) {
+          const h = hgt * 0.95 * scale;
+          const flutter = 1 + 0.05 * Math.sin(k * 24) * open; // the wings beat fast, as they do on take-off
+          const w = ((h * frontFlyImg.width) / frontFlyImg.height) * flutter;
+          g.globalAlpha = alpha * open;
+          g.drawImage(frontFlyImg, cx - w / 2, cy - h * 0.55, w, h);
+        }
+        g.restore();
+      };
+
       /* ---------------- each frame ---------------- */
       const frame = (now: number) => {
         raf = requestAnimationFrame(frame);
@@ -680,27 +710,20 @@ export default function HeroBeetle() {
         const lift = smooth(flyFrom, flyFrom + 1.2, t);
         let intro = 0; // 1 while it faces you, falling to 0 as it takes off
         if (t >= flyFrom && mode === "intro") {
-          const k = t - flyFrom;
-          const go = smooth(3.2, 5.2, k); // it takes off
-          intro = 1 - go;
-          fold = 1 - smooth(2.6, 4.2, k);
-          pose.x = W * 0.62 + W * 0.04 * go;
-          pose.y = H * 0.56 - H * 0.08 * go;
-          pose.yaw = 0.12 * nYaw(t * 0.3) * intro + 0.5 * go;
-          pose.pitch = -0.95 * intro; // tipped towards you, head first
-          pose.roll = 0.06 * nRoll(t * 0.4) * intro;
-          if (k > 5.2) {
-            // off it goes, out of the box
-            mode = "fly";
-            pose.vx = 60;
-            pose.vy = -20;
-            pose.tx = W + KB * WING_U * 1.6;
-            pose.ty = H * rnd(0.1, 0.4);
-            pose.next = t + 99;
-            outbound = true;
+          // the opening is drawn from its own two paintings (see drawIntro); here it only hands over when it is done
+          intro = 1;
+          if (t - flyFrom > INTRO_END) {
+            // it has flown off towards you; a few seconds later it comes back in, from one side
+            mode = "away";
+            modeUntil = t + rnd(2, 2.6); // back in sight about 3-4 s after it has gone
+            const m = KB * WING_U * 1.05;
+            pose.x = Math.random() < 0.5 ? -m : W + m;
+            pose.y = H * rnd(0.3, 0.7);
+            fold = 0;
+            outbound = false;
           }
         } else if (t >= flyFrom) {
-          const margin = KB * WING_U * 1.3;
+          const margin = KB * WING_U * 1.05; // just out of sight
           const outside = pose.x < -margin || pose.x > W + margin || pose.y < -margin || pose.y > H + margin;
           if (mode === "fly" && outbound && outside) {
             mode = "away";
@@ -711,11 +734,18 @@ export default function HeroBeetle() {
               pose.x = pose.x < W / 2 ? W + margin : -margin;
               pose.y = H * rnd(0.2, 0.8);
             }
+            // it comes straight back in, already flying, facing in
+            const inward = pose.x < W / 2 ? 1 : -1;
+            pose.vx = inward * clamp(W * 0.06, 55, 105);
+            pose.vy = 0;
+            pose.yaw = inward * 1.5708;
+            pose.tx = W * (inward > 0 ? rnd(0.35, 0.6) : rnd(0.4, 0.65));
+            pose.ty = H * rnd(0.3, 0.7);
             mode = "fly";
             outbound = false;
             flights = 0;
             modeUntil = t + rnd(6, 9);
-            pose.next = 0;
+            pose.next = t + rnd(4, 6);
           }
           const near = Math.hypot(pose.tx - pose.x, pose.ty - pose.y) < 90;
           if (mode === "fly" && !outbound && t > modeUntil && near) {
@@ -851,7 +881,8 @@ export default function HeroBeetle() {
         sg.drawImage(bg, 0, 0, W, H);
         sg.drawImage(trail, 0, 0, W, H);
         blg.clearRect(0, 0, W, H);
-        if (t >= flyFrom) drawBeetle(blg, t, turn(pose.yaw, pose.pitch, pose.roll), pose.x, pose.y + bob, kk, moment);
+        if (t >= flyFrom && mode === "intro") drawIntro(blg, t - flyFrom);
+        else if (t >= flyFrom && mode !== "away") drawBeetle(blg, t, turn(pose.yaw, pose.pitch, pose.roll), pose.x, pose.y + bob, kk, moment);
         // it casts a soft shadow on the paper, further off and softer the higher it is
         sg.save();
         sg.shadowColor = `rgba(72,58,46,${0.2 * lift})`;
@@ -910,7 +941,7 @@ export default function HeroBeetle() {
     };
 
     // build once the pictures are in and the page has settled, so it never delays the first paint
-    Promise.all([load(SRC.core), load(SRC.limbs), load(SRC.wing)]).then((imgs) => window.setTimeout(() => build(imgs), 60));
+    Promise.all([load(SRC.core), load(SRC.limbs), load(SRC.wing), load(SRC.front), load(SRC.frontFly)]).then((imgs) => window.setTimeout(() => build(imgs), 60));
     return () => {
       alive = false;
       cancelAnimationFrame(raf);
