@@ -11,7 +11,7 @@ export default function Hero() {
             A Product Designer with over 5 years of experience. I design experiences for the complex systems that run real work.
           </p>
         </div>
-        <div className="mx-auto mt-8 w-[58%] max-w-[300px] md:absolute md:right-[9vw] md:top-1/2 md:mx-0 md:mt-0 md:w-[min(33vw,460px)] md:max-w-none md:-translate-y-1/2 lg:right-[10vw]">
+        <div className="mx-auto mt-8 w-[58%] max-w-[300px] md:absolute md:right-[9vw] md:top-1/2 md:mx-0 md:mt-0 md:w-[min(36vw,500px)] md:max-w-none md:-translate-y-1/2 lg:right-[10vw]">
           <HeroBeetle />
         </div>
       </div>
