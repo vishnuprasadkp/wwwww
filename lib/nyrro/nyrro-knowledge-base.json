@@ -1930,7 +1930,7 @@
     "what are his strengths",
     "what is his expertise"
    ],
-   "answer": "**Design & research**\n- Product, UX and interaction design; information architecture and user flows\n- Design systems and component libraries\n- Usability testing, journey mapping and accessibility (WCAG 2.1)\n\n**Strategy & leadership**\n- Product strategy and discovery; systems thinking\n- Stakeholder management and design leadership\n- DesignOps: handoff and review workflows that cut rework\n\n**AI product design**\n- Agentic UX, prompt engineering and generative prototyping\n- Data visualisation for data-heavy platforms",
+   "answer": "**Design & research**\n- Product design, UX design and interaction design\n- Information architecture and user flows\n- Design systems and component libraries\n- User research, usability testing and journey mapping\n- Accessibility (WCAG) and enterprise SaaS\n\n**Strategy & systems**\n- Product strategy and product discovery\n- Systems thinking\n- Stakeholder management and design leadership\n- DesignOps: handoff and review workflows that cut rework\n- Data visualisation for data-heavy platforms\n\n**AI & tools**\n- AI product design, agentic UX, prompt engineering and generative prototyping\n- Claude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite",
    "followups": [
     "What tools does he use?",
     "How does he design?"
@@ -1965,7 +1965,7 @@
     "what is his design stack",
     "does he use ai tools"
    ],
-   "answer": "- **Design:** Figma, Figma AI, FigJam, Framer, Adobe Creative Suite\n- **Collaboration:** Miro, FigJam\n- **AI:** Claude, Google AI Studio",
+   "answer": "- **Design & prototyping:** Figma, Figma AI, FigJam, Framer, Adobe Creative Suite\n- **Collaboration & workshops:** Miro, FigJam\n- **AI tools:** Claude, Google AI Studio\n- **AI practice:** AI product design, prompt engineering, agentic UX and generative prototyping",
    "followups": [
     "What are his core skills?",
     "How does he design?"
