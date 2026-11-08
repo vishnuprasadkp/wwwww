@@ -44,7 +44,7 @@ const WING_U = 640; // a wing is this long, in painting px
 const WING_ASPECT = 1282 / 766;
 const WING_BASE: Pt = [0.0603, 0.4627]; // where a wing joins the body, as a fraction of the wing picture
 const TILT = -0.16;
-const D = 1700; // distance of the eye, for a little perspective
+const D = 1000; // distance of the eye, for a little perspective
 
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
@@ -346,7 +346,7 @@ export default function HeroBeetle() {
     CX = W * 0.5;
     CY = H * 0.5;
     SC = 1;
-    KB = clamp(Math.min(W * 0.36, H * 0.74), 190, 420) / (WING_U * 2);
+    KB = clamp(Math.min(W * 0.6, H * 1.5), 260, 760) / (WING_U * 2);
     const ps = clamp(Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1.8e6 / (W * H))), 0.75, 1.5);
     const builtW = W;
     const builtH = H;
@@ -394,7 +394,7 @@ export default function HeroBeetle() {
       type Setup = { x: number; y: number; r: number; pig: [Rgb, Rgb]; a: number; from: number; dur: number; veil?: boolean };
       const setup: Setup[] = [];
       // thin veils over the whole band first, then pools of pigment spread over it
-      const VR = Math.min(W * 0.28, H * 1.5);
+      const VR = Math.max(W * 0.3, H * 1.2);
       setup.push({ x: W * 0.32, y: H * 0.5, r: VR, pig: [SLATE[0], SLATE[1]], a: 0.22, from: 0.1, dur: 4, veil: true });
       setup.push({ x: W * 0.7, y: H * 0.5, r: VR, pig: [ORANGE[0], ORANGE[1]], a: 0.22, from: 0.6, dur: 4, veil: true });
       const kinds: { pig: [Rgb, Rgb]; a: number }[] = [
@@ -408,19 +408,23 @@ export default function HeroBeetle() {
         { pig: [ORANGE[0], ORANGE[1]], a: 0.5 },
         { pig: [SLATE[1], SLATE[0]], a: 0.44 },
         { pig: [ORANGE[3], ORANGE[1]], a: 0.46 },
+        { pig: [SLATE[2], SLATE[0]], a: 0.5 },
+        { pig: [ORANGE[1], ORANGE[2]], a: 0.5 },
+        { pig: [SLATE[1], SLATE[3]], a: 0.5 },
+        { pig: [ORANGE[0], ORANGE[3]], a: 0.46 },
       ];
       // places spread along the band, in a random order
-      const cols = Math.max(4, Math.round(W / 330));
+      const cols = Math.max(5, Math.round(W / 300));
       const cells: Pt[] = [];
       for (let k = 0; k < kinds.length; k++) cells.push([((k % cols) + 0.5) / cols, k < cols ? 0.34 : 0.68]);
       cells.sort(() => Math.random() - 0.5);
       let at = 0.9;
       kinds.forEach((k, i) => {
         const c = cells[i % cells.length];
-        setup.push({ x: W * (c[0] + rnd(-0.04, 0.04)), y: H * (c[1] + rnd(-0.1, 0.1)), r: clamp(H * rnd(0.5, 0.78), 150, 360), pig: k.pig, a: k.a, from: at, dur: rnd(3, 4.5) });
+        setup.push({ x: W * (c[0] + rnd(-0.04, 0.04)), y: H * (c[1] + rnd(-0.1, 0.1)), r: clamp(H * rnd(0.7, 1.0), 200, 480), pig: k.pig, a: k.a, from: at, dur: rnd(3, 4.5) });
         at += rnd(0.3, 0.55);
       });
-      const WS = 0.5;
+      const WS = 0.4;
       setup.forEach((s, wi) => {
         const R = s.r;
         const box = R * 3;
@@ -659,51 +663,27 @@ export default function HeroBeetle() {
           }
         }
 
-        // flight: the beetle sits where it was painted, then lifts off and drifts, slowly
-        const lift = smooth(flyFrom, flyFrom + 1.2, t);
-        if (t > pose.next && lift > 0) {
-          pose.tx = W * rnd(0.16, 0.84);
-          pose.ty = H * rnd(0.36, 0.64);
-          pose.next = t + rnd(5, 8.5);
-        }
-        const ax = (pose.tx - pose.x) * 0.2 - pose.vx * 0.85;
-        const ay = (pose.ty - pose.y) * 0.2 - pose.vy * 0.85;
-        pose.ax += (ax - pose.ax) * Math.min(1, dt * 3);
-        pose.ay += (ay - pose.ay) * Math.min(1, dt * 3);
-        pose.vx += ax * dt * lift;
-        pose.vy += ay * dt * lift;
-        const sp = Math.hypot(pose.vx, pose.vy);
-        const vmax = clamp(W * 0.07, 60, 115);
-        if (sp > vmax) {
-          pose.vx *= vmax / sp;
-          pose.vy *= vmax / sp;
-        }
-        pose.x += pose.vx * dt * lift;
-        pose.y += pose.vy * dt * lift;
-        // it turns to face the way it is going, slowly, and leans into the turn
-        const aim = sp > 12 ? Math.atan2(pose.vx, -pose.vy) : pose.yaw;
-        const yawGoal = clamp(aim * 0.8, -1.35, 1.35) + 0.3 * nYaw(t * 0.2) * lift;
-        pose.yaw += angDiff(yawGoal, pose.yaw) * Math.min(1, dt * 0.9) * lift;
-        const lateral = pose.ax * Math.cos(pose.yaw) + pose.ay * Math.sin(pose.yaw);
-        const forward = -pose.ax * Math.sin(pose.yaw) + pose.ay * Math.cos(pose.yaw);
-        const rollGoal = clamp(lateral * 0.02, -0.3, 0.3) + 0.3 * nRoll(t * 0.3) * lift;
-        const pitchGoal = clamp(-forward * 0.01, -0.2, 0.2) + 0.2 * nPitch(t * 0.27) * lift;
-        pose.roll += (clamp(rollGoal, -0.5, 0.5) - pose.roll) * Math.min(1, dt * 1.3);
-        pose.pitch += (clamp(pitchGoal, -0.32, 0.32) - pose.pitch) * Math.min(1, dt * 1.3);
+        // the beetle hovers in the middle of the box: it rises into view, then stays, swaying and tipping a little as it beats its wings
+        const lift = smooth(flyFrom, flyFrom + 1.8, t);
+        pose.x = CX + 14 * nX(t * 0.3) * lift;
+        pose.y = CY + 8 * nY(t * 0.25) * lift;
+        pose.yaw = 0.14 * nYaw(t * 0.22) * lift;
+        pose.roll = 0.14 * nRoll(t * 0.3) * lift;
+        pose.pitch = 0.42 + 0.1 * nPitch(t * 0.27) * lift; // seen a little from behind and above, so the wings are seen to rise and fall
 
         // wing beat: slow and smooth; the speed and depth drift, and the outer wing works harder in a turn
-        phase += dt * 6.283 * (0.78 + 0.2 * nFreq(t * 0.17)) * (0.3 + 0.7 * lift);
-        const beatDepth = (0.62 + 0.38 * (0.5 + 0.5 * nAmp(t * 0.1))) * lift;
+        phase += dt * 6.283 * (0.9 + 0.1 * nFreq(t * 0.17)) * (0.3 + 0.7 * lift);
+        const beatDepth = (0.9 + 0.1 * nAmp(t * 0.1)) * lift;
         const wave = (ph: number) => Math.sin(phase + ph) + 0.18 * Math.sin(2 * (phase + ph) + 0.6);
-        const turnBias = clamp(pose.roll * 1.2, -0.5, 0.5);
-        const wl = wave(0.25 * nSkew(t * 0.2));
-        const wr = wave(-0.2 * nSkew(t * 0.23 + 2));
+        const turnBias = 0;
+        const wl = wave(0.05 * nSkew(t * 0.2));
+        const wr = wave(-0.05 * nSkew(t * 0.23 + 2));
         const deg = Math.PI / 180;
         // the legs step slowly in two groups of three, like an insect walking
         gait += dt * 6.283 * 0.5 * (0.85 + 0.2 * nFreq(t * 0.1 + 5));
         const gph = nLeg.map((_, i) => gait + (i % 2) * Math.PI);
         const moment: Moment = {
-          wingAlpha: [(12 * lift + 42 * beatDepth * (1 + turnBias) * wl) * deg, (12 * lift + 42 * beatDepth * (1 - turnBias) * wr) * deg],
+          wingAlpha: [(8 * lift + 50 * beatDepth * wl) * deg, (8 * lift + 50 * beatDepth * wr) * deg],
           wingSpin: [(3 * wl + 10 * Math.cos(phase + 0.25 * nSkew(t * 0.2))) * beatDepth, (3 * wr + 10 * Math.cos(phase - 0.2 * nSkew(t * 0.23 + 2))) * beatDepth],
           wingTwist: [0.45 * Math.cos(phase) * beatDepth, 0.45 * Math.cos(phase - 0.2 * nSkew(t * 0.23 + 2)) * beatDepth],
           legSpin: nLeg.map((n, i) => ((i < 3 ? 1 : -1) * 12 * Math.sin(gph[i]) + 3 * n(t * 0.6 + i)) * lift),
@@ -711,8 +691,8 @@ export default function HeroBeetle() {
           feelSpin: nFeel.map((n, i) => 8 * n(t * 1.1 + i * 3) * (0.4 + 0.6 * lift)),
           open: 0.12 * easeInOut(clamp01((t - flyFrom + 0.5) / 2.5)),
         };
-        const bob = (9 * Math.sin(phase * 0.5 + 0.4) * beatDepth + 12 * nY(t * 0.33)) * lift;
-        const kk = KB * (1 + 0.06 * nScale(t * 0.18) * lift);
+        const bob = (9 * Math.cos(phase) * beatDepth) * lift;
+        const kk = KB * (0.9 + 0.1 * lift) * (1 + 0.02 * nScale(t * 0.18) * lift);
 
         // faint stains left on the paper as it flies, which dry away
         trg.globalCompositeOperation = "destination-out";
@@ -749,6 +729,7 @@ export default function HeroBeetle() {
         sg.shadowBlur = (12 + 12 * lift) * ps;
         sg.shadowOffsetX = 10 * lift * ps;
         sg.shadowOffsetY = 18 * lift * ps;
+        sg.globalAlpha = lift;
         sg.drawImage(bl, 0, 0, W, H);
         sg.restore();
         // paint in the air

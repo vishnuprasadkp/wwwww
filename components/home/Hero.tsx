@@ -1,8 +1,6 @@
 import HeroBeetle from "./HeroBeetle";
 import LogoMarquee from "./LogoMarquee";
 
-const fade = "linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent), linear-gradient(to right, transparent, #000 4%, #000 96%, transparent)";
-
 export default function Hero() {
   return (
     <section className="flex min-h-[max(560px,calc(100svh-107px))] flex-col overflow-x-clip">
@@ -14,7 +12,7 @@ export default function Hero() {
           </p>
         </div>
       </div>
-      <div className="relative" style={{ height: "clamp(320px, 36vw, 500px)", WebkitMaskImage: fade, maskImage: fade, WebkitMaskComposite: "source-in", maskComposite: "intersect" }}>
+      <div className="relative" style={{ height: "clamp(320px, 36vw, 500px)", background: "rgba(110,106,100,0.12)" }}>
         <HeroBeetle />
       </div>
       <LogoMarquee />
