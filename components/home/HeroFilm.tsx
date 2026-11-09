@@ -304,14 +304,16 @@ const BODY_DUST_VS = `attribute vec3 aN; attribute vec4 aSeed;
   void main(){
     float life = fract(time * 0.2 + aSeed.y);
     vec3 n = normalize(aN);
-    vec3 p = position + n * life * life * 0.12 * aSeed.z;
+    // most of the dust streams out from the body into the air round it, a wide soft cloud; the rest holds its outline
+    vec3 dir = normalize(n + vec3(sin(aSeed.y * 51.0), cos(aSeed.y * 23.0), sin(aSeed.y * 13.0)) * 0.6);
+    vec3 p = position + dir * life * (0.15 + 0.9 * aSeed.w) * aSeed.z;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mv;
     float depth = -mv.z;
-    gl_PointSize = max(1.0, aSeed.x * 0.018 * proj / depth);
+    gl_PointSize = max(1.0, aSeed.x * 0.014 * proj / depth);
     float rim = 1.0 - abs(dot(normalize(normalMatrix * n), normalize(-mv.xyz)));
     float a = smoothstep(0.35, 0.95, rim) * 0.95 + 0.1;
-    vA = a * mix(1.0, 1.0 - life, aSeed.z) * (0.75 + 0.25 * sin(time * 2.1 + aSeed.y * 37.0)) * (1.0 - smoothstep(fogNear, fogFar, depth)) * amt;
+    vA = mix(a, 0.55, aSeed.z * smoothstep(0.0, 0.25, life)) * mix(1.0, (1.0 - life) * (1.0 - life), aSeed.z) * (0.75 + 0.25 * sin(time * 2.1 + aSeed.y * 37.0)) * (1.0 - smoothstep(fogNear, fogFar, depth)) * amt;
   }`;
 const BODY_DUST_FS = `varying float vA;
   void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(1.0, 0.97, 0.92, vA * (1.0 - smoothstep(0.18, 0.5, r))); }`;
@@ -358,7 +360,7 @@ function surfaceDust(geo: THREE.BufferGeometry, n: number) {
     const nn = new THREE.Vector3().crossVectors(e1, e2).normalize();
     pos.push(p.x, p.y, p.z);
     nor.push(nn.x, nn.y, nn.z);
-    seed.push(0.6 + Math.random() * 0.9, Math.random(), Math.random() < 0.55 ? 1 : 0, 0);
+    seed.push(0.45 + Math.random() * 0.9, Math.random(), Math.random() < 0.72 ? 1 : 0, Math.random() * Math.random());
   }
   const out = new THREE.BufferGeometry();
   out.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
@@ -368,11 +370,15 @@ function surfaceDust(geo: THREE.BufferGeometry, n: number) {
 }
 
 /* ---------------- the beetle ---------------- */
+// how big the body is against its wings, and so how high it stands: its legs reach 0.28 of its own units below its middle,
+// so at this size its feet rest exactly on the floor, each on its own shadow
+const BODY = 0.5;
+const STAND = 0.28 * BODY;
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
 function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number) {
   const root = new THREE.Group();
   const body = new THREE.Group();
-  body.position.y = 0.27; // standing tall on its feet: they just touch the floor
+  body.position.y = STAND; // standing tall on its feet: they just touch the floor
   root.add(body);
 
   // drawn, not painted: only lines of white ink, nothing filled
@@ -626,8 +632,8 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   // a larger beetle overall, its body a touch smaller against its wings
   // the body smaller, the wings as large as before
   root.scale.setScalar(1.85);
-  body.scale.setScalar(0.6);
-  for (const w of wings) w.scale.setScalar(0.88 / 0.6);
+  body.scale.setScalar(BODY);
+  for (const w of wings) w.scale.setScalar(0.88 / BODY);
   // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
   // first only into depth (after the smoke), then its ink, which lets everything behind show through its empty paper.
   const depthOnly = new THREE.MeshBasicMaterial({ colorWrite: false, transparent: true, side: THREE.DoubleSide });
@@ -661,7 +667,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     if (!g.boundingSphere) g.computeBoundingSphere();
     const size = g.boundingSphere!.radius * Math.max(m.scale.x, m.scale.y, m.scale.z);
     if (!(g instanceof THREE.SphereGeometry) || size < 0.15) continue;
-    const dots = new THREE.Points(surfaceDust(g, Math.round(700 + 3200 * Math.min(1, size * 2))), dustBody);
+    const dots = new THREE.Points(surfaceDust(g, Math.round(1800 + 7000 * Math.min(1, size * 2))), dustBody);
     dots.renderOrder = 23;
     dots.frustumCulled = false;
     m.add(dots);
@@ -693,7 +699,7 @@ export default function HeroFilm() {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap; // soft edges, but every leg keeps its own shadow
     renderer.domElement.style.cssText = "position:absolute;inset:0;width:100%;height:100%;display:block";
     host.appendChild(renderer.domElement);
     cleanup.push(() => {
@@ -771,19 +777,19 @@ void main(){
     const key1 = new THREE.DirectionalLight(0xffffff, 1);
     key1.position.set(-3, 6, 5);
     key1.castShadow = true;
-    key1.shadow.mapSize.set(1024, 1024);
-    key1.shadow.radius = 8;
+    key1.shadow.mapSize.set(2048, 2048);
+    key1.shadow.radius = 3;
     key1.shadow.bias = -0.0005;
     const sc = key1.shadow.camera as THREE.OrthographicCamera;
-    sc.left = -3;
-    sc.right = 3;
-    sc.top = 3;
-    sc.bottom = -3;
+    sc.left = -2.2;
+    sc.right = 2.2;
+    sc.top = 2.2;
+    sc.bottom = -2.2;
     sc.near = 0.5;
     sc.far = 20;
     scene.add(key1);
     scene.add(key1.target);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.3, color: lin(0.2, 0.1, 0.05) }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.38, color: lin(0.18, 0.09, 0.05) }));
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     floor.material.depthWrite = false;
@@ -901,7 +907,7 @@ void main(){
       fs.mode = "land";
       if (fs.after === "walk") {
         // down onto the floor, somewhere in view, facing you more or less
-        const z = rnd(-1.5, 1.2);
+        const z = rnd(-3.2, -1.3); // far enough back that the floor, its feet and its shadow are well inside the frame
         const d = CAM.z - z;
         const hw = d * Math.tan((12 * Math.PI) / 180) * aspect;
         fs.toP.set(rnd(-0.45, 0.45) * hw, 0, z);
@@ -1041,8 +1047,8 @@ void main(){
           const d = CAM.z - b.root.position.z;
           const hw = d * Math.tan((12 * Math.PI) / 180) * aspect * 0.5;
           const p = b.root.position;
-          const out = Math.abs(p.x) > hw || p.z > 2 || p.z < -2.5;
-          const goalYaw = out ? Math.atan2(-p.x, -p.z + 0.5) : fs.yaw + Math.sin(t * 0.7) * 0.6 * dt;
+          const out = Math.abs(p.x) > hw || p.z > -0.9 || p.z < -3.8;
+          const goalYaw = out ? Math.atan2(-p.x, -2.3 - p.z) : fs.yaw + Math.sin(t * 0.7) * 0.6 * dt;
           fs.yaw += Math.atan2(Math.sin(goalYaw - fs.yaw), Math.cos(goalYaw - fs.yaw)) * Math.min(1, dt * (out ? 1.2 : 1));
           const sp = 0.3 * (1 - smooth(fs.until - 0.6, fs.until, t)); // it slows to a stop before it takes off
           p.x += Math.sin(fs.yaw) * sp * dt;
@@ -1070,7 +1076,7 @@ void main(){
       b.root.visible = k > T_WALK0 - 0.1;
 
       // body sway with each step
-      b.body.position.y = 0.27 + (walking ? 0.008 * Math.sin(gait * 2) * walkAmt : 0);
+      b.body.position.y = STAND + (walking ? 0.004 * Math.sin(gait * 2) * walkAmt : 0);
       b.body.rotation.z = walking ? 0.03 * Math.sin(gait) * walkAmt : 0;
       b.head.rotation.y = (0.12 + 0.1 * fs.peek) * Math.sin(k * 0.7) * (1 - open);
       // it looks up at you; on the frame it turns its head right round to you
@@ -1116,7 +1122,7 @@ void main(){
         w.rotation.y = s * (1.62 * fold + (0.8 - 0.16 * Math.cos(wingPhase)) * unfold); // swept back, so their faces catch the eye
         w.rotation.z = s * (0.32 + 0.3 * beat) * unfold; // a slow, wide beat that stays above level: the wings never dip towards the floor
         w.position.y = 0.12 + 0.22 * unfold; // the wings rise out between the parted cases, above the back, never through it
-        w.scale.setScalar((0.5 + 0.5 * unfold) * (0.88 / 0.6)); // as large as before, against the smaller body
+        w.scale.setScalar((0.5 + 0.5 * unfold) * (0.88 / BODY)); // as large as before, against the smaller body
         w.visible = unfold > 0.02;
       });
 
@@ -1147,7 +1153,7 @@ void main(){
       }
 
       b.root.getWorldPosition(wp);
-      key1.position.set(wp.x - 0.7, 7, wp.z + 1.4); // light from almost overhead: the shadow lies right under its body and legs
+      key1.position.set(wp.x - 0.25, 8, wp.z + 0.35); // light from overhead: each foot meets its own shadow where it touches the floor
       key1.target.position.copy(wp);
     };
 
