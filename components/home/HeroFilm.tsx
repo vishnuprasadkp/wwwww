@@ -704,8 +704,8 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
     // exactly the same everywhere.
     const VH = Math.max(Math.max(200, host.getBoundingClientRect().height), Math.min(680, Math.max(420, window.innerWidth * 0.36)));
     const SIZE_K = VH / Math.max(200, host.getBoundingClientRect().height);
-    const FLOOR_N = Math.min(-0.12, -0.5 + (SIZE_K - 1) * 0.3);
-    const CEIL_N = Math.max(-0.05, 0.45 - (SIZE_K - 1) * 0.35);
+    const FLOOR_N = Math.min(-0.12, -0.5 + (SIZE_K - 1) * 0.18); // in the short film it flies low, so its raised wings stay in view
+    const CEIL_N = Math.max(-0.12, 0.45 - (SIZE_K - 1) * 0.6);
     const D_K = 1; // the same distances everywhere // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
@@ -930,7 +930,7 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > 9) {
+      if (mayPerch && !out && t - wand.lastLook > 26) {
         const headingToSide = Math.cos(wand.h) * Math.sign(nx) > -0.2; // near a side and not flying away from it
         if (Math.abs(nx) > 0.45 && headingToSide && Math.random() < 0.85) {
           fly.perch = true;
@@ -1022,6 +1022,9 @@ void main(){
       until: 0,
       after: "face" as "face" | "perch",
       fromFace: false,
+      v0: new THREE.Vector3(),
+      v1: new THREE.Vector3(),
+      settle: 0,
       fromP: new THREE.Vector3(),
       toP: new THREE.Vector3(),
       fromQ: new THREE.Quaternion(),
@@ -1050,7 +1053,10 @@ void main(){
       vA.set(nx, ny, 0.5).unproject(camera).sub(camera.position).normalize();
       return out.copy(camera.position).addScaledVector(vA, d / vA.dot(fwd));
     };
+    const SPEED = 0.55;
     const planLanding = (t: number, b: NonNullable<typeof beetle>) => {
+      fs.v0.copy(fly.v); // it arrives still moving as it was, and slows smoothly to a stop
+      fs.v1.set(0, 0, 0);
       fs.fromP.copy(b.root.position);
       fs.fromQ.copy(b.root.quaternion);
       fs.t0 = t;
@@ -1101,6 +1107,8 @@ void main(){
         fs.arc = 0;
         fs.dur = 3.2;
       }
+      // never faster than it flies, nor turning faster than it turns in flight: a long way or a big turn takes longer
+      fs.dur = Math.max(fs.dur, fs.fromP.distanceTo(fs.toP) / 0.45, fs.fromQ.angleTo(fs.toQ) / 0.5);
     };
     const planTakeoff = (t: number, b: NonNullable<typeof beetle>) => {
       fs.fromP.copy(b.root.position);
@@ -1110,11 +1118,15 @@ void main(){
       fs.fromFace = fs.mode === "face";
       fs.mode = "takeoff";
       // up and away into the box, towards its middle
-      const goal = onFrame(rnd(-0.6, 0.6), rnd(-0.3, 0.1), rnd(7.2, 9) * D_K, new THREE.Vector3()); // out into the box
+      const goal = onFrame(rnd(-0.6, 0.6), rnd(FLOOR_N, Math.max(FLOOR_N + 0.1, CEIL_N - 0.1)), rnd(7.2, 9) * D_K, new THREE.Vector3()); // out into the box, at a height it flies at
       fs.toP.copy(fs.fromP).lerp(goal, 0.6);
       const dir = goal.clone().sub(fs.fromP);
       fs.yaw = Math.atan2(dir.x, dir.z);
+      // it sets off from rest and leaves already at its flying speed, so the hand-over to flight is seamless
+      fs.v0.set(0, 0, 0);
+      fs.v1.copy(fs.toP).sub(fs.fromP).normalize().multiplyScalar(SPEED);
       fs.toQ.copy(qFromEuler(0.4, fs.yaw, 0));
+      fs.dur = Math.max(2, fs.fromP.distanceTo(fs.toP) / 0.45, fs.fromQ.angleTo(fs.toQ) / 0.5);
     };
 
     const pose = (t: number, dt: number) => {
@@ -1169,7 +1181,7 @@ void main(){
                 // it opens flying in from beyond the left or the right, at about the middle height, its whole body
                 // coming into view at once, on a heading into the box that is different every time
                 introPending = false;
-                wand.lastLook = t - 9; // it will stop to look at you soon after it arrives
+                wand.lastLook = t - 18; // it will stop to look at you soon after it arrives
                 // it flies in from beyond any side or corner, a different one each time and in each film
                 const ways: [number, number][] = [[-1.45, rnd(-0.3, 0.2)], [1.45, rnd(-0.3, 0.2)], [-1.4, 0.75], [1.4, 0.75], [-1.4, -0.75], [1.4, -0.75]]; // never straight down from the top, where its legs would come first
                 const [ex, ey] = ways[Math.floor(Math.random() * ways.length)];
@@ -1188,7 +1200,6 @@ void main(){
             // always flies in easy curves; its body follows its heading, and it banks and tips gently, smoothed over time.
             const want = fly.target.clone().sub(fly.p);
             const dist = want.length();
-            const SPEED = 0.55;
             if (fly.v.lengthSq() < 1e-4) fly.v.copy(want).normalize().multiplyScalar(SPEED);
             const cur = fly.v.clone().normalize();
             const goal = want.normalize();
@@ -1220,7 +1231,7 @@ void main(){
             fly.roll += clamp((rollGoal - fly.roll) * Math.min(1, dt * 1.2), -0.5 * dt, 0.5 * dt);
             const climbGoal = clamp(-fly.v.y * 1.8, -0.4, 0.6);
             fly.climb += (climbGoal - fly.climb) * Math.min(1, dt * 0.9);
-            b.root.position.set(fly.p.x, fly.p.y + 0.035 * Math.sin(t * 1.1), fly.p.z);
+            b.root.position.copy(fly.p);
             b.root.quaternion.copy(qFromEuler(0.3 + fly.climb + 0.04 * Math.sin(t * 0.5), fly.yaw, fly.roll));
             ndcNow.copy(fly.p).project(camera);
             const last = fly.idx === fly.pts.length - 1;
@@ -1241,7 +1252,15 @@ void main(){
         } else if (fs.mode === "land" || fs.mode === "takeoff") {
           const u = clamp((t - fs.t0) / fs.dur, 0, 1);
           const e = u * u * (3 - 2 * u);
-          b.root.position.lerpVectors(fs.fromP, fs.toP, e);
+          // a smooth curve that leaves at the speed it came in with and arrives at the speed it goes on with (Hermite)
+          void e;
+          const u2 = u * u;
+          const u3 = u2 * u;
+          b.root.position
+            .copy(fs.fromP).multiplyScalar(2 * u3 - 3 * u2 + 1)
+            .addScaledVector(fs.v0, (u3 - 2 * u2 + u) * fs.dur)
+            .addScaledVector(fs.toP, -2 * u3 + 3 * u2)
+            .addScaledVector(fs.v1, (u3 - u2) * fs.dur);
           b.root.position.y += Math.sin(Math.PI * u) * fs.arc;
           qTmp.slerpQuaternions(fs.fromQ, fs.toQ, smooth(fs.mode === "land" ? 0.15 : 0, fs.mode === "land" ? 0.85 : 0.7, u));
           b.root.quaternion.copy(qTmp);
@@ -1251,11 +1270,12 @@ void main(){
           if (u >= 1) {
             if (fs.mode === "land") {
               fs.mode = fs.after;
-              fs.until = t + rnd(4.5, 6.5);
+              fs.settle = 0;
+              fs.until = t + rnd(3.5, 5);
             } else {
               fs.mode = "fly";
               fly.p.copy(b.root.position);
-              fly.v.copy(fs.toP).sub(fs.fromP).multiplyScalar(0.25);
+              fly.v.copy(fs.v1); // carrying on at just the speed and heading it took off with
               fly.yaw = fs.yaw;
               fly.roll = 0;
               fly.climb = 0.1; // its tilt carries on exactly as it was at the end of the take-off
@@ -1281,10 +1301,14 @@ void main(){
           }
         } else if (fs.mode === "face") {
           // hanging in the air in front of you, wings beating slowly, looking at you; it sways and breathes
+          // its sway grows in from stillness as it settles, and starts from nothing, so there is no jump as it arrives
+          fs.settle = Math.min(1, fs.settle + dt / 2);
+          const sw = fs.settle * fs.settle * (3 - 2 * fs.settle);
+          const ft = t - fs.t0 - fs.dur;
           b.root.position.copy(fs.toP);
-          b.root.position.x += Math.sin(t * 0.7) * 0.06;
-          b.root.position.y += Math.sin(t * 1.1) * 0.05;
-          b.root.quaternion.copy(qFromEuler(0.12 + 0.05 * Math.sin(t * 0.8), fs.yaw + 0.22 * Math.sin(t * 0.45), 0.05 * Math.sin(t * 0.9)));
+          b.root.position.x += Math.sin(ft * 0.7) * 0.06 * sw;
+          b.root.position.y += Math.sin(ft * 1.1) * 0.05 * sw;
+          b.root.quaternion.copy(fs.toQ).multiply(qTmp.setFromEuler(eTmp.set(0.05 * Math.sin(ft * 0.8) * sw, 0.22 * Math.sin(ft * 0.45) * sw, 0.05 * Math.sin(ft * 0.9) * sw)));
           fs.air = 1;
           if (t > fs.until) planTakeoff(t, b);
         } else {
