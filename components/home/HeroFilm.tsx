@@ -372,7 +372,7 @@ function surfaceDust(geo: THREE.BufferGeometry, n: number) {
 /* ---------------- the beetle ---------------- */
 // how big the body is against its wings, and so how high it stands: its legs reach 0.28 of its own units below its middle,
 // so at this size its feet rest exactly on the floor, each on its own shadow
-const BODY = 0.55;
+const BODY = 0.47;
 const STAND = 0.28 * BODY;
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
 function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number) {
@@ -463,8 +463,17 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   skull.castShadow = true;
   head.add(skull);
   for (const s of [1, -1]) {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.062, 24, 16), black);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 24, 16), black);
     eye.position.set(s * 0.12, 0.02, 0.05);
+    // its eyes, clear to see when it looks at you: a pale eye, a dark pupil looking out ahead, a bright glint
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.072, 24, 16), new THREE.MeshBasicMaterial({ color: lin(0.86, 0.86, 0.86) }));
+    eye.add(ball);
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.042, 20, 14), new THREE.MeshBasicMaterial({ color: lin(0.07, 0.07, 0.07) }));
+    pupil.position.set(s * 0.008, 0.004, 0.042);
+    eye.add(pupil);
+    const glint = new THREE.Mesh(new THREE.SphereGeometry(0.012, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+    glint.position.set(s * 0.004 - 0.012, 0.022, 0.07);
+    eye.add(glint);
     head.add(eye);
     const spot = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 8), cream);
     spot.scale.set(0.035, 0.025, 0.02);
@@ -545,7 +554,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   });
 
   // wings: the beetle's own painted wings, folded under the cases until it flies
-  const WL = 3.9; // large: the wings lead
+  const WL = 4.4; // large: the wings lead
   const wg = new THREE.PlaneGeometry(WL, WL * WING_ASPECT, 28, 14);
   wg.translate(-(WING_BASE[0] - 0.5) * WL, -(0.5 - WING_BASE[1]) * WL * WING_ASPECT, 0);
   wg.rotateX(Math.PI / 2); // flat, the front edge forwards (+z)
@@ -715,7 +724,7 @@ export default function HeroFilm() {
     /* ---------------- stage, camera, light ---------------- */
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(24, aspect, 0.05, 80);
-    const CAM = new THREE.Vector3(0, 0.75, 6); // aimed a little up: the beetle keeps to the lower part of the frame, its wings have the sky above it
+    const CAM = new THREE.Vector3(0, 2.5, 6); // once it is flying, the camera is raised and looks down a little: you see it from above and from the side
     camera.position.copy(CAM);
     camera.lookAt(0, 0.3, 0);
     scene.add(camera);
@@ -872,7 +881,8 @@ void main(){
        for a moment, and comes back in from somewhere else. Now and then a pass ends not out of the frame but at the side it
        is heading for, where it settles and looks at you. */
     type Edge = "L" | "R" | "T" | "B";
-    const edgePoint = (e: Edge, d: number, out = new THREE.Vector3()) => {
+    const edgePoint = (e: Edge, d0: number, out = new THREE.Vector3()) => {
+      const d = e === "B" ? Math.min(d0, 3.6) : d0; // out past the bottom means passing close under you
       const [nx, ny] = e === "L" ? [-1.45, rnd(-0.9, 0.5)] : e === "R" ? [1.45, rnd(-0.9, 0.5)] : e === "T" ? [rnd(-0.8, 0.8), 1.6] : [rnd(-0.8, 0.8), -1.5];
       return onFrame(nx, ny, d, out);
     };
@@ -884,11 +894,12 @@ void main(){
         const c = edges.filter((e) => !not.includes(e));
         return c[Math.floor(Math.random() * c.length)];
       };
-      const near = Math.random() < 0.5;
-      const dIn = near ? rnd(8, 10.5) : rnd(4.6, 6); // far to near, or near to far: it comes towards you, or goes away
-      const dOut = near ? rnd(4.6, 6) : rnd(8, 10.5);
+      // mostly straight across at about the same distance, so you see it from the side and from above; now and then it
+      // comes a little nearer or goes a little further
+      const dIn = rnd(6, 9);
+      const dOut = clamp(dIn + (Math.random() < 0.3 ? rnd(-2.2, 2.2) : rnd(-0.8, 0.8)), 5.5, 10);
       // it comes back the way it went: out past the left, back in from the left (now and then from somewhere else)
-      const inEdge = Math.random() < 0.55 ? lastEdge : pick([lastEdge]);
+      const inEdge = lastEdge; // it turns round out of sight and comes back in the way it went out, never from somewhere else
       const outEdge = pick([inEdge]);
       lastEdge = outEdge;
       // now and then it settles on the side it is heading for and looks at you: left or right, higher or lower, and if it
@@ -908,6 +919,11 @@ void main(){
         fly.yaw = Math.atan2(fly.v.x, fly.v.z);
         fly.roll = 0;
       }
+      // never below the floor: seen from above now, a low point on screen can lie under it
+      const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, 0.3));
+      lift(mid);
+      if (!fly.perch) lift(end);
+      if (!fromHere) lift(fly.p);
       fly.pts = [mid, end];
       fly.idx = 0;
       fly.target.copy(mid);
@@ -1204,7 +1220,7 @@ void main(){
         const s = i === 0 ? 1 : -1;
         const fold = 1 - unfold;
         w.rotation.y = s * (1.62 * fold + (0.8 - 0.16 * Math.cos(wingPhase)) * unfold); // swept back, so their faces catch the eye
-        w.rotation.z = s * (0.32 + 0.3 * beat) * unfold; // a slow, wide beat that stays above level: the wings never dip towards the floor
+        w.rotation.z = s * (0.14 + 0.32 * beat) * unfold; // a slow, wide beat that stays above level: the wings never dip towards the floor
         w.position.y = 0.12 + 0.22 * unfold; // the wings rise out between the parted cases, above the back, never through it
         w.scale.setScalar((0.5 + 0.5 * unfold) * (0.88 / BODY)); // as large as before, against the smaller body
         w.visible = unfold > 0.02;
@@ -1367,7 +1383,7 @@ void main(){
       // part of the frame and its wings have the whole sky above it
       const up = skipIntro ? 1 : smooth(T_LIFT, T_LIFT + 3.5, t);
       camera.position.set(CAM.x + Math.sin(t * 0.21) * 0.06, 0.42 + (CAM.y - 0.42) * up + Math.sin(t * 0.17) * 0.03, CAM.z);
-      camera.lookAt(0, 0.3 + 0.75 * up, 0);
+      camera.lookAt(0, 0.3 + 0.1 * up, 0);
       pose(t, dt);
       stepDust(t, dt);
       sketchU.time.value = t;
@@ -1422,7 +1438,7 @@ void main(){
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.9, 26000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 4.4, 30000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
