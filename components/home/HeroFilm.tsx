@@ -469,8 +469,8 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   for (const s of [1, -1]) {
     const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 24, 16), black);
     eye.position.set(s * 0.12, 0.02, 0.05);
-    // its eyes, drawn like the rest: the eye a ring of ink, the pupil a single dot of ink on it, turning to look at you
-    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.019, 14, 10), new THREE.MeshBasicMaterial({ color: lin(0.95, 0.95, 0.95) }));
+    // its eyes, drawn like the rest: the eye a ring of ink, the pupil a small ring of ink on it, turning to look at you
+    const pupil = new THREE.Mesh(new THREE.RingGeometry(0.014, 0.024, 28), new THREE.MeshBasicMaterial({ color: lin(0.95, 0.95, 0.95), side: THREE.DoubleSide }));
     pupil.position.set(0, 0, 0.07);
     eye.add(pupil);
     pupils.push(pupil);
@@ -876,7 +876,7 @@ void main(){
     const T_FREE = T_LIFT + 2.8;
     // not always the walk-in: half the time the film opens with the beetle already there, peeping in at you
     const skipIntro = true; // the walk-in is set aside for now: it opens already looking at you
-    const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0, pts: [] as THREE.Vector3[], idx: 0, gone: 0, hidden: false, perch: false, face: false };
+    const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0, pts: [] as THREE.Vector3[], idx: 0, gone: 0, hidden: false, perch: false, face: false, climb: 0 };
     const ndcNow = new THREE.Vector3();
     /* Its flight is a series of passes. It comes in from beyond one edge of the frame (a side, the top or the bottom), crosses
        the box on a diagonal through some point inside it, nearer or further, and goes out past another edge. Then it is gone
@@ -927,11 +927,13 @@ void main(){
         }
         if (Math.abs(nx) < 0.6 && Math.abs(ny) < 0.8 && Math.random() < 0.6) {
           fly.face = true;
-          const spot = fly.p.clone().addScaledVector(fly.v.clone().normalize(), 0.6);
+          // a little ahead of where it is, and low enough that its raised wings and its whole head stay in the frame
+          const spot = onFrame(clamp(nx + Math.cos(wand.h) * 0.12, -0.55, 0.55), clamp(ny - 0.1, -0.7, -0.35), clamp(camera.position.distanceTo(fly.p), 7.5, 9), new THREE.Vector3());
           lift(spot);
           fly.pts = [spot];
           fly.idx = 0;
           fly.target.copy(spot);
+          fly.next = t + 4;
           wand.lastLook = t;
           return;
         }
@@ -942,11 +944,11 @@ void main(){
         wand.h = back + rnd(-0.7, 0.7);
       } else {
         // a new heading, turned from the last: mostly a gentle bend, sometimes a sharp swerve
-        wand.h += Math.random() < 0.75 ? rnd(-0.9, 0.9) : rnd(-2, 2);
+        wand.h += rnd(-0.75, 0.75);
         // like a heavy beetle it sinks more than it climbs: high up, it tends to turn down again
         if (Math.sin(wand.h) > 0.2 && ny > -0.2) wand.h = -wand.h + rnd(-0.3, 0.3);
       }
-      const len = rnd(0.55, 1.1);
+      const len = rnd(0.8, 1.3); // long, sweeping legs
       wand.d = clamp(wand.d + rnd(-1.2, 1.2), 7, 10);
       // it keeps to the lower part of the box, where it is seen whole; if it has drifted up it turns down again
       if (ny > -0.05 && Math.sin(wand.h) > 0) wand.h = -wand.h;
@@ -955,13 +957,14 @@ void main(){
       const roam = Math.random() < 0.18;
       const tx = clamp(nx + Math.cos(wand.h) * len, roam ? -1.7 : -0.85, roam ? 1.7 : 0.85);
       const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, roam ? -1.4 : -0.9, 0.05);
-      if (Math.abs(tx) >= 0.85 && !roam) wand.h = Math.PI - wand.h; // at a side it turns along it instead of running into it
+      if (Math.abs(tx) >= 0.85 && !roam) wand.h = Math.PI - wand.h + rnd(-0.3, 0.3); // at a side it bends round, back into the box
       const p = onFrame(tx, ty, wand.d, new THREE.Vector3());
       lift(p);
       fly.pts = [p];
       fly.idx = 0;
       fly.target.copy(p);
       fly.hidden = false;
+      fly.next = t + 9;
     };
     const wp = new THREE.Vector3();
     const eyeTmp = new THREE.Vector3();
@@ -1138,33 +1141,48 @@ void main(){
               b.root.position.copy(fly.p);
             }
           } else {
+            // Smooth flight: it keeps an even speed and turns its heading towards where it is going only so fast, so it
+            // always flies in easy curves; its body follows its heading, and it banks and tips gently, smoothed over time.
             const want = fly.target.clone().sub(fly.p);
             const dist = want.length();
-            want.normalize().multiplyScalar(0.6 * clamp(dist / 1.2, 0.6, 1)); // unhurried, never stalling at a turn
-            fly.v.lerp(want, Math.min(1, dt * 0.7));
+            const SPEED = 0.55;
+            if (fly.v.lengthSq() < 1e-4) fly.v.copy(want).normalize().multiplyScalar(SPEED);
+            const cur = fly.v.clone().normalize();
+            const goal = want.normalize();
+            const ang = Math.acos(clamp(cur.dot(goal), -1, 1));
+            const maxTurn = 0.55 * dt; // radians a second: unhurried turns
+            if (ang > 1e-4) {
+              const axis = new THREE.Vector3().crossVectors(cur, goal);
+              if (axis.lengthSq() < 1e-8) axis.set(0, 1, 0);
+              cur.applyAxisAngle(axis.normalize(), Math.min(ang, maxTurn));
+            }
+            fly.v.copy(cur).multiplyScalar(SPEED);
             fly.p.addScaledVector(fly.v, dt);
             const sp = Math.hypot(fly.v.x, fly.v.z);
-            const yawGoal = sp > 0.05 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;
-            const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 1.6); // it turns its whole body to the way it is going
+            // its body turns to its heading only so fast, and only as much as it is moving across (flying straight up or
+            // down it keeps the way it faces), so it never spins
+            const yawGoal = sp > 0.12 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;
+            const diff = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw));
+            const dy = clamp(diff * Math.min(1, dt * 1.6) * clamp(sp / 0.35, 0, 1), -0.7 * dt, 0.7 * dt);
             fly.yaw += dy;
-            // it banks into its turns, and tips up as it climbs and down as it dives: its wings are seen from the side, from
-            // above and from below as it goes
-            fly.roll += (clamp((-dy / Math.max(dt, 1e-3)) * 1.3, -0.75, 0.75) - fly.roll) * Math.min(1, dt * 1.4);
-            const climb = clamp(-fly.v.y * 1.8, -0.5, 0.75); // diving, it tips forward and you see its back from above
-            b.root.position.set(fly.p.x, fly.p.y + 0.04 * Math.sin(t * 1.3), fly.p.z);
-            b.root.quaternion.copy(qFromEuler(0.3 + climb + 0.06 * Math.sin(t * 0.6), fly.yaw, fly.roll));
+            const rollGoal = clamp((-dy / Math.max(dt, 1e-3)) * 0.7, -0.4, 0.4);
+            fly.roll += clamp((rollGoal - fly.roll) * Math.min(1, dt * 1.2), -0.5 * dt, 0.5 * dt);
+            const climbGoal = clamp(-fly.v.y * 1.8, -0.4, 0.6);
+            fly.climb += (climbGoal - fly.climb) * Math.min(1, dt * 0.9);
+            b.root.position.set(fly.p.x, fly.p.y + 0.035 * Math.sin(t * 1.1), fly.p.z);
+            b.root.quaternion.copy(qFromEuler(0.3 + fly.climb + 0.04 * Math.sin(t * 0.5), fly.yaw, fly.roll));
             ndcNow.copy(fly.p).project(camera);
             const last = fly.idx === fly.pts.length - 1;
-            if (last && fly.face && dist < 1.1) {
+            if (last && fly.face && (dist < 1.6 || t > fly.next)) {
               fs.after = "face";
               planLanding(t, b); // in front of you now: it turns to face you and hangs there
             } else if (last && fly.perch && Math.abs(ndcNow.x) > 0.72) {
               fs.after = "perch";
               planLanding(t, b); // it has reached the side it was heading for: it settles there and looks at you
             } else if (last && !fly.perch) {
-              // on to the next leg, from right here, so the path never breaks
-              if (dist < 0.9) newPass(t, true);
-            } else if (!last && dist < 0.9) {
+              // on to the next leg, from right here, so the path never breaks (and never circling a mark it cannot reach)
+              if (dist < 1.4 || t > fly.next) newPass(t, true);
+            } else if (!last && dist < 1.4) {
               fly.idx++;
               fly.target.copy(fly.pts[fly.idx]);
             }
@@ -1189,6 +1207,7 @@ void main(){
               fly.v.copy(fs.toP).sub(fs.fromP).multiplyScalar(0.25);
               fly.yaw = fs.yaw;
               fly.roll = 0;
+              fly.climb = 0.1; // its tilt carries on exactly as it was at the end of the take-off
               ndcNow.copy(fly.p).project(camera);
               wand.h = Math.atan2(rnd(-0.6, 0.3), -Math.sign(ndcNow.x || 1)); // away from the edge it sat on, back into the box
               newPass(t, true, false);
@@ -1320,7 +1339,8 @@ void main(){
         eye.updateWorldMatrix(true, false);
         eyeTmp.copy(camera.position);
         eye.worldToLocal(eyeTmp);
-        pu.position.copy(eyeTmp.normalize().multiplyScalar(0.078));
+        pu.position.copy(eyeTmp.normalize().multiplyScalar(0.079));
+        pu.lookAt(camera.position); // a small ring drawn on the eye, turned square to you
       }
       // the soft shade below it: it follows it across the floor, spreads and fades as it rises
       const hgt = Math.max(0, wp.y - FLOOR);
