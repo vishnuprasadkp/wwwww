@@ -3,12 +3,8 @@ import HeroInk from "./HeroInk";
 import { SCHEMES, inkPalette } from "@/lib/painting";
 import type { InkPalette } from "./HeroInk";
 
-// the AI agent case study's painting, a shade deeper: a darker orange behind the beetle
-const deepen = (p: InkPalette, k: number): InkPalette => {
-  const d = (c: [number, number, number]) => c.map((v) => v * k) as [number, number, number];
-  return { pale: d(p.pale), light: d(p.light), mid: d(p.mid), deep: d(p.deep), grey: d(p.grey) };
-};
-const HERO_INK = deepen(inkPalette(SCHEMES.clay), 0.8);
+// the same dark grey painting as at the foot of the home page
+const HERO_INK: InkPalette = inkPalette(SCHEMES.charcoal);
 import LogoMarquee from "./LogoMarquee";
 
 export default function Hero() {
@@ -22,8 +18,8 @@ export default function Hero() {
           </p>
         </div>
       </div>
-      <div className="relative" style={{ height: "clamp(260px, 24.5vw, 470px)", background: "#704833" }}>
-        {/* the painting from the foot of the AI agent case study, exactly; the beetle film is drawn over it */}
+      <div className="relative" style={{ height: "clamp(260px, 24.5vw, 470px)", background: "#545454" }}>
+        {/* the dark grey painting from the foot of the home page; the beetle film is drawn over it */}
         <HeroInk palette={HERO_INK} spread={false} refHeight={900} speed={1.6} />
         <HeroFilm />
       </div>

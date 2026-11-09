@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { SCHEMES, inkPalette } from "@/lib/painting";
 
 /** The AI agent case study's terracotta: its closing painting's wash. */
-const CLAY = inkPalette(SCHEMES.clay);
+const CLAY = inkPalette(SCHEMES.charcoal); // the home footer's dark grey: the ground, the smoke and the paint it leaves
 
 /**
  * The home hero as a short film, like a car being revealed on a stage.
@@ -721,7 +721,7 @@ export default function HeroFilm() {
     camera.lookAt(0, 0.3, 0);
     scene.add(camera);
 
-    // the paint the beetle leaves on the painting: a small canvas it dabs into as it goes, shown as a faint dark clay
+    // the paint the beetle leaves on the painting: a small canvas it dabs into as it goes, shown as a faint dark grey
     // glaze far behind it, its edges ragged like wet paint; it slowly soaks away
     const PCW = 420;
     const PCH = Math.max(60, Math.round(PCW / aspect));
@@ -744,7 +744,7 @@ void main(){
   float pv = texture2D(paint, vUv + w).a + (noise(vUv * 40.0) - 0.5) * 0.06;
   float body = smoothstep(0.05, 0.5, pv);
   float rim = smoothstep(0.05, 0.12, pv) * (1.0 - smoothstep(0.14, 0.32, pv));
-  gl_FragColor = vec4(col, body * 0.11 + rim * 0.05); // faint: a breath of dark clay left where it went, never a stain
+  gl_FragColor = vec4(col, body * 0.11 + rim * 0.05); // faint: a breath of dark grey left where it went, never a stain
 }`,
       uniforms: { paint: { value: paintTex }, col: { value: new THREE.Vector3(CLAY.deep[0] * 0.7, CLAY.deep[1] * 0.7, CLAY.deep[2] * 0.7) }, time: { value: 0 } },
       transparent: true,
@@ -1265,7 +1265,7 @@ void main(){
       stepDust(t, dt);
       sketchU.time.value = t;
       glazeMat.uniforms.time.value = t;
-      // the beetle leaves a breath of dark clay on the painting as it goes; old paint slowly soaks away
+      // the beetle leaves a breath of dark grey on the painting as it goes; old paint slowly soaks away
       paintFade += dt;
       if (paintFade > 0.25) {
         paintFade = 0;
