@@ -637,7 +637,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
 
   // a larger beetle overall, its body a touch smaller against its wings
   // the body smaller, the wings as large as before
-  root.scale.setScalar(3.3);
+  root.scale.setScalar(4.1);
   body.scale.setScalar(BODY);
   for (const w of wings) w.scale.setScalar(0.88 / BODY);
   // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
