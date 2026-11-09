@@ -699,10 +699,14 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
     const TOP = false && place === "top";
     // the beetle is the same size on screen in every film: as in the tall film at the foot of the page, so in a shorter box
     // it is drawn larger; the room it keeps from the box's edges grows with it, so it is always seen whole
-    const SIZE_K = Math.max(1, Math.min(680, Math.max(420, window.innerWidth * 0.36)) / Math.max(200, host.getBoundingClientRect().height));
+    // Every film is drawn as the tall one at the foot of the page: a shorter box (the top of the home page) shows a band
+    // across the middle of that same frame. So the beetle, its lines, its dust, its size and its speed on screen are
+    // exactly the same everywhere.
+    const VH = Math.max(Math.max(200, host.getBoundingClientRect().height), Math.min(680, Math.max(420, window.innerWidth * 0.36)));
+    const SIZE_K = VH / Math.max(200, host.getBoundingClientRect().height);
     const FLOOR_N = Math.min(-0.12, -0.5 + (SIZE_K - 1) * 0.3);
     const CEIL_N = Math.max(-0.05, 0.45 - (SIZE_K - 1) * 0.35);
-    const D_K = 1 + (SIZE_K - 1) * 0.45; // how much further off it keeps in a shorter box // one beetle everywhere: the same beetle, framed and flying as at the foot
+    const D_K = 1; // the same distances everywhere // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -736,7 +740,8 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
 
     /* ---------------- stage, camera, light ---------------- */
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(24, aspect, 0.05, 80);
+    const camera = new THREE.PerspectiveCamera(24, PW / VH, 0.05, 80);
+    if (VH > PH + 1) camera.setViewOffset(PW, VH, 0, (VH - PH) / 2, PW, PH); // the band of the tall frame this box shows
     const FLOOR = -3.4; // the ground far below the box, so it can dive out through the bottom as freely as anywhere
     const CAM = new THREE.Vector3(0, 1.4, 6); // a little above its flight, looking nearly level: it is seen from above and the side, low and high alike
     camera.position.copy(CAM);
@@ -852,7 +857,7 @@ void main(){
     const strokeMat = new THREE.ShaderMaterial({
       vertexShader: "attribute float alpha; uniform float proj; varying float vA; void main(){ vA = alpha; vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_Position = projectionMatrix * mv; gl_PointSize = max(1.0, 0.022 * proj / -mv.z); }",
       fragmentShader: "varying float vA; void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(vec3(0.9), vA * (1.0 - smoothstep(0.3, 0.5, r))); }",
-      uniforms: { proj: { value: (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)) } },
+      uniforms: { proj: { value: (VH * pr) / (2 * Math.tan((12 * Math.PI) / 180)) } },
       transparent: true,
       depthWrite: false,
     });
@@ -930,7 +935,7 @@ void main(){
         if (Math.abs(nx) > 0.45 && headingToSide && Math.random() < 0.85) {
           fly.perch = true;
           fs.perchSide = nx > 0 ? 1 : -1;
-          const end = onFrame(fs.perchSide * 0.95, TOP ? clamp(ny, -0.75, -0.3) : clamp(ny, FLOOR_N - 0.05, CEIL_N), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
+          const end = onFrame(fs.perchSide * 0.95, TOP ? clamp(ny, -0.75, -0.3) : clamp(ny, Math.max(FLOOR_N, -0.35), Math.min(CEIL_N - 0.15, 0.2)), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
           fly.pts = [end];
           fly.idx = 0;
           fly.target.copy(end);
@@ -1065,7 +1070,7 @@ void main(){
         // the side it has flown to, at about the height it is flying at
         ndcNow.copy(b.root.position).project(camera);
         const nx = fs.perchSide;
-        const ny = clamp(ndcNow.y, -0.6, 0.45);
+        const ny = clamp(ndcNow.y, -0.35, 0.2); // along the side, never up in a corner where only its legs would show
         const d = clamp(camera.position.distanceTo(b.root.position), 6.8 * D_K, 8.5 * D_K); // where it is: it does not swell towards you as it turns
         const P = onFrame(nx, ny, d, vB);
         const C = onFrame(0, 0, d, vC);
@@ -1086,7 +1091,7 @@ void main(){
         const S = b.root.scale.x;
         const headAt = new THREE.Vector3();
         const inset = (h: THREE.Vector3) => Math.min(nx !== 0 && Math.abs(nx) === 1 ? 1 - Math.abs(h.x) : 9, Math.abs(ny) === 1 ? 1 - Math.abs(h.y) : 9);
-        const want = Math.abs(ny) === 1 ? 0.34 : 0.075; // the frame is wide and short: a little more room top and bottom
+        const want = Math.abs(ny) === 1 ? 0.34 : 0.16; // its whole face well inside the edge // the frame is wide and short: a little more room top and bottom
         for (let it = 0; it < 24; it++) {
           headAt.set(0, STAND * S, 0.62 * BODY * S).applyQuaternion(fs.toQ).add(fs.toP).project(camera);
           const err = want - inset(headAt);
@@ -1165,21 +1170,8 @@ void main(){
                 // coming into view at once, on a heading into the box that is different every time
                 introPending = false;
                 wand.lastLook = t - 9; // it will stop to look at you soon after it arrives
-                if (Math.random() < 0.45) {
-                  // the opening seen from above: it hangs in the box with its back to you, wings spread and beating, and
-                  // turns slowly round; then it tips level and flies off on its way
-                  fs.toP.copy(onFrame(rnd(-0.35, 0.35), clamp(rnd(-0.25, 0.05), FLOOR_N + 0.1, CEIL_N - 0.1), rnd(8, 9.5) * D_K, new THREE.Vector3()));
-                  fs.toP.y = Math.max(fs.toP.y, FLOOR + 0.35);
-                  fs.yaw = rnd(-Math.PI, Math.PI);
-                  fs.t0 = t;
-                  fs.dur = rnd(3.6, 4.6);
-                  fs.mode = "show";
-                  fly.hidden = false;
-                  b.root.position.copy(fs.toP);
-                  return;
-                }
-                // or it flies in from beyond any side or corner, a different one each time and in each film
-                const ways: [number, number][] = [[-1.45, rnd(-0.3, 0.2)], [1.45, rnd(-0.3, 0.2)], [-1.4, 0.75], [1.4, 0.75], [-1.4, -0.75], [1.4, -0.75], [rnd(-0.6, 0.6), 1.5]];
+                // it flies in from beyond any side or corner, a different one each time and in each film
+                const ways: [number, number][] = [[-1.45, rnd(-0.3, 0.2)], [1.45, rnd(-0.3, 0.2)], [-1.4, 0.75], [1.4, 0.75], [-1.4, -0.75], [1.4, -0.75]]; // never straight down from the top, where its legs would come first
                 const [ex, ey] = ways[Math.floor(Math.random() * ways.length)];
                 onFrame(ex, ey, rnd(7.5, 9.5) * D_K, fly.p);
                 fly.p.y = Math.max(fly.p.y, FLOOR + 0.35);
@@ -1589,7 +1581,7 @@ void main(){
       if (!alive) return;
       // the same size on screen in every box: as large as it is in the tall painting at the foot of the page, so in the
       // shorter box at the top of the home page it is drawn larger to match
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 4.4, 30000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)), 5 * SIZE_K);
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 4.4, 30000), sketchU, (VH * pr) / (2 * Math.tan((12 * Math.PI) / 180)), 5);
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
