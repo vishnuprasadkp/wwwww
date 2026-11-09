@@ -294,6 +294,79 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
   });
 }
 
+/**
+ * Fine dust on a body part's surface, like the wings: it gathers along the part's outline as you see it, thin across its
+ * face, and the dust on the outline drifts off and fades, always renewed.
+ */
+const BODY_DUST_VS = `attribute vec3 aN; attribute vec4 aSeed;
+  uniform float time; uniform float proj; uniform float fogNear; uniform float fogFar; uniform float amt;
+  varying float vA;
+  void main(){
+    float life = fract(time * 0.2 + aSeed.y);
+    vec3 n = normalize(aN);
+    vec3 p = position + n * life * life * 0.12 * aSeed.z;
+    vec4 mv = modelViewMatrix * vec4(p, 1.0);
+    gl_Position = projectionMatrix * mv;
+    float depth = -mv.z;
+    gl_PointSize = max(1.0, aSeed.x * 0.018 * proj / depth);
+    float rim = 1.0 - abs(dot(normalize(normalMatrix * n), normalize(-mv.xyz)));
+    float a = smoothstep(0.35, 0.95, rim) * 0.95 + 0.1;
+    vA = a * mix(1.0, 1.0 - life, aSeed.z) * (0.75 + 0.25 * sin(time * 2.1 + aSeed.y * 37.0)) * (1.0 - smoothstep(fogNear, fogFar, depth)) * amt;
+  }`;
+const BODY_DUST_FS = `varying float vA;
+  void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(1.0, 0.97, 0.92, vA * (1.0 - smoothstep(0.18, 0.5, r))); }`;
+function surfaceDust(geo: THREE.BufferGeometry, n: number) {
+  const g = geo.index ? geo.toNonIndexed() : geo;
+  const pa = g.attributes.position;
+  const tris = pa.count / 3;
+  const a = new THREE.Vector3();
+  const b = new THREE.Vector3();
+  const c = new THREE.Vector3();
+  const e1 = new THREE.Vector3();
+  const e2 = new THREE.Vector3();
+  const areas: number[] = [];
+  let total = 0;
+  for (let t = 0; t < tris; t++) {
+    a.fromBufferAttribute(pa, t * 3);
+    b.fromBufferAttribute(pa, t * 3 + 1);
+    c.fromBufferAttribute(pa, t * 3 + 2);
+    total += e1.subVectors(b, a).cross(e2.subVectors(c, a)).length() / 2;
+    areas.push(total);
+  }
+  const pos: number[] = [];
+  const nor: number[] = [];
+  const seed: number[] = [];
+  for (let i = 0; i < n; i++) {
+    const r = Math.random() * total;
+    let lo = 0;
+    let hi = tris - 1;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (areas[mid] < r) lo = mid + 1;
+      else hi = mid;
+    }
+    a.fromBufferAttribute(pa, lo * 3);
+    b.fromBufferAttribute(pa, lo * 3 + 1);
+    c.fromBufferAttribute(pa, lo * 3 + 2);
+    let u = Math.random();
+    let v = Math.random();
+    if (u + v > 1) {
+      u = 1 - u;
+      v = 1 - v;
+    }
+    const p = a.clone().addScaledVector(e1.subVectors(b, a), u).addScaledVector(e2.subVectors(c, a), v);
+    const nn = new THREE.Vector3().crossVectors(e1, e2).normalize();
+    pos.push(p.x, p.y, p.z);
+    nor.push(nn.x, nn.y, nn.z);
+    seed.push(0.6 + Math.random() * 0.9, Math.random(), Math.random() < 0.55 ? 1 : 0, 0);
+  }
+  const out = new THREE.BufferGeometry();
+  out.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  out.setAttribute("aN", new THREE.Float32BufferAttribute(nor, 3));
+  out.setAttribute("aSeed", new THREE.Float32BufferAttribute(seed, 4));
+  return out;
+}
+
 /* ---------------- the beetle ---------------- */
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
 function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number) {
@@ -539,11 +612,11 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     w.rotation.order = "YXZ";
     const m = new THREE.Mesh(wg, wingMat);
     m.scale.x = side;
-    m.renderOrder = 3;
+    m.renderOrder = 22;
     w.add(m);
     const dots = new THREE.Points(wingDots, dustMat);
     dots.scale.x = side;
-    dots.renderOrder = 4;
+    dots.renderOrder = 23;
     dots.frustumCulled = false;
     w.add(dots);
     body.add(w);
@@ -555,7 +628,45 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   root.scale.setScalar(1.85);
   body.scale.setScalar(0.6);
   for (const w of wings) w.scale.setScalar(0.88 / 0.6);
-  return { root, body, cases, wings, legs, antennae, head, WL, dustMat };
+  // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
+  // first only into depth (after the smoke), then its ink, which lets everything behind show through its empty paper.
+  const depthOnly = new THREE.MeshBasicMaterial({ colorWrite: false, transparent: true, side: THREE.DoubleSide });
+  const dustBody = new THREE.ShaderMaterial({
+    vertexShader: BODY_DUST_VS,
+    fragmentShader: BODY_DUST_FS,
+    uniforms: { time: sk.time, proj: { value: proj }, fogNear: sk.fogNear, fogFar: sk.fogFar, amt: { value: 1 } },
+    transparent: true,
+    depthWrite: false,
+  });
+  const parts: THREE.Mesh[] = [];
+  root.traverse((o) => {
+    if (o instanceof THREE.Mesh && o.material instanceof THREE.ShaderMaterial && o.material.fragmentShader === SKETCH_FS) parts.push(o);
+  });
+  for (const m of parts) {
+    const mat = m.material as THREE.ShaderMaterial;
+    mat.transparent = true;
+    mat.depthWrite = false;
+    mat.depthFunc = THREE.LessEqualDepth;
+    mat.blending = THREE.CustomBlending;
+    mat.blendSrc = THREE.OneFactor;
+    mat.blendDst = THREE.OneMinusSrcAlphaFactor;
+    m.renderOrder = 21;
+    const d = new THREE.Mesh(m.geometry, depthOnly);
+    d.renderOrder = 20;
+    m.add(d);
+  }
+  // the dust: on the shell, the shield, the head and the underside
+  for (const m of parts) {
+    const g = m.geometry as THREE.BufferGeometry;
+    if (!g.boundingSphere) g.computeBoundingSphere();
+    const size = g.boundingSphere!.radius * Math.max(m.scale.x, m.scale.y, m.scale.z);
+    if (!(g instanceof THREE.SphereGeometry) || size < 0.15) continue;
+    const dots = new THREE.Points(surfaceDust(g, Math.round(700 + 3200 * Math.min(1, size * 2))), dustBody);
+    dots.renderOrder = 23;
+    dots.frustumCulled = false;
+    m.add(dots);
+  }
+  return { root, body, cases, wings, legs, antennae, head, WL, dustMat, dustBody };
 }
 
 export default function HeroFilm() {
@@ -627,7 +738,7 @@ void main(){
   float pv = texture2D(paint, vUv + w).a + (noise(vUv * 40.0) - 0.5) * 0.06;
   float body = smoothstep(0.05, 0.5, pv);
   float rim = smoothstep(0.05, 0.12, pv) * (1.0 - smoothstep(0.14, 0.32, pv));
-  gl_FragColor = vec4(col, body * 0.07 + rim * 0.035); // very faint: a breath of colour, never a stain
+  gl_FragColor = vec4(col, body * 0.11 + rim * 0.05); // faint: a breath of dark clay left where it went, never a stain
 }`,
       uniforms: { paint: { value: paintTex }, col: { value: new THREE.Vector3(CLAY.deep[0] * 0.7, CLAY.deep[1] * 0.7, CLAY.deep[2] * 0.7) }, time: { value: 0 } },
       transparent: true,
@@ -710,7 +821,7 @@ void main(){
       geo.setAttribute("alpha", new THREE.BufferAttribute(alpha, 1));
       const lines = new THREE.Points(geo, strokeMat); // fine dust, each mote a pair of dots
       lines.frustumCulled = false;
-      lines.renderOrder = 6;
+      lines.renderOrder = 24;
       scene.add(lines);
       return { pos, alpha, geo };
     };
@@ -732,6 +843,8 @@ void main(){
 
     // after the intro it flies freely about the box, slowly, for as long as you look
     const T_FREE = T_LIFT + 2.8;
+    // not always the walk-in: half the time the film opens with the beetle already there, peeping in at you
+    const skipIntro = Math.random() < 0.5;
     const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0 };
     const pickTarget = (t: number) => {
       // somewhere in view: nearer or further, left or right, a little higher or lower
@@ -855,7 +968,7 @@ void main(){
       let gait = walkT * 6.283 * 1.35;
       let lookIn = smooth(T_STOP, T_STOP + 0.6, k) * (1 - open);
 
-      if (k < T_FREE) {
+      if (k < T_FREE && !skipIntro) {
         // it rises to your eye level and hovers there facing you, wings spread
         b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 2.6 * lift); // it drifts back as it rises, so its whole wings are in the frame
         b.root.rotation.set(0.55 * lift, Math.cos(walkT * 0.55) * 0.25 * (1 - slow) + 0.38 * Math.sin((k - T_LIFT) * 0.45) * lift, 0.06 * Math.sin(k * 1.1) * lift); // tipped up as beetles fly, turning slowly so the wings face you
@@ -868,6 +981,18 @@ void main(){
           pickTarget(t);
           fs.until = t + rnd(7, 10);
           fs.after = Math.random() < 0.5 ? "walk" : "perch";
+          if (skipIntro) {
+            // no walk-in this time: it is already there on the frame, its head peeping in, looking at you
+            fs.after = "perch";
+            planLanding(t, b);
+            b.root.position.copy(fs.toP);
+            b.root.quaternion.copy(fs.toQ);
+            fs.mode = "perch";
+            fs.peek = 1;
+            fs.air = 0;
+            fs.until = t + rnd(4, 5.5);
+            fs.after = "walk";
+          }
         }
         if (fs.mode === "fly") {
           if (t > fly.next || fly.p.distanceTo(fly.target) < 0.4) pickTarget(t);
@@ -875,7 +1000,7 @@ void main(){
           const want = fly.target.clone().sub(fly.p);
           const dist = want.length();
           want.normalize().multiplyScalar(0.42 * clamp(dist / 1.2, 0.25, 1));
-          const ease = smooth(T_FREE, T_FREE + 3, t); // it sets off gently
+          const ease = skipIntro ? 1 : smooth(T_FREE, T_FREE + 3, t); // it sets off gently
           fly.v.lerp(want, Math.min(1, dt * 0.7));
           fly.p.addScaledVector(fly.v, dt * ease);
           const sp = Math.hypot(fly.v.x, fly.v.z);
@@ -1091,7 +1216,7 @@ void main(){
       const dt = clamp(t - tLast, 0, 0.1);
       tLast = t;
       // smoke rolls in for the entrance, then clears away completely, leaving the painting as it is
-      const smokeIn = smooth(0.3, 2.8, t) * (1 - smooth(T_STOP - 1, T_STOP + 4, t));
+      const smokeIn = (skipIntro ? 0.35 : 1) * smooth(0.3, 2.8, t) * (1 - smooth(skipIntro ? 2 : T_STOP - 1, skipIntro ? 6 : T_STOP + 4, t));
       for (const p of puffs) {
         p.s.visible = smokeIn > 0.002;
         p.s.position.set(p.base.x + Math.sin(t * 0.05 + p.phase) * 1.2 + t * p.drift * 0.3, p.base.y + Math.sin(t * 0.13 + p.phase) * 0.08, p.base.z);
@@ -1127,7 +1252,7 @@ void main(){
       // a slow, breathing camera, as if held
       // for the walk-in it looks along the floor; once the beetle is up it tilts slowly up, so the beetle keeps to the lower
       // part of the frame and its wings have the whole sky above it
-      const up = smooth(T_LIFT, T_LIFT + 3.5, t);
+      const up = skipIntro ? 1 : smooth(T_LIFT, T_LIFT + 3.5, t);
       camera.position.set(CAM.x + Math.sin(t * 0.21) * 0.06, 0.42 + (CAM.y - 0.42) * up + Math.sin(t * 0.17) * 0.03, CAM.z);
       camera.lookAt(0, 0.3 + 0.75 * up, 0);
       pose(t, dt);
