@@ -1,5 +1,6 @@
 import HeroFilm from "./HeroFilm";
 import HeroInk from "./HeroInk";
+import FilmShade from "./FilmShade";
 import { SCHEMES, inkPalette } from "@/lib/painting";
 import type { InkPalette } from "./HeroInk";
 
@@ -24,6 +25,7 @@ export default function Hero() {
         {/* the dark grey painting from the foot of the home page; the beetle film is drawn over it */}
         <HeroInk palette={HERO_INK} spread={false} refHeight={900} speed={1.6} grain={1} />
         <HeroFilm place="top" />
+        <FilmShade />
       </div>
       <LogoMarquee />
     </section>

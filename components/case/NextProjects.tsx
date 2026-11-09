@@ -3,6 +3,7 @@ import Pic from "@/components/ui/Pic";
 import type { CaseMeta } from "@/lib/cases";
 import HeroInk from "@/components/home/HeroInk";
 import HeroFilm from "@/components/home/HeroFilm";
+import FilmShade from "@/components/home/FilmShade";
 import { schemeForClosing, inkPalette } from "@/lib/painting";
 
 /**
@@ -16,6 +17,7 @@ export default function NextProjects({ closing, next }: { closing: string; next:
       <div className="relative w-full overflow-hidden" style={{ height: "clamp(420px, 36vw, 680px)", background: `rgb(${palette.mid.map((v) => Math.round(v * 255)).join(",")})` }}>
         <HeroInk palette={palette} spread={false} refHeight={900} speed={1.6} grain={1} />
         <HeroFilm palette={palette} />
+        <FilmShade />
       </div>
       <section className="mt-16 md:mt-[100px] lg:mt-[140px]">
         <div className="border-b border-rule px-5 pb-[22px] pt-[21px] md:px-8">

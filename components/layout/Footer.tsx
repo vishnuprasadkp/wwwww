@@ -2,6 +2,7 @@
 
 import HeroInk from "@/components/home/HeroInk";
 import HeroFilm from "@/components/home/HeroFilm";
+import FilmShade from "@/components/home/FilmShade";
 import NyrroNote from "@/components/layout/NyrroNote";
 import { SCHEMES, inkPalette } from "@/lib/painting";
 import { usePathname } from "next/navigation";
@@ -21,6 +22,7 @@ export default function Footer() {
         <div className="relative w-full overflow-hidden" style={{ height: "clamp(420px, 36vw, 680px)", background: "#545454" }}>
           <HeroInk palette={inkPalette(SCHEMES.charcoal)} spread={false} refHeight={900} speed={1.6} grain={1} />
           <HeroFilm />
+          <FilmShade />
           <NyrroNote />
         </div>
       )}
