@@ -12,7 +12,7 @@ const STAND_AT = 2200; // it settles and stands still, wings folded
 const PREP_AT = 2600; // then its wing cases begin to lift, slowly, as it gets ready
 const FLY_AT = 3200; // and only then does it leave for the assistant
 const FLY = 1700;
-const SIZE = 64;
+const SIZE = 52;
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = (t: number) => t * t * (3 - 2 * t);
