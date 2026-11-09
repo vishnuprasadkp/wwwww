@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
+import { mountBeetle3D, type Beetle3D } from "./beetle3d";
 
 export const INK = "#e4572e"; // the brand orange: only the AI star
 const PAPER = "#eae7e6"; // its fill: the page background, so it is drawn like the logo, as a line
@@ -951,6 +952,21 @@ export default function MothTrail({
     el.style.opacity = "1";
     star.style.opacity = "1";
 
+    // Drawn as the film's beetle: the same 3D model, lines and dust, in this ink and at this size. The flat drawing stands in
+    // until it is ready (and stays, if there is no WebGL).
+    let b3: Beetle3D | null = null;
+    let alive3 = true;
+    if (!reduced) {
+      mountBeetle3D(el, { size: SIZE, ink: onDark(colors) ? colors.deep : BLACK })
+        .then((b) => {
+          if (!alive3) return b?.dispose();
+          if (!b) return;
+          b3 = b;
+          turner.style.visibility = "hidden";
+        })
+        .catch(() => {});
+    }
+
     // Turn towards `target`: a spring, so the moth eases into the turn, can swing a hair past and settles back, the way a
     // body turning on the spot does (omega is how brisk it is).
     const turn = (target: number, dt: number, omega: number) => {
@@ -987,6 +1003,7 @@ export default function MothTrail({
       // about 55°, so there is no jump in size, and the blend is short so there is no ghost of the other view.
       topFace.style.opacity = String(clamp((60 - deg) / 18, 0, 1));
       sface.style.opacity = String(clamp((deg - 42) / 18, 0, 1));
+      b3?.pose({ t: now / 1000, open: p, roll: dirn * frac, walking: mode === "walk", flying: mode === "fly" || mode === "grab" });
       const sway = mode === "walk" && !perched ? Math.sin(now / 240) * 0.05 : 0;
       const bob = mode === "walk" && perched ? Math.sin(now / 120) * 0.5 : 0; // a walking step
       // the wrapper only moves (so the shadow always falls straight down); the moth turns inside it
@@ -1586,6 +1603,9 @@ export default function MothTrail({
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      alive3 = false;
+      b3?.dispose();
+      turner.style.visibility = "";
       swarm.get(host)?.delete(me);
       host.removeEventListener("pointerdown", onDown);
       hit.removeEventListener("pointerdown", onHitDown);

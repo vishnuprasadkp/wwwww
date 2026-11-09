@@ -23,7 +23,7 @@ const GREY = inkPalette(SCHEMES.charcoal); // the home page's dark grey: the gro
  * still frame of the beetle close up is drawn.
  */
 
-const WING = "/images/site/hero-beetle-v7-wing.webp";
+export const WING = "/images/site/hero-beetle-v7-wing.webp";
 const WING_BASE = [0.0603, 0.4627];
 const WING_ASPECT = 766 / 1282;
 
@@ -83,7 +83,7 @@ function smokeTexture() {
  * The wing, drawn: no fill at all, only its outline and its veins, in fine white ink strokes taken from the beetle's own
  * painted wing.
  */
-function drawnWing(img: HTMLImageElement) {
+export function drawnWing(img: HTMLImageElement, rgb: [number, number, number] = [246, 246, 246]) {
   const w = img.width;
   const h = img.height;
   const c = document.createElement("canvas");
@@ -115,9 +115,9 @@ function drawnWing(img: HTMLImageElement) {
   };
   const ink = (o: number, a: number) => {
     a *= root(o % w);
-    q[o * 4] = 246;
-    q[o * 4 + 1] = 246;
-    q[o * 4 + 2] = 246;
+    q[o * 4] = rgb[0];
+    q[o * 4 + 1] = rgb[1];
+    q[o * 4 + 2] = rgb[2];
     q[o * 4 + 3] = Math.max(q[o * 4 + 3], Math.round(255 * a));
   };
   const st = Math.max(3, Math.round(w / 260));
@@ -150,7 +150,7 @@ function drawnWing(img: HTMLImageElement) {
  * the membrane. Each dot is placed on the wing's own arched surface; the dots along its edge are marked, so they can drift
  * off and dissolve into the air.
  */
-function stippledWing(img: HTMLImageElement, WL: number, N: number) {
+export function stippledWing(img: HTMLImageElement, WL: number, N: number) {
   const W = 420;
   const H = Math.round((W * img.height) / img.width);
   const c = document.createElement("canvas");
@@ -277,7 +277,7 @@ void main(){
   gl_FragColor = vec4(ink * a, a);
 }`;
 
-type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number } };
+export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 } };
 type Lines = { merid?: number; rings?: number; hatch?: number; weight?: number };
 const INK = new THREE.Vector3(0.96, 0.96, 0.96); // pure white ink, no warmth: white and grey only
 function sketchMaterial(shared: SketchU, lines: Lines = {}) {
@@ -286,8 +286,11 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
     fragmentShader: SKETCH_FS,
     side: THREE.DoubleSide, // the inside of the shell is drawn too, so an open or turned shell never shows an empty hole
     uniforms: {
-      ...shared,
-      ink: { value: INK },
+      time: shared.time,
+      fogNear: shared.fogNear,
+      fogFar: shared.fogFar,
+      px: shared.px,
+      ink: shared.ink ?? { value: INK },
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },
@@ -317,8 +320,8 @@ const BODY_DUST_VS = `attribute vec3 aN; attribute vec4 aSeed;
     float a = smoothstep(0.35, 0.95, rim) * 0.95 + 0.1;
     vA = mix(a, 0.55, aSeed.z * smoothstep(0.0, 0.25, life)) * mix(1.0, (1.0 - life) * (1.0 - life), aSeed.z) * (0.75 + 0.25 * sin(time * 2.1 + aSeed.y * 37.0)) * (1.0 - smoothstep(fogNear, fogFar, depth)) * amt;
   }`;
-const BODY_DUST_FS = `varying float vA;
-  void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(vec3(0.95), vA * (1.0 - smoothstep(0.3, 0.5, r))); }`;
+const BODY_DUST_FS = `varying float vA; uniform vec3 dcol;
+  void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(dcol, vA * (1.0 - smoothstep(0.3, 0.5, r))); }`;
 function surfaceDust(geo: THREE.BufferGeometry, n: number) {
   const g = geo.index ? geo.toNonIndexed() : geo;
   const pa = g.attributes.position;
@@ -374,10 +377,18 @@ function surfaceDust(geo: THREE.BufferGeometry, n: number) {
 /* ---------------- the beetle ---------------- */
 // how big the body is against its wings, and so how high it stands: its legs reach 0.28 of its own units below its middle,
 // so at this size its feet rest exactly on the floor, each on its own shadow
-const BODY = 0.47;
+export const BODY = 0.47;
 const STAND = 0.28 * BODY;
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
-function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number, size = 5) {
+/** `look`: its ink (sRGB 0–1; white in the films), how much of its dust to scatter (1 in the films) and how large its wings
+ * are against its body (1 in the films, where the wings lead). */
+export type BeetleLook = { ink?: [number, number, number]; dust?: [number, number, number]; dots?: number; wingK?: number };
+export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number, size = 5, look: BeetleLook = {}) {
+  const inkC = look.ink ?? [0.95, 0.95, 0.95];
+  const dustA = look.dust ?? [0.97, 0.97, 0.97];
+  const dustB: [number, number, number] = look.dust ? [look.dust[0] * 0.8 + 0.2 * 0.74, look.dust[1] * 0.8 + 0.2 * 0.74, look.dust[2] * 0.8 + 0.2 * 0.74] : [0.74, 0.74, 0.74];
+  const wingK = look.wingK ?? 1;
+  const dotsK = look.dots ?? 1;
   const root = new THREE.Group();
   const body = new THREE.Group();
   body.position.y = STAND; // standing tall on its feet: they just touch the floor
@@ -470,7 +481,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 24, 16), black);
     eye.position.set(s * 0.12, 0.02, 0.05);
     // its eyes, drawn like the rest: the eye a ring of ink, the pupil a small ring of ink on it, turning to look at you
-    const pupil = new THREE.Mesh(new THREE.RingGeometry(0.0175, 0.0215, 32), new THREE.MeshBasicMaterial({ color: lin(0.95, 0.95, 0.95), side: THREE.DoubleSide, transparent: true, opacity: 0.85 })); // a fine ring, as fine as the body's lines
+    const pupil = new THREE.Mesh(new THREE.RingGeometry(0.0175, 0.0215, 32), new THREE.MeshBasicMaterial({ color: lin(...inkC), side: THREE.DoubleSide, transparent: true, opacity: 0.85 })); // a fine ring, as fine as the body's lines
     pupil.position.set(0, 0, 0.07);
     eye.add(pupil);
     pupils.push(pupil);
@@ -609,14 +620,14 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
         vA = mix(1.0, 1.0 - life, aEdge) * tw * mix(0.4, 1.0, smoothstep(0.05, 0.3, facing)) * smoothstep(1.6, 3.0, depth);
         vT = aSeed.y;
       }`,
-    fragmentShader: `uniform float open; uniform float fogNear; uniform float fogFar; varying float vA; varying float vT;
+    fragmentShader: `uniform float open; uniform float fogNear; uniform float fogFar; uniform vec3 dA; uniform vec3 dB; varying float vA; varying float vT;
       void main(){
         float r = length(gl_PointCoord - 0.5);
         float a = (1.0 - smoothstep(0.3, 0.5, r)) * vA * open * 0.85;
-        vec3 col = mix(vec3(0.97), vec3(0.74), step(0.7, vT)); // white, with some soft grey among it
+        vec3 col = mix(dA, dB, step(0.7, vT)); // white, with some soft grey among it (or the ink's own shades)
         gl_FragColor = vec4(col, a);
       }`,
-    uniforms: { time: sk.time, proj: { value: proj }, px: sk.px, WL: { value: WL }, open: { value: 0 }, fogNear: sk.fogNear, fogFar: sk.fogFar },
+    uniforms: { time: sk.time, proj: { value: proj }, px: sk.px, WL: { value: WL }, open: { value: 0 }, fogNear: sk.fogNear, fogFar: sk.fogFar, dA: { value: new THREE.Vector3(...dustA) }, dB: { value: new THREE.Vector3(...dustB) } },
     transparent: true,
     depthWrite: false,
   });
@@ -642,14 +653,14 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   // the body smaller, the wings as large as before
   root.scale.setScalar(size);
   body.scale.setScalar(BODY);
-  for (const w of wings) w.scale.setScalar(0.88 / BODY);
+  for (const w of wings) w.scale.setScalar((0.88 / BODY) * wingK);
   // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
   // first only into depth (after the smoke), then its ink, which lets everything behind show through its empty paper.
   const depthOnly = new THREE.MeshBasicMaterial({ colorWrite: false, transparent: true, side: THREE.DoubleSide });
   const dustBody = new THREE.ShaderMaterial({
     vertexShader: BODY_DUST_VS,
     fragmentShader: BODY_DUST_FS,
-    uniforms: { time: sk.time, proj: { value: proj }, fogNear: sk.fogNear, fogFar: sk.fogFar, amt: { value: 1 } },
+    uniforms: { time: sk.time, proj: { value: proj }, fogNear: sk.fogNear, fogFar: sk.fogFar, amt: { value: 1 }, dcol: { value: new THREE.Vector3(...dustA) } },
     transparent: true,
     depthWrite: false,
   });
@@ -676,12 +687,12 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     if (!g.boundingSphere) g.computeBoundingSphere();
     const size = g.boundingSphere!.radius * Math.max(m.scale.x, m.scale.y, m.scale.z);
     if (!(g instanceof THREE.SphereGeometry) || size < 0.15) continue;
-    const dots = new THREE.Points(surfaceDust(g, Math.round(13000 + 40000 * Math.min(1, size * 2))), dustBody);
+    const dots = new THREE.Points(surfaceDust(g, Math.round((13000 + 40000 * Math.min(1, size * 2)) * dotsK)), dustBody);
     dots.renderOrder = 23;
     dots.frustumCulled = false;
     m.add(dots);
   }
-  return { root, body, cases, wings, legs, antennae, head, WL, dustMat, dustBody, pupils };
+  return { root, body, cases, wings, legs, antennae, head, WL, dustMat, dustBody, pupils, wingK };
 }
 
 /**
@@ -736,9 +747,30 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
       renderer.dispose();
       renderer.domElement.remove();
     });
+    // A new size (the assistant opening beside the page, a window resized) is taken in place: the film keeps playing and
+    // the beetle flies on, only the frame widens or narrows around it. It is built afresh only if the box grows much taller
+    // than the frame it was made for.
+    let fitW = PW;
+    let fitH = PH;
     const ro = new ResizeObserver(() => {
       const r = host.getBoundingClientRect();
-      if (Math.abs(r.width - PW) / PW > 0.2 || Math.abs(r.height - PH) / PH > 0.25) setKey((k) => k + 1);
+      const w = Math.max(300, Math.round(r.width));
+      const h = Math.max(200, Math.round(r.height));
+      if (w === fitW && h === fitH) return;
+      if (h > VH * 1.15) {
+        setKey((k) => k + 1);
+        return;
+      }
+      fitW = w;
+      fitH = h;
+      const full = Math.max(VH, h);
+      renderer.setSize(w, h);
+      camera.aspect = w / full;
+      if (full > h + 1) camera.setViewOffset(w, full, 0, (full - h) / 2, w, h);
+      else camera.clearViewOffset();
+      camera.updateProjectionMatrix();
+      glaze.scale.x = w / h / aspect; // the faint paint far behind keeps filling the frame
+      if (!raf || !visible) renderer.render(scene, camera); // never a stretched frame while it is paused
     });
     ro.observe(host);
     cleanup.push(() => ro.disconnect());

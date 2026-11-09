@@ -1930,10 +1930,11 @@
     "what are his strengths",
     "what is his expertise"
    ],
-   "answer": "**Design & research**\n- Product design, UX design and interaction design\n- Information architecture and user flows\n- Design systems and component libraries\n- User research, usability testing and journey mapping\n- Accessibility (WCAG) and enterprise SaaS\n\n**Strategy & systems**\n- Product strategy and product discovery\n- Systems thinking\n- Stakeholder management and design leadership\n- DesignOps: handoff and review workflows that cut rework\n- Data visualisation for data-heavy platforms\n\n**AI & tools**\n- AI product design, agentic UX, prompt engineering and generative prototyping\n- Claude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite",
+   "answer": "Every skill on his resume, and where it shows in his work:\n\n**Design & research**\n- **Product, UX and interaction design** for enterprise SaaS, AI and data-heavy platforms\n- **Information architecture and user flows:** turning unclear business and technical requirements into scalable workflows\n- **Design systems and component libraries:** he owns the UnifyApps design system, reused across **60+ enterprise deployments**\n- **Usability testing and journey mapping**\n- **Accessibility (WCAG 2.1)**, held as a standard across the products his team ships\n\n**Strategy & systems**\n- **Product strategy and product discovery:** taking ambiguous, high-stakes problems from discovery to launch\n- **User research and systems thinking:** mapping the people, dependencies and failure points before designing a screen\n- **Stakeholder management:** **3 enterprise initiatives** run in parallel with product, engineering and executive stakeholders\n- **Design leadership and DesignOps:** mentors **6 junior designers**, and set up handoff and review workflows that cut rework\n- **Data visualisation** for data-heavy platforms\n\n**AI & tools**\n- **AI product design and agentic UX**, with **prompt engineering** and **generative prototyping**\n- **Tools:** Figma, Figma AI, FigJam, Framer, Miro, Adobe Creative Suite, Claude and Google AI Studio",
    "followups": [
     "What tools does he use?",
-    "How does he design?"
+    "How does he design?",
+    "What has he achieved?"
    ],
    "priority": false
   },

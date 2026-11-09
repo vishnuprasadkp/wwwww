@@ -125,12 +125,6 @@ export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const cleanup: (() => void)[] = [];
-    const ro = new ResizeObserver(() => {
-      const r = host.getBoundingClientRect();
-      if (Math.abs(r.width - W) / W > 0.25 || Math.abs(r.height - H) / H > 0.3) setKey((k) => k + 1);
-    });
-    ro.observe(host);
-    cleanup.push(() => ro.disconnect());
 
     const gl = cv.getContext("webgl", { alpha: false, antialias: false, depth: false, stencil: false });
     if (!gl) return () => cleanup.forEach((f) => f());
@@ -171,6 +165,28 @@ export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight
     gl.uniform3f(u("uDeep"), ...palette.deep);
     gl.uniform3f(u("uGrey"), ...palette.grey);
     gl.viewport(0, 0, cv.width, cv.height);
+    // a new size (the assistant opening beside the page, a window resized) is taken in place: the wash keeps flowing, with no
+    // restart and no blank frame
+    const uAspect = u("aspect");
+    const uScale = u("scale");
+    let fitW = W;
+    let fitH = H;
+    const ro = new ResizeObserver(() => {
+      const r = host.getBoundingClientRect();
+      const w = Math.max(300, Math.round(r.width));
+      const hh = Math.max(240, Math.round(r.height));
+      if (w === fitW && hh === fitH) return;
+      fitW = w;
+      fitH = hh;
+      cv.width = Math.round(w * ps);
+      cv.height = Math.round(hh * ps);
+      gl.viewport(0, 0, cv.width, cv.height);
+      gl.uniform1f(uAspect, w / hh);
+      gl.uniform1f(uScale, refHeight ? Math.min(1, Math.max(0.2, hh / refHeight)) : 1);
+      draw(clock); // setting the size clears the canvas: draw straight away
+    });
+    ro.observe(host);
+    cleanup.push(() => ro.disconnect());
 
     const draw = (t: number) => {
       // the colour spreads in over the first seven seconds, slowing as it reaches the edges
