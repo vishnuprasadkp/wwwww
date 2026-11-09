@@ -164,7 +164,7 @@ export function NivviButton({ className = "" }: { className?: string }) {
       aria-expanded={open}
       className={`flex items-center gap-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
-      <BeetleIcon size={20} />
+      <BeetleIcon size={20} live />
       <span className="nivvi-label">Nyrro</span>
     </button>
   );

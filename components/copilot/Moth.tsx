@@ -366,13 +366,73 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
  * assistant draw it live (public/images/site/nyrro-*.png), so the loader lands on an identical icon and the assistant's
  * beetle steps out of one.
  */
-export function BeetleIcon({ size = 24, star = true, className = "" }: { size?: number; star?: boolean; className?: string }) {
+export function BeetleIcon({ size = 24, star = true, className = "", live = false }: { size?: number; star?: boolean; className?: string; live?: boolean }) {
   const file = size <= 20 ? 20 : 64;
   const C = beetleCanvas(size);
+  const boxRef = useRef<HTMLSpanElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  // `live`: once the page has opened, the icon becomes the 3D beetle itself, alive where it sits: its feelers move and
+  // twitch, it grooms with its front legs, its legs shift. It starts in exactly the icon's pose (so the opening lands on
+  // the same beetle) and eases into life. Drawn only while it is on screen and the tab is in view, at 30 frames a second.
+  useEffect(() => {
+    if (!live) return;
+    const box = boxRef.current;
+    const img = imgRef.current;
+    if (!box || !img || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let b3: Beetle3D | null = null;
+    let raf = 0;
+    let dead = false;
+    let seen = true;
+    let t0 = 0;
+    let lastDraw = 0;
+    const io = new IntersectionObserver(([e]) => (seen = e.isIntersecting));
+    io.observe(box);
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick);
+      if (!b3 || !seen || document.hidden || now - lastDraw < 33) return;
+      lastDraw = now;
+      if (!t0) t0 = now;
+      const s = (now - t0) / 1000;
+      b3.pose({ t: s + 0.6, open: 0, roll: 0, walking: false, flying: false, settle: 1 - Math.min(1, s / 1.5) });
+    };
+    const start = () => {
+      mountBeetle3D(box, { size, ink: BLACK })
+        .then((b) => {
+          if (dead) return b?.dispose();
+          if (!b) return;
+          b3 = b;
+          box.insertBefore(b.canvas, img.nextSibling); // under the AI star, as the picture was
+          b.pose({ t: 0.6, open: 0, roll: 0, walking: false, flying: false, settle: 1 });
+          img.style.visibility = "hidden";
+          raf = requestAnimationFrame(tick);
+        })
+        .catch(() => {});
+    };
+    const html = document.documentElement;
+    let mo: MutationObserver | null = null;
+    if (!html.hasAttribute("data-loading")) start();
+    else {
+      mo = new MutationObserver(() => {
+        if (html.hasAttribute("data-loading")) return;
+        mo?.disconnect();
+        start();
+      });
+      mo.observe(html, { attributes: true, attributeFilter: ["data-loading"] });
+    }
+    return () => {
+      dead = true;
+      mo?.disconnect();
+      io.disconnect();
+      cancelAnimationFrame(raf);
+      b3?.dispose();
+      img.style.visibility = "";
+    };
+  }, [live, size]);
   return (
-    <span className={className} style={{ position: "relative", display: "inline-block", width: size * WIDE, height: size, lineHeight: 0 }}>
+    <span ref={boxRef} className={className} style={{ position: "relative", display: "inline-block", width: size * WIDE, height: size, lineHeight: 0 }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        ref={imgRef}
         src={`/images/site/nyrro-${file}.png`}
         alt=""
         aria-hidden="true"

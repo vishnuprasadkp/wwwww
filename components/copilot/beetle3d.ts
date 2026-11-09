@@ -190,13 +190,14 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // a gentle lean as it flies
     pivot.rotation.x = -0.18 * air * (1 - clamp(p.settle ?? 0, 0, 1));
 
+    // in flight a beetle holds its cases up and a little apart, close over its body: so their grooved outsides stay in view
+    // and the body is never two empty shells
     b.cases.forEach((c, i) => {
       const s = i === 0 ? 1 : -1;
-      c.rotation.set(0.4 * open, s * 0.22 * open, -s * 0.85 * open);
+      c.rotation.set(0.32 * open, s * 0.12 * open, -s * 0.42 * open);
     });
-    // lifted, the cases are seen more edge-on: a slightly lighter outline, the stripes kept (on their outer face only)
-    shellMat.uniforms.weight.value = shellWeight * (1 - 0.25 * ease(open / 0.6));
-    shellMat.uniforms.stripes.value = 1 - ease((open - 0.35) / 0.45); // a lifted case is seen edge-on: its outline only, over the banded belly
+    shellMat.uniforms.weight.value = shellWeight * (1 - 0.15 * ease(open / 0.6));
+    shellMat.uniforms.stripes.value = 1;
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;
@@ -213,11 +214,17 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // the antennae feel the air all the time; swept back in flight
     const k = p.t;
     const live = 1 - clamp(p.settle ?? 0, 0, 1); // how much of its living movement is left
+    // at rest it is alive: every few seconds it grooms (lifts its front legs and rubs them together), now and then its
+    // feelers twitch, and its other legs shift a little
+    const still = (1 - air) * (p.walking ? 0 : 1) * live;
+    const cyc = (k % 5.2) / 5.2;
+    const groom = still * Math.pow(Math.sin(Math.PI * clamp((cyc - 0.55) / 0.35, 0, 1)), 0.6);
+    const twitch = still * Math.exp(-Math.pow(((k + 1.7) % 3.1) - 0.15, 2) * 60);
     b.antennae.forEach((a, i) => {
       const sd = i === 0 ? 1 : -1;
       const w = p.walking ? 2.6 : 1.4;
-      a.rotation.y = sd * (0.35 + (0.15 * Math.sin(k * w + i * 1.3) + 0.25 * air) * live);
-      a.rotation.x = -0.35 + (0.12 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * air) * live;
+      a.rotation.y = sd * (0.35 + (0.2 * Math.sin(k * w + i * 1.3) + 0.25 * air) * live + 0.22 * twitch * Math.sin(k * 40 + i));
+      a.rotation.x = -0.35 + (0.15 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * air) * live - 0.2 * groom;
       (a.userData.joints as THREE_NS.Group[]).forEach((j, n) => {
         const ph = k * w * 1.1 - n * 0.7 + i * 2.1;
         j.rotation.y = n === 0 ? 0 : sd * (0.12 + 0.12 * Math.sin(ph) * live);
@@ -233,9 +240,13 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       const swing = Math.sin(g) * st;
       const up = Math.max(0, Math.cos(g)) * st;
       const paddle = Math.sin(k * 1.6 + L.row * 1.1 + (L.side > 0 ? 0 : 0.6)) * air * live;
-      L.root.rotation.y = L.yawBase + sd * (0.45 * swing + 0.18 * paddle);
-      L.hip.rotation.z = 0.35 + 0.42 * up + (-0.4 * air + 0.12 * paddle) * live;
-      L.knee.rotation.z = -1.85 - 0.3 * up + (0.35 * air + 0.15 * paddle) * live;
+      // grooming: the front legs reach in and up to the head and rub; the others shift their footing a little
+      const front = L.row === 0 ? groom : 0;
+      const shift = L.row === 0 ? 0 : still * 0.08 * Math.sin(k * 0.9 + L.row * 2.3 + (L.side > 0 ? 0 : 1.7));
+      const rub = front * Math.sin(k * 16 + (L.side > 0 ? 0 : Math.PI));
+      L.root.rotation.y = L.yawBase + sd * (0.45 * swing + 0.18 * paddle + 0.6 * front + 0.12 * rub + shift);
+      L.hip.rotation.z = 0.35 + 0.42 * up + (-0.4 * air + 0.12 * paddle) * live + 0.75 * front;
+      L.knee.rotation.z = -1.85 - 0.3 * up + (0.35 * air + 0.15 * paddle) * live + 0.55 * front + 0.15 * rub;
     }
     // its pupils turn to you
     scene.updateMatrixWorld();
