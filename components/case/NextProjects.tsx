@@ -1,21 +1,19 @@
 import Link from "next/link";
 import Pic from "@/components/ui/Pic";
-import { getAsset } from "@/lib/assets";
 import type { CaseMeta } from "@/lib/cases";
-import PaintingMoth from "@/components/layout/PaintingMoth";
 import HeroInk from "@/components/home/HeroInk";
+import HeroFilm from "@/components/home/HeroFilm";
 import { schemeForClosing, inkPalette } from "@/lib/painting";
 
+/**
+ * The end of a case study: the next projects, and below them the beetle film, as on the home page, painted in this case's
+ * own colours.
+ */
 export default function NextProjects({ closing, next }: { closing: string; next: CaseMeta[] }) {
-  const sc = schemeForClosing(closing);
+  const palette = inkPalette(schemeForClosing(closing));
   return (
-    <div className="mt-16 md:mt-[160px] lg:mt-[292px]">
-      <div className="relative h-[420px] w-full md:h-[900px]">
-        <Pic file={getAsset(closing).file} sizes="100vw" fill />
-        <HeroInk palette={inkPalette(sc)} spread={false} />
-        <PaintingMoth scheme={sc} />
-      </div>
-      <section className="mt-16 md:mt-[100px] lg:mt-[140px]">
+    <div className="mt-16 md:mt-[100px] lg:mt-[140px]">
+      <section>
         <div className="border-b border-rule px-5 pb-[22px] pt-[21px] md:px-8">
           <h2 className="font-serif text-[1.625rem] leading-[34px] md:text-[2rem] md:leading-[42px]">Next project</h2>
         </div>
@@ -32,6 +30,10 @@ export default function NextProjects({ closing, next }: { closing: string; next:
           ))}
         </ul>
       </section>
+      <div className="relative mt-16 w-full overflow-hidden md:mt-[100px] lg:mt-[140px]" style={{ height: "clamp(420px, 36vw, 680px)", background: `rgb(${palette.mid.map((v) => Math.round(v * 255)).join(",")})` }}>
+        <HeroInk palette={palette} spread={false} refHeight={900} speed={1.6} grain={1} />
+        <HeroFilm palette={palette} />
+      </div>
     </div>
   );
 }

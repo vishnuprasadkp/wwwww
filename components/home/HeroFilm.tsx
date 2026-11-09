@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { SCHEMES, inkPalette } from "@/lib/painting";
+import type { InkPalette } from "./HeroInk";
 
 /** The AI agent case study's terracotta: its closing painting's wash. */
-const CLAY = inkPalette(SCHEMES.charcoal); // the home footer's dark grey: the ground, the smoke and the paint it leaves
+const GREY = inkPalette(SCHEMES.charcoal); // the home page's dark grey: the ground, the smoke and the paint it leaves
 
 /**
  * The home hero as a short film, like a car being revealed on a stage.
@@ -681,13 +682,14 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   return { root, body, cases, wings, legs, antennae, head, WL, dustMat, dustBody, pupils };
 }
 
-export default function HeroFilm() {
+export default function HeroFilm({ palette }: { palette?: InkPalette } = {}) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [key, setKey] = useState(0);
 
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
+    const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
     const PH = Math.max(200, Math.round(box.height));

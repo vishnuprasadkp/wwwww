@@ -16,10 +16,10 @@ export default function Footer() {
   const pathname = usePathname();
   const art = WITH_ART.includes(pathname);
   return (
-    <footer className={art ? "mt-24 md:mt-40 lg:mt-60" : "mt-14 md:mt-[90px] lg:mt-[140px]"}>
+    <footer className={art ? "mt-24 md:mt-40 lg:mt-60" : pathname.startsWith("/work/") ? "" : "mt-14 md:mt-[90px] lg:mt-[140px]"}>
       {pathname === "/" && (
         // the home page ends on the same film as it opens with: the dark grey painting and the beetle flying through it
-        <div className="relative w-full" style={{ height: "clamp(240px, 21vw, 400px)", background: "#545454" }}>
+        <div className="relative w-full overflow-hidden" style={{ height: "clamp(420px, 36vw, 680px)", background: "#545454" }}>
           <HeroInk palette={inkPalette(SCHEMES.charcoal)} spread={false} refHeight={900} speed={1.6} grain={1} />
           <HeroFilm />
           <NyrroNote />
