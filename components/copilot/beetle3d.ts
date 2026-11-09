@@ -14,7 +14,13 @@ export type BeetlePose = {
   walking: boolean;
   flying: boolean;
 };
-export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; canvas: HTMLCanvasElement };
+export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; canvas: HTMLCanvasElement; still: () => string };
+
+/** One drawing everywhere (loader, header icon, assistant): the line width, and how fine the wings' outline is. */
+export const BEETLE_LINE = 0.28;
+const WING_RES = 5; // the wing is drawn about as large as it shows, so its outline (2 px in the drawing) is one fine line
+/** The canvas round a beetle of `size`: square, centred on its box, with room for its wings. */
+export const beetleCanvas = (size: number) => Math.round(size * 4.6);
 
 const clamp = (x: number, a: number, b: number) => Math.min(b, Math.max(a, x));
 const ease = (x: number) => {
@@ -27,7 +33,7 @@ const hexRgb = (h: string): [number, number, number] => {
 };
 
 /** Mounts the beetle as a canvas centred on `box` (the roaming beetle's own element, which turns it to its heading). */
-export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink: string; line: number }): Promise<Beetle3D | null> {
+export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink: string; pr?: number }): Promise<Beetle3D | null> {
   const [THREE, film] = await Promise.all([import("three"), import("@/components/home/HeroFilm")]);
   const { buildBeetle, drawnWing, stippledWing, WING, BODY } = film;
 
@@ -40,11 +46,11 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
   if (!img) return null;
 
   // the canvas is larger than the beetle's box, so its wings and dust have room round it
-  const C = Math.round(opts.size * 4.6);
-  const pr = Math.min(window.devicePixelRatio || 1, 2);
+  const C = beetleCanvas(opts.size);
+  const pr = opts.pr ?? Math.min(window.devicePixelRatio || 1, 2);
   let renderer: THREE_NS.WebGLRenderer;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, premultipliedAlpha: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, premultipliedAlpha: true, preserveDrawingBuffer: !!opts.pr });
   } catch {
     return null; // no WebGL: the drawn beetle stays
   }
@@ -69,13 +75,13 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
   camera.lookAt(0, STAND, 0.03);
 
   // every line one steady, fine width (as in the loader's drawing), however the surface turns
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * opts.line }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * BEETLE_LINE }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
   const b = buildBeetle(
     // the wings as strokes only: their outline and veins, drawn at a size that suits this small beetle
-    drawnWing(img, [Math.round(ink[0] * 255), Math.round(ink[1] * 255), Math.round(ink[2] * 255)], Math.round(opts.size * 7), true),
+    drawnWing(img, [Math.round(ink[0] * 255), Math.round(ink[1] * 255), Math.round(ink[2] * 255)], Math.round(opts.size * WING_RES), true),
     stippledWing(img, 4.4, 1),
     sk,
     proj,
@@ -178,5 +184,6 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     renderer.dispose();
     cv.remove();
   };
-  return { pose, dispose, canvas: cv };
+  const still = () => cv.toDataURL("image/png");
+  return { pose, dispose, canvas: cv, still };
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import NyrroMarkdown from "./NyrroMarkdown";
 import { usePathname, useRouter } from "next/navigation";
 import { pageInfo } from "@/lib/nivvi-pages";
-import MothTrail, { MothIcon } from "@/components/copilot/Moth";
+import MothTrail, { BeetleIcon } from "@/components/copilot/Moth";
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /* ------------------------------------------------------------------ state */
@@ -164,7 +164,7 @@ export function NivviButton({ className = "" }: { className?: string }) {
       aria-expanded={open}
       className={`flex items-center gap-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
-      <MothIcon size={24} />
+      <BeetleIcon size={24} />
       <span className="nivvi-label">Nyrro</span>
     </button>
   );
@@ -623,7 +623,7 @@ function NivviPanel() {
       <div data-ledge="ceiling" className="relative flex h-[57px] shrink-0 items-center justify-between border-b border-rule px-5 font-mono text-[15px] leading-[19px] text-pigment-soft">
         <span className="flex items-center gap-2">
           <span className="nivvi-mark relative grid">
-            <MothIcon size={24} className="nivvi-mark-moth" />
+            <BeetleIcon size={24} className="nivvi-mark-moth" />
             <Star />
           </span>
           Nyrro

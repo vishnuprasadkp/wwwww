@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
-import { mountBeetle3D, type Beetle3D } from "./beetle3d";
+import { mountBeetle3D, beetleCanvas, type Beetle3D } from "./beetle3d";
 
 export const INK = "#e4572e"; // the brand orange: only the AI star
 const PAPER = "#eae7e6"; // its fill: the page background, so it is drawn like the logo, as a line
@@ -361,6 +361,31 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
   );
 }
 
+/**
+ * Nyrro's icon: the 3D beetle itself, at rest, drawn once in exactly the pose, lines and framing the loader and the
+ * assistant draw it live (public/images/site/nyrro-*.png), so the loader lands on an identical icon and the assistant's
+ * beetle steps out of one.
+ */
+export function BeetleIcon({ size = 24, star = true, className = "" }: { size?: number; star?: boolean; className?: string }) {
+  const file = size <= 24 ? 24 : size <= 28 ? 28 : 64;
+  const C = beetleCanvas(size);
+  return (
+    <span className={className} style={{ position: "relative", display: "inline-block", width: size * WIDE, height: size, lineHeight: 0 }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`/images/site/nyrro-${file}.png`}
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+        width={C}
+        height={C}
+        style={{ position: "absolute", left: "50%", top: "50%", width: C, height: C, margin: `${-C / 2}px 0 0 ${-C / 2}px`, maxWidth: "none", pointerEvents: "none" }}
+      />
+      {star && <MothStar size={size} />}
+    </span>
+  );
+}
+
 /** The AI star at a moth's top right: its own element, so there is only ever one, however the moth is turning. */
 export function MothStar({ size = 28 }: { size?: number }) {
   return (
@@ -591,7 +616,7 @@ export default function MothTrail({
     const topSvg = el?.querySelector<SVGSVGElement>("[data-top] svg");
     const topFace = el?.querySelector<HTMLElement>("[data-top]");
     const host = cv?.closest("[data-moth-host]") as HTMLElement | null;
-    if (!active || !cv || !sh || !star || !hit || !el || !turner || !sface || !topSvg || !topFace || !host) return;
+    if (!active || !cv || !sh || !star || !hit || !el || !turner || !sface || !topFace || !host) return;
     const ctx = cv.getContext("2d");
     if (!ctx) return;
     const palette: [number, number, number][] = paint ? [paint] : PALETTE;
@@ -957,7 +982,7 @@ export default function MothTrail({
     let b3: Beetle3D | null = null;
     let alive3 = true;
     if (!reduced) {
-      mountBeetle3D(el, { size: SIZE, ink: onDark(colors) ? colors.deep : BLACK, line: 0.45 })
+      mountBeetle3D(el, { size: SIZE, ink: onDark(colors) ? colors.deep : BLACK })
         .then((b) => {
           if (!alive3) return b?.dispose();
           if (!b) return;
@@ -988,7 +1013,7 @@ export default function MothTrail({
       // turning on the spot, the wings flutter a little for balance, more the faster it turns
       const turning = mode === "aim" || mode === "settle" ? Math.min(1, Math.abs(headV) / 2.5) * 0.09 * Math.sin(now / 45) : 0;
       const wingNow = clamp(p + flap + breathe + quiver + turning, 0, 1);
-      setMothOpen(topSvg, wingNow);
+      if (topSvg) setMothOpen(topSvg, wingNow);
       // the roll turns it about its own body line: its back faces you at 0, its flank faces you at 1
       const dirn = rollSide === "L" ? 1 : -1;
       // …and as it comes over it tilts towards you (rotateX) at the half-way point, like a body rolling, and the two views
@@ -1632,7 +1657,7 @@ export default function MothTrail({
         <div ref={mothEl} className="absolute inset-0 will-change-transform" style={{ opacity: 0, perspective: 200 }}>
           <div ref={turnEl} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
             <div data-top className="absolute inset-0" style={face}>
-              <MothIcon size={SIZE} star={false} colors={colors} />
+              <BeetleIcon size={SIZE} star={false} />
             </div>
             <div ref={sideFace} className="absolute inset-0 grid place-items-center" style={face}>
               <MothSideIcon size={SIZE} colors={colors} />

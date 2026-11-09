@@ -83,6 +83,7 @@ function smokeTexture() {
  * The wing, drawn: no fill at all, only its outline and its veins, in fine white ink strokes taken from the beetle's own
  * painted wing.
  */
+/** `even`: the simple drawing (loader, icon, assistant): one fine, steady outline and nothing inside it. */
 export function drawnWing(img: HTMLImageElement, rgb: [number, number, number] = [246, 246, 246], width = 0, even = false) {
   // `width`: draw it at this width (a small beetle's wing is drawn small, so its outline keeps a steady, fine weight)
   const w = width || img.width;
@@ -121,6 +122,29 @@ export function drawnWing(img: HTMLImageElement, rgb: [number, number, number] =
     q[o * 4 + 2] = rgb[2];
     q[o * 4 + 3] = Math.max(q[o * 4 + 3], Math.round(255 * a));
   };
+  if (even) {
+    // the simple drawing: the wing's silhouette, softened so its small holes close up, and one fine line round its edge
+    const sc = document.createElement("canvas");
+    sc.width = w;
+    sc.height = h;
+    const sg = sc.getContext("2d")!;
+    sg.filter = `blur(${Math.max(2, Math.round(w / 70))}px)`;
+    sg.drawImage(img, 0, 0, w, h);
+    const sd = sg.getImageData(0, 0, w, h).data;
+    const A = (o: number) => sd[o * 4 + 3] / 255;
+    for (let y = 2; y < h - 2; y++) {
+      for (let x = 2; x < w - 2; x++) {
+        const o = y * w + x;
+        if (A(o) < 0.06) continue;
+        if (A(o - 2) < 0.06 || A(o + 2) < 0.06 || A(o - 2 * w) < 0.06 || A(o + 2 * w) < 0.06) ink(o, 0.9);
+      }
+    }
+    g.putImageData(out, 0, 0);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.NoColorSpace;
+    t.anisotropy = 8;
+    return t;
+  }
   const st = Math.max(3, Math.round(w / 260));
   // a pressure that rises and falls along the edge, so the outline reads as a hand-drawn stroke
   const pressure = (x: number, y: number) => (even ? 0.75 : 0.55 + 0.45 * Math.sin(x * 0.011 + Math.sin(y * 0.017) * 2.2) * Math.sin(y * 0.009 + 1.3)); // `even`: one steady line
@@ -129,9 +153,9 @@ export function drawnWing(img: HTMLImageElement, rgb: [number, number, number] =
       const o = y * w + x;
       if (a0[o] < 0.08) continue;
       const pr = pressure(x, y);
-      const k = Math.round(st * (0.5 + 0.7 * pr));
+      const k = even ? 2 : Math.round(st * (0.5 + 0.7 * pr)); // even: a fine, steady outline
       if (a0[o - k] < 0.08 || a0[o + k] < 0.08 || a0[o - k * w] < 0.08 || a0[o + k * w] < 0.08) ink(o, 0.75 + 0.25 * pr);
-      else if (a0[o] > 0.3) {
+      else if (a0[o] > 0.3 && !even) {
         // the veins: only thin dark lines, never a filled patch
         const bl = (bd[o * 4] * 0.3 + bd[o * 4 + 1] * 0.59 + bd[o * 4 + 2] * 0.11) / 255;
         const v = (bl - l0[o] - 0.05) * 7;
