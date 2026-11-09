@@ -3,6 +3,7 @@
 import Pic from "@/components/ui/Pic";
 import PaintingMoth from "@/components/layout/PaintingMoth";
 import HeroInk from "@/components/home/HeroInk";
+import HeroFilm from "@/components/home/HeroFilm";
 import NyrroNote from "@/components/layout/NyrroNote";
 import { SCHEMES, inkPalette } from "@/lib/painting";
 import { usePathname } from "next/navigation";
@@ -16,7 +17,15 @@ export default function Footer() {
   const art = WITH_ART.includes(pathname);
   return (
     <footer className={art ? "mt-24 md:mt-40 lg:mt-60" : "mt-14 md:mt-[90px] lg:mt-[140px]"}>
-      {art && (
+      {pathname === "/" && (
+        // the home page ends on the same film as it opens with: the dark grey painting and the beetle flying through it
+        <div className="relative w-full" style={{ height: "clamp(240px, 21vw, 400px)", background: "#545454" }}>
+          <HeroInk palette={inkPalette(SCHEMES.charcoal)} spread={false} refHeight={900} speed={1.6} grain={1} />
+          <HeroFilm />
+          <NyrroNote />
+        </div>
+      )}
+      {art && pathname !== "/" && (
         <div className="relative h-[420px] w-full md:h-[900px]">
           <Pic file="/images/site/footer-bg.png" sizes="100vw" fill />
           <HeroInk palette={inkPalette(SCHEMES.charcoal)} spread={false} />
