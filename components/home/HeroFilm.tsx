@@ -271,16 +271,21 @@ void main(){
   // the pressure of the pen rises and falls along each line, so it swells and tapers like the loader's strokes
   float pressure = mix(0.45 + 1.0 * noise(fc * 0.04 + boil * 3.1), 1.0, even); // even: one steady width, as the loader lines
   // objPress: the swell of each line belongs to the beetle, not to the screen, so it holds its shape as it moves
-  pressure = mix(pressure, 0.78 + 0.44 * noise(vObj.xz * 9.0 + vObj.y * 5.0), objPress); // a gentle taper, as the logo's line
+  // a hand's pressure: each line swells and thins as it goes, as a pen does in a sketch
+  pressure = mix(pressure, 0.5 + 0.95 * noise(vObj.xz * 6.0 + vObj.y * 4.0), objPress);
   // the outline: where the surface turns away from you
   float ndv = abs(dot(N, V));
   float fw = max(fwidth(ndv), 1e-4);
   float wpx = 1.7 * weight * pressure * px;
   float a = 1.0 - smoothstep(wpx, wpx + 1.0, ndv / fw);
   a *= mix(mix(0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0)), 1.0, even), 1.0, objPress);
+  // objPress: the ink is lighter in places, where the pen barely touched (on the beetle itself, so it holds as it moves)
+  float inkFlow = mix(1.0, 0.62 + 0.38 * smoothstep(0.2, 0.55, noise(vObj.xz * 10.0 + vObj.y * 7.0 + 3.0)), objPress);
+  a *= inkFlow;
   vec3 L = normalize(vec3(-0.45, 0.75, 0.55));
   float n = dot(N, L) * 0.5 + 0.5;
-  float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1 * (1.0 - even) * (1.0 - objPress); // objPress: smooth lines, no wobble
+  // a hand's line wavers a little (objPress: the waver belongs to the beetle, so it never shimmers as it moves)
+  float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * mix(0.1 * (1.0 - even), 0.16, objPress);
   // lines drawn across the form, so it reads round: along the wing cases (and the seam), around the body
   // backLines: how much of the stripes the inside of a shell shows (an open shell's inside, striped too, reads as a dark patch)
   float face = gl_FrontFacing ? 1.0 : backLines;
@@ -289,13 +294,14 @@ void main(){
     // from the side alike; otherwise they are straight lines along it, as seen from above
     float m = mix(abs(vObj.x) * merid, atan(vObj.y + 0.09, abs(vObj.x)) * merid * 0.42, meridAng);
     // round the curve, the grooves run together at the tail: they stop short of it, as a wing case's grooves do
-    float tail = mix(1.0, smoothstep(-0.81, -0.785, vObj.z), meridAng); // a crisp end, as an ink line
+    // and as the pen lifts near the tail, each groove thins to a point
+    float tail = mix(1.0, smoothstep(-0.86, -0.5, vObj.z), meridAng);
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, objPress);
-    a = max(a, lineAt(m + jit, 1.2 * pressure * px) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * tail);
+    a = max(a, lineAt(m + jit, 1.2 * pressure * px * tail) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * smoothstep(0.0, 0.25, tail));
     a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px) * stripes * face);
   }
-  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * mix(0.45 + 0.55 * n, 1.0, objPress) * stripes * face);
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * mix(0.45 + 0.55 * n, 1.0, objPress) * stripes * face * inkFlow);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
     vec2 q = fc / 3.2;
