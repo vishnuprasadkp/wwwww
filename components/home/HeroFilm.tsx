@@ -885,7 +885,7 @@ void main(){
     };
     let lastEdge: Edge = Math.random() < 0.5 ? "L" : "R";
     let lastPerchSide = 0;
-    const newPass = (t: number, fromHere: boolean) => {
+    const newPass = (t: number, fromHere: boolean, mayPerch = true) => {
       const edges: Edge[] = ["L", "R", "T", "B"]; // every way out is as likely as any other: up, down, left, right
       const pick = (not: Edge[]) => {
         const c = edges.filter((e) => !not.includes(e));
@@ -902,7 +902,7 @@ void main(){
       // now and then it settles on the side it is heading for and looks at you: left or right, higher or lower, and if it
       // looked from that side last time it seldom does again
       const side = outEdge === "L" ? -1 : 1;
-      fly.perch = !fromHere && (outEdge === "L" || outEdge === "R") && Math.random() < (side === lastPerchSide ? 0.15 : 0.5);
+      fly.perch = mayPerch && (outEdge === "L" || outEdge === "R") && Math.random() < (side === lastPerchSide ? 0.15 : 0.5);
       // the middle of the crossing anywhere in the box, high or low
       const mid = onFrame(rnd(-0.6, 0.6), rnd(-0.88, 0.45), (dIn + dOut) / 2, new THREE.Vector3());
       const end = fly.perch ? onFrame(side * 0.95, rnd(-0.6, 0.4), clamp((dIn + dOut) / 2, 5.6, 7.5), new THREE.Vector3()) : edgePoint(outEdge, dOut, new THREE.Vector3());
@@ -922,6 +922,23 @@ void main(){
       if (!fly.perch) lift(end);
       if (!fromHere) lift(fly.p);
       fly.pts = [mid, end];
+      if (!fly.perch) {
+        // past the edge it does not vanish and reappear somewhere else: it flies on a little out of sight, swings round in a
+        // wide loop, higher or lower, and comes back in near where it went out, facing back into the box
+        const out = end.clone().sub(mid).normalize();
+        const up = Math.random() < 0.5 ? 1 : -1;
+        const loop = end.clone().addScaledVector(out, 2.2).add(new THREE.Vector3(0, up * rnd(0.6, 1.2), rnd(-1.5, 1.5)));
+        const back = end.clone().addScaledVector(out, 0.8).add(new THREE.Vector3(0, up * rnd(0.9, 1.6), rnd(-1.2, 1.2)));
+        lift(loop);
+        lift(back);
+        // and then into the frame again, a little way in from that same edge
+        ndcNow.copy(end).project(camera);
+        const inX = clamp(ndcNow.x, -1, 1) * 0.6;
+        const inY = clamp(ndcNow.y + up * 0.5, -0.85, 0.4) * (outEdge === "T" || outEdge === "B" ? 0.6 : 1);
+        const reenter = onFrame(inX, inY, clamp(camera.position.distanceTo(end) + rnd(-1, 1), 5.5, 9.5), new THREE.Vector3());
+        lift(reenter);
+        fly.pts.push(loop, back, reenter);
+      }
       fly.idx = 0;
       fly.target.copy(mid);
       fly.hidden = false;
@@ -1091,12 +1108,12 @@ void main(){
           } else {
             const want = fly.target.clone().sub(fly.p);
             const dist = want.length();
-            want.normalize().multiplyScalar(0.6 * clamp(dist / 1.2, 0.45, 1)); // unhurried
+            want.normalize().multiplyScalar(0.6 * clamp(dist / 1.2, 0.6, 1)); // unhurried, never stalling at a turn
             fly.v.lerp(want, Math.min(1, dt * 0.7));
             fly.p.addScaledVector(fly.v, dt);
             const sp = Math.hypot(fly.v.x, fly.v.z);
             const yawGoal = sp > 0.05 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;
-            const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 1.1);
+            const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 1.6); // it turns its whole body to the way it is going
             fly.yaw += dy;
             // it banks into its turns, and tips up as it climbs and down as it dives: its wings are seen from the side, from
             // above and from below as it goes
@@ -1109,12 +1126,9 @@ void main(){
             if (last && fly.perch && Math.abs(ndcNow.x) > 0.72) {
               planLanding(t, b); // it has reached the side it was heading for: it settles there and looks at you
             } else if (last && !fly.perch) {
-              // it only vanishes once it is really out of sight (its wings too); if it reaches its mark still in view, it flies on
-              if (Math.abs(ndcNow.x) > 1.3 || ndcNow.y > 1.45 || ndcNow.y < -1.35 || ndcNow.z > 1) {
-                fly.hidden = true;
-                fly.gone = t + rnd(1.2, 3.2);
-              } else if (dist < 0.7) fly.target.addScaledVector(fly.v.clone().normalize(), 3);
-            } else if (!last && dist < 0.7) {
+              // back in the box: on to the next crossing, from right here, so the path never breaks
+              if (dist < 0.9) newPass(t, true);
+            } else if (!last && dist < 0.9) {
               fly.idx++;
               fly.target.copy(fly.pts[fly.idx]);
             }
@@ -1139,7 +1153,7 @@ void main(){
               fly.v.copy(fs.toP).sub(fs.fromP).multiplyScalar(0.25);
               fly.yaw = fs.yaw;
               fly.roll = 0;
-              newPass(t, true); // from where it took off, across and away out of the frame
+              newPass(t, true, false); // from where it took off, across and away out of the frame
               fs.until = t + rnd(14, 22);
               // back somewhere else, to look at you again: the other way from last time, more often than not
               fs.after = "perch"; // back to another place on the frame, to look at you again
