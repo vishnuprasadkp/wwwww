@@ -696,7 +696,7 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const TOP = place === "top";
+    const TOP = false && place === "top"; // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -919,7 +919,7 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > 10) {
+      if (mayPerch && !out && t - wand.lastLook > 9) {
         const headingToSide = Math.cos(wand.h) * Math.sign(nx) > -0.2; // near a side and not flying away from it
         if (Math.abs(nx) > 0.45 && headingToSide && Math.random() < 0.85) {
           fly.perch = true;
@@ -955,7 +955,9 @@ void main(){
         if (Math.sin(wand.h) > 0.2 && ny > -0.2) wand.h = -wand.h + rnd(-0.3, 0.3);
       }
       const len = rnd(0.8, 1.3); // long, sweeping legs
-      wand.d = clamp(wand.d + rnd(-1.2, 1.2), 7, 10);
+      // now and then it flies far off (smaller and smaller) or comes towards you (larger), not only across
+      const depthMove = Math.random();
+      wand.d = depthMove < 0.25 ? rnd(10.5, 13) : depthMove < 0.5 ? rnd(6.2, 7.2) : clamp(wand.d + rnd(-1.5, 1.5), 6.5, 12);
       // where in the box it keeps to: at the top of the page, low (the box is short and its wings rise above it); at the
       // foot, the whole height
       const yLo = TOP ? -0.95 : -0.85;
@@ -969,7 +971,7 @@ void main(){
         const sx = clamp(nx + Math.cos(wand.h) * len * 0.6, -0.8, 0.8);
         const ex = clamp(sx + Math.cos(wand.h) * len * 0.6, -0.85, 0.85);
         const low = lift2(onFrame(sx, yLo + 0.05, wand.d, new THREE.Vector3()));
-        const rise = lift2(onFrame(ex, TOP ? rnd(-0.5, -0.25) : rnd(0.0, 0.45), clamp(wand.d + rnd(-0.8, 0.8), 7, 10), new THREE.Vector3()));
+        const rise = lift2(onFrame(ex, TOP ? rnd(-0.5, -0.25) : rnd(0.0, 0.45), clamp(wand.d + rnd(-2, 2), 6.5, 12), new THREE.Vector3())); // rising, it may come towards you or draw away
         wand.h = Math.atan2(0.4, Math.cos(wand.h));
         fly.pts = [low, rise];
         fly.idx = 0;
@@ -1157,7 +1159,7 @@ void main(){
                 introPending = false;
                 onFrame(rnd(-0.5, 0.5), 1.6, rnd(8, 9), fly.p);
                 wand.h = -Math.PI / 2 + rnd(-0.35, 0.35);
-                wand.lastLook = t - 8; // it will stop to look at you soon after it arrives
+                wand.lastLook = t - 9; // it will stop to look at you soon after it arrives
               }
               newPass(t, true, false);
               fly.v.copy(fly.target).sub(fly.p).normalize().multiplyScalar(0.6);
@@ -1320,7 +1322,7 @@ void main(){
       });
 
       // short pen strokes flick off the wings as they beat and drift away into the air
-      emitCarry += dt * 260 * unfold;
+      emitCarry += dt * 420 * unfold;
       while (emitCarry >= 1) {
         emitCarry -= 1;
         const wi = Math.random() < 0.5 ? 0 : 1;
@@ -1333,7 +1335,7 @@ void main(){
       // the same dust rises off its body wherever it goes, like smoke: thick as it comes walking out of the haze, a soft
       // trail after that, walking or flying
       if (b.root.visible) {
-        bodyCarry += dt * (walking0 ? 260 : fs.mode === "fly" ? 420 : 200); // flying, it trails a fuller cloud round its body
+        bodyCarry += dt * (walking0 ? 260 : fs.mode === "fly" ? 720 : 260); // flying, it trails a fuller cloud round its body
         b.root.getWorldPosition(wp);
         while (bodyCarry >= 1) {
           bodyCarry -= 1;
@@ -1542,8 +1544,7 @@ void main(){
       if (!alive) return;
       // the same size on screen in every box: as large as it is in the tall painting at the foot of the page, so in the
       // shorter box at the top of the home page it is drawn larger to match
-      const footH = Math.min(680, Math.max(420, window.innerWidth * 0.36));
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 4.4, 30000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)), 5 * Math.max(1, footH / PH));
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 4.4, 30000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)), 5);
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
