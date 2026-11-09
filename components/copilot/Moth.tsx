@@ -997,6 +997,8 @@ export default function MothTrail({
       // a press on the moth always picks it up, even when it is over a button or the input; elsewhere, buttons, links and
       // the input keep their normal behaviour
       if (!onMoth && (e.target as HTMLElement | null)?.closest("button, a, textarea, input, select, [role='button']")) return;
+      // text (the questions, the answers, the hello) is for reading and copying: a press there selects text as anywhere else
+      if (!onMoth && (e.target as HTMLElement | null)?.closest(".nyrro-answer, [data-ledge='msg-u'], p, li, h1, h2, h3, strong, em")) return;
       if (scene && !onMoth) {
         // two moths share the section: a press on an empty spot goes to the nearer one only
         const mine = Math.hypot(at.x - pos.x, at.y - pos.y);
