@@ -50,7 +50,7 @@ E("adeo", "Committee Board Agentic Application (DGE / ADEO)",
 
 AWP = "https://vishnuprasad.space/work/ai-agent"
 E("agent-workforce", "Agent Workforce Platform",
-  ["agent workforce", "agent platform", "agent builder", "ai agent platform", "agents platform", "workforce platform",
+  ["agent workforce", "agent work force", "agentworkforce", "agent platform", "agent builder", "ai agent platform", "agents platform", "workforce platform",
    "simple agent", "workflow agent", "advanced agent", "agent modes", "build agents", "ai agent case study", "awp",
    "multi agent", "agent studio"],
   overview="**Agent Workforce Platform (UnifyApps)**\n\nA platform for building, governing and running AI agents, with **three ways to build: Simple, Workflow and Advanced**, all on one design system.\n\n- **Role:** Lead Product Designer, concept to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 – present\n- **Goal:** make AI easy to adopt, govern and scale across roles" + L(AWP),

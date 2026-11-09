@@ -476,6 +476,8 @@
    "label": "Agent Workforce Platform",
    "aliases": [
     "agent workforce",
+    "agent work force",
+    "agentworkforce",
     "agent platform",
     "ai agent platform",
     "workforce platform",
@@ -2896,8 +2898,9 @@
     "which industries has he worked in",
     "what domains does he know"
    ],
-   "answer": "**Case studies:** enterprise SaaS (UnifyApps), government (DGE / ADEO), banking (HDFC Bank), media (Sony).\n\n**Other client work:** insurance, retail, manufacturing, aviation, hospitality, HR and automotive.\n\nAt Brane: e-commerce, finance, healthcare and education.",
+   "answer": "Vishnu has designed across a wide range of domains, from enterprise AI and government to banking, media and healthcare. Case studies are in bold; the rest is client and earlier work:\n\n- **Enterprise AI & knowledge:** **Intelligent Enterprise Search**, **Agent Workforce Platform**, Lowe's, Stowers Institute, Docebo\n- **Government:** **Committee Board Agentic App (DGE / ADEO)**, Digital Dubai, Digital Ajman, CGB Qatar\n- **Banking:** **HDFC Bank**, Mashreq (payments, credit, incidents), Brane Banking & Seamless Loans\n- **Data privacy & consent:** **HDFC Bank** consent management under India's DPDP Act\n- **Media & entertainment:** **Sony Pictures Networks India** (contracts, governance, sports broadcast planning, social intelligence)\n- **Insurance:** Niva Bupa (health insurance sales), QuoteBot\n- **Finance operations:** Tekion (reconciliation), Wasl (budgeting), Mashreq Cash AI (treasury)\n- **Sales:** Shaw Industries, Docebo, Niva Bupa\n- **Manufacturing:** Greif, Shaw Industries, Jubilant Ingrevia\n- **Retail & e-commerce:** Lowe's, Jubilant FoodWorks, e-commerce projects at Brane\n- **HR & workplace:** Virtusa, Mphasis, Digital Dubai Smart Employee Copilot\n- **Procurement:** Digital Dubai supplier onboarding and Supplier GPT\n- **Aviation:** Air Arabia (cabin crew assessments, flight checks, onboard incident reports)\n- **Hospitality:** Wasl (hotel portfolio budgeting), Mobionix & LEAPQUE (voice AI for hotels and restaurants)\n- **Automotive:** Tekion (dealership operations)\n- **Healthcare:** Mycarely.in, Salud Interactiva, healthcare projects at Brane\n- **Education, Web3 & events:** education projects at Brane, the Momentable / Nextdecentrum NFT marketplace, Chicago Park District\n\nName any domain or client and I'll tell you what he designed there.",
    "followups": [
+    "What has he worked on?",
     "Other projects",
     "Tell me about ADEO"
    ],

@@ -14,7 +14,7 @@ type Msg = { role: "user" | "assistant"; content: string; html?: string; next?: 
 
 type NyrroReply = { answer: string; html: string; followups: string[]; match: { type: string; id: string; aspect?: string; score: number } };
 type NyrroLib = { version: string; fingerprint: string; create: (o?: { onMiss?: (q: string) => void }) => { ask: (q: string) => NyrroReply; reset: () => void }; selfTest: () => unknown };
-const NYRRO_SRC = "/nyrro.bundle.js?v=39cde9602569f256";
+const NYRRO_SRC = "/nyrro.bundle.js?v=5baa25561b10f981";
 let nyrroLoading: Promise<NyrroLib> | null = null;
 /** Loads the locked Nyrro bundle once (it sets window.Nyrro; the console can run Nyrro.selfTest()). */
 function loadNyrro(): Promise<NyrroLib> {
@@ -38,6 +38,24 @@ const noEmoji = (s: string) =>
   s
     .replace(/(\w) *[\p{Extended_Pictographic}\uFE0F\u200D]+ +(?=[A-Z])/gu, "$1. ") // an emoji standing between two sentences becomes their full stop
     .replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").replace(/ {2,}/g, " ").replace(/ +(<\/p>|<\/li>|\n|$)/g, "$1");
+/** Every email address in an answer is a link that writes to it (a Gmail compose window, as every email link on the site;
+ *  the address itself is unchanged), unless it is already inside a link. */
+const linkEmails = (html: string) => {
+  let inLink = false;
+  return html
+    .split(/(<[^>]+>)/)
+    .map((part) => {
+      if (part.startsWith("<")) {
+        if (/^<a[\s>]/i.test(part)) inLink = true;
+        else if (/^<\/a>/i.test(part)) inLink = false;
+        return part;
+      }
+      return inLink
+        ? part
+        : part.replace(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, (m) => `<a href="https://mail.google.com/mail/u/0/?fs=1&amp;tf=cm&amp;source=mailto&amp;to=${encodeURIComponent(m)}" target="_blank" rel="noopener noreferrer">${m}</a>`);
+    })
+    .join("");
+};
 /**
  * Where an answer lives on the site, shown on the left beside the panel: the page, and the part of it the answer is
  * about. Every topic of the v5 knowledge base is placed (grouped as the bundle groups them); greetings, Nyrro itself,
@@ -541,10 +559,26 @@ function NivviPanel() {
     let next: string[] = [];
     try {
       const Nyrro = await loadNyrro();
-      const bot = Nyrro.create();
       const questions = history.filter((m) => m.role === "user").map((m) => m.content);
-      for (const q of questions.slice(0, -1)) bot.ask(q);
-      const r = bot.ask(questions[questions.length - 1]);
+      const last = questions[questions.length - 1];
+      // the conversation so far (each earlier question's topic, as it was understood in the conversation), then the question
+      const earlier: NyrroReply["match"][] = [];
+      const first = Nyrro.create();
+      for (const q of questions.slice(0, -1)) earlier.push(first.ask(q).match);
+      let r = first.ask(last);
+      // the conversation again, leaving out the earlier questions `skip` picks, then the question
+      const replay = (skip: (m: NyrroReply["match"]) => boolean) => {
+        const bot = Nyrro.create();
+        questions.slice(0, -1).forEach((q, i) => !skip(earlier[i]) && bot.ask(q));
+        return bot.ask(last);
+      };
+      // Never "I've already shared that above": asked again, a topic is answered in full again. First without the earlier
+      // question on the same topic (so a follow-up keeps its case study), then, if a broader answer had covered it, on its own.
+      if (r.match.type === "repeat") {
+        const same = r.match;
+        r = replay((m) => m.id === same.id && (m.aspect ?? "") === (same.aspect ?? ""));
+        if (r.match.type === "repeat") r = Nyrro.create().ask(last);
+      }
       finalText = r.answer;
       html = r.html;
       next = r.followups ?? [];
@@ -756,7 +790,7 @@ function NivviPanel() {
                     m.html ? (
                       <div
                         className="nyrro-answer"
-                        dangerouslySetInnerHTML={{ __html: noEmoji(m.html) }}
+                        dangerouslySetInnerHTML={{ __html: linkEmails(noEmoji(m.html)) }}
                         onClick={(e) => {
                           // links to this site change the page beside the panel; other sites open in a new tab (as given)
                           const a = (e.target as HTMLElement).closest("a");

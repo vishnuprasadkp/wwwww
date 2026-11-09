@@ -195,3 +195,27 @@ A5["domain-knowledge"] = ("Search is one of Vishnu's main focus areas. His **Int
   "into one shared knowledge index, with direct answers and sources, plus an agent marketplace.")
 
 EXTRA5 = {"ai-experience": ["work with ai", "works with ai", "approach ai", "approach to ai", "use ai", "uses ai", "ai approach", "how does he use ai", "his ai work", "ai in his work"]}
+
+# ════════════════ DOMAINS: every domain he has worked in, case studies and other projects ════════════════
+# Sources: the five case studies, the client projects (Notion), Brane and Kocha on the resume, and the 2023 portfolio.
+A5["industries"] = ("Vishnu has designed across a wide range of domains, from enterprise AI and government to banking, media and healthcare. "
+  "Case studies are in bold; the rest is client and earlier work:\n\n"
+  "- **Enterprise AI & knowledge:** **Intelligent Enterprise Search**, **Agent Workforce Platform**, Lowe's, Stowers Institute, Docebo\n"
+  "- **Government:** **Committee Board Agentic App (DGE / ADEO)**, Digital Dubai, Digital Ajman, CGB Qatar\n"
+  "- **Banking:** **HDFC Bank**, Mashreq (payments, credit, incidents), Brane Banking & Seamless Loans\n"
+  "- **Data privacy & consent:** **HDFC Bank** consent management under India's DPDP Act\n"
+  "- **Media & entertainment:** **Sony Pictures Networks India** (contracts, governance, sports broadcast planning, social intelligence)\n"
+  "- **Insurance:** Niva Bupa (health insurance sales), QuoteBot\n"
+  "- **Finance operations:** Tekion (reconciliation), Wasl (budgeting), Mashreq Cash AI (treasury)\n"
+  "- **Sales:** Shaw Industries, Docebo, Niva Bupa\n"
+  "- **Manufacturing:** Greif, Shaw Industries, Jubilant Ingrevia\n"
+  "- **Retail & e-commerce:** Lowe's, Jubilant FoodWorks, e-commerce projects at Brane\n"
+  "- **HR & workplace:** Virtusa, Mphasis, Digital Dubai Smart Employee Copilot\n"
+  "- **Procurement:** Digital Dubai supplier onboarding and Supplier GPT\n"
+  "- **Aviation:** Air Arabia (cabin crew assessments, flight checks, onboard incident reports)\n"
+  "- **Hospitality:** Wasl (hotel portfolio budgeting), Mobionix & LEAPQUE (voice AI for hotels and restaurants)\n"
+  "- **Automotive:** Tekion (dealership operations)\n"
+  "- **Healthcare:** Mycarely.in, Salud Interactiva, healthcare projects at Brane\n"
+  "- **Education, Web3 & events:** education projects at Brane, the Momentable / Nextdecentrum NFT marketplace, Chicago Park District\n\n"
+  "Name any domain or client and I'll tell you what he designed there.")
+F5["industries"] = ["What has he worked on?", "Other projects", "Tell me about ADEO"]

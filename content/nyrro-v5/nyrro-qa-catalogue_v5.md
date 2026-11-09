@@ -976,11 +976,27 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> **Case studies:** enterprise SaaS (UnifyApps), government (DGE / ADEO), banking (HDFC Bank), media (Sony).
+> Vishnu has designed across a wide range of domains, from enterprise AI and government to banking, media and healthcare. Case studies are in bold; the rest is client and earlier work:
 >
-> **Other client work:** insurance, retail, manufacturing, aviation, hospitality, HR and automotive.
+> - **Enterprise AI & knowledge:** **Intelligent Enterprise Search**, **Agent Workforce Platform**, Lowe's, Stowers Institute, Docebo
+> - **Government:** **Committee Board Agentic App (DGE / ADEO)**, Digital Dubai, Digital Ajman, CGB Qatar
+> - **Banking:** **HDFC Bank**, Mashreq (payments, credit, incidents), Brane Banking & Seamless Loans
+> - **Data privacy & consent:** **HDFC Bank** consent management under India's DPDP Act
+> - **Media & entertainment:** **Sony Pictures Networks India** (contracts, governance, sports broadcast planning, social intelligence)
+> - **Insurance:** Niva Bupa (health insurance sales), QuoteBot
+> - **Finance operations:** Tekion (reconciliation), Wasl (budgeting), Mashreq Cash AI (treasury)
+> - **Sales:** Shaw Industries, Docebo, Niva Bupa
+> - **Manufacturing:** Greif, Shaw Industries, Jubilant Ingrevia
+> - **Retail & e-commerce:** Lowe's, Jubilant FoodWorks, e-commerce projects at Brane
+> - **HR & workplace:** Virtusa, Mphasis, Digital Dubai Smart Employee Copilot
+> - **Procurement:** Digital Dubai supplier onboarding and Supplier GPT
+> - **Aviation:** Air Arabia (cabin crew assessments, flight checks, onboard incident reports)
+> - **Hospitality:** Wasl (hotel portfolio budgeting), Mobionix & LEAPQUE (voice AI for hotels and restaurants)
+> - **Automotive:** Tekion (dealership operations)
+> - **Healthcare:** Mycarely.in, Salud Interactiva, healthcare projects at Brane
+> - **Education, Web3 & events:** education projects at Brane, the Momentable / Nextdecentrum NFT marketplace, Chicago Park District
 >
-> At Brane: e-commerce, finance, healthcare and education.
+> Name any domain or client and I'll tell you what he designed there.
 
 #### What kinds of problems does he solve best?  `best-problems`
 **Also asked as:** _what is his sweet spot_
@@ -1747,7 +1763,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 ### Agent Workforce Platform
 
-**Recognised by:** agent workforce, agent platform, ai agent platform, workforce platform, simple agent, workflow agent, advanced agent, agent modes, build agents, ai agent case study, awp, agent studio, third case study, 3rd case study, case study 3, third project, agent builder, agents platform, multi agent
+**Recognised by:** agent workforce, agent work force, agentworkforce, agent platform, ai agent platform, workforce platform, simple agent, workflow agent, advanced agent, agent modes, build agents, ai agent case study, awp, agent studio, third case study, 3rd case study, case study 3, third project, agent builder, agents platform, multi agent
 
 **Overview**
 

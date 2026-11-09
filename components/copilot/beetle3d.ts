@@ -19,7 +19,7 @@ export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; can
 
 /** One drawing everywhere (loader, header icon, assistant): the weight of its pen, for a beetle 64 px tall. A smaller
  * beetle is drawn with a pen in proportion, so it is the same drawing, only smaller. */
-export const BEETLE_LINE = 2.1;
+export const BEETLE_LINE = 1.35;
 const penFor = (size: number) => BEETLE_LINE * (size / 64);
 
 type P2 = [number, number];
@@ -161,7 +161,9 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
   b.root.traverse((o) => {
     if ((o as THREE_NS.Points).isPoints) o.visible = false;
     const m = (o as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial | undefined;
-    if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 3) m.uniforms.rings.value = 5;
+    // few, clear lines, as in the logo: four grooves on each case, four rings on the head and shield, four bands on the belly
+    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 4;
+    if (m && m.isShaderMaterial && m.uniforms?.rings && (m.uniforms.rings.value === 7 || m.uniforms.rings.value === 3)) m.uniforms.rings.value = 4;
   });
   const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
   const shellWeight = shellMat.uniforms.weight.value as number;
@@ -197,7 +199,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       c.rotation.set(0.32 * open, s * 0.12 * open, -s * 0.42 * open);
     });
     shellMat.uniforms.weight.value = shellWeight * (1 - 0.15 * ease(open / 0.6));
-    shellMat.uniforms.stripes.value = 1;
+    shellMat.uniforms.stripes.value = 1 - ease((open - 0.35) / 0.4); // lifted, a case is seen edge-on: its outline over the banded belly
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;
