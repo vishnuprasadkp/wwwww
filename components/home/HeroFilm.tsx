@@ -273,7 +273,7 @@ void main(){
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
-  a *= 0.8; // a fine outline, like the wing's; the dust carries the form
+  // full ink, as a wing's outline and veins
   gl_FragColor = vec4(ink * a, a);
 }`;
 
@@ -362,7 +362,7 @@ function surfaceDust(geo: THREE.BufferGeometry, n: number) {
     const nn = new THREE.Vector3().crossVectors(e1, e2).normalize();
     pos.push(p.x, p.y, p.z);
     nor.push(nn.x, nn.y, nn.z);
-    seed.push(0.45 + Math.random() * 0.9, Math.random(), Math.random() < 0.8 ? 1 : 0, Math.random() * (0.35 + 0.65 * Math.random())); // most stream out, many far, into a wide cloud round it
+    seed.push(Math.random() < 0.14 ? rnd(1.6, 2.8) : 0.45 + Math.random() * 0.9, Math.random(), Math.random() < 0.8 ? 1 : 0, Math.random() * (0.35 + 0.65 * Math.random())); // some larger motes among the fine ones // most stream out, many far, into a wide cloud round it
   }
   const out = new THREE.BufferGeometry();
   out.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
@@ -384,14 +384,14 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   root.add(body);
 
   // drawn, not painted: only lines of white ink, nothing filled
-  // drawn as the wings are: only a fine outline, and the dust; nothing drawn across it
-  const shell = sketchMaterial(sk, { weight: 0.8 });
-  const front = sketchMaterial(sk, { weight: 0.75 });
+  // drawn as the wings are: a clear outline, the lines of its shell like a wing's veins, and the dust over it
+  const shell = sketchMaterial(sk, { merid: 6, weight: 1.25 });
+  const front = sketchMaterial(sk, { rings: 7, weight: 1.15 });
   const black = sketchMaterial(sk, { weight: 0.9 }); // the eyes
   const cream = sketchMaterial(sk, { weight: 0.8 });
   const legMat = sketchMaterial(sk, { weight: 0.9 });
   const amber = legMat;
-  const bellyMat = sketchMaterial(sk, { weight: 0.7 });
+  const bellyMat = sketchMaterial(sk, { rings: 3, weight: 1.1 });
 
   const mapTop = (g: THREE.BufferGeometry, front: number, back: number, halfW: number, rowFront: number, rowBack: number) => {
     const p = g.attributes.position;
@@ -913,9 +913,9 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > 12) {
-        const headingToSide = Math.cos(wand.h) * Math.sign(nx) > 0.3;
-        if (Math.abs(nx) > 0.55 && headingToSide && Math.random() < 0.85) {
+      if (mayPerch && !out && t - wand.lastLook > 10) {
+        const headingToSide = Math.cos(wand.h) * Math.sign(nx) > -0.2; // near a side and not flying away from it
+        if (Math.abs(nx) > 0.45 && headingToSide && Math.random() < 0.85) {
           fly.perch = true;
           fs.perchSide = nx > 0 ? 1 : -1;
           const end = onFrame(fs.perchSide * 0.95, clamp(ny, -0.6, 0.45), clamp(camera.position.distanceTo(fly.p), 7, 8.5), new THREE.Vector3());
@@ -925,7 +925,7 @@ void main(){
           wand.lastLook = t;
           return;
         }
-        if (Math.abs(nx) < 0.55 && Math.abs(ny) < 0.75 && Math.random() < 0.45) {
+        if (Math.abs(nx) < 0.6 && Math.abs(ny) < 0.8 && Math.random() < 0.6) {
           fly.face = true;
           const spot = fly.p.clone().addScaledVector(fly.v.clone().normalize(), 0.6);
           lift(spot);
@@ -1130,7 +1130,7 @@ void main(){
                 introPending = false;
                 onFrame(rnd(-0.5, 0.5), 1.6, rnd(8, 9), fly.p);
                 wand.h = -Math.PI / 2 + rnd(-0.35, 0.35);
-                wand.lastLook = t;
+                wand.lastLook = t - 8; // it will stop to look at you soon after it arrives
               }
               newPass(t, true, false);
               fly.v.copy(fly.target).sub(fly.p).normalize().multiplyScalar(0.6);
