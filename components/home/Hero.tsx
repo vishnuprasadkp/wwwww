@@ -8,13 +8,13 @@ const HERO_INK: InkPalette = inkPalette(SCHEMES.charcoal);
 import LogoMarquee from "./LogoMarquee";
 
 /**
- * The first screen: the name at the top, the description below it with some open space between, the painted film, and
- * the client logos under it, all in the first view.
+ * The first screen, filled exactly: the name at the top, the description below with open space between, the painted film,
+ * and the client logos sitting at the very foot of the first view.
  */
 export default function Hero() {
   return (
     <section className="overflow-x-clip">
-      <div className="flex flex-col justify-between px-5 pt-16 md:px-8" style={{ minHeight: "max(260px, calc(38svh - 57px))", paddingBottom: 48 }}>
+      <div className="flex flex-col justify-between px-5 pt-16 md:px-8" style={{ minHeight: "max(260px, calc(100svh - 57px - clamp(240px, 21vw, 400px) - 100px))", paddingBottom: 48 }}>
         <h1 className="font-serif text-[1.875rem] leading-[40px] md:text-[2.5rem] md:leading-[1.35]">I’m Vishnu</h1>
         <p className="mt-10 max-w-[35rem] text-[17px] leading-[26px] md:text-lg md:leading-[1.5]">
           A Product Designer with over 5 years of experience. I design experiences for the complex systems that run real work.

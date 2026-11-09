@@ -453,6 +453,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   }
 
   // the head, its big glossy eyes, pale spots and the mouth
+  const pupils: THREE.Mesh[] = [];
   const head = new THREE.Group();
   head.position.set(0, 0.0, 0.58);
   body.add(head);
@@ -465,15 +466,11 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   for (const s of [1, -1]) {
     const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 24, 16), black);
     eye.position.set(s * 0.12, 0.02, 0.05);
-    // its eyes, clear to see when it looks at you: a pale eye, a dark pupil looking out ahead, a bright glint
-    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.072, 24, 16), new THREE.MeshBasicMaterial({ color: lin(0.86, 0.86, 0.86) }));
-    eye.add(ball);
-    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.042, 20, 14), new THREE.MeshBasicMaterial({ color: lin(0.07, 0.07, 0.07) }));
-    pupil.position.set(s * 0.008, 0.004, 0.042);
+    // its eyes, drawn like the rest: the eye a ring of ink, the pupil a single dot of ink on it, turning to look at you
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.019, 14, 10), new THREE.MeshBasicMaterial({ color: lin(0.95, 0.95, 0.95) }));
+    pupil.position.set(0, 0, 0.07);
     eye.add(pupil);
-    const glint = new THREE.Mesh(new THREE.SphereGeometry(0.012, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    glint.position.set(s * 0.004 - 0.012, 0.022, 0.07);
-    eye.add(glint);
+    pupils.push(pupil);
     head.add(eye);
     const spot = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 8), cream);
     spot.scale.set(0.035, 0.025, 0.02);
@@ -681,7 +678,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     dots.frustumCulled = false;
     m.add(dots);
   }
-  return { root, body, cases, wings, legs, antennae, head, WL, dustMat, dustBody };
+  return { root, body, cases, wings, legs, antennae, head, WL, dustMat, dustBody, pupils };
 }
 
 export default function HeroFilm() {
@@ -930,6 +927,7 @@ void main(){
       fly.hidden = false;
     };
     const wp = new THREE.Vector3();
+    const eyeTmp = new THREE.Vector3();
     const emitAt = new THREE.Vector3();
     let emitCarry = 0;
     let bodyCarry = 0;
@@ -1264,6 +1262,14 @@ void main(){
       }
 
       b.root.getWorldPosition(wp);
+      // its pupils turn to you: each sits on the side of its eye that faces the camera
+      for (const pu of b.pupils) {
+        const eye = pu.parent!;
+        eye.updateWorldMatrix(true, false);
+        eyeTmp.copy(camera.position);
+        eye.worldToLocal(eyeTmp);
+        pu.position.copy(eyeTmp.normalize().multiplyScalar(0.078));
+      }
       // the soft shade below it: it follows it across the floor, spreads and fades as it rises
       const hgt = Math.max(0, wp.y);
       const sz = b.root.scale.x * BODY * (1.9 + hgt * 0.9);
