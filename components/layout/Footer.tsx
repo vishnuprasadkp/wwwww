@@ -1,7 +1,5 @@
 "use client";
 
-import Pic from "@/components/ui/Pic";
-import PaintingMoth from "@/components/layout/PaintingMoth";
 import HeroInk from "@/components/home/HeroInk";
 import HeroFilm from "@/components/home/HeroFilm";
 import NyrroNote from "@/components/layout/NyrroNote";
@@ -9,27 +7,20 @@ import { SCHEMES, inkPalette } from "@/lib/painting";
 import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 
-// Home and About end on the painting; case studies end on the closing image + next projects.
+// Home and About end on the beetle film; case studies end on their own film and the next projects.
 const WITH_ART = ["/", "/about"];
 
 export default function Footer() {
   const pathname = usePathname();
   const art = WITH_ART.includes(pathname);
   return (
-    <footer className={art ? "mt-24 md:mt-40 lg:mt-60" : pathname.startsWith("/work/") ? "" : "mt-14 md:mt-[90px] lg:mt-[140px]"}>
-      {pathname === "/" && (
-        // the home page ends on the same film as it opens with: the dark grey painting and the beetle flying through it
+    <footer className={art ? "mt-24 md:mt-40 lg:mt-60" : "mt-14 md:mt-[90px] lg:mt-[140px]"}>
+      {art && (
+        // Home and About end on the same film as the home page opens with, where the painting was: the dark grey painting
+        // and the beetle flying through it
         <div className="relative w-full overflow-hidden" style={{ height: "clamp(420px, 36vw, 680px)", background: "#545454" }}>
           <HeroInk palette={inkPalette(SCHEMES.charcoal)} spread={false} refHeight={900} speed={1.6} grain={1} />
           <HeroFilm />
-          <NyrroNote />
-        </div>
-      )}
-      {art && pathname !== "/" && (
-        <div className="relative h-[420px] w-full md:h-[900px]">
-          <Pic file="/images/site/footer-bg.png" sizes="100vw" fill />
-          <HeroInk palette={inkPalette(SCHEMES.charcoal)} spread={false} />
-          <PaintingMoth scheme={SCHEMES.charcoal} />
           <NyrroNote />
         </div>
       )}

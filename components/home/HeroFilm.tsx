@@ -697,6 +697,9 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
     const host = hostRef.current;
     if (!host) return;
     const TOP = false && place === "top";
+    // only the film at the top of the home page opens with the beetle flying in from a side (each time the page is opened);
+    // in every other film it is already there, in flight, when you scroll down to it
+    const ENTERS = place === "top";
     // the beetle is the same size on screen in every film: as in the tall film at the foot of the page, so in a shorter box
     // it is drawn larger; the room it keeps from the box's edges grows with it, so it is always seen whole
     // Every film is drawn as the tall one at the foot of the page: a shorter box (the top of the home page) shows a band
@@ -1163,7 +1166,21 @@ void main(){
           newPass(t, false);
           fs.until = t + rnd(7, 10);
           fs.after = "perch";
-          if (skipIntro) {
+          if (skipIntro && !ENTERS) {
+            // the films lower down the page: it is already there, flying somewhere in the box, when you come to it
+            fs.mode = "fly";
+            fs.air = 1;
+            fly.hidden = false;
+            wand.h = rnd(-Math.PI, Math.PI);
+            wand.lastLook = t - rnd(0, 14);
+            camera.updateMatrixWorld(); // this runs before the first frame is drawn: bring the camera's matrices up to date
+            onFrame(rnd(-0.55, 0.55), rnd(FLOOR_N + 0.1, Math.max(FLOOR_N + 0.15, CEIL_N - 0.15)), rnd(7.8, 9.5) * D_K, fly.p);
+            fly.p.y = Math.max(fly.p.y, FLOOR + 0.35);
+            newPass(t, true, false);
+            fly.v.copy(fly.target).sub(fly.p).normalize().multiplyScalar(SPEED);
+            fly.yaw = Math.atan2(fly.v.x, fly.v.z);
+            b.root.position.copy(fly.p);
+          } else if (skipIntro) {
             // the opening: the box is empty for a moment, then it sweeps in from beyond a corner, any corner, on a long
             // diagonal, curving down through the lower part of the box
             fs.mode = "fly";
@@ -1620,6 +1637,14 @@ void main(){
           step(T_STOP + 0.8);
           renderer.render(scene, camera);
           return;
+        }
+        if (!ENTERS) {
+          // a few seconds already played, out of sight: it is in full flight, its dust trailing behind it, from the first frame
+          for (let i = 0; i < 120; i++) {
+            clock += 1 / 30;
+            step(clock);
+          }
+          renderer.render(scene, camera);
         }
         raf = requestAnimationFrame(frame);
         const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
