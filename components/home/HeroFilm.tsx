@@ -698,8 +698,7 @@ export default function HeroFilm() {
     renderer.setSize(PW, PH);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.NoToneMapping;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap; // soft edges, but every leg keeps its own shadow
+    renderer.shadowMap.enabled = false; // its shadow is a soft pool of shade, drawn below, not a hard cast shadow
     renderer.domElement.style.cssText = "position:absolute;inset:0;width:100%;height:100%;display:block";
     host.appendChild(renderer.domElement);
     cleanup.push(() => {
@@ -789,12 +788,27 @@ void main(){
     sc.far = 20;
     scene.add(key1);
     scene.add(key1.target);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.38, color: lin(0.1, 0.1, 0.1) }));
-    floor.rotation.x = -Math.PI / 2;
-    floor.receiveShadow = true;
-    floor.material.depthWrite = false;
-    floor.renderOrder = -5;
-    scene.add(floor);
+    // its shadow: a soft, blurred pool of shade on the floor under it, wider and fainter the higher it flies, melting into
+    // the painting rather than standing out against it
+    const shadowTex = (() => {
+      const c = document.createElement("canvas");
+      c.width = c.height = 128;
+      const g = c.getContext("2d")!;
+      const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+      for (let k = 0; k <= 10; k++) {
+        const x = k / 10;
+        gr.addColorStop(x, `rgba(0,0,0,${Math.exp(-x * x * 4.5) * (1 - x)})`);
+      }
+      g.fillStyle = gr;
+      g.fillRect(0, 0, 128, 128);
+      return new THREE.CanvasTexture(c);
+    })();
+    const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, color: lin(0.13, 0.13, 0.13), transparent: true, opacity: 0, depthWrite: false });
+    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shadowMat);
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.renderOrder = -5;
+    scene.add(shadow);
+    let shadowAmt = 0;
 
     /* ---------------- smoke and motes ---------------- */
     const smokeTex = smokeTexture();
@@ -852,11 +866,29 @@ void main(){
     // not always the walk-in: half the time the film opens with the beetle already there, peeping in at you
     const skipIntro = true; // the walk-in is set aside for now: it opens already looking at you
     const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0 };
+    const ndcNow = new THREE.Vector3();
     const pickTarget = (t: number) => {
-      // somewhere in the lower half of the frame, left or right, nearer or further: its body low, so its whole wings beat
-      // in plain view above it
-      onFrame(rnd(-0.8, 0.8), rnd(-0.92, -0.5), rnd(5.6, 8.5), fly.target); // low: the body near the foot of the box
-      fly.next = t + rnd(6, 9);
+      // where it is on screen now, so the next leg goes somewhere else: across, diagonally, up or down, near or far
+      ndcNow.copy(fly.p).project(camera);
+      const r = Math.random();
+      const side = ndcNow.x > 0 ? -1 : 1;
+      let nx: number;
+      let ny: number;
+      if (r < 0.16) {
+        // out of the frame altogether for a moment, then it comes back in somewhere else
+        nx = side * rnd(1.35, 1.7);
+        ny = rnd(-0.8, 0.5);
+      } else if (r < 0.34) {
+        // up high for a while
+        nx = rnd(-0.8, 0.8);
+        ny = rnd(0.15, 0.55);
+      } else {
+        // mostly low, across to the other side, on a diagonal
+        nx = side * rnd(0.2, 0.85);
+        ny = ndcNow.y > -0.55 ? rnd(-0.92, -0.65) : rnd(-0.6, -0.3);
+      }
+      onFrame(nx, ny, rnd(4.8, 10), fly.target);
+      fly.next = t + rnd(5, 8);
     };
     const wp = new THREE.Vector3();
     const emitAt = new THREE.Vector3();
@@ -1002,15 +1034,17 @@ void main(){
           fs.until = t + rnd(7, 10);
           fs.after = "perch";
           if (skipIntro) {
-            // it opens already there, looking at you: its face peeping in from the frame
-            fs.after = "perch";
-            planLanding(t, b);
-            b.root.position.copy(fs.toP);
-            b.root.quaternion.copy(fs.toQ);
-            fs.mode = "perch";
-            fs.peek = 1;
-            fs.air = 0;
-            fs.until = t + rnd(4.5, 6);
+            // it opens flying in from beyond one side of the frame, low, across towards the other
+            const from = Math.random() < 0.5 ? -1 : 1;
+            onFrame(from * 1.5, rnd(-0.85, -0.4), rnd(5.5, 8), fly.p);
+            b.root.position.copy(fly.p);
+            onFrame(-from * rnd(0.2, 0.7), rnd(-0.85, -0.4), rnd(5.5, 8), fly.target);
+            fly.v.copy(fly.target).sub(fly.p).normalize().multiplyScalar(0.5);
+            fly.yaw = Math.atan2(fly.v.x, fly.v.z);
+            fly.next = t + rnd(5, 7);
+            fs.mode = "fly";
+            fs.air = 1;
+            fs.until = t + rnd(12, 18);
           }
         }
         if (fs.mode === "fly") {
@@ -1018,19 +1052,26 @@ void main(){
           // a slow glide towards where it is going; it only ever eases
           const want = fly.target.clone().sub(fly.p);
           const dist = want.length();
-          want.normalize().multiplyScalar(0.42 * clamp(dist / 1.2, 0.25, 1));
+          want.normalize().multiplyScalar(0.62 * clamp(dist / 1.4, 0.35, 1));
           const ease = skipIntro ? 1 : smooth(T_FREE, T_FREE + 3, t); // it sets off gently
           fly.v.lerp(want, Math.min(1, dt * 0.7));
           fly.p.addScaledVector(fly.v, dt * ease);
           const sp = Math.hypot(fly.v.x, fly.v.z);
           const yawGoal = sp > 0.05 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;
-          const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 0.6);
+          const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 0.8);
           fly.yaw += dy;
-          fly.roll += (clamp((-dy / Math.max(dt, 1e-3)) * 0.9, -0.5, 0.5) - fly.roll) * Math.min(1, dt * 1.2);
+          // it banks into its turns, and tips up as it climbs and down as it dives: its wings are seen from the side, from
+          // above and from below as it goes
+          fly.roll += (clamp((-dy / Math.max(dt, 1e-3)) * 1.3, -0.75, 0.75) - fly.roll) * Math.min(1, dt * 1.4);
+          const climb = clamp(-fly.v.y * 1.6, -0.5, 0.45);
           b.root.position.set(fly.p.x, fly.p.y + 0.04 * Math.sin(t * 1.3), fly.p.z);
-          b.root.quaternion.copy(qFromEuler(0.55 + (0.32 + 0.06 * Math.sin(t * 0.6) - 0.55) * ease, fly.yaw, fly.roll));
+          b.root.quaternion.copy(qFromEuler(0.3 + climb + 0.06 * Math.sin(t * 0.6), fly.yaw, fly.roll));
           fs.air = 1;
-          if (t > fs.until) planLanding(t, b);
+          if (t > fs.until) {
+            // only now and then does it come to look at you; most of the time it just flies on
+            if (Math.random() < 0.3 && Math.abs(ndcNow.copy(fly.p).project(camera).x) < 1.1) planLanding(t, b);
+            else fs.until = t + rnd(10, 16);
+          }
         } else if (fs.mode === "land" || fs.mode === "takeoff") {
           const u = clamp((t - fs.t0) / fs.dur, 0, 1);
           const e = u * u * (3 - 2 * u);
@@ -1052,7 +1093,7 @@ void main(){
               fly.yaw = fs.yaw;
               fly.roll = 0;
               pickTarget(t);
-              fs.until = t + rnd(6, 9);
+              fs.until = t + rnd(14, 22);
               // back somewhere else, to look at you again: the other way from last time, more often than not
               fs.after = "perch"; // back to another place on the frame, to look at you again
             }
@@ -1072,8 +1113,7 @@ void main(){
         }
         // a shadow only while it is flying about; looking at you, from the air or the frame, it casts none
         const shadowGoal = fs.mode === "fly" || fs.mode === "takeoff" || (fs.mode === "land" && fs.after !== "face") ? 0.38 : 0;
-        const fm = floor.material as THREE.ShadowMaterial;
-        fm.opacity += (shadowGoal - fm.opacity) * Math.min(1, dt * 1.5);
+        shadowAmt += (shadowGoal - shadowAmt) * Math.min(1, dt * 1.5);
         // its wings and cases follow how much it is in the air; legs too
         open = smooth(0, 0.6, fs.air);
         unfold = smooth(0.25, 1, fs.air);
@@ -1164,8 +1204,13 @@ void main(){
       }
 
       b.root.getWorldPosition(wp);
-      key1.position.set(wp.x - 0.25, 8, wp.z + 0.35); // light from overhead: each foot meets its own shadow where it touches the floor
-      key1.target.position.copy(wp);
+      // the soft shade below it: it follows it across the floor, spreads and fades as it rises
+      const hgt = Math.max(0, wp.y);
+      const sz = b.root.scale.x * BODY * (1.9 + hgt * 0.9);
+      shadow.position.set(wp.x, 0.004, wp.z);
+      shadow.scale.set(sz * 1.25, sz, 1);
+      shadow.rotation.z = -Math.atan2(Math.sin(b.root.rotation.y), Math.cos(b.root.rotation.y));
+      shadowMat.opacity = (shadowAmt / 0.38) * 0.42 / (1 + hgt * 0.8);
     };
 
     /* ---------------- strokes off the wings ---------------- */
