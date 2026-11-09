@@ -27,7 +27,7 @@ ASPECTS = {
                 "agentic", "intelligence used", "how is ai used", "ai role", "use ai", "uses ai", "no ai"],
   "learnings": ["learn", "learned", "learnt", "learning", "learnings", "lesson", "lessons", "takeaway", "takeaways",
                 "reflection", "reflections", "retrospective", "what did he learn"],
-  "role":      ["his role", "role", "responsibility", "responsibilities", "contribution", "team", "timeline", "duration",
+  "role":      ["his role", "role", "client", "clients", "who is the client", "who was the client", "for which client", "responsibility", "responsibilities", "contribution", "team", "timeline", "duration",
                 "when", "how long", "partner", "partners", "who did he work with", "what did he do on", "involvement", "his part"],
   "unknown":   ["budget", "cost", "costs", "budget of", "project budget", "cost of the project", "how much did it cost", "price of", "team size", "how many designers",
                 "how many people", "revenue of", "funding", "contract value", "client contact", "contact person", "who was the client lead",
@@ -95,7 +95,7 @@ SPELLFIX = {
 
 # Starter chips shown when the bot isn't sure.
 FALLBACK = {
-  "answer": "I'm not sure I understood that. I know a lot about Vishnu's **projects, design approach, AI work, clients and experience**. Try one of these, or email him at **vishnuprasadkp98@gmail.com**.",
+  "answer": "I'm not sure I understood that. 🪲 I know a lot about Vishnu's **projects, design approach, AI work, clients and experience**. Try one of these, or email him at **vishnuprasadkp98@gmail.com**.",
   "followups": ["Who is Vishnu?", "What has he worked on?", "How does he design?", "What AI work has he done?", "How can I contact him?"],
 }
 
@@ -124,10 +124,76 @@ for it in INTENTS:
     it["keywords"] = [k for k in it["keywords"] if k not in o["remove_keywords"]] + [k for k in o["add_keywords"] if k not in it["keywords"]]
     it["questions"] += o["add_questions"]
     if o["followups"] is not None: it["followups"] = o["followups"]
+from data_v3 import V3, REMOVE, EXTRA_KEYWORDS
+_by = {it["id"]: it for it in INTENTS}
+for vid, d in V3.items():
+    if vid not in _by:
+        assert d["new"], f"V3 topic {vid} doesn't exist"
+        it = {"id": vid, "category": d["category"] or "skills", "keywords": [], "questions": [], "answer": "", "followups": [], "priority": False}
+        INTENTS.append(it); _by[vid] = it
+    it = _by[vid]
+    it["answer"] = d["answer"]
+    it["keywords"] += [k for k in d["keywords"] if k not in it["keywords"]]
+    it["questions"] += [q for q in d["questions"] if q not in it["questions"]]
+    if d["followups"] is not None: it["followups"] = d["followups"]
+for eid, kws in EXTRA_KEYWORDS.items():
+    _by[eid]["keywords"] += [k for k in kws if k not in _by[eid]["keywords"]]
+for rid, kws in REMOVE.items():
+    it = _by[rid]; it["keywords"] = [k for k in it["keywords"] if k not in kws]; it["questions"] = [q for q in it["questions"] if q not in kws]
+_by["skills"]["questions"] = [q for q in _by["skills"]["questions"] if "good at" not in q and "strength" not in q]
+from data_v4 import A as V4A, F as V4F, EXTRA as V4X, REMOVE_ENTITY_ASPECTS, ENTITY_FIX
+for k, ans in V4A.items():
+    assert k in _by, f"v4 answer for unknown topic {k}"
+    _by[k]["answer"] = ans
+for k, fu in V4F.items(): _by[k]["followups"] = fu
+for k, kws in V4X.items(): _by[k]["keywords"] += [x for x in kws if x not in _by[k]["keywords"]]
+_ents = {e["id"]: e for e in ENTITIES}
+for pid, aspects in REMOVE_ENTITY_ASPECTS.items():
+    for a in aspects: _ents[pid]["answers"].pop(a, None)
+for (pid, a), ans in ENTITY_FIX.items(): _ents[pid]["answers"][a] = ans
+from data_v4 import RESUME_ITEMS, ITEM_ALIASES
+import re as _re
+_specific = set()
+for section, items in RESUME_ITEMS.items():
+    for item in items:
+        names = ITEM_ALIASES.get(item, [item.lower()])
+        where = "in his resume's **Tools** section" if section == "Tools" else f"under **{section}** on his resume"
+        if item in ("Photoshop", "Illustrator", "After Effects"): where = "part of the **Adobe Creative Suite** in his tools"
+        kws = []
+        for nm in names:
+            kws += [nm] if (len(nm) > 3 and section == "Tools") else []   # bare names only for tools
+            kws += [f"know {nm}", f"use {nm}", f"uses {nm}", f"good at {nm}", f"good in {nm}", f"experience in {nm}", f"experience with {nm}",
+                    f"familiar with {nm}", f"knows {nm}", f"work in {nm}", f"skilled in {nm}", f"expert in {nm}", f"proficient in {nm}", f"{nm} skills"]
+            _specific.add(nm)
+        iid = "item-" + _re.sub(r"[^a-z0-9]+", "-", item.lower()).strip("-")
+        INTENTS.append({"id": iid, "category": "skills", "keywords": kws,
+                        "questions": [f"does he know {names[0]}", f"is he good at {names[0]}", f"does he use {names[0]}"],
+                        "answer": f"Yes. **{item}** is {where}.", "followups": ["What are his skills?", "What tools does he use?"], "priority": False})
+        _by[iid] = INTENTS[-1]
+from data_v4 import A_NOT_ON_RESUME, NOT_ON_RESUME_KW
+INTENTS.append({"id": "not-on-resume", "category": "skills", "keywords": NOT_ON_RESUME_KW,
+                "questions": ["does he use adobe xd", "does he know webflow"],
+                "answer": A_NOT_ON_RESUME, "followups": ["What are his skills?"], "priority": False})
+_by["not-on-resume"] = INTENTS[-1]
+# coding questions about languages stay with the coding topic
+_by["not-on-resume"]["keywords"] = [k for k in _by["not-on-resume"]["keywords"] if k not in ("html", "css", "javascript", "python", "java")]
+# An answer that already contains another topic's answer "covers" it (no duplicate chips or repeats).
+_by["skills"]["covers"] = ["tools", "skills-design", "skills-strategy", "skills-ai"]
+_by["skills"]["followups"] = ["What has he worked on?", "How does he design?", "What AI work has he done?"]
+# Category topics keep category words only, so "does he know figma" goes to the specific answer.
+for cid in ["skills-design", "skills-research", "skills-ai", "skills-strategy", "tools"]:
+    _by[cid]["keywords"] = [k for k in _by[cid]["keywords"] if k not in _specific and not any(k.endswith(" " + s) for s in _specific)]
 for it in INTENTS: assert it["answer"], f"empty answer {it['id']}"
 FALLBACK["answer"] = DONT_KNOW
 FALLBACK["followups"] = ["What has he worked on?", "How does he design?", "How can I contact him?"]
 from data_scope import DROP, NOTION, CASE_STUDY
+ORDINALS = {"enterprise-search": ["first case study", "1st case study", "case study 1", "first project"],
+            "adeo": ["second case study", "2nd case study", "case study 2", "second project"],
+            "agent-workforce": ["third case study", "3rd case study", "case study 3", "third project"],
+            "hdfc": ["fourth case study", "4th case study", "case study 4", "fourth project"],
+            "sony": ["fifth case study", "5th case study", "case study 5", "fifth project", "last case study"]}
+for e in ENTITIES:
+    e["aliases"] += ORDINALS.get(e["id"], [])
 SHORT = {"enterprise-search":"Enterprise Search","adeo":"the ADEO committee platform","agent-workforce":"the Agent Workforce Platform",
  "hdfc":"the HDFC Bank project","sony":"the Sony platforms","sony-clm":"Sony's contract platform","sony-governance":"Sony's governance platform",
  "sony-sports":"Sony's sports scheduling platform","sony-social":"Sony's social intelligence platform","digital-dubai":"the Digital Dubai projects",
@@ -148,12 +214,12 @@ for e in ENTITIES:
     e["weakAliases"] = [a for a in e["aliases"] if a in WEAK_ALIASES]
     e["aliases"] = [a for a in e["aliases"] if a not in WEAK_ALIASES]
 
-kb = {"version": "2.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
+kb = {"version": "4.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
       "aspects": ASPECTS, "aspectLabels": {"problem":"the problem","users":"the users","features":"the features","strategy":"the approach","decisions":"the decisions and trade-offs","outcomes":"the outcomes","ai":"how AI is used","learnings":"the learnings","role":"his role and timeline","voting":"voting","unknown":"that"}, "aspectBoost": {"voting": 1.5}, "aspectFollowups": ASPECT_FOLLOWUPS, "spellfix": SPELLFIX,
       "entities": ENTITIES, "intents": INTENTS, "fallback": FALLBACK, "contactEmail": "vishnuprasadkp98@gmail.com",
       "whichProjectAnswer": "Which project would you like to know about? Here are his five case studies:",
       "repeatAnswer": "I've already shared that above ☝️ Is there something more specific you'd like to know?",
-      "exploreChips": ["Tell me about Enterprise Search", "Tell me about ADEO", "Tell me about the Agent Workforce Platform", "Tell me about HDFC Bank", "Tell me about the Sony platforms", "How does he design?", "What AI work has he done?", "Other client work", "How can I contact him?"]}
+      "exploreChips": ["Tell me about Enterprise Search", "Tell me about ADEO", "Tell me about the Agent Workforce Platform", "Tell me about HDFC Bank", "Tell me about the Sony platforms", "How does he design?", "What AI work has he done?", "Other projects", "How can I contact him?"]}
 
 out = "../nyrro-knowledge-base.json"
 json.dump(kb, open(out, "w"), ensure_ascii=False, indent=1)

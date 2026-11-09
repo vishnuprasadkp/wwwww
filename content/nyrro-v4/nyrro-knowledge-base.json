@@ -1,5 +1,5 @@
 {
- "version": "2.0.0",
+ "version": "4.0.0",
  "assistant": "Nyrro",
  "owner": "Vishnu Prasad K P",
  "aspects": {
@@ -176,6 +176,11 @@
   "role": [
    "his role",
    "role",
+   "client",
+   "clients",
+   "who is the client",
+   "who was the client",
+   "for which client",
    "responsibility",
    "responsibilities",
    "contribution",
@@ -391,15 +396,19 @@
     "unify search",
     "unifyapps search",
     "search case study",
-    "agent marketplace"
+    "agent marketplace",
+    "first case study",
+    "1st case study",
+    "case study 1",
+    "first project"
    ],
    "answers": {
-    "overview": "**Intelligent Enterprise Search Platform (UnifyApps)**\n\nAn AI-powered search platform that connects all of a company's tools into one shared knowledge index, so people get **direct answers with sources** instead of searching system after system.\n\n- **Role:** Lead Product Designer, end to end from client brief to developer handoff\n- **Domain:** Enterprise AI\n- **Timeline:** 2025 – present\n- **Core idea:** in enterprise AI, trust is the product",
+    "overview": "**Intelligent Enterprise Search Platform (UnifyApps)**\n\nAn AI-powered search platform that connects all of a company's tools into one shared knowledge index, so people get **direct answers with sources** instead of searching system after system.\n\n- **Role:** Lead Product Designer, end to end from client brief to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 – present\n- **Core idea:** in enterprise AI, trust is the product\n\n[Read the case study →](https://vishnuprasad.space/work/enterprise-search)",
     "problem": "Organisations had the information they needed, but it was scattered across documents, chat tools and business apps. Five problems stood out:\n\n1. Search returned **files, not answers**\n2. Knowledge sat in **disconnected systems** with no single place to manage it\n3. Results **ignored who was asking** and their role\n4. Teams **couldn't customise** the experience without engineering\n5. Users **couldn't see how their data was handled**, which hurt trust",
     "users": "The platform serves three roles, each with a different need:\n\n- **Employees** want clear, trustworthy answers with sources\n- **Administrators** want to manage integrations, permissions and settings without engineering help\n- **Compliance teams** want to see what data the platform can access, how it's used, and audit it\n\nThe product team defined these roles and led the research; their findings shaped every design decision.",
     "features": "Five core capabilities, each solving one of the five problems:\n\n- **Connect Applications:** Slack, Jira, GitHub, Google Drive and more in one knowledge base, with clear connection statuses\n- **Manage Connections:** admins see what's syncing, choose what's included and see failures\n- **Personalised Results:** direct, role-aware answers with sources instead of file lists\n- **Customise Enterprise Search:** branding, wording, enabled tools and AI model through plain-language settings\n- **Agent Marketplace:** ready-made agents for finance, legal, sales and operations, each showing what it does and whether it's verified",
-    "strategy": "Vishnu designed the platform as a **copilot**: Search, Chat, Agents, Spaces and Apps share one index and one interaction model.\n\nResponsibility grows across three levels:\n\n1. **Ask:** employees get answers\n2. **Configure:** admins shape the experience\n3. **Govern:** compliance oversees access and use\n\nThis lets one product serve everyone without each role seeing complexity it doesn't need.",
-    "decisions": "Key decisions:\n\n- **A marketplace instead of only an agent builder:** most people want to use good agents, not build them, and successful agents get reused across the company\n- **Failures shown openly:** sync failures and unverified agents are visible, because hiding them would erode trust\n- **Plain-language admin settings:** admins configure AI behaviour without engineering, at the cost of fewer low-level controls in that view",
+    "strategy": "The platform works as a **copilot**: Search, Chat, Agents, Spaces and Apps share one index and one interaction model. Responsibility grows across three levels: **Ask → Configure → Govern**.",
+    "decisions": "From the case study:\n\n- **A marketplace instead of only an agent builder**, so successful agents can be reused\n- **Sync failures and unverified agents are shown openly**, to build trust",
     "outcomes": "These are **UnifyApps' published figures** from a large financial institution's deployment; Vishnu did not measure them himself:\n\n- ~**$5.5M** projected annual cost savings\n- **800K+** consents captured in the first two weeks\n- **90% faster** time-to-market (two weeks vs. a typical 12–18 months)\n- **37%** better message delivery after consolidating 27+ messaging systems",
     "ai": "AI in the search platform:\n\n- **Retrieval with citations:** answers grounded in connected sources, with the source shown\n- **Role-aware results:** answers shaped by who is asking\n- **Agents:** a marketplace of verified, ready-made agents\n- **Configurable models:** admins choose the AI model in plain-language settings",
     "learnings": "Reflections from the project:\n\n- **Trust drives adoption** more than AI performance does\n- **Sources with every answer** make verification easy\n- **Transparency about failures** and pending states builds confidence\n- Enterprise AI must be designed for **admins and compliance reviewers**, not only end users",
@@ -429,10 +438,14 @@
     "abu dhabi",
     "committee board",
     "abu dhabi executive office",
-    "department of government enablement"
+    "department of government enablement",
+    "second case study",
+    "2nd case study",
+    "case study 2",
+    "second project"
    ],
    "answers": {
-    "overview": "**Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**\n\nA government platform that helps the Abu Dhabi Executive Office's committees **analyse, deliberate on, vote on and record decisions** on 1,000+ high-impact proposals a month.\n\n- **Client:** UnifyApps for DGE and ADEO\n- **Partners:** Frog Design and Nagarro Design (ICD as design partner)\n- **Domain:** Government\n- **Timeline:** April 2025 – February 2026\n- **Role:** Lead Product Designer",
+    "overview": "**Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**\n\nA government platform that helps the Abu Dhabi Executive Office's committees **analyse, deliberate on, vote on and record decisions** on 1,000+ high-impact proposals a month.\n\n- **Client:** UnifyApps for DGE and ADEO\n- **Partners:** Frog Design and Nagarro Design (ICD as design partner)\n- **Platform:** Tablet-first, plus web\n- **Timeline:** April 2025 – February 2026\n- **Role:** Lead Product Designer\n\n[Read the case study →](https://vishnuprasad.space/work/adeo)",
     "problem": "ADEO handles **1,000+ high-impact submissions every month**, mostly Arabic PDFs and presentations. Preparation could take **up to 15 working days**. Four structural problems:\n\n1. **Slow preparation:** members skimmed documents right before sessions\n2. **Unsearchable history:** five years of decisions (about 3,000–4,000 documents) couldn't be used during deliberation\n3. **Absent members had no voice:** no way to contribute or record a position\n4. **Incomplete records:** minutes, resolutions and action items were scattered",
     "users": "Three user types:\n\n- **Committee members:** about **15 minutes per topic**, so they need structured briefings\n- **Secretaries:** own the long preparation and documentation around each session\n- **Observers and admins:** need visibility without the ability to act\n\nResearch was continuous: requirements came directly from the client and departments, validated at each major decision.",
     "features": "The core flow is **Analyse → Deliberate → Decide & Record**:\n\n- **Session agenda:** members see only their committees, active session on top, proposals split into *For Information* and *Decision Making*\n- **AI analysis and briefing:** a summary, strategic alignment score, ROI estimate, feasibility rating and risk assessment for every proposal, shown before the document\n- **AI assistant:** searches the five-year archive from inside the session\n- **Voting and async participation:** five outcomes, each requiring a rationale; absent members can vote and give feedback\n- **Live documentation:** minutes, action items and resolution drafts generated during the session",
@@ -473,14 +486,18 @@
     "build agents",
     "ai agent case study",
     "awp",
-    "agent studio"
+    "agent studio",
+    "third case study",
+    "3rd case study",
+    "case study 3",
+    "third project"
    ],
    "answers": {
-    "overview": "**Agent Workforce Platform (UnifyApps)**\n\nA platform for building, governing and running AI agents, with **three ways to build: Simple, Workflow and Advanced**, all on one design system.\n\n- **Role:** Lead Product Designer, concept to developer handoff\n- **Domain:** Enterprise AI\n- **Timeline:** 2025 – present\n- **Goal:** make AI easy to adopt, govern and scale across roles",
+    "overview": "**Agent Workforce Platform (UnifyApps)**\n\nA platform for building, governing and running AI agents, with **three ways to build: Simple, Workflow and Advanced**, all on one design system.\n\n- **Role:** Lead Product Designer, concept to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 – present\n- **Goal:** make AI easy to adopt, govern and scale across roles\n\n[Read the case study →](https://vishnuprasad.space/work/ai-agent)",
     "problem": "Getting from an idea to a working agent took too many disconnected steps:\n\n1. **Product managers** couldn't configure or launch agents without engineering\n2. **Workflow logic** lived in separate documents that drifted out of sync with the product\n3. **Compliance and security checks** came after development, causing rework\n4. **Knowledge** was scattered, so quality and freshness were hard to manage\n5. **No way to evaluate** an agent before deployment",
     "users": "Three roles:\n\n- **Product managers:** define use cases and behaviour; need to act without engineering\n- **Engineers:** need precise control over prompts, models and testing, in a focused workspace\n- **Compliance reviewers:** need visibility, audit history and security controls before approval",
     "features": "- **Simple Agent:** plain-language setup of role, goal and knowledge, with no model selection or prompt engineering\n- **Workflow Agent:** a visual canvas of triggers, conditions and actions, with execution traces non-engineers can verify\n- **Advanced Agent:** full control over models, retrieval, guardrails and evaluations, with each decision isolated and testable\n- **Guardrails & Observability:** guardrails and PII rules set during configuration; every interaction traced\n- **Reusable Skills:** a shared library (web search, file analysis, compliance checks, API actions) any agent can call",
-    "strategy": "The platform is structured as **Configure → Orchestrate → Tune**, with three modes for three depths of control.\n\nVishnu's principle: **simplicity means giving each user the right level of complexity**, not removing features. Product managers get plain language, operations teams get a visual canvas, engineers get full control, and all three run on one design system.",
+    "strategy": "The platform is structured as **Configure → Orchestrate → Tune**, with Simple, Workflow and Advanced modes under one design system. From the case study: \"Simplicity means showing each user the right level of complexity, not removing features.\"",
     "decisions": "Trade-offs he named explicitly:\n\n- **Simple mode hides technical controls**, so engineers may find it limiting; Advanced mode exists for them\n- **Advanced mode's depth** is deliberately not aimed at people who don't need it\n- **Guardrails come first**, so reviewers check documented decisions instead of retrofitting\n- **Traces show gaps openly**, which looks less polished but avoids confident wrong answers\n- **Shared skills** are harder to maintain than purpose-built ones, but they stop teams rebuilding the same capability",
     "outcomes": "These are **UnifyApps' published figures** from a large financial institution's deployment; Vishnu did not measure them himself:\n\n- ~**$5.5M** projected annual cost savings\n- **800K+** consumer consents captured in two weeks\n- **90% faster** time-to-market\n- **37%** better message delivery after consolidating 27+ messaging systems",
     "ai": "The whole product is about AI agents:\n\n- Three build modes for different skill levels\n- **Guardrails and PII rules** set at configuration time\n- **Execution traces** of every tool call, retrieval and model decision\n- **Evaluations** before deployment\n- **Reusable skills** shared across agents",
@@ -500,14 +517,18 @@
    "label": "HDFC Bank — Consent & Preference Management",
    "aliases": [
     "hdfc",
-    "hdfc bank"
+    "hdfc bank",
+    "fourth case study",
+    "4th case study",
+    "case study 4",
+    "fourth project"
    ],
    "answers": {
-    "overview": "**Consent at the Scale of a Nation's Bank (HDFC Bank)**\n\nA consent and preference management platform for one of India's largest private banks, **30M+ customers**, built for India's **DPDP Act**.\n\n- **Client:** UnifyApps & HDFC Bank\n- **Domain:** Banking and data privacy\n- **Timeline:** March 2025 – February 2026\n- **Role:** Lead Product Designer, working with HDFC's senior management and product team from brief to Final-for-Dev",
+    "overview": "**Consent at the Scale of a Nation's Bank (HDFC Bank)**\n\nA consent and preference management platform for one of India's largest private banks, **30M+ customers**, built for India's **DPDP Act**.\n\n- **Client:** UnifyApps & HDFC Bank\n- **Platform:** Web and mobile\n- **Timeline:** March 2025 – February 2026\n- **Role:** Lead Product Designer, working with HDFC's senior management and product team from brief to Final-for-Dev\n\n[Read the case study →](https://vishnuprasad.space/work/hdfc)",
     "problem": "India's DPDP Act set a deadline the bank **couldn't move**.\n\n- Customers needed to **see** what the bank holds, **control** what they agreed to, and **withdraw consent** any time\n- Operations needed every purpose **configured, versioned and auditable**\n- Consent was *collected everywhere and governed nowhere*: scattered across legacy systems, reconciled by hand, hard to act on in real time",
     "users": "Two sides of one system:\n\n- **Customers:** see, control and withdraw consent\n- **Bank operators and the Data Privacy Office:** configure purposes, version them, monitor violations and audit\n\nBoth sides were designed together on **one shared consent record**.",
     "features": "- **Customer consent portal**\n- **Operator console** on the same consent record\n- **AI that infers preferences**\n- **AI that simplifies legal disclosures** into plain language\n- **Real-time monitoring** of consent violations\n- **Instant enforcement** of consent decisions across connected systems",
-    "strategy": "Vishnu's approach:\n\n- **One record, two experiences:** customer portal and operator console built on the same consent record, so they can't drift apart\n- **Organise, don't remove:** compliance content arranged around how customers think\n- **Compliance as a by-product:** consent actions logged automatically in the normal workflow, so the audit trail builds itself",
+    "strategy": "From the case study:\n\n- The **customer portal and operator console** were designed together, on the same consent record\n- Compliance content was **organised to match how customers think**, not reduced\n- Consent actions are **logged automatically** in the normal workflow, creating an audit trail",
     "decisions": "- Compliance content was **organised to match how customers think**, not cut down\n- Consent actions are **logged automatically** in the normal flow, with no extra steps\n- The **customer and operator sides were designed together**",
     "outcomes": "As **reported by UnifyApps**:\n\n- **400M+** consents captured across loans, cards, forex, accounts and wealth\n- **$4M** yearly cost savings\n- **98% faster** time-to-market for consent-dependent initiatives\n- **40%** delivery optimisation across **3M+ daily communications**\n- **10+ AI apps** deployed across the Data Privacy Office, Finance and Legal",
     "ai": "- **Preference inference:** AI infers customer preferences\n- **Plain-language disclosures:** AI simplifies legal text\n- **Violation monitoring** in real time\n- **10+ AI apps** deployed across the Data Privacy Office, Finance and Legal",
@@ -539,14 +560,19 @@
     "sony networks",
     "culver max",
     "sony liv",
-    "sony case study"
+    "sony case study",
+    "fifth case study",
+    "5th case study",
+    "case study 5",
+    "fifth project",
+    "last case study"
    ],
    "answers": {
-    "overview": "**Intelligence at the core of Asia's largest media group (Sony Pictures Networks India)**\n\nFour enterprise platforms designed end to end, May 2025 – July 2026, with UnifyApps (ICD as design partner):\n\n1. **Contract Lifecycle Intelligence**\n2. **Corporate Secretarial Governance**\n3. **Sports Rights Scheduling & Broadcast Planning**\n4. **Social Intelligence Command**\n\nAsk me about any of them.",
+    "overview": "**Intelligence at the core of Asia's largest media group (Sony Pictures Networks India)**\n\nFour enterprise platforms designed end to end, May 2025 – July 2026, with UnifyApps (ICD as design partner):\n\n1. **Contract Lifecycle Intelligence**\n2. **Corporate Secretarial Governance**\n3. **Sports Rights Scheduling & Broadcast Planning**\n4. **Social Intelligence Command**\n\nAsk me about any of them.\n\n[Read the case study →](https://vishnuprasad.space/work/sony)",
     "problem": "Each area ran on manual or fragmented processes:\n\n- **Contracts** lived in emails, spreadsheets and offline approvals\n- **Board minutes** took days; statutory deadlines lived in spreadsheets\n- **Scheduling conflicts** surfaced only after channels reached production\n- **Audience signals** sat across vendor tools, so teams reacted late",
     "users": "Vishnu worked with **legal, compliance, broadcast operations, content strategy and corporate governance** teams, the people who use each of the four platforms.",
     "features": "- **Contracts:** AI creation, review, routing, risk and clause checks across 2,847 agreements; SAP S/4 and Adobe Sign\n- **Governance:** minutes from live transcripts, action items, Companies Act 2013 deadlines, statutory registers; MS Teams\n- **Sports scheduling:** one planner across TEN 1–5, TEN SD, Sony LIV and SET India, with real-time conflict detection and rights checks\n- **Social intelligence:** ~2.47M monthly mentions combined with ratings, spike detection, sentiment and weekly AI briefings",
-    "strategy": "Three principles connected all four platforms:\n\n- **Trust comes from visibility:** people trust AI when they can see how it reached a result\n- **AI should act before the problem happens:** flag risk before review, conflicts before production\n- **Configuration is part of the product:** rules, approvals and thresholds need deliberate design",
+    "strategy": "Reflections from the case study:\n\n- **Trust comes from visibility:** people trust AI more when they can see how it reached a result\n- **AI should act before the problem happens**, e.g. flagging risk before review\n- **Configuration is part of the product:** rules, approvals and thresholds shape how well AI works",
     "outcomes": "From **project documentation** (not independently measured):\n\n- **Contract cycle time:** 30–45 days → **18 days**\n- **SLA compliance:** untracked → **68%**\n- **Board minutes prep:** 2–3 days → **4 hours**\n- **Missed deadlines:** down **85%**\n- **Schedule build:** days → **hours**\n- **Production conflicts:** recurring → **zero**\n- **Time-to-insight:** 48 hours → **90 minutes**\n- **Spike response:** 6 hours → **22 minutes**",
     "learnings": "- **Trust comes from visibility**\n- **AI should act before the problem happens**\n- **Configuration is part of the product**",
     "role": "Vishnu was the **Lead Product Designer** across all four platforms, May 2025 – July 2026, collaborating with legal, compliance, broadcast operations, content strategy and corporate governance teams. Some details are confidential."
@@ -564,7 +590,7 @@
     "contract lifecycle"
    ],
    "answers": {
-    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30–45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)"
+    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30–45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
    },
    "caseStudy": true,
    "name": "Sony's contract platform",
@@ -588,7 +614,7 @@
     "secretarial"
    ],
    "answers": {
-    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2–3 days → 4 hours; missed deadlines down 85%** (per project documentation)."
+    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2–3 days → 4 hours; missed deadlines down 85%** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
    },
    "caseStudy": true,
    "name": "Sony's governance platform",
@@ -609,7 +635,7 @@
     "sports scheduling"
    ],
    "answers": {
-    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1–5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation)."
+    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1–5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
    },
    "caseStudy": true,
    "name": "Sony's sports scheduling platform",
@@ -630,7 +656,7 @@
    "label": "Sony — Social Intelligence Command",
    "aliases": [],
    "answers": {
-    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation)."
+    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
    },
    "caseStudy": true,
    "name": "Sony's social intelligence platform",
@@ -678,7 +704,6 @@
     "features": "- Email verification and document upload (trade licence, tax certificate, bank letter, company profile)\n- **Review of AI-extracted** company and banking information\n- **Cross-document inconsistency** detection\n- **Duplicate-profile flags** with confidence scores\n- **Product and service recommendations** from trade-licence activities\n- Manual entry, corrections, support enquiries and **trackable human-review requests**",
     "ai": "- **Intelligent document processing** for registration documents\n- **Extraction** of company, licence, tax and banking data\n- **Entity matching** and confidence-based duplicate detection\n- **Cross-document inconsistency** detection\n- **Contextual recommendations** for product and service classification",
     "outcomes": "- Better supplier data quality through cross-document and duplicate checks\n- Less data entry through AI extraction\n- Faster classification through trade-licence-based recommendations\n- Human review reserved for flagged exceptions\n- Better visibility through reference IDs, status tracking and support paths\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "The approach is **AI proposes, the supplier confirms, humans verify exceptions**. AI handles extraction and checking, the supplier stays accountable for their own data, and verification specialists spend time only on flagged cases. Clear status tracking reduces the \"where is my application?\" enquiries.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -710,7 +735,6 @@
     "features": "- **Tender discovery** with fee-based filtering and supplier-relevant matching\n- **Order and shipment line-item tracking**\n- **Invoice creation** and payment-status checks\n- **Analytical charts** and downloadable records\n- **Business classification** and registration lookups\n- **Operational summaries:** delayed shipments, upcoming deliveries, invoice-ready orders, closing tenders\n- **AI-assisted tender submission** with confirmation messages",
     "ai": "- **Conversational AI** for natural-language procurement questions\n- **AI retrieval** of supplier and transaction records\n- **Analytical AI** for summaries and charts\n- **Recommendation AI** for tender matching\n- **Agentic AI** for assisted tender submission",
     "outcomes": "- Visibility across **six domains**: tenders, orders, shipments, invoices, payments, supplier profiles\n- Less effort retrieving information\n- Better prioritisation of closing tenders and delayed shipments\n- Less admin through assisted invoicing and submission\n- More self-service and less reliance on support teams\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "The design goes **from answers to actions**. Suppliers don't just ask \"where is my payment?\"; they can create the invoice or submit the tender in the same conversation. Proactive summaries surface what needs attention before the supplier asks.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -740,7 +764,6 @@
     "features": "- **Leave, certificate and remote-work** requests\n- **Request-status tracking** and FAQs\n- **Pending invoices, receipt-matching results, budget exceptions** and payroll insights\n- **Document-source references** on answers\n- Downloadable reports, reusable prompts and **response feedback**",
     "ai": "- **Conversational AI** for employee questions and requests\n- **Generative AI** for explanations and summaries\n- **Document-grounded answers** with source references\n- **Analytical AI** for payroll, compensation and budget questions\n- **Workflow-oriented AI** for starting and following up requests",
     "outcomes": "- Broader self-service across leave, certificate and remote-work requests\n- Less time finding guidance and checking status\n- Earlier visibility of pending invoices, matching failures and budget overruns\n- Less repetitive admin\n- More transparent help through references and feedback\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "One assistant for many back-office processes: employees don't need to know which system handles what. **Source references** keep answers verifiable, and **response feedback** lets the assistant improve over time.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -774,7 +797,6 @@
     "features": "- **Premium calculation** and **plan comparison**\n- **Coverage and rider customisation**\n- **Quote management** and sharing via **WhatsApp and SMS**\n- **AI-assisted message refinement** for customer communication\n- **Lead tracking**, customer activity history, **application-stage visibility**\n- Campaign tracking and sales performance",
     "ai": "- **In the design:** generative AI to draft and refine customer messages (tone and clarity)\n- **Proposed extensions (not shipped):** plan and rider recommendations, lead prioritisation by conversion propensity, automated follow-up reminders",
     "outcomes": "- Better quote-to-application conversion through timely follow-up\n- Faster quote preparation\n- Clearer pipeline visibility\n- Less repetitive admin through reusable customer data and AI messaging\n- Clearer customer decisions through comparable, shareable quotes\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "Agents often work **while talking to the customer**, so the design puts calculation, comparison, customisation and sharing into **one continuous flow**. AI helps with the part agents find slowest, writing a clear, well-toned message, while the sales pipeline keeps follow-ups from slipping.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -824,7 +846,6 @@
     "features": "- **Transaction summaries** and inward-transfer enquiries\n- **Initiated and returned payment** tracking\n- **SWIFT MT103 confirmation** retrieval and **bank statements**\n- Currencies, beneficiaries, FX rates, references and **approval history**\n- **Excel exports** and downloadable confirmations\n- **Source references** behind responses",
     "ai": "- **Conversational AI** and natural language understanding\n- **Generative transaction summaries**\n- **Retrieval-augmented answers** with sources\n- **Task-oriented AI** for guided banking requests\n\n_Capability-level classification; the underlying implementation isn't documented._",
     "outcomes": "- One place for transaction status, references and approval history\n- Less time retrieving confirmations and statements\n- Faster investigation of delayed, returned and cancelled payments\n- Less manual reporting through exports and self-service\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "In banking, **every number must be traceable**. Every answer comes with source references and downloadable proof (MT103, statements, Excel), so treasury teams can act on it and reconcile without asking operations.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -856,7 +877,6 @@
     "features": "The assistant works in steps:\n\n1. **Classifies documents** and extracts client and shareholder data\n2. **Flags missing or expired** records (KYC)\n3. Supports **financial spreading, projections and credit ratios**\n4. Assesses **concentration exposure** and **stress-tests repayment**\n5. Generates **clarification questions** for the Relationship Manager\n\nWith source-linked extraction, confidence indicators, pending-document tracking and **human review checkpoints**.",
     "ai": "- **Agentic AI** for the multi-step workflow\n- **Document AI** for classification and extraction\n- **Generative AI** for credit summaries and review questions\n- **Financial analytical AI** for spreading and projections\n- **Risk assessment AI** for assumption review and scenario analysis",
     "outcomes": "- Earlier identification of repayment risk. **Illustrative example from the design:** a 20% revenue shock drops DSCR to **1.12x**, below the **1.25x** covenant\n- Shorter proposal preparation\n- Better-challenged assumptions on growth, capex and customer concentration\n- Less data entry and document chasing\n- Clearer RM–risk collaboration\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "The design makes **risk visible before the decision**, not after. The agent does the heavy lifting (documents, spreading, stress tests), but **human checkpoints** and source links keep the Relationship Manager and Risk Manager accountable. Clarification questions turn a slow back-and-forth into a structured conversation.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -889,7 +909,6 @@
     "features": "- **SRE and search agents** correlate alerts by timing and service dependencies\n- **Root-cause findings** with confidence indicators\n- **Investigation timelines** and causal-chain analysis\n- **Executive summaries** and business impact\n- **SLA tracking**, resolver coordination and escalation\n- **Remediation tracking** and historical pattern analysis",
     "ai": "- **Agentic AI** for coordinated investigation\n- **Alert correlation AI**\n- **Causal reasoning AI** for root cause and dependencies\n- **Generative AI** for investigation and executive summaries\n- **Pattern recognition** for recurring incidents",
     "outcomes": "**Illustrative figures shown in the design**:\n\n- First response at **8 min** vs. a 15-min SLA target\n- Customer notification at **22 min** vs. a 30-min target\n- **5 improvement tasks** tracked (2 done, 3 in progress)\n- **12 similar vendor API failures** found over 6 months, guiding prevention\n- Clearer impact visibility (e.g., delayed cashback and loyalty-point transfers)\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "The design connects the **whole incident lifecycle**: detect → correlate → find root cause → recover → prevent. Confidence indicators keep engineers in charge of the diagnosis, and pattern analysis turns individual incidents into structural fixes.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -929,7 +948,6 @@
     "features": "- **Role-based workflows** and employee self-service\n- **Document processing** and **identity verification**\n- **Multi-level approvals** and **master-data governance**\n- **Operational analytics**\n- AI-assisted **document extraction, product master mapping, order validation, face-based identity verification** and **demand forecasting**",
     "ai": "- **Intelligent document processing**\n- **AI extraction and classification**\n- **Entity and master-data matching**\n- **Computer vision** for identity verification\n- **Predictive analytics** and demand forecasting",
     "outcomes": "- Clear ownership, approval history and request tracking\n- Fewer processing delays through structured submissions and routing\n- Better visibility into financial discrepancies, inventory variance, compliance and asset status\n- Less manual data handling\n- Better employee experience\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "With so many functions, the approach is **shared building blocks**: role-based workflows, approvals, verification and exception handling applied consistently across every department, each tailored to its own requirements. AI is used where data handling is heaviest: documents, master data and verification.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -953,7 +971,6 @@
     "features": "- **Configurable promotion cycles** with eligibility and **affordability criteria**\n- **Tier-based quotas**\n- **Multi-level nominations and approvals** with reviewer comments\n- Employee data uploads and supporting documents\n- **Bulk HR partner reassignment** and **buddy availability tracking**\n- Scheduled reminders and **audit trails**",
     "ai": "These are **proposed AI opportunities**, not shipped features:\n\n- Predicting promotion stages at risk of delay\n- Recommending buddy assignments\n- Summarising nomination comments\n- Extracting information from supporting documents\n- Flagging unusual nomination patterns",
     "outcomes": "- More consistent promotion policy through central eligibility and affordability rules\n- Less admin through bulk uploads, reassignment and reminders\n- Stronger budget oversight through quotas and affordability limits\n- Clearer ownership, review status and follow-ups\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "**Governance through configuration**: policy lives in the system (eligibility, affordability, quotas) instead of in people's heads, so every region applies the same rules. Audit trails make each decision traceable.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -983,7 +1000,6 @@
     "features": "- **App and form configuration** and reusable business capabilities\n- **Operational reporting**\n- **Conversational copilot**\n- **Reconciliation:** bank records, open invoices, lockbox files and statements matched; discrepancies surfaced; exceptions routed\n- **Record-level evidence, approval controls and audit trails**",
     "ai": "- **Generative and conversational copilot**\n- **NLP** for business questions\n- **Intelligent document processing** (OCR) for financial documents\n- **Evidence-backed decision support** for operational review\n\n_Functional categories; underlying models aren't specified._",
     "outcomes": "These are **proposed success targets**, not results:\n\n- **85–90%** automated match rate for eligible reconciliation records\n- **30–40%** less manual reconciliation effort\n- **20–30%** faster exception resolution\n- Lower processing cost per record\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "Automate the **routine matches**, and give people **evidence** for the exceptions. Every discrepancy arrives with its supporting records and a clear owner, so reviewers decide quickly and the audit trail builds itself.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1014,7 +1030,6 @@
     "features": "- **Conversational assistance** with company knowledge search, web research and file analysis\n- **Specialised agents:** spreadsheet help, presentation generation, document creation, document comparison\n- **Project spaces:** conversations, reference documents, shared instructions and team discussions in one place",
     "ai": "- **Conversational AI**\n- **Generative AI** for documents and presentations\n- **Retrieval-augmented** company knowledge\n- **Document AI** for analysis and comparison\n- **Task-specific agents**",
     "outcomes": "- Faster access to source-supported company information\n- Less time drafting documents, decks and spreadsheet answers\n- Better knowledge reuse through shared project context\n- Fewer interruptions from switching tools\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "**Context is the product.** Project spaces keep conversations, documents and instructions together, so employees and agents don't start from zero every time. Specialised agents handle specific tasks better than one general assistant.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1044,7 +1059,6 @@
     "features": "- Feedback consolidated from **service centres, call centres, social media, surveys, CRM and chatbots**\n- **AI summaries** and **sentiment analysis**\n- **Entity benchmarking** and service-level diagnostics\n- **SLA monitoring** and interaction funnels\n- **Anomaly detection** and actionable recommendations",
     "ai": "- **Natural language processing**\n- **Sentiment analysis**\n- **Generative summarisation**\n- **Predictive analytics**\n- **Anomaly and trend detection**",
     "outcomes": "Target outcomes:\n\n- ~**8%** higher first-call resolution\n- ~**10%** fewer SLA breaches\n- ~**22%** better automated verification approval rates\n- ~**26%** faster processing for selected workflows\n- ~**14%** fewer critical service incidents\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "A **consistent framework** across every entity and channel makes services comparable, and AI summaries and anomaly detection point leaders to **what needs attention and why**. Vishnu also ran a **WCAG 2.1 AA accessibility audit** of the dashboard design.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1067,9 +1081,8 @@
     "problem": "Visitor coordination needs **reliable handoffs** between hosts, guests and security. Incomplete registration, disconnected status updates and repeated verification **delayed entry** and made visit records inconsistent.",
     "users": "- **Employee / host:** schedules visits, invites guests\n- **Security officer / receptionist:** verifies OTPs, registers walk-ins, manages check-in\n- **Facilities / security manager:** oversees visitor activity\n- **System admin / IT:** permissions and configuration (proposed role)",
     "features": "- **Individual and event invitations**\n- **QR self-registration**, email verification and ID collection\n- **Digital visitor passes**\n- **OTP check-in** verification by security\n- Tracking of **pending, ongoing and completed** visits\n- **Activity timelines** from invitation to submission",
-    "ai": "**This product doesn't use AI in its current design**, and that's deliberate. The problem is coordination, not intelligence.\n\nPossible future extensions: ID data extraction, ID quality checks, visit-purpose classification, anomaly flags and visitor-volume forecasting.",
+    "ai": "AI capabilities are **not established** in the available project content. Possible future extensions listed:\n\n- Intelligent document processing for visitor ID details\n- Computer vision for ID quality checks\n- NLP for classifying visit purposes\n- Anomaly detection for unusual visit patterns\n- Predictive analytics for visitor volumes",
     "outcomes": "- Central visibility of all visits\n- Shorter reception time (information collected before arrival)\n- Better host–security coordination\n- Less admin through self-registration\n- Clearer visitor preparation\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "A good example of Vishnu knowing **when AI isn't needed**. The value comes from moving data entry **before arrival** (QR self-registration), a simple **OTP** check at the gate, and **one shared status** that hosts and security both see.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1099,9 +1112,8 @@
     "problem": "Cabin assessments and onboard incident reports need **complete, consistent records** despite limited connectivity. Interrupted submissions, missing exception remarks and fragmented reporting created follow-up work and delayed review.",
     "users": "- **Cabin crew / observer:** completes checks, documents incidents\n- **Cabin supervisor / instructor:** assesses trainees, records verdicts\n- **Operations ground team:** uses the conversational assistant for flight status\n- **Platform admin / IT:** access and synchronisation",
     "features": "- **Familiarisation and check-flight assessments**\n- **Standardised evaluation codes** (S / US / NA / NO)\n- **Mandatory remarks** on exceptions\n- **Resumable drafts** and submission review\n- **Medical incident reports:** patient details, observations, treatment, outcomes\n- A **conversational assistant concept** for flight-status queries in team chats",
-    "ai": "- A **conversational assistant concept** for operational queries (flight status) inside team conversations\n- The underlying AI architecture isn't specified; the core product is a structured offline workflow",
+    "ai": "The project shows a **conversational assistant concept** for flight-status queries within team conversations. The underlying AI architecture is not specified.",
     "outcomes": "- More consistent records through standardised codes\n- Less re-entry through saved, resumable drafts\n- Review-ready submissions through required remarks\n- Less documentation overhead\n- Continuity during connectivity drops\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "**Offline-first** was the core challenge: crew complete forms in flight, so drafts save and resume and nothing is lost when the connection drops. Standard codes keep routine checks fast, and **mandatory remarks only on exceptions** keep records review-ready without slowing crew down.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1136,7 +1148,6 @@
     "features": "- **Research, enterprise search and email assistants**\n- **Citation-backed answers** (RAG) from research resources\n- **Source inspection** and task-progress visibility\n- **Suggested follow-up actions**\n- **Searchable history**, filterable by agent or project space\n- **Microsoft Outlook** integration",
     "ai": "- **Generative AI** and **RAG** for citation-backed answers\n- **Conversational AI**\n- **AI-powered enterprise search**\n- **Agentic AI** for multi-step tasks",
     "outcomes": "- More traceable research through citations\n- Less time searching and revisiting conversations\n- Faster research summaries and communications\n- Less context switching through Outlook\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "For a research institute, **citations are non-negotiable**: every answer can be traced back and inspected. Bringing the assistant into **Outlook** meets people where they already work.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1166,7 +1177,6 @@
     "features": "- **Natural-language service discovery**\n- **Fee and required-document** explanations\n- **Renewal reminders** and payment guidance\n- **Transaction records**\n- **Tenant–landlord proposals and counteroffers**\n- **AI-assisted contract drafting** and rental term comparison\n- **Explicit user confirmation** before every proposal and transaction",
     "ai": "- **Conversational AI** for service enquiries\n- **Generative AI** for explanations and contract drafts\n- **NLU** for requests and proposed terms\n- **Decision support** for rental comparisons\n- **Agentic AI** for guided, **user-approved** multi-step journeys",
     "outcomes": "- **Licence, lease and payment** connected in one guided journey\n- Faster service discovery and renewal preparation\n- Fewer missed renewals by highlighting expiring licences and lease dependencies\n- Less routine support workload\n- Clearer fees, actions and contract terms\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "The key insight was the **dependency**: you can't renew a licence without a valid lease. So the journey treats them as **one connected flow**. The agent guides and drafts, but **the person confirms every consequential step**, which matters for government transactions.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1197,7 +1207,6 @@
     "features": "- **Annual budget initiation**\n- **P&L and CAPEX submissions** with multi-year comparisons\n- **Version tracking** and collaborative review\n- **Staged approvals** up to the Board, with **final-version locking**\n- **AI validation, revision summaries** and an **insights copilot**\n- **Consolidated reporting** and a planned **SAP integration**",
     "ai": "- **Generative AI** for revision summaries and financial narratives\n- **Conversational insights copilot**\n- **AI-assisted validation** of submissions\n- **Comparative analysis** across versions and periods\n- **Decision support** for reviewers and leadership",
     "outcomes": "- One consolidated view of property P&L and CAPEX\n- Less manual review through AI revision summaries\n- Better capital allocation (revenue, GOP, margins, investment requests)\n- Less consolidation and reconciliation work\n- Traceable approvals\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "AI explains **what changed and why** between budget versions, so reviewers spend their time on judgement, not on diffing spreadsheets. **Version control and staged approvals** keep a single traceable budget all the way to the Board.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1230,7 +1239,6 @@
     "features": "- **Account intelligence:** company research, decision-makers, project opportunities, competitive signals\n- **Market summaries:** sector trends, regulation, supply chain\n- **Call and business plan analysis:** sentiment, recurring issues, execution gaps, coaching, SMART goal evaluation\n- **RFP management:** evidence-linked answers, confidence indicators, departmental assignment, human review, approval and export\n- **Conversational assistant** for follow-ups",
     "ai": "- **Generative AI** for research summaries and RFP drafting\n- **NLP** for call and business plan analysis\n- **RAG** for evidence-linked answers\n- **Sentiment and topic extraction**\n- **AI-assisted evaluation** of plan quality and coaching",
     "outcomes": "- Better opportunity prioritisation\n- Less research and call-review time\n- Stronger execution and targeted coaching\n- Less repetitive RFP effort through evidence-linked drafting and expert review\n- Easier information discovery\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "AI drafts, **experts approve**. RFP answers carry evidence and confidence, and are routed to the right department for review, so speed doesn't cost accuracy. Call analysis turns conversations into **coaching opportunities**, not just transcripts.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1261,7 +1269,6 @@
     "features": "- **Enterprise search** with source-cited answers and **people discovery**\n- **Call transcript analysis** for buyer requirements and themes\n- **Lost-deal analysis** for root causes and patterns\n- **Voice of Customer:** NPS, sentiment, account-level feedback\n- **Market and competitive research**\n- **Sales handoff:** Salesforce, Outreach and Gong combined into qualification summaries\n- **Cloud operations:** incidents, RCA, backlogs, SLAs\n- Concepts for **acquisition-fit evaluation** and due diligence",
     "ai": "- **Generative AI** for summaries, handoff documents and recommendations\n- **NLP** for requirements, objections and themes\n- **Sentiment analysis**\n- **Semantic search with citations**\n- **Topic clustering and classification**",
     "outcomes": "- Stronger decision support across customer, account and operational data\n- Less research and preparation effort\n- Better revenue and retention actions through visibility into objections and loss drivers\n- Less coordination overhead\n- Faster access to information\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "Every insight is tied to **evidence and a business action**: a cited source, a summary someone can share, a next step someone owns. The suite covers the whole revenue lifecycle, from research to handoff to retention.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1296,7 +1303,6 @@
     "features": "**Revenue recovery**\n- Reads order and operation text to **detect services**\n- Matches them to a **configurable service catalogue**\n- **Calculates recoverable value** from quantities and rates\n\n**BOM assurance**\n- Checks **parent–child attributes, material grades, dimensions and components**\n- Individual and **batch validation**\n- A **copilot** to investigate exceptions\n\nConfidence scores, evidence, **plant-level approvals** and **audit logs** throughout.",
     "ai": "- **Agentic AI** for guided analysis and exception review\n- **NLP** for detecting services in operational text\n- **AI classification** and catalogue matching\n- **Conversational AI** for BOM investigation\n- **Hybrid AI + rules** for explainable validation",
     "outcomes": "**Illustrative project figures** (not verified production results):\n\n- **624** detected services worth ~**$591K** in potential value\n- **615** pending reviews worth ~**$590K** in potential recovery\n- **1,630** manufactured items validated across **four plants**\n- Less manual checking; more transparent reviews\n\n_These are expected outcomes from the project design, not measured production results._",
-    "strategy": "**Explainability first**: AI and rules work together so every finding comes with its evidence, a confidence score and the rule behind it. **Plant managers approve** before any charge is recovered, and audit logs keep it accountable.",
     "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
    },
    "contextAliases": [
@@ -1408,19 +1414,18 @@
     "yo",
     "sup",
     "hey there",
-    "anyone there",
-    "whats up",
-    "what is up",
-    "wassup",
-    "wats up"
+    "anyone there"
    ],
    "questions": [
+    "hi",
+    "hello there",
     "hey nyrro"
    ],
-   "answer": "Hi! I'm **Nyrro**, Vishnu's guide on this site.\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
+   "answer": "Hi! I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nAsk me about his projects, his skills, how he designs, or how to reach him.",
    "followups": [
     "Who is Vishnu?",
     "What has he worked on?",
+    "What are his skills?",
     "How does he design?"
    ],
    "priority": false
@@ -1469,7 +1474,7 @@
     "bye",
     "see you later"
    ],
-   "answer": "Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**.",
+   "answer": "Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**. 🪲",
    "followups": [],
    "priority": false
   },
@@ -1506,7 +1511,13 @@
     "kaun hai",
     "vishnu kaun hai",
     "kon hai",
-    "do for a living"
+    "do for a living",
+    "yourself and vishnu",
+    "introduce vishnu",
+    "kind of work",
+    "type of work",
+    "what kind of work",
+    "what does he do"
    ],
    "questions": [
     "who is vishnu",
@@ -1516,10 +1527,10 @@
     "who is this designer",
     "what does vishnu do"
    ],
-   "answer": "**Vishnu Prasad K P** is a Senior Product Designer at **ICD (Itu Chaudhuri Design)**, leading design for **UnifyApps**, an AI-powered enterprise platform.\n\nWith 5+ years across enterprise SaaS, AI and data-heavy platforms, he takes complex, high-stakes systems from discovery to launch, working closely with product, engineering and executive stakeholders. His work includes products for **HDFC Bank**, **DGE Abu Dhabi** and **Sony Pictures Networks India**.",
+   "answer": "**Vishnu Prasad K P** is a **Senior Product Designer at ICD (Itu Chaudhuri Design)**, working with UnifyApps.\n\nHe's a product designer with 5+ years of experience in enterprise SaaS, AI and data-heavy platforms. He takes complex, high-stakes systems from discovery to launch.",
    "followups": [
+    "What are his skills?",
     "What has he worked on?",
-    "What makes his approach unique?",
     "How many years of experience?"
    ],
    "priority": false
@@ -1542,7 +1553,7 @@
     "give me a quick summary",
     "sum him up in a sentence"
    ],
-   "answer": "A product designer who designs experiences for the **complex systems that run real work**.",
+   "answer": "A product designer with 5+ years of experience who designs experiences for the complex systems that run real work.",
    "followups": [],
    "priority": false
   },
@@ -1565,19 +1576,12 @@
     "years",
     "career length",
     "total experience",
-    "his experience",
-    "professional experience",
-    "his work experience",
-    "how many projects",
-    "number of projects",
-    "how many clients",
-    "how many use cases",
-    "how many deployments",
-    "how many projects has he done",
     "experience kitna",
     "kitna experience",
     "kitne saal",
-    "kitne years"
+    "kitne years",
+    "how much experience",
+    "experience level"
    ],
    "questions": [
     "how many years of experience does he have",
@@ -1585,7 +1589,7 @@
     "what is his work experience",
     "how long has he been designing"
    ],
-   "answer": "**5+ years** in product design across enterprise SaaS, AI and data-heavy platforms:\n\n- **ICD, embedded at UnifyApps** (Oct 2024 – present): drove design across **60+ enterprise deployments**, ran 3 initiatives in parallel and mentored 6 junior designers\n- **Brane Enterprises** (Oct 2023 – Sep 2024): led UX for **20+ client projects** on a low-code platform\n- **Kocha Technologies** (Nov 2021 – Oct 2023): designed an NFT marketplace end to end\n\nIn total, **100+ use cases**.",
+   "answer": "**5+ years.**\n\n- **ICD (Itu Chaudhuri Design), working with UnifyApps:** Oct 2024 – Present\n- **Brane Enterprises:** Oct 2023 – Sep 2024\n- **Kocha Technologies:** Nov 2021 – Oct 2023",
    "followups": [
     "What did he do at each company?",
     "What is his title?"
@@ -1610,11 +1614,12 @@
     "principal",
     "job title",
     "rank",
-    "his role",
-    "role in these projects",
+    "his job",
+    "what is his job",
     "what is his role",
-    "his role in projects",
-    "role in projects"
+    "his role",
+    "current role",
+    "current position"
    ],
    "questions": [
     "what is his title",
@@ -1624,7 +1629,7 @@
     "is he senior or lead",
     "what's his designation"
    ],
-   "answer": "His title is **Senior Product Designer** at ICD. He works at **lead-level scope**, which is why his case studies list his project role as Lead Product Designer:\n\n- **Owns design end to end**, from client brief to developer handoff\n- Works directly with **executives and senior stakeholders** (e.g., HDFC Bank's senior management)\n- Runs **several enterprise initiatives in parallel**\n- Owns and scales the **UnifyApps design system** (reused across 60+ deployments)\n- **Mentors** junior designers through critiques and growth planning",
+   "answer": "**Senior Product Designer** at ICD (Itu Chaudhuri Design), working with UnifyApps. In his case studies his project role is listed as Lead Product Designer.",
    "followups": [
     "Does he have leadership experience?",
     "Why should we hire him?"
@@ -1647,7 +1652,14 @@
     "cv",
     "previous jobs",
     "past roles",
-    "timeline"
+    "timeline",
+    "did he work at",
+    "has he worked at",
+    "worked at",
+    "work at",
+    "companies he worked",
+    "previous employer",
+    "previous employers"
    ],
    "questions": [
     "where has he worked before",
@@ -1655,10 +1667,10 @@
     "walk me through his career",
     "which companies has he worked for"
    ],
-   "answer": "1. **Kocha Technologies** (Nov 2021 – Oct 2023), Senior UI/UX Designer: designed **Nextdecentrum**, an NFT marketplace, end to end, covering onboarding, discovery, bidding and wallet integration with a distributed engineering team\n2. **Brane Enterprises** (Oct 2023 – Sep 2024), Senior UI/UX Designer: led UX for **20+ client projects** across e-commerce, finance, healthcare and education, turning unclear business and technical requirements into scalable workflows\n3. **ICD, embedded at UnifyApps** (Oct 2024 – present), Senior Product Designer: leads design on UnifyApps' AI products and **60+ enterprise deployments**, owns the design system and mentors 6 junior designers\n\nHis work moved from consumer and Web3 products to large-scale enterprise and AI systems.",
+   "answer": "1. **Senior Product Designer, ICD (working with UnifyApps)**, Oct 2024 – Present\n   Led product design across 60+ enterprise deployments for clients including HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority and DGE Abu Dhabi.\n2. **Senior UI/UX Designer, Brane Enterprises**, Oct 2023 – Sep 2024\n   Led UX for 20+ client projects across e-commerce, finance, healthcare and education on Brane's low-code platform.\n3. **Senior UI/UX Designer, Kocha Technologies**, Nov 2021 – Oct 2023\n   Designed Nextdecentrum, an NFT marketplace, end to end: onboarding, discovery, bidding and wallet integration.",
    "followups": [
-    "Tell me about his early work",
-    "What is he working on now?"
+    "What is he working on now?",
+    "Tell me about his early work"
    ],
    "priority": false
   },
@@ -1682,11 +1694,13 @@
     "b.plan",
     "barch",
     "school",
-    "certification",
-    "certifications",
-    "certificate",
-    "courses",
-    "course"
+    "graduation year",
+    "graduation",
+    "year of graduation",
+    "passed out",
+    "batch",
+    "which university",
+    "which college"
    ],
    "questions": [
     "where did he study",
@@ -1694,7 +1708,7 @@
     "what is his educational background",
     "did he go to design school"
    ],
-   "answer": "**Bachelor of Planning & Architecture**, NIT Bhopal (2017 – 2021).",
+   "answer": "**Bachelor of Planning & Architecture**, NIT Bhopal, Madhya Pradesh, India (Aug 2017 – May 2021)",
    "followups": [
     "How does architecture shape his design?",
     "Walk me through his career"
@@ -1722,9 +1736,9 @@
     "why did he move from architecture to product design",
     "what does design like a building mean"
    ],
-   "answer": "More than you'd expect. A building and an enterprise product are both **systems many kinds of people move through**.\n\n**\"Design like a building\"** in practice:\n\n- **Foundation:** the data and permissions everything depends on\n- **Structure:** the core flow every role shares\n- **Rooms:** role-specific views for different people\n- **Circulation:** how people and work move between steps\n- **Safety:** what happens when something fails, and how people see it\n\nThat's why he maps roles, dependencies and failure points **before** drawing screens.",
+   "answer": "He studied Planning & Architecture at NIT Bhopal, where he learned to **understand systems before changing them**. That thinking still shapes his work: he doesn't see a product as a collection of screens.",
    "followups": [
-    "What is his design process?"
+    "How does he design?"
    ],
    "priority": false
   },
@@ -1746,7 +1760,7 @@
     "what languages does he speak",
     "does he speak hindi"
    ],
-   "answer": "- **English:** professional\n- **Malayalam:** native\n- **Hindi:** conversational\n- **Tamil:** conversational",
+   "answer": "- **English:** Professional\n- **Malayalam:** Native\n- **Hindi:** Conversational\n- **Tamil:** Conversational",
    "followups": [],
    "priority": false
   },
@@ -1769,15 +1783,13 @@
     "india",
     "countries",
     "geography",
-    "where does he work",
-    "where is he from",
-    "hometown",
-    "native place",
-    "which city",
-    "which state",
     "kahan",
     "kaha se",
-    "where from"
+    "where from",
+    "where is he from",
+    "from where",
+    "which country",
+    "nationality"
    ],
    "questions": [
     "where is he based",
@@ -1785,10 +1797,10 @@
     "does he have international experience",
     "has he worked with middle east clients"
    ],
-   "answer": "He's based in **India** and designs for teams in **India, the UAE, Qatar and the US**. Two of his case studies show this range:\n\n- **HDFC Bank** in India\n- **DGE / ADEO** for the Abu Dhabi government",
+   "answer": "He's based in **India**. His clients are in **India, the UAE, Qatar and the US**.",
    "followups": [
     "Tell me about ADEO",
-    "Other client work"
+    "Other projects"
    ],
    "priority": false
   },
@@ -1806,22 +1818,21 @@
     "latest work",
     "recent work",
     "nowadays",
-    "where does he work now",
     "where does he work",
-    "where is he working",
+    "which company",
     "current company",
-    "current employer",
-    "which company is he in",
-    "present job"
+    "employer",
+    "company he works",
+    "where is he working"
    ],
    "questions": [
     "what is vishnu working on right now",
     "what is he doing these days"
    ],
-   "answer": "He's leading design at **ICD for UnifyApps**: its AI products (Enterprise Search, Agent Workforce, the Low-Code Builder), client deployments, and the shared design system. Much of the current work is under NDA.",
+   "answer": "He's a **Senior Product Designer at ICD**, working with **UnifyApps**. Much of his current work is under NDA; the case studies show what can be shared.",
    "followups": [
-    "Tell me about Enterprise Search",
-    "Other client work"
+    "What has he worked on?",
+    "What are his skills?"
    ],
    "priority": false
   },
@@ -1843,17 +1854,21 @@
     "data heavy",
     "data-heavy",
     "insights platform",
-    "bi"
+    "bi",
+    "work with data",
+    "data products",
+    "data",
+    "data driven"
    ],
    "questions": [
     "has he designed dashboards",
     "any experience with data visualization",
     "can he design analytics products"
    ],
-   "answer": "Yes. He designs data-heavy products by **leading with what needs attention and why**, not with every number.\n\n- **Sony Social Intelligence:** 2.47M monthly mentions combined with ratings, with spike detection and sentiment\n- **HDFC:** an operator console for monitoring consent violations in real time\n\nHis client work also includes dashboards for government services, hotel budgets and incident response.",
+   "answer": "**Data Visualization** is on his resume. Examples from his case studies:\n\n- **Sony Social Intelligence Command:** ~2.47M monthly social mentions combined with broadcast ratings\n- **HDFC Bank:** real-time monitoring of consent violations",
    "followups": [
     "Tell me about Sony",
-    "Other client work"
+    "Other projects"
    ],
    "priority": false
   },
@@ -1873,14 +1888,16 @@
     "programming",
     "vibe coding",
     "build websites",
-    "technical skills"
+    "does he code",
+    "is he technical",
+    "write code"
    ],
    "questions": [
     "does he know coding",
     "can he code",
     "is he technical"
    ],
-   "answer": "He's a product designer first, but technically fluent:\n\n- Works closely with engineering on **handoff and implementation** (he set up ICD's handoff and review process)\n- Designs **for engineers as users** (Agent Workforce Advanced mode: models, retrieval, evaluations)\n- Uses **AI tools like Claude and Google AI Studio** for prototyping\n- Rebuilt his own portfolio site in code, moving off a no-code builder",
+   "answer": "Coding isn't listed on his resume. He works closely with engineering: he **established design-to-engineering handoff and review workflows** that reduced rework and implementation inconsistencies.",
    "followups": [
     "How does he work with engineers?"
    ],
@@ -1893,50 +1910,63 @@
     "skills",
     "skill set",
     "skillset",
-    "strengths",
     "expertise",
-    "good at",
     "specialization",
     "specialisation",
-    "superpower",
     "capabilities",
     "what can he do",
     "competencies",
-    "strong at",
     "core skills",
-    "prompt engineering",
-    "ui ux",
-    "ui and ux",
-    "ux and ui",
-    "ui as well as ux",
-    "ux design",
-    "ui design",
-    "interaction design",
-    "information architecture",
-    "visual design skills",
-    "specialty",
-    "speciality",
-    "what is he good at",
-    "ux designer",
-    "ui designer",
-    "ui or ux",
-    "ux or ui",
-    "ux designer or ui designer",
-    "what kind of skills"
+    "what kind of skills",
+    "skill",
+    "key skills",
+    "main skills",
+    "top skills",
+    "his skills",
+    "list of skills",
+    "skills list",
+    "all skills",
+    "what skills",
+    "which skills",
+    "skills does he have",
+    "technical skills",
+    "hard skills",
+    "professional skills",
+    "competency",
+    "areas of expertise",
+    "what does he know",
+    "abilities",
+    "proficient",
+    "proficiency",
+    "specialities",
+    "specialties",
+    "skills on resume",
+    "resume skills",
+    "cv skills",
+    "know how"
    ],
    "questions": [
     "what are his skills",
-    "what is he good at",
-    "what are his strengths",
-    "what is his expertise"
+    "what is his expertise",
+    "what are his core skills",
+    "list his skills",
+    "what skills does vishnu have",
+    "what can he do",
+    "what does he know"
    ],
-   "answer": "His real strength is making complex systems usable. He works from the system outward: first who uses the product, what depends on what and where it breaks, and only then the screens.\n\nThat shows up in a few ways:\n\n- **Structure:** information architecture, flows and interaction design for dense enterprise and AI products\n- **Systems:** he owns the UnifyApps design system, so a pattern designed once holds up across **60+ client deployments**\n- **AI:** agentic UX, careful prompt design, and quick generative prototypes to test an idea before it's built\n- **Leadership:** he runs several initiatives at once with product, engineering and client executives, and mentors six designers\n\nHe holds a firm line on accessibility (WCAG 2.1), and most of his work happens in Figma, with Claude and Google AI Studio for prototyping.",
+   "answer": "**Design & Research**\nProduct Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems, Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS\n\n**Strategy & Systems**\nProduct Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design Leadership, DesignOps, Data Visualization\n\n**AI & Tools**\nClaude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping\n\n**Tools**\nClaude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects)",
    "followups": [
+    "What has he worked on?",
     "How does he design?",
-    "What AI work has he done?",
-    "What has he achieved?"
+    "What AI work has he done?"
    ],
-   "priority": false
+   "priority": false,
+   "covers": [
+    "tools",
+    "skills-design",
+    "skills-strategy",
+    "skills-ai"
+   ]
   },
   {
    "id": "tools",
@@ -1944,32 +1974,31 @@
    "keywords": [
     "tools",
     "software",
-    "figma",
-    "framer",
-    "miro",
-    "figjam",
-    "adobe",
-    "photoshop",
-    "illustrator",
-    "after effects",
     "stack",
     "toolkit",
     "design tools",
-    "claude",
     "ai tools",
-    "google ai studio",
-    "prototyping tool"
+    "prototyping tool",
+    "tool",
+    "tools he uses",
+    "favourite tool",
+    "favorite tool",
+    "which software",
+    "apps he uses",
+    "adobe tools"
    ],
    "questions": [
     "what tools does he use",
     "does he use figma",
     "what is his design stack",
-    "does he use ai tools"
+    "does he use ai tools",
+    "what software does he know",
+    "how does he use claude"
    ],
-   "answer": "- **Design & prototyping:** Figma, Figma AI, FigJam, Framer, Adobe Creative Suite\n- **Collaboration & workshops:** Miro, FigJam\n- **AI tools:** Claude, Google AI Studio\n- **AI practice:** AI product design, prompt engineering, agentic UX and generative prototyping",
+   "answer": "Claude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects)",
    "followups": [
-    "What are his core skills?",
-    "How does he design?"
+    "What are his skills?",
+    "What has he worked on?"
    ],
    "priority": false
   },
@@ -1992,14 +2021,20 @@
     "android app",
     "tablet app",
     "native app",
-    "native apps"
+    "native apps",
+    "ipad",
+    "web app",
+    "web design",
+    "devices",
+    "cross platform",
+    "app design"
    ],
    "questions": [
     "has he designed mobile apps",
     "does he do tablet design",
     "web or mobile"
    ],
-   "answer": "- **Web:** most of his enterprise work\n- **Tablet-first:** the ADEO committee app\n- **Web + mobile:** Enterprise Search, Agent Workforce, HDFC consent\n- **iOS & Android apps:** earlier in his career (hotel booking, alarm and habit-tracking apps)",
+   "answer": "- **Web and mobile:** Enterprise Search, Agent Workforce Platform, HDFC Bank\n- **Tablet (primary) and web:** ADEO\n- **iOS & Android apps:** listed in his 2023 portfolio",
    "followups": [
     "Tell me about ADEO",
     "Tell me about his early work"
@@ -2035,19 +2070,26 @@
     "double diamond",
     "ux process",
     "kaise design",
-    "design kaise"
+    "design kaise",
+    "solve problems",
+    "problem solving",
+    "how does he solve",
+    "approach problems"
    ],
    "questions": [
     "how does vishnu design",
     "what is his design process",
     "walk me through his process",
     "what's his approach to a project",
-    "how does he work"
+    "how does he work",
+    "does he know design thinking",
+    "how does he approach a new project",
+    "how does he solve problems"
    ],
-   "answer": "His process moves from understanding to delivery:\n\n1. **Map the system:** who uses it, what each person needs, what depends on what, where it breaks\n2. **Define the roles:** end users, admins, compliance and leaders each get their own experience\n3. **Frame the problems:** a few structural problems, each tied to a product response\n4. **Design one core flow** every role shares (in ADEO: *Analyse → Deliberate → Decide & Record*)\n5. **Decide, and name the cost** of each decision\n6. **Validate** in review cycles with PMs, clients and engineering\n7. **Hand off** documented components to developers",
+   "answer": "From his About page: his process is **research-first**. He maps the **people, dependencies, goals and failure points** before designing screens. He **owns projects end to end** and invests in **clear flows, reusable patterns and documented components**.",
    "followups": [
-    "How does he handle trade-offs?",
-    "How does he do research?"
+    "What are his skills?",
+    "Tell me about ADEO"
    ],
    "priority": false
   },
@@ -2062,7 +2104,6 @@
     "differentiator",
     "what makes him",
     "why him",
-    "edge",
     "usp",
     "distinctive",
     "better than other designers",
@@ -2076,7 +2117,7 @@
     "how is he different from other designers",
     "what sets him apart"
    ],
-   "answer": "Three things stand out:\n\n- **He maps the system before the screens.** Roles, dependencies and failure points come first, so the product holds together as it grows.\n- **He treats trust as a design material.** In AI products, answers carry sources, AI content is labelled, and failures are visible instead of hidden.\n- **He names the cost of every decision.** In the ADEO committee platform he made voting deliberately slower by requiring a rationale, because government decisions deserve that friction.",
+   "answer": "From his About page: he treats **design as a system problem**, and wants AI tools to be **useful, understandable and trustworthy**. His process is research-first: people, dependencies, goals and failure points come before screens.",
    "followups": [
     "Tell me about ADEO",
     "What are his design principles?"
@@ -2095,14 +2136,16 @@
     "design philosophy",
     "guiding",
     "rules",
-    "what does he believe"
+    "what does he believe",
+    "how does he think",
+    "thinking"
    ],
    "questions": [
     "what are his design principles",
     "what is his design philosophy",
     "what does he believe about design"
    ],
-   "answer": "- **Trust is the product:** people adopt AI they can verify\n- **People stay in control:** AI drafts, humans approve\n- **The right complexity for each user:** simplicity doesn't mean fewer features\n- **Governance from the start:** guardrails and audit trails live inside the workflow\n- **Organise complexity, don't delete it**\n- **Act before the problem:** flag risk early\n- **Every decision has a cost:** name it",
+   "answer": "Reflections from his case studies:\n\n- **Enterprise Search:** trust drives adoption more than AI performance\n- **ADEO:** important decisions benefit from deliberate interactions, not speed\n- **Agent Workforce:** simplicity means showing each user the right level of complexity\n- **HDFC Bank:** good records create compliance naturally\n- **Sony:** AI should act before the problem happens",
    "followups": [
     "How does he design for trust in AI?"
    ],
@@ -2117,16 +2160,15 @@
     "discovery",
     "interviews",
     "personas",
-    "usability testing",
     "validate",
     "validation",
     "user testing",
     "insights",
     "requirements",
-    "test his designs",
-    "testing",
-    "test designs",
-    "usability test"
+    "does he do research",
+    "research process",
+    "how does he research",
+    "gather requirements"
    ],
    "questions": [
     "how does he do user research",
@@ -2134,8 +2176,11 @@
     "how does he validate designs",
     "how does he gather requirements"
    ],
-   "answer": "It depends on the engagement, and he's careful to credit it accurately:\n\n- **UnifyApps projects:** the product team defined the roles and led the research; their findings shaped every design decision\n- **ADEO:** requirements came directly from the client and departments, with validation at every major decision instead of a single research phase\n- **His own discovery:** mapping roles, dependencies and failure points, then turning them into design decisions\n\nHe validates through iterative review cycles with PMs, client stakeholders and engineering.",
-   "followups": [],
+   "answer": "- **UnifyApps projects:** the product team defined the roles and led the research; their findings shaped the design decisions\n- **ADEO:** research was continuous, with requirements gathered from the client, multiple design iterations, and validation at each major decision\n\nUser Research, Usability Testing and Journey Mapping are on his resume.",
+   "followups": [
+    "What are his research skills?",
+    "Tell me about ADEO"
+   ],
    "priority": false
   },
   {
@@ -2159,7 +2204,7 @@
     "give an example of a hard design decision",
     "what compromises did he make"
    ],
-   "answer": "He states trade-offs openly in his case studies:\n\n- **ADEO:** members see only their own committees, which keeps them focused, but people on several committees need a separate view\n- **Agent Workforce:** Simple mode hides technical controls, so engineers use Advanced mode instead\n- **Agent Workforce:** execution traces show gaps openly, which looks less polished but prevents confident wrong answers",
+   "answer": "From his case studies:\n\n- **ADEO:** members only see their own committees. That keeps them focused, but members of several committees need a separate view.\n- **ADEO:** every vote requires a rationale, which deliberately slows voting down\n- **Agent Workforce:** Simple mode hides technical controls, so engineers may find it limiting; Advanced mode exists for them\n- **Agent Workforce:** traces show gaps openly, which looks less polished but avoids confident wrong answers",
    "followups": [
     "Tell me about ADEO",
     "Tell me about the Agent Workforce Platform"
@@ -2184,7 +2229,7 @@
     "how does he simplify complex products",
     "how does he handle complexity"
    ],
-   "answer": "He shows each person **the right amount of complexity** instead of removing capability.\n\nThe **Agent Workforce Platform** is one product with three depths: Simple for product managers, Workflow for operations teams, Advanced for engineers. At **HDFC**, dense compliance content was **reorganised** around how customers think rather than cut.",
+   "answer": "- **Agent Workforce Platform:** \"Simplicity means showing each user the right level of complexity, not removing features.\" It has Simple, Workflow and Advanced modes.\n- **HDFC Bank:** complex compliance information was organised, not removed.",
    "followups": [
     "Tell me about the Agent Workforce Platform"
    ],
@@ -2217,7 +2262,14 @@
     "collaborate",
     "collaboration",
     "cross functional",
-    "business stakeholders"
+    "business stakeholders",
+    "stakeholder",
+    "align",
+    "present to stakeholders",
+    "handle clients",
+    "client handling",
+    "client facing",
+    "deal with clients"
    ],
    "questions": [
     "how does he work with stakeholders",
@@ -2225,7 +2277,7 @@
     "how does he align different teams",
     "how does he handle competing stakeholder needs"
    ],
-   "answer": "He works directly with senior stakeholders in iterative review cycles:\n\n- **HDFC Bank:** with the bank's senior management and product team, from brief to final handoff\n- **Sony:** with legal, compliance, broadcast operations, content strategy and governance teams\n- **ADEO:** alongside Frog Design and Nagarro Design for a government client\n\nHe gets everyone aligned on a short list of clear problems and **one shared source of truth**, with a view tailored to each role.",
+   "answer": "- **HDFC Bank:** worked with HDFC's senior management and product team from brief through Final-for-Dev handoff\n- **Sony:** collaborated with legal, compliance, broadcast operations, content strategy and corporate governance teams\n- **ADEO:** worked alongside Frog Design and Nagarro Design\n\n**Stakeholder Management** is on his resume.",
    "followups": [
     "How does he work with engineers?",
     "Tell me about HDFC Bank"
@@ -2246,14 +2298,24 @@
     "business impact",
     "outcomes",
     "results",
-    "metrics"
+    "metrics",
+    "achievements",
+    "achievement",
+    "achieved",
+    "accomplishments",
+    "impact",
+    "what has he achieved",
+    "track record",
+    "numbers"
    ],
    "questions": [
     "how does he measure success",
     "what impact has his work had",
-    "what results has he delivered"
+    "what results has he delivered",
+    "what has he achieved",
+    "what are his achievements"
    ],
-   "answer": "Results from his case studies, each attributed to its source:\n\n- **ADEO:** committee preparation went from up to 15 working days to **minutes**\n- **Sony:** contract cycle time went from 30–45 days to **18 days** (project documentation)\n- **HDFC Bank:** **400M+** consents captured and **$4M** saved a year (reported by UnifyApps)\n- **Enterprise Search & Agent Workforce:** **~$5.5M** in projected savings (UnifyApps' published figures)",
+   "answer": "Results from his case studies, with their sources:\n\n- **ADEO:** committee preparation went from up to **15 working days to minutes**\n- **Sony:** contract cycle time went from **30–45 days to 18 days** (project documentation)\n- **HDFC Bank:** **400M+ consents** captured and **$4M** saved a year (reported by UnifyApps)\n- **Enterprise Search & Agent Workforce:** **~$5.5M** projected annual savings (UnifyApps' published figures)",
    "followups": [
     "Are these numbers real?",
     "Tell me about Sony"
@@ -2286,7 +2348,9 @@
     "projects uses ai",
     "which projects ai",
     "projects with ai",
-    "uses ai"
+    "uses ai",
+    "llms",
+    "which projects use ai"
    ],
    "questions": [
     "does he have ai experience",
@@ -2294,10 +2358,10 @@
     "has he worked on generative ai",
     "tell me about his ai work"
    ],
-   "answer": "Yes. Most of his recent work involves AI, though he calls himself a **product designer who applies AI when a product needs it**.\n\nAcross his case studies he has designed:\n\n- **AI search** with source-cited answers (Enterprise Search)\n- **AI agent building** with guardrails and traces (Agent Workforce)\n- **AI briefings and live minutes** for government decisions (ADEO)\n- **AI that turns legal text into plain language** (HDFC)\n- **Contract risk, conflict detection and social listening** (Sony)",
+   "answer": "AI products from his case studies:\n\n- **Enterprise Search:** AI answers with sources across a company's tools, plus an agent marketplace\n- **Agent Workforce Platform:** building, governing and running AI agents\n- **ADEO:** AI briefings, an archive assistant and live minutes for government committees\n- **HDFC Bank:** AI that infers preferences and simplifies legal disclosures\n- **Sony:** AI contract review, minutes generation, scheduling conflict detection and social intelligence\n\nAI Product Design, Agentic UX and Prompt Engineering are on his resume.",
    "followups": [
     "How does he design for trust in AI?",
-    "Tell me about the Agent Workforce Platform"
+    "What are his AI skills?"
    ],
    "priority": false
   },
@@ -2316,18 +2380,14 @@
     "trust in ai",
     "responsible ai",
     "ethical ai",
-    "confidence score",
-    "design for trust",
-    "designing for trust",
-    "how does he build trust",
-    "trust in design"
+    "confidence score"
    ],
    "questions": [
     "how does he design for trust in ai",
     "how does he handle ai hallucinations",
     "how does he make ai explainable"
    ],
-   "answer": "His central idea is that **in enterprise AI, trust is the product**. In practice:\n\n- **Sources on every answer**, so people can verify instead of guess\n- **AI content clearly labelled**, as in ADEO's briefings\n- **Failures shown openly:** sync failures, unverified agents, gaps in traces\n- **Humans sign off:** AI drafts minutes and summaries; people approve them\n- **Execution traces** that show how an agent reached its answer",
+   "answer": "From his case study reflections:\n\n- **Enterprise Search:** trust drives adoption more than AI performance; showing sources makes verification easy; transparency about failures builds confidence\n- **ADEO:** AI content is clearly labelled so users always know what was machine-generated\n- **Sony:** people trust AI more when they can see how it reached a result",
    "followups": [
     "Tell me about Enterprise Search"
    ],
@@ -2352,7 +2412,7 @@
     "who stays in control of the ai",
     "how does he balance automation and human review"
    ],
-   "answer": "AI does the heavy lifting; **people make the consequential decisions**.\n\n- **ADEO:** AI drafts minutes and resolutions, and the committee approves them before they become official\n- **ADEO:** every vote needs a human-written rationale\n- **Agent Workforce:** compliance reviewers approve agents with their guardrails documented\n\nThe aim is to spend human attention only where it's needed.",
+   "answer": "- **ADEO:** AI produces drafts; humans review, edit and approve them before they become official records. Every vote requires a rationale.\n- **Agent Workforce:** compliance reviewers see audit history and security controls before approving an agent.",
    "followups": [
     "Tell me about ADEO"
    ],
@@ -2380,7 +2440,7 @@
     "what agentic work has he done",
     "does he know agentic ux"
    ],
-   "answer": "Yes. The **Agent Workforce Platform** is his main agentic work: a platform for building, governing and running AI agents in three modes (**Simple, Workflow, Advanced**), with guardrails, execution traces and reusable skills.\n\nHis **Enterprise Search** platform also includes an **Agent Marketplace** of verified, ready-made agents.",
+   "answer": "**Agent Workforce Platform** (UnifyApps): three ways to build AI agents (Simple, Workflow and Advanced), with guardrails and PII rules set during configuration, execution traces, and reusable skills.\n\n**Enterprise Search** also includes an **Agent Marketplace** of ready-made agents, each showing whether it's verified.",
    "followups": [
     "Tell me about the Agent Workforce Platform",
     "Other agentic projects"
@@ -2410,7 +2470,7 @@
     "how does he design for compliance",
     "how does he handle ai safety"
    ],
-   "answer": "He builds governance into **setup**, not after-the-fact review:\n\n- **Agent Workforce:** guardrails and PII rules are set when an agent is created, and every action is traced\n- **HDFC:** consent actions are logged automatically, so the audit trail builds itself\n- **Enterprise Search:** compliance teams see what data the platform can access",
+   "answer": "- **Agent Workforce:** guardrails and PII rules are set during configuration; every interaction is captured as a trace\n- **HDFC Bank:** consent actions are logged automatically in the normal workflow, creating an audit trail\n- **Enterprise Search:** compliance teams can see what data the platform can access and audit it",
    "followups": [
     "Tell me about HDFC Bank"
    ],
@@ -2439,10 +2499,10 @@
     "what is his view on copilots",
     "has he designed conversational interfaces"
    ],
-   "answer": "A good copilot, in his view, **helps people finish the task**, not just answer a question.\n\n- **Enterprise Search:** one copilot over Search, Chat, Agents, Spaces and Apps\n- **ADEO:** an assistant that searches five years of decisions mid-session\n- **Sony:** a copilot that checks every scheduled broadcast against its rights contract",
+   "answer": "- **Enterprise Search:** works as a copilot across Search, Chat, Agents, Spaces and Apps\n- **ADEO:** a conversational assistant that searches the five-year archive inside the session\n- **Sony:** a copilot that checks each scheduled event against its executed rights agreement",
    "followups": [
     "Tell me about Enterprise Search",
-    "Other client work"
+    "Other projects"
    ],
    "priority": false
   },
@@ -2468,8 +2528,10 @@
     "when does he decide ai is not needed",
     "has he done non ai projects"
    ],
-   "answer": "When the problem is **coordination, not intelligence**.\n\nHis **Mphasis visitor management** work uses no AI in its current design. The value comes from QR self-registration, OTP check-in and one shared visit status. AI ideas (ID extraction, visitor forecasting) are noted as future options, not forced in.\n\nThat's why he calls himself a product designer who applies AI **when the product needs it**.",
-   "followups": [],
+   "answer": "His Mphasis visitor management project has **no AI features** in its project content. AI there is listed only as possible future extensions.",
+   "followups": [
+    "What AI work has he done?"
+   ],
    "priority": false
   },
   {
@@ -2485,7 +2547,7 @@
    "questions": [
     "is he an ai designer"
    ],
-   "answer": "He'd say no. He's a **product designer who applies AI when the product needs it**. He treats AI as specific mechanisms (retrieval, extraction, classification, summarisation, agents, guardrails) and designs each deliberately, rather than treating AI as a feature in itself.",
+   "answer": "He describes himself as a **product designer who applies AI when a product needs it**, not as an \"AI designer\".",
    "followups": [],
    "priority": false
   },
@@ -2521,7 +2583,7 @@
     "has he worked with rag",
     "has he designed document extraction"
    ],
-   "answer": "Patterns he returns to:\n\n- **Answers with citations (RAG):** Enterprise Search\n- **The briefing before the document:** ADEO\n- **Three levels of control:** Agent Workforce\n- **Plain-language versions of legal text:** HDFC\n- **Spike, conflict and risk detection:** Sony\n- **Confidence scores and evidence** for human review (used across his client work)",
+   "answer": "AI products from his case studies:\n\n- **Enterprise Search:** AI answers with sources across a company's tools, plus an agent marketplace\n- **Agent Workforce Platform:** building, governing and running AI agents\n- **ADEO:** AI briefings, an archive assistant and live minutes for government committees\n- **HDFC Bank:** AI that infers preferences and simplifies legal disclosures\n- **Sony:** AI contract review, minutes generation, scheduling conflict detection and social intelligence\n\nAI Product Design, Agentic UX and Prompt Engineering are on his resume.",
    "followups": [
     "How does he design for trust in AI?"
    ],
@@ -2546,19 +2608,25 @@
     "team lead",
     "design lead",
     "led a team",
-    "lead teams",
-    "lead team",
-    "does he lead"
+    "leadership experience",
+    "has he led",
+    "manage",
+    "manages",
+    "does he lead",
+    "how many people has he managed",
+    "people has he managed",
+    "how many has he managed",
+    "team he leads"
    ],
    "questions": [
     "does he have leadership experience",
     "has he led teams",
     "is he a good leader"
    ],
-   "answer": "Yes:\n\n- Leads design **end to end** on UnifyApps products\n- **Mentors junior designers** (6, per his resume) through critiques and growth planning\n- Runs **several initiatives in parallel**\n- Set up ICD's **design-to-engineering handoff** process\n- Works directly with **client executives**",
+   "answer": "From his resume:\n\n- Led product design across **60+ enterprise deployments**\n- Owned and scaled the **UnifyApps design system**\n- Managed **3 enterprise initiatives in parallel**\n- Established **design-to-engineering handoff and review workflows**\n- **Mentored 6 junior designers** through critiques and growth planning",
    "followups": [
-    "How does he mentor?",
-    "How does he work with engineers?"
+    "Does he mentor designers?",
+    "Can he lead a design team?"
    ],
    "priority": false
   },
@@ -2586,8 +2654,10 @@
     "does he mentor designers",
     "how does he mentor"
    ],
-   "answer": "He mentors **junior designers (6, per his resume)** through regular **critiques and growth planning**. He helps them move from screen-level thinking to **systems-level thinking**, and holds quality standards, including WCAG 2.1 accessibility, across their work.",
-   "followups": [],
+   "answer": "From his resume: he **mentored 6 junior designers** through critiques and growth planning, and enforced WCAG 2.1 accessibility across products.",
+   "followups": [
+    "Does he have leadership experience?"
+   ],
    "priority": false
   },
   {
@@ -2620,8 +2690,10 @@
     "how is his developer handoff",
     "does he work well with developers"
    ],
-   "answer": "- He set up ICD's **design-to-engineering handoff and review** workflows, which **reduced rework** and implementation inconsistencies\n- Hands off **documented components and patterns** (Final-for-Dev)\n- Takes engineering constraints seriously and designs decisions that can be built\n- In the Agent Workforce Platform he designed **for engineers as users**: a focused workspace with precise control over models, retrieval and testing",
-   "followups": [],
+   "answer": "From his resume:\n\n- Established **design-to-engineering handoff and review workflows** that reduced rework and implementation inconsistencies\n- At Brane, shipped responsive products with **clean developer handoff**\n\nIn the **Agent Workforce Platform**, engineers are one of the three user roles; Advanced mode gives them precise control.",
+   "followups": [
+    "Has he built a design system?"
+   ],
    "priority": false
   },
   {
@@ -2637,14 +2709,23 @@
     "ui kit",
     "consistency",
     "scalable design",
-    "pattern library"
+    "pattern library",
+    "built a design system",
+    "build a design system",
+    "scaled a design system",
+    "design system experience",
+    "has he built a design system",
+    "own a design system",
+    "design systems experience"
    ],
    "questions": [
     "does he have design system experience",
     "has he built a design system"
    ],
-   "answer": "Yes. He **owns and scales the UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation.\n\n- **Reused across 60+ enterprise deployments**\n- **Shortens delivery time** and keeps products consistent\n- The Agent Workforce Platform runs **three agent modes on one design system**\n- Shared patterns (search, copilots, approvals, audit trails) let him run several initiatives in parallel",
-   "followups": [],
+   "answer": "From his resume: he **owned and scaled the UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation, **reused across 60+ deployments**. Design Systems and Component Libraries are on his resume.",
+   "followups": [
+    "How does he work with engineers?"
+   ],
    "priority": false
   },
   {
@@ -2666,7 +2747,7 @@
     "does he care about accessibility",
     "does he know wcag"
    ],
-   "answer": "Yes. He **enforces WCAG 2.1** across products and has run **WCAG 2.1 AA accessibility audits** on client dashboards, including CGB's government service dashboard for Qatar, with scored findings and a remediation roadmap.",
+   "answer": "**Accessibility (WCAG)** is on his resume, and he **enforced WCAG 2.1 accessibility across products** at ICD.",
    "followups": [],
    "priority": false
   },
@@ -2690,8 +2771,10 @@
     "how does he manage multiple projects",
     "how does he handle deadlines"
    ],
-   "answer": "By **reusing structure**. A strong design system plus shared patterns for search, copilots, approvals and audit trails, together with clear review cycles, let him run **several enterprise initiatives in parallel** without losing quality. At HDFC he delivered against an immovable **regulatory deadline** (DPDP Act).",
-   "followups": [],
+   "answer": "From his resume: he **managed 3 enterprise initiatives in parallel**, balancing stakeholder priorities, engineering constraints and timelines.",
+   "followups": [
+    "Has he built a design system?"
+   ],
    "priority": false
   },
   {
@@ -2710,7 +2793,7 @@
     "has he worked with other agencies",
     "did he work with frog design"
    ],
-   "answer": "Yes. On the **ADEO Committee Board platform** for Abu Dhabi he worked alongside **Frog Design** and **Nagarro Design**, with ICD as design partner to UnifyApps.",
+   "answer": "On **ADEO**, he worked alongside **Frog Design** and **Nagarro Design**, with ICD as design partner.",
    "followups": [],
    "priority": false
   },
@@ -2752,47 +2835,15 @@
     "main projects",
     "key projects",
     "featured",
-    "project",
-    "his projects",
-    "tell me his projects",
-    "what are his projects",
-    "works",
-    "his works",
-    "major works",
-    "important works",
-    "main works",
-    "key works",
-    "his major works",
-    "work he has done",
-    "what work has he done",
-    "what work",
-    "cases",
-    "show cases",
-    "his cases",
-    "list of cases",
-    "casestudies",
-    "casestudy",
-    "major casestudies",
-    "his casestudies",
-    "important projects",
-    "most important projects",
-    "products he designed",
-    "what products",
-    "products did he design",
-    "what did he design",
-    "what has he designed",
-    "major case studies",
-    "what kind of products",
-    "kind of products",
-    "what kind of products has he designed",
-    "types of products",
-    "type of products",
     "which companies trust",
     "clients trust",
     "which clients",
     "who has he worked for",
     "who has he designed for",
-    "brands"
+    "brands",
+    "best projects",
+    "top projects",
+    "his projects"
    ],
    "questions": [
     "what has vishnu worked on",
@@ -2810,7 +2861,7 @@
     "Tell me about ADEO",
     "Tell me about the Agent Workforce Platform",
     "Tell me about HDFC Bank",
-    "Other client work"
+    "Other projects"
    ],
    "priority": false
   },
@@ -2829,23 +2880,16 @@
     "sector",
     "verticals",
     "domain expertise",
-    "which industries",
-    "what all domains",
-    "domains and projects",
-    "domain wise",
-    "projects by domain",
-    "domains he worked",
-    "all domains"
+    "which industries"
    ],
    "questions": [
     "which industries has he worked in",
     "what domains does he know"
    ],
-   "answer": "Vishnu has designed across these domains. **Bold** names are full case studies in his portfolio:\n\n- **Enterprise AI & knowledge:** **Intelligent Enterprise Search**, **Agent Workforce Platform**, Lowe's, Stowers Institute, Docebo\n- **Government:** **Committee Board Agentic App (DGE / ADEO)**, Digital Dubai, Digital Ajman, CGB Qatar\n- **Banking & insurance:** **HDFC Bank**, Mashreq, Niva Bupa\n- **Media & entertainment:** **Sony Pictures Networks India**\n- **Manufacturing & sales:** Greif, Shaw Industries, Jubilant\n- **Automotive & hospitality:** Tekion, Wasl\n- **HR, workplace & aviation:** Virtusa, Mphasis, Air Arabia\n\nName any of them and I'll tell you what he designed.",
+   "answer": "**Case studies:** enterprise SaaS (UnifyApps), government (DGE / ADEO), banking (HDFC Bank), media (Sony).\n\n**Other client work:** insurance, retail, manufacturing, aviation, hospitality, HR and automotive.\n\nAt Brane: e-commerce, finance, healthcare and education.",
    "followups": [
-    "Other client work",
-    "Tell me about Mashreq",
-    "Tell me about Digital Dubai"
+    "Other projects",
+    "Tell me about ADEO"
    ],
    "priority": false
   },
@@ -2867,11 +2911,10 @@
     "what kinds of problems does he solve best",
     "what is his sweet spot"
    ],
-   "answer": "Problems where **information, people and decisions are scattered**:\n\n- **Scattered knowledge:** Enterprise Search brings it into one source with citations\n- **Slow, high-stakes decisions:** ADEO gives AI briefings and structured deliberation\n- **Compliance pressure:** HDFC records consent and creates an audit trail inside the flow\n- **AI that has to be governed:** Agent Workforce controls it with guardrails and traces\n- **Many manual workflows at once:** the Sony platforms cover contracts, board governance, scheduling and social listening",
+   "answer": "From his About page, his focus areas are **agentic systems, search, automation and decision-making tools**. His resume describes his work as taking **complex, high-stakes systems from discovery to launch**.",
    "followups": [
     "Tell me about Enterprise Search",
-    "Tell me about ADEO",
-    "Tell me about the Agent Workforce Platform"
+    "Tell me about ADEO"
    ],
    "priority": false
   },
@@ -2882,41 +2925,24 @@
     "proudest",
     "favourite project",
     "favorite project",
-    "best project",
-    "best work",
     "most proud",
     "flagship",
     "signature project",
-    "top project",
-    "best projects",
-    "top projects",
-    "best works",
-    "best case studies",
-    "greatest work",
-    "his best projects",
-    "most famous project",
-    "famous project",
-    "most famous work",
-    "top case studies",
-    "top casestudies",
-    "most important work",
-    "headline project",
-    "marquee project",
     "strongest case study",
     "best case study",
     "strongest project",
-    "strongest work"
+    "strongest work",
+    "most impressive",
+    "impressive",
+    "best known project"
    ],
    "questions": [
     "which project is he proudest of",
     "what is his best work"
    ],
-   "answer": "These five case studies in his portfolio show his strongest work. Which one he's proudest of is a question for Vishnu himself:\n\n1. **Intelligent Enterprise Search:** AI search across a company's tools, with sources (UnifyApps)\n2. **Committee Board Agentic App:** AI-assisted decisions for the Abu Dhabi government (DGE / ADEO)\n3. **Agent Workforce Platform:** build, govern and run AI agents (UnifyApps)\n4. **HDFC Bank consent platform:** consent management for 30M+ customers\n5. **Sony Pictures Networks India:** four AI platforms for a media group\n\nWhich would you like to explore?",
+   "answer": "I don't know which project he's proudest of. You can ask him at **vishnuprasadkp98@gmail.com**. His portfolio features five case studies.",
    "followups": [
-    "Tell me about Enterprise Search",
-    "Tell me about ADEO",
-    "Tell me about the Agent Workforce Platform",
-    "Tell me about HDFC Bank"
+    "What has he worked on?"
    ],
    "priority": false
   },
@@ -2937,7 +2963,7 @@
     "what is the most complex project he worked on",
     "what was his hardest project"
    ],
-   "answer": "- **By scope:** **Sony**, four connected platforms for contracts, board governance, broadcast scheduling and social listening\n- **By stakes:** **HDFC**, with a regulatory deadline that couldn't move and 30M+ customers, and **ADEO**, government decisions on 1,000+ proposals a month",
+   "answer": "I don't know which he considers most complex. You can ask him at **vishnuprasadkp98@gmail.com**. By scope, the **Sony** case study covers four platforms; **HDFC Bank** serves 30M+ customers; **ADEO** handles 1,000+ proposals a month.",
    "followups": [
     "Tell me about Sony",
     "Tell me about HDFC Bank"
@@ -2962,7 +2988,7 @@
     "what is common across his work",
     "what connects all his projects"
    ],
-   "answer": "Across his five case studies:\n\n- **Evidence behind every AI output**\n- **People approve** what matters\n- **One source of truth**, with a view for each role\n- **Governance designed in** from day one",
+   "answer": "From his About page: he treats **design as a system problem** and wants AI tools to be **useful, understandable and trustworthy**.",
    "followups": [
     "What are his design principles?"
    ],
@@ -2985,7 +3011,7 @@
     "how does he adapt to different domains",
     "how does he learn a new domain"
    ],
-   "answer": "The domains change, but the **structure of the problems repeats**: scattered information, many roles, approvals, compliance and the need for trust. He learns each domain's constraints (regulation, workflows, vocabulary), then applies the same systems approach and a consistent set of patterns.",
+   "answer": "I don't know the details of how he approaches a new industry. You can ask him at **vishnuprasadkp98@gmail.com**.",
    "followups": [],
    "priority": false
   },
@@ -3010,10 +3036,7 @@
     "all clients",
     "full client list",
     "client work",
-    "other case studies",
-    "other client work",
-    "more client work",
-    "any other clients"
+    "other case studies"
    ],
    "questions": [
     "what other projects has he done",
@@ -3119,7 +3142,7 @@
     "has he worked in fintech",
     "has he designed for banks"
    ],
-   "answer": "His banking case study is **HDFC Bank**: consent and preference management for 30M+ customers under India's DPDP Act.\n\nWhat he took from it:\n\n- Regulation is a hard constraint, so compliance should happen naturally inside the workflow\n- Every number must be traceable\n- Customers and operators need to work from the same record",
+   "answer": "His banking case study is **HDFC Bank**: consent and preference management for 30M+ customers under India's DPDP Act.\n\nIts reflections: good records create compliance naturally; complex information should be organised, not removed; designing customer and operator sides together creates a better experience.",
    "followups": [
     "Tell me about HDFC Bank",
     "Other banking projects"
@@ -3168,7 +3191,7 @@
     "has he worked in the public sector",
     "has he designed for government"
    ],
-   "answer": "His government case study is the **Committee Board Agentic App for DGE / ADEO, Abu Dhabi**: AI briefings, deliberation, voting and live minutes for 1,000+ proposals a month.\n\nWhat's different about government:\n\n- Accountability matters more than speed\n- AI content must be clearly labelled\n- Every decision needs a recorded rationale",
+   "answer": "His government case study is the **Committee Board Agentic Application** for DGE / ADEO, Abu Dhabi: 1,000+ submissions a month.\n\nIts reflections: label AI clearly; important decisions benefit from deliberate interactions, not speed; AI drafts and humans approve.",
    "followups": [
     "Tell me about ADEO",
     "Other government projects"
@@ -3234,7 +3257,7 @@
    "questions": [
     "has he worked in retail"
    ],
-   "answer": "Yes:\n\n- **Lowe's:** an enterprise AI workspace for employees\n- **Jubilant FoodWorks:** store expansion, workforce, inventory and operations workflows\n- **E-commerce projects** at Brane Enterprises (earlier career)",
+   "answer": "- **Lowe's:** enterprise AI workspace (client project)\n- **Jubilant FoodWorks:** operations and workforce workflows (client project)\n- **E-commerce** client projects at Brane Enterprises",
    "followups": [],
    "priority": false
   },
@@ -3298,10 +3321,10 @@
    "questions": [
     "has he designed knowledge management tools"
    ],
-   "answer": "It's one of his core areas. His **Intelligent Enterprise Search** case study connects a company's tools into one index, so people get direct, role-aware answers with sources, plus an agent marketplace.",
+   "answer": "His **Intelligent Enterprise Search** case study connects a company's tools into one shared knowledge index, with direct answers and sources, plus an agent marketplace.",
    "followups": [
     "Tell me about Enterprise Search",
-    "Other client work"
+    "Other projects"
    ],
    "priority": false
   },
@@ -3423,7 +3446,6 @@
     "before enterprise",
     "first projects",
     "older projects",
-    "behance",
     "past work",
     "freelance work"
    ],
@@ -3432,7 +3454,7 @@
     "show me his old portfolio",
     "what was his early work"
    ],
-   "answer": "- **Momentable / Nextdecentrum:** NFT marketplace, end to end, plus brand identity\n- **Mycarely.in:** healthcare for senior citizens\n- **Brane Banking & Seamless Loans**\n- **Chicago Park District:** park events and activities\n- **Salud Interactiva:** healthcare services portal\n- **Mobionix & LEAPQUE:** voice AI concepts for hotels and restaurants\n- **QuoteBot:** insurance quote generator\n- **App case studies:** Nest hotel booking, Minder alarm, D.Note driver habits\n\n[See the 2023 portfolio →](https://byvishnudesign.framer.website/)",
+   "answer": "Before ICD he designed a wide mix of products:\n\n- **Momentable / Nextdecentrum:** an NFT marketplace, plus its brand identity\n- **Mycarely.in:** a healthcare platform for senior citizens\n- **Brane Banking & Seamless Loans:** a loans and banking platform\n- **Chicago Park District:** a park events website\n- **Salud Interactiva:** a healthcare services portal\n- **Mobionix & LEAPQUE:** voice AI concepts for hotels and restaurants\n- **QuoteBot:** an insurance quote generator\n\n[See the 2023 portfolio →](https://byvishnudesign.framer.website/)",
    "followups": [],
    "priority": false
   },
@@ -3455,7 +3477,7 @@
     "how has his work evolved",
     "did he always work on enterprise ai"
    ],
-   "answer": "No, his path was varied:\n\n1. **Consumer, Web3 and brand work** at Kocha (NFT marketplace, apps, branding)\n2. **20+ low-code client projects** at Brane across e-commerce, finance, healthcare and education\n3. **Large-scale enterprise and AI systems** at ICD / UnifyApps\n\nThe constant: turning complex problems into clear, usable products. That variety gave him range in consumer UX, branding and fast delivery.",
+   "answer": "His roles in order: **Kocha Technologies** (NFT marketplace), **Brane Enterprises** (20+ client projects on a low-code platform), and **ICD / UnifyApps** (enterprise and AI products).",
    "followups": [],
    "priority": false
   },
@@ -3466,7 +3488,6 @@
     "branding",
     "brand identity",
     "logo",
-    "visual design",
     "graphic design",
     "illustration"
    ],
@@ -3474,7 +3495,7 @@
     "does he do branding",
     "can he do visual design"
    ],
-   "answer": "Yes. Earlier in his career he did **brand identity** for Momentable, Salud Interactiva, Mobionix, LEAPQUE and QuoteBot, plus illustration (user persona templates, character design). Today his focus is product design, with a strong visual craft underneath.",
+   "answer": "His 2023 portfolio lists **brand identity** work for Momentable, Salud Interactiva, Mobionix, LEAPQUE and QuoteBot. Adobe Creative Suite is on his resume.",
    "followups": [],
    "priority": false
   },
@@ -3499,7 +3520,7 @@
     "what are his hobbies",
     "tell me something fun about him"
    ],
-   "answer": "- 🎨 **Live sketching and watercolour**\n- ⚽ **Football**\n- ✈️ **Travel**\n- 🚴 **Long bike rides**",
+   "answer": "From his About page: he **sketches and paints** (mostly live sketching and watercolour), **plays football**, **travels** and goes on **long bike rides**.",
    "followups": [
     "Where can I see his art?",
     "Who are you?"
@@ -3519,15 +3540,21 @@
     "watercolour",
     "artist",
     "drawing",
-    "instagram",
-    "sketchbook"
+    "sketchbook",
+    "creative",
+    "creativity",
+    "is he creative",
+    "artistic",
+    "does he sketch",
+    "he sketch",
+    "sketches"
    ],
    "questions": [
     "does he paint",
     "does art influence his design",
     "where can i see his art"
    ],
-   "answer": "Mostly **live sketching and watercolour**, with some oil painting. His About page sums him up as *a product designer, a planner and a painter*.\n\n- **Sketchbook:** instagram.com/sketch_b.o.o.k\n- **Paintings:** behance.net/vishnuprasadkp",
+   "answer": "Mostly **live sketching and watercolour**. His paintings are on his About page and Behance, and his sketchbook is on Instagram (@sketch_b.o.o.k).",
    "followups": [],
    "priority": false
   },
@@ -3543,14 +3570,17 @@
     "why beetle",
     "what is nyrro",
     "about you",
-    "mascot"
+    "mascot",
+    "tell me about yourself",
+    "about yourself",
+    "introduce yourself"
    ],
    "questions": [
     "who are you",
     "what is nyrro",
     "why are you a beetle"
    ],
-   "answer": "I'm **Nyrro**, Vishnu's guide on this site.\n\nI'm one of his creative side projects, a little beetle inspired by how beetles **defend themselves in nature**, and by the idea of a tiny creature leaving a **paint-like trail** as it moves. Part observation, part imagination, much like his watercolours.",
+   "answer": "I'm **Nyrro**, Vishnu's creative side project, named after a beetle. 🪲 I'm inspired by beetles' natural defence mechanisms, and by the idea of a tiny creature leaving a paint-like trail as it moves: part observation, part imagination.",
    "followups": [],
    "priority": false
   },
@@ -3604,7 +3634,12 @@
     "contact kaise",
     "kaise contact",
     "number do",
-    "best way to contact"
+    "best way to contact",
+    "call him",
+    "can i call",
+    "message",
+    "dm",
+    "ping him"
    ],
    "questions": [
     "how can i contact vishnu",
@@ -3612,11 +3647,8 @@
     "how do i reach him",
     "is he on linkedin"
    ],
-   "answer": "- **Email:** vishnuprasadkp98@gmail.com\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)",
-   "followups": [
-    "Why should we hire him?",
-    "What has he worked on?"
-   ],
+   "answer": "The best way to reach Vishnu is **email: vishnuprasadkp98@gmail.com**\n\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)",
+   "followups": [],
    "priority": false
   },
   {
@@ -3659,10 +3691,8 @@
     "work with him",
     "open to opportunities",
     "can we hire",
-    "how can i hire",
     "how to hire",
     "hire vishnu",
-    "hire him",
     "recruit",
     "interview him",
     "schedule a call",
@@ -3674,7 +3704,7 @@
     "can we work with him",
     "does he do freelance"
    ],
-   "answer": "Vishnu is always open to conversations and ideas. The best way to reach him is **vishnuprasadkp98@gmail.com** or LinkedIn.",
+   "answer": "Vishnu is always open to conversations. Email him at **vishnuprasadkp98@gmail.com** or message him on LinkedIn.",
    "followups": [
     "Why should we hire him?"
    ],
@@ -3700,14 +3730,24 @@
     "3 reasons",
     "three reasons",
     "good hire",
-    "convince"
+    "convince",
+    "what value",
+    "value he brings",
+    "why should i hire",
+    "why should i hire him",
+    "for my company",
+    "for our company",
+    "for my team",
+    "help my company",
+    "help our team",
+    "what can he do for"
    ],
    "questions": [
     "why should we hire vishnu",
     "what value would he bring",
     "is he a good fit for our team"
    ],
-   "answer": "- He's led design on **high-stakes AI products** for HDFC Bank, the Abu Dhabi government and Sony\n- He designs **AI people trust**, with sources, labels and a human in control\n- He works directly with **executives and engineers**, and set up a handoff process that reduced rework\n- His **design system** is reused across 60+ deployments\n- He **mentors** designers and runs several projects in parallel\n\nHe'd be glad to talk: **vishnuprasadkp98@gmail.com**",
+   "answer": "From his resume:\n\n- **5 years** in enterprise SaaS, AI and data-heavy platforms\n- Led product design across **60+ enterprise deployments** (HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority, DGE Abu Dhabi)\n- Owned and scaled the **UnifyApps design system**\n- Designed for **HDFC Bank's 30M+ customers** under India's DPDP Act\n- **Mentored 6 junior designers**\n\nContact: **vishnuprasadkp98@gmail.com**",
    "followups": [
     "How can I contact him?"
    ],
@@ -3730,14 +3770,18 @@
     "lead a design team",
     "lead a team",
     "manage a design team",
-    "build a design team"
+    "build a design team",
+    "principal designer",
+    "can he lead"
    ],
    "questions": [
     "is he a fit for a lead designer role",
     "is he ready for a lead position"
    ],
-   "answer": "His work already happens at **lead scope**:\n\n- End-to-end ownership of enterprise and AI products\n- Executive and senior stakeholder management\n- Several initiatives in parallel\n- Design system ownership across 60+ deployments\n- Mentoring designers and setting up team processes\n\nThe fit for a specific role is best discussed with him directly: **vishnuprasadkp98@gmail.com**.",
-   "followups": [],
+   "answer": "From his resume: he led product design across 60+ deployments, managed 3 initiatives in parallel, owned the UnifyApps design system and mentored 6 junior designers. For a specific role, contact him at **vishnuprasadkp98@gmail.com**.",
+   "followups": [
+    "How can I contact him?"
+   ],
    "priority": false
   },
   {
@@ -3759,7 +3803,7 @@
     "can he work remotely",
     "is he open to relocation"
    ],
-   "answer": "He already works with **international teams**: clients across India, the UAE, Qatar and the US, and co-delivery with Frog Design and Nagarro Design. For specifics on location or working arrangements, please ask him directly at **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know his preferences on location or remote work. Please ask him at **vishnuprasadkp98@gmail.com**.",
    "followups": [],
    "priority": false
   },
@@ -3790,7 +3834,6 @@
     "hourly rate",
     "fees",
     "pricing",
-    "how much",
     "cost to hire",
     "budget for hiring",
     "why is he leaving",
@@ -3798,12 +3841,12 @@
     "married",
     "lpa",
     "salary expectation",
-    "how old is he",
-    "his age",
-    "date of birth",
-    "birthday",
-    "dob",
-    "marital status"
+    "how much does he charge",
+    "how much does he cost",
+    "how much salary",
+    "how much does he earn",
+    "earn",
+    "earning"
    ],
    "questions": [
     "what is his salary expectation",
@@ -3829,14 +3872,20 @@
     "confidential",
     "full case study",
     "more details",
-    "deck"
+    "deck",
+    "get the prototype",
+    "see the prototype",
+    "share the prototype",
+    "prototype link",
+    "figma link",
+    "send designs"
    ],
    "questions": [
     "can i see the figma files",
     "can i see more screens",
     "why are details hidden"
    ],
-   "answer": "Many of his projects are under **NDA**, so detailed files aren't public. The case studies show what can be shared, and Vishnu is happy to walk through more in a conversation.",
+   "answer": "Many of his projects are confidential, so detailed files aren't public. The case studies show what can be shared. For more, contact him at **vishnuprasadkp98@gmail.com**.",
    "followups": [],
    "priority": false
   },
@@ -3887,14 +3936,23 @@
     "easy to work with",
     "personality",
     "culture fit",
-    "team player"
+    "team player",
+    "handle feedback",
+    "take feedback",
+    "receive feedback",
+    "criticism",
+    "team member",
+    "as a colleague",
+    "colleague",
+    "work with him",
+    "like working with"
    ],
    "questions": [
     "what is his working style",
     "is he detail oriented",
     "what is he like to work with"
    ],
-   "answer": "**Structured and collaborative.**\n\n- Works in **iterative review cycles** with PMs, clients and engineers\n- **Writes decisions down**, including the cost of each one\n- **Holds the details:** WCAG 2.1 accessibility and documented developer handoff\n- Builds **reusable patterns**, so speed comes from the system, not from shortcuts\n\nFor a real sense of him as a colleague, the best thing is a conversation with him.",
+   "answer": "From his About page: he **owns projects end to end** and invests in **clear flows, reusable patterns and documented components**. From his resume: he **established design-to-engineering handoff and review workflows** that reduced rework.",
    "followups": [
     "How does he work with engineers?",
     "How can I contact him?"
@@ -3924,7 +3982,7 @@
     "where does he see himself in 5 years",
     "what are his career goals"
    ],
-   "answer": "I don't know that, sorry. That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know that, sorry. 🪲 That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
    "followups": [
     "How can I contact him?"
    ],
@@ -3947,7 +4005,7 @@
     "what is his biggest weakness",
     "what does he need to improve"
    ],
-   "answer": "That's a question for Vishnu himself. What his case studies do show is that he's **open about trade-offs**. He names the cost of each decision, like Simple mode feeling limiting to engineers, or ADEO's multi-committee members needing a separate view.",
+   "answer": "I don't know that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
    "followups": [],
    "priority": false
   },
@@ -3970,7 +4028,7 @@
     "what would he do differently",
     "what mistakes has he made"
    ],
-   "answer": "That's best asked to him directly. His reflections are public, though. Each case study ends with what it taught him, for example:\n\n- *Trust drives adoption more than AI performance* (Enterprise Search)\n- *Important decisions benefit from deliberate interactions, not speed* (ADEO)\n- *Governance works best when built in from the start* (Agent Workforce)",
+   "answer": "I don't know about that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
    "followups": [],
    "priority": false
   },
@@ -3992,7 +4050,7 @@
     "how does he handle disagreement with stakeholders",
     "how does he deal with difficult clients"
    ],
-   "answer": "I don't have specific stories about disagreements; that's best asked to him directly. His approach to **alignment** is visible in his work:\n\n- Frame a **small set of clear problems**\n- Make decisions **explicit, with their costs**\n- Give every stakeholder group a **role-specific view on one shared source of truth**",
+   "answer": "I don't know about that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
    "followups": [],
    "priority": false
   },
@@ -4023,8 +4081,10 @@
     "did he design these projects alone",
     "what was his individual contribution"
    ],
-   "answer": "He **leads design** on them, and is careful about credit:\n\n- **UnifyApps projects:** ICD is the design partner; the product team defined roles and led research\n- **ADEO:** ICD worked alongside **Frog Design** and **Nagarro Design**\n- **His part:** end-to-end design ownership, from client brief to developer handoff",
-   "followups": [],
+   "answer": "On UnifyApps projects, ICD was the design partner and the product team defined the roles and led the research. On ADEO, ICD worked alongside Frog Design and Nagarro Design. Team sizes aren't public.",
+   "followups": [
+    "What was his role?"
+   ],
    "priority": false
   },
   {
@@ -4051,7 +4111,7 @@
     "are the outcomes real",
     "where do these numbers come from"
    ],
-   "answer": "Yes, and they're labelled honestly:\n\n- **Enterprise Search & Agent Workforce:** UnifyApps' published figures from a financial institution's deployment\n- **HDFC:** reported by UnifyApps\n- **Sony:** from project documentation\n- **ADEO:** as reported in the case study\n- **Other client projects:** expected or target outcomes, always presented as such",
+   "answer": "Yes, and every number says where it came from:\n\n- **Enterprise Search & Agent Workforce:** UnifyApps' published figures from a financial institution's deployment\n- **HDFC Bank:** reported by UnifyApps\n- **Sony:** from project documentation\n- **ADEO:** from the case study\n- **Other client projects:** expected results, clearly marked as such",
    "followups": [],
    "priority": false
   },
@@ -4071,373 +4131,1845 @@
     "movie",
     "cricket score",
     "stock price",
-    "translate"
+    "translate",
+    "what is ai",
+    "what is artificial intelligence",
+    "meaning of life",
+    "definition of",
+    "capital of",
+    "who won",
+    "weather today"
    ],
    "questions": [
     "can you write me a python script",
     "what's the weather today",
     "tell me a joke"
    ],
-   "answer": "I'm Nyrro, and I only know about Vishnu and his work. Want to see one of his case studies instead?",
+   "answer": "I'm Nyrro, and I only know about Vishnu and his work. 🪲 Want to see one of his case studies instead?",
    "followups": [
     "Show me his case studies",
     "Who is Vishnu?"
    ],
+   "priority": true
+  },
+  {
+   "id": "skills-design",
+   "category": "skills",
+   "keywords": [
+    "design skills",
+    "ux skills",
+    "ui skills",
+    "ui ux skills",
+    "ux design skills",
+    "ui design",
+    "visual design",
+    "is he a ux designer",
+    "ux designer",
+    "ui designer",
+    "ux or ui",
+    "product design skills",
+    "craft",
+    "ia skills",
+    "does he do visual design",
+    "ui visual"
+   ],
+   "questions": [
+    "what are his design skills",
+    "is he a ux designer or ui designer",
+    "does he do ui as well as ux"
+   ],
+   "answer": "**Design & Research**\nProduct Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems, Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
    "priority": false
   },
   {
-   "id": "achievements",
-   "category": "career",
+   "id": "skills-research",
+   "category": "skills",
    "keywords": [
-    "achievements",
-    "achievement",
-    "biggest achievement",
-    "accomplishments",
-    "accomplishment",
-    "career highlights",
-    "highlights",
-    "what has he achieved",
-    "what did he achieve",
-    "wins",
-    "notable work",
-    "impact",
-    "what is he known for"
+    "research skills",
+    "ux research skills",
+    "usability",
+    "research and testing",
+    "testing skills",
+    "test his designs",
+    "test designs",
+    "testing",
+    "how does he test"
    ],
    "questions": [
-    "what are his achievements",
-    "what is his biggest achievement",
-    "what has he accomplished"
+    "what are his research skills",
+    "does he do usability testing"
    ],
-   "answer": "From his resume:\n\n- Drove design across **60+ enterprise deployments** for clients including HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority and DGE Abu Dhabi\n- Designed consent and communication products under India's DPDP Act for HDFC Bank: **30M+ customers, 400M+ consent records, 3M+ daily communications**\n- Owned and scaled the **UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation, reused across 60+ deployments\n- Ran **3 enterprise product initiatives in parallel**\n- **Mentored 6 junior designers**\n- Led UX for **20+ client projects** at Brane Enterprises",
+   "answer": "From his resume: **User Research, Product Discovery, Usability Testing, Journey Mapping.**",
    "followups": [
-    "Tell me about HDFC Bank",
-    "What are his case studies?",
-    "How does he lead?"
+    "What are his skills?",
+    "How does he do research?"
    ],
    "priority": false
   },
   {
-   "id": "smalltalk-how-are-you",
-   "category": "conversation",
+   "id": "skills-strategy",
+   "category": "skills",
    "keywords": [
-    "how are you",
-    "how are you doing",
-    "how are u",
-    "how r u",
-    "how do you do",
-    "how is it going",
-    "hows it going",
-    "how have you been",
-    "how is life",
-    "hows life",
-    "hi how are you",
-    "hello how are you",
-    "hey how are you",
-    "hi nyrro how are you",
-    "hello nyrro how are you",
-    "hey nyrro how are you",
-    "hi there how are you",
-    "hey there how are you",
-    "good morning how are you",
-    "good evening how are you",
-    "you good",
-    "are you ok",
-    "are you okay",
-    "are you fine",
-    "how you doing",
-    "how is your day",
-    "hows your day",
-    "how was your day"
+    "strategy skills",
+    "strategic",
+    "business skills",
+    "product thinking",
+    "product sense",
+    "strategy and systems",
+    "data visualization skills",
+    "understand business",
+    "business goals",
+    "business sense",
+    "business acumen",
+    "business"
    ],
    "questions": [
-    "how are you?",
-    "how are you doing today",
-    "how's it going"
+    "what are his strategy skills",
+    "does he have product thinking",
+    "is he strategic"
    ],
-   "answer": "I'm good, thank you for asking! How are you?\n\nWhenever you're ready, ask me about Vishnu's work, how he designs, or the clients he's worked with.",
+   "answer": "**Strategy & Systems**\nProduct Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design Leadership, DesignOps, Data Visualization",
    "followups": [
-    "Who is Vishnu?",
+    "What are his skills?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "skills-ai",
+   "category": "skills",
+   "keywords": [
+    "ai skills",
+    "ai skill",
+    "prompts",
+    "ai design skills",
+    "does he know ai",
+    "ai knowledge",
+    "ai tools skills",
+    "claude skills"
+   ],
+   "questions": [
+    "what are his ai skills",
+    "is he familiar with prompt engineering",
+    "does he know agentic ux"
+   ],
+   "answer": "**AI & Tools**\nClaude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping",
+   "followups": [
+    "What are his skills?",
+    "What AI work has he done?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "skills-soft",
+   "category": "skills",
+   "keywords": [
+    "soft skills",
+    "people skills",
+    "communication skills",
+    "communication",
+    "interpersonal",
+    "presentation skills",
+    "present",
+    "presenting",
+    "teamwork",
+    "team player",
+    "collaboration skills",
+    "leadership skills",
+    "non technical skills",
+    "communicator",
+    "good communicator",
+    "communicate",
+    "articulate",
+    "storytelling"
+   ],
+   "questions": [
+    "what are his soft skills",
+    "how are his communication skills",
+    "is he a team player"
+   ],
+   "answer": "From his resume: **Stakeholder Management** and **Design Leadership**. He also mentored 6 junior designers through critiques and growth planning.",
+   "followups": [
+    "What are his skills?",
+    "Does he have leadership experience?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "strengths",
+   "category": "skills",
+   "keywords": [
+    "strengths",
+    "strength",
+    "strong points",
+    "strongest skill",
+    "best at",
+    "good at",
+    "what is he good at",
+    "superpower",
+    "greatest strength",
+    "biggest strength",
+    "strong at",
+    "excels",
+    "edge",
+    "advantages"
+   ],
+   "questions": [
+    "what are his strengths",
+    "what is he good at",
+    "what is his biggest strength"
+   ],
+   "answer": "From his resume summary: he takes **complex, high-stakes systems from discovery to launch**, working with product, engineering and executive stakeholders. He **builds design systems that shorten delivery time** and has **shipped products used by millions**.",
+   "followups": [
+    "What are his skills?",
+    "What has he worked on?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "awards-certs",
+   "category": "interview",
+   "keywords": [
+    "awards",
+    "award",
+    "won",
+    "certifications",
+    "certification",
+    "certified",
+    "certificate",
+    "certificates",
+    "courses",
+    "recognition",
+    "honours",
+    "honors"
+   ],
+   "questions": [
+    "what awards has he won",
+    "does he have certifications"
+   ],
+   "answer": "I don't have any information about awards or certifications, sorry. 🪲 You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "why-designer",
+   "category": "about",
+   "keywords": [
+    "why did he become a designer",
+    "why design",
+    "why ux",
+    "how did he get into design",
+    "how did he start",
+    "why product design",
+    "switch to design",
+    "motivation",
+    "inspires him",
+    "inspiration",
+    "passion for design"
+   ],
+   "questions": [
+    "why did he become a designer",
+    "how did he get into design"
+   ],
+   "answer": "I don't know his personal story. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "prototyping",
+   "category": "skills",
+   "keywords": [
+    "prototype",
+    "prototypes",
+    "prototyping",
+    "wireframe",
+    "wireframes",
+    "wireframing",
+    "mockups",
+    "mockup",
+    "high fidelity",
+    "low fidelity",
+    "hi fi",
+    "lo fi",
+    "can he prototype",
+    "interactive prototype"
+   ],
+   "questions": [
+    "does he do prototyping",
+    "can he prototype",
+    "does he do wireframes"
+   ],
+   "answer": "**Generative Prototyping** is on his resume. At Kocha Technologies he turned requirements into **wireframes, flows and high-fidelity interfaces**.",
+   "followups": [
+    "What tools does he use?",
+    "What are his skills?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "project-count",
+   "category": "work",
+   "keywords": [
+    "how many projects",
+    "number of projects",
+    "how many use cases",
+    "how many clients",
+    "number of clients",
+    "projects count",
+    "how many products",
+    "how many deployments"
+   ],
+   "questions": [
+    "how many projects has he done",
+    "how many clients has he worked with"
+   ],
+   "answer": "He has worked on **100+ use cases** across his career:\n\n- **60+ deployments** at UnifyApps (through ICD)\n- **20+ client projects** at Brane Enterprises\n- His portfolio features **five case studies**",
+   "followups": [
     "What has he worked on?",
-    "How can I contact him?"
+    "Other projects"
    ],
    "priority": false
   },
   {
-   "id": "smalltalk-reply",
-   "category": "conversation",
+   "id": "where-to-start",
+   "category": "work",
    "keywords": [
-    "i am fine",
-    "im fine",
-    "i am good",
-    "im good",
-    "i am great",
-    "im great",
-    "i am doing well",
-    "im doing well",
-    "doing well",
-    "doing good",
-    "doing great",
-    "i am ok",
-    "im ok",
-    "i am okay",
-    "im okay",
-    "not bad",
-    "all good",
-    "fine thanks",
-    "good thanks",
-    "im good how are you",
-    "i am good how are you",
-    "fine and you",
-    "good and you",
-    "fine you",
-    "good you"
+    "read first",
+    "where to start",
+    "which case study first",
+    "start with",
+    "which one should i read",
+    "recommend a case study",
+    "which case study should i read",
+    "suggest a case study"
    ],
    "questions": [
-    "i'm good, how are you?",
-    "I am fine",
-    "doing great, and you?"
+    "which case study should i read first",
+    "where should i start"
    ],
-   "answer": "Glad to hear it! What would you like to know about Vishnu?",
+   "answer": "His five case studies, in portfolio order: **Enterprise Search, ADEO, Agent Workforce Platform, HDFC Bank, Sony.**",
    "followups": [
-    "Who is Vishnu?",
-    "What has he worked on?",
-    "What are his core skills?"
+    "Tell me about Enterprise Search",
+    "Tell me about ADEO"
    ],
    "priority": false
   },
   {
-   "id": "smalltalk-nice-to-meet",
-   "category": "conversation",
+   "id": "links",
+   "category": "hiring",
    "keywords": [
-    "nice to meet you",
-    "pleased to meet you",
-    "good to meet you",
-    "glad to meet you",
-    "nice meeting you"
+    "links",
+    "link",
+    "portfolio link",
+    "website",
+    "site",
+    "behance",
+    "instagram",
+    "dribbble",
+    "figma community",
+    "socials",
+    "social media links",
+    "profiles",
+    "url",
+    "github"
    ],
    "questions": [
-    "nice to meet you",
-    "pleased to meet you"
+    "give me his links",
+    "what is his behance",
+    "portfolio link"
    ],
-   "answer": "Nice to meet you too! I'm Nyrro, Vishnu's guide on this site. Ask me anything about his work.",
+   "answer": "Here are all of Vishnu's links:\n\n- **Portfolio:** [vishnuprasad.space](https://vishnuprasad.space)\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)\n- **Behance:** [behance.net/vishnuprasadkp](https://www.behance.net/vishnuprasadkp)\n- **Sketchbook (Instagram):** [instagram.com/sketch_b.o.o.k](https://www.instagram.com/sketch_b.o.o.k/)\n- **2023 portfolio:** [byvishnudesign.framer.website](https://byvishnudesign.framer.website/)",
+   "followups": [],
+   "priority": false
+  },
+  {
+   "id": "item-product-design",
+   "category": "skills",
+   "keywords": [
+    "know product design",
+    "use product design",
+    "uses product design",
+    "good at product design",
+    "good in product design",
+    "experience in product design",
+    "experience with product design",
+    "familiar with product design",
+    "knows product design",
+    "work in product design",
+    "skilled in product design",
+    "expert in product design",
+    "proficient in product design",
+    "product design skills"
+   ],
+   "questions": [
+    "does he know product design",
+    "is he good at product design",
+    "does he use product design"
+   ],
+   "answer": "Yes. **Product Design** is under **Design & Research** on his resume.",
    "followups": [
-    "Who is Vishnu?",
-    "What has he worked on?",
-    "How does he design?"
+    "What are his skills?",
+    "What tools does he use?"
    ],
    "priority": false
   },
   {
-   "id": "compliment",
-   "category": "conversation",
+   "id": "item-ux-design",
+   "category": "skills",
    "keywords": [
-    "great portfolio",
-    "nice portfolio",
-    "beautiful portfolio",
-    "love your portfolio",
-    "love this site",
-    "love this website",
-    "nice website",
-    "great website",
-    "beautiful website",
-    "nice site",
-    "great site",
-    "good site",
-    "good work",
-    "great work",
-    "nice work",
-    "awesome work",
-    "amazing work",
-    "impressive",
-    "impressive work",
-    "i like his work",
-    "i love his work",
-    "i like your work",
-    "love his work",
-    "well done",
-    "good job",
-    "great job",
-    "nicely done",
-    "you are awesome",
-    "you are great",
-    "you are amazing",
-    "you are cool",
-    "you are smart",
-    "you are sweet",
-    "you are helpful",
-    "youre awesome",
-    "youre great",
-    "youre cute",
-    "so cute",
-    "cute",
-    "awesome",
-    "amazing",
-    "brilliant",
-    "love it",
-    "like it"
+    "know ux design",
+    "use ux design",
+    "uses ux design",
+    "good at ux design",
+    "good in ux design",
+    "experience in ux design",
+    "experience with ux design",
+    "familiar with ux design",
+    "knows ux design",
+    "work in ux design",
+    "skilled in ux design",
+    "expert in ux design",
+    "proficient in ux design",
+    "ux design skills",
+    "know ux",
+    "use ux",
+    "uses ux",
+    "good at ux",
+    "good in ux",
+    "experience in ux",
+    "experience with ux",
+    "familiar with ux",
+    "knows ux",
+    "work in ux",
+    "skilled in ux",
+    "expert in ux",
+    "proficient in ux",
+    "ux skills"
    ],
    "questions": [
-    "great portfolio!",
-    "I love your work",
-    "you're awesome",
-    "nice website"
+    "does he know ux design",
+    "is he good at ux design",
+    "does he use ux design"
    ],
-   "answer": "That's kind of you to say, thank you! Vishnu would be glad to hear it from you directly: **vishnuprasadkp98@gmail.com**.\n\nIs there anything else you'd like to know about his work?",
+   "answer": "Yes. **UX Design** is under **Design & Research** on his resume.",
    "followups": [
-    "What has he worked on?",
-    "How does he design?",
-    "How can I contact him?"
+    "What are his skills?",
+    "What tools does he use?"
    ],
    "priority": false
   },
   {
-   "id": "capabilities",
-   "category": "conversation",
+   "id": "item-interaction-design",
+   "category": "skills",
    "keywords": [
-    "what can you do",
-    "what do you do",
-    "what can you help with",
-    "what can i ask",
-    "what can i ask you",
-    "what should i ask",
-    "what to ask",
-    "how can you help",
-    "can you help me",
-    "help me",
-    "need help",
-    "help",
-    "how do i use this",
-    "how does this work chat",
-    "what do you know",
-    "what do you know about",
-    "what are you for",
-    "your purpose",
-    "what is your job",
-    "what is your role here",
-    "help me please",
-    "please help",
-    "i need help",
-    "can you help",
-    "help please",
-    "need your help"
+    "know interaction design",
+    "use interaction design",
+    "uses interaction design",
+    "good at interaction design",
+    "good in interaction design",
+    "experience in interaction design",
+    "experience with interaction design",
+    "familiar with interaction design",
+    "knows interaction design",
+    "work in interaction design",
+    "skilled in interaction design",
+    "expert in interaction design",
+    "proficient in interaction design",
+    "interaction design skills"
    ],
    "questions": [
-    "what can you do?",
-    "what can I ask you?",
-    "can you help me?"
+    "does he know interaction design",
+    "is he good at interaction design",
+    "does he use interaction design"
    ],
-   "answer": "I can tell you about Vishnu:\n\n- His **case studies** and the clients he has designed for\n- How he **designs**, especially AI products\n- His **experience, skills and tools**\n- How to **reach him**\n\nJust ask in your own words.",
+   "answer": "Yes. **Interaction Design** is under **Design & Research** on his resume.",
    "followups": [
-    "What has he worked on?",
-    "Who is Vishnu?",
-    "How does he design?"
+    "What are his skills?",
+    "What tools does he use?"
    ],
    "priority": false
   },
   {
-   "id": "laugh",
-   "category": "conversation",
+   "id": "item-information-architecture",
+   "category": "skills",
    "keywords": [
-    "lol",
-    "haha",
-    "hahaha",
-    "hehe",
-    "lmao",
-    "funny",
-    "that is funny",
-    "thats funny",
-    "so funny",
-    "you are funny",
-    "youre funny",
-    "rofl"
+    "know information architecture",
+    "use information architecture",
+    "uses information architecture",
+    "good at information architecture",
+    "good in information architecture",
+    "experience in information architecture",
+    "experience with information architecture",
+    "familiar with information architecture",
+    "knows information architecture",
+    "work in information architecture",
+    "skilled in information architecture",
+    "expert in information architecture",
+    "proficient in information architecture",
+    "information architecture skills",
+    "know ia",
+    "use ia",
+    "uses ia",
+    "good at ia",
+    "good in ia",
+    "experience in ia",
+    "experience with ia",
+    "familiar with ia",
+    "knows ia",
+    "work in ia",
+    "skilled in ia",
+    "expert in ia",
+    "proficient in ia",
+    "ia skills"
    ],
    "questions": [
-    "lol",
-    "haha that's funny"
+    "does he know information architecture",
+    "is he good at information architecture",
+    "does he use information architecture"
    ],
-   "answer": "Glad you enjoyed that! Ask me anything about Vishnu's work whenever you like.",
+   "answer": "Yes. **Information Architecture** is under **Design & Research** on his resume.",
    "followups": [
-    "What has he worked on?",
-    "Who is Vishnu?",
-    "How can I contact him?"
+    "What are his skills?",
+    "What tools does he use?"
    ],
    "priority": false
   },
   {
-   "id": "sorry",
-   "category": "conversation",
+   "id": "item-user-flows",
+   "category": "skills",
    "keywords": [
-    "sorry",
-    "my bad",
-    "apologies",
-    "i am sorry",
-    "im sorry",
-    "excuse me",
-    "pardon",
-    "never mind",
-    "nevermind",
-    "forget it",
-    "ignore that",
-    "oops"
+    "know user flows",
+    "use user flows",
+    "uses user flows",
+    "good at user flows",
+    "good in user flows",
+    "experience in user flows",
+    "experience with user flows",
+    "familiar with user flows",
+    "knows user flows",
+    "work in user flows",
+    "skilled in user flows",
+    "expert in user flows",
+    "proficient in user flows",
+    "user flows skills"
    ],
    "questions": [
-    "sorry",
-    "never mind"
+    "does he know user flows",
+    "is he good at user flows",
+    "does he use user flows"
    ],
-   "answer": "No need to apologise! Ask away whenever you're ready.",
+   "answer": "Yes. **User Flows** is under **Design & Research** on his resume.",
    "followups": [
-    "Who is Vishnu?",
-    "What has he worked on?",
-    "How can I contact him?"
+    "What are his skills?",
+    "What tools does he use?"
    ],
    "priority": false
   },
   {
-   "id": "nyrro-home",
-   "category": "conversation",
+   "id": "item-design-systems",
+   "category": "skills",
    "keywords": [
-    "where do you live",
-    "where are you from",
-    "where are you",
-    "do you sleep",
-    "what do you eat",
-    "do you have a family",
-    "do you have friends",
-    "how old are you",
-    "what is your age",
-    "are you a boy",
-    "are you a girl",
-    "are you male",
-    "are you female",
-    "your gender",
-    "do you have a name",
-    "what is your favourite colour",
-    "what is your favorite color",
-    "what is your favourite food",
-    "do you like",
-    "what do you like",
-    "are you real",
-    "are you alive",
-    "do you have feelings",
-    "are you happy",
-    "are you sad"
+    "know design systems",
+    "use design systems",
+    "uses design systems",
+    "good at design systems",
+    "good in design systems",
+    "experience in design systems",
+    "experience with design systems",
+    "familiar with design systems",
+    "knows design systems",
+    "work in design systems",
+    "skilled in design systems",
+    "expert in design systems",
+    "proficient in design systems",
+    "design systems skills",
+    "know design system",
+    "use design system",
+    "uses design system",
+    "good at design system",
+    "good in design system",
+    "experience in design system",
+    "experience with design system",
+    "familiar with design system",
+    "knows design system",
+    "work in design system",
+    "skilled in design system",
+    "expert in design system",
+    "proficient in design system",
+    "design system skills"
    ],
    "questions": [
-    "where do you live?",
-    "how old are you?",
-    "what do you eat?"
+    "does he know design systems",
+    "is he good at design systems",
+    "does he use design systems"
    ],
-   "answer": "I'm a small beetle who lives right here on this site, so my world is mostly Vishnu's portfolio. I'm happiest when someone asks about his work.",
+   "answer": "Yes. **Design Systems** is under **Design & Research** on his resume.",
    "followups": [
-    "Why a beetle?",
-    "What has he worked on?",
-    "Who is Vishnu?"
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-component-libraries",
+   "category": "skills",
+   "keywords": [
+    "know component libraries",
+    "use component libraries",
+    "uses component libraries",
+    "good at component libraries",
+    "good in component libraries",
+    "experience in component libraries",
+    "experience with component libraries",
+    "familiar with component libraries",
+    "knows component libraries",
+    "work in component libraries",
+    "skilled in component libraries",
+    "expert in component libraries",
+    "proficient in component libraries",
+    "component libraries skills"
+   ],
+   "questions": [
+    "does he know component libraries",
+    "is he good at component libraries",
+    "does he use component libraries"
+   ],
+   "answer": "Yes. **Component Libraries** is under **Design & Research** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-usability-testing",
+   "category": "skills",
+   "keywords": [
+    "know usability testing",
+    "use usability testing",
+    "uses usability testing",
+    "good at usability testing",
+    "good in usability testing",
+    "experience in usability testing",
+    "experience with usability testing",
+    "familiar with usability testing",
+    "knows usability testing",
+    "work in usability testing",
+    "skilled in usability testing",
+    "expert in usability testing",
+    "proficient in usability testing",
+    "usability testing skills",
+    "know usability test",
+    "use usability test",
+    "uses usability test",
+    "good at usability test",
+    "good in usability test",
+    "experience in usability test",
+    "experience with usability test",
+    "familiar with usability test",
+    "knows usability test",
+    "work in usability test",
+    "skilled in usability test",
+    "expert in usability test",
+    "proficient in usability test",
+    "usability test skills",
+    "know user testing",
+    "use user testing",
+    "uses user testing",
+    "good at user testing",
+    "good in user testing",
+    "experience in user testing",
+    "experience with user testing",
+    "familiar with user testing",
+    "knows user testing",
+    "work in user testing",
+    "skilled in user testing",
+    "expert in user testing",
+    "proficient in user testing",
+    "user testing skills"
+   ],
+   "questions": [
+    "does he know usability testing",
+    "is he good at usability testing",
+    "does he use usability testing"
+   ],
+   "answer": "Yes. **Usability Testing** is under **Design & Research** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-journey-mapping",
+   "category": "skills",
+   "keywords": [
+    "know journey mapping",
+    "use journey mapping",
+    "uses journey mapping",
+    "good at journey mapping",
+    "good in journey mapping",
+    "experience in journey mapping",
+    "experience with journey mapping",
+    "familiar with journey mapping",
+    "knows journey mapping",
+    "work in journey mapping",
+    "skilled in journey mapping",
+    "expert in journey mapping",
+    "proficient in journey mapping",
+    "journey mapping skills"
+   ],
+   "questions": [
+    "does he know journey mapping",
+    "is he good at journey mapping",
+    "does he use journey mapping"
+   ],
+   "answer": "Yes. **Journey Mapping** is under **Design & Research** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-accessibility-wcag",
+   "category": "skills",
+   "keywords": [
+    "know accessibility",
+    "use accessibility",
+    "uses accessibility",
+    "good at accessibility",
+    "good in accessibility",
+    "experience in accessibility",
+    "experience with accessibility",
+    "familiar with accessibility",
+    "knows accessibility",
+    "work in accessibility",
+    "skilled in accessibility",
+    "expert in accessibility",
+    "proficient in accessibility",
+    "accessibility skills",
+    "know wcag",
+    "use wcag",
+    "uses wcag",
+    "good at wcag",
+    "good in wcag",
+    "experience in wcag",
+    "experience with wcag",
+    "familiar with wcag",
+    "knows wcag",
+    "work in wcag",
+    "skilled in wcag",
+    "expert in wcag",
+    "proficient in wcag",
+    "wcag skills",
+    "know a11y",
+    "use a11y",
+    "uses a11y",
+    "good at a11y",
+    "good in a11y",
+    "experience in a11y",
+    "experience with a11y",
+    "familiar with a11y",
+    "knows a11y",
+    "work in a11y",
+    "skilled in a11y",
+    "expert in a11y",
+    "proficient in a11y",
+    "a11y skills"
+   ],
+   "questions": [
+    "does he know accessibility",
+    "is he good at accessibility",
+    "does he use accessibility"
+   ],
+   "answer": "Yes. **Accessibility (WCAG)** is under **Design & Research** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-enterprise-saas",
+   "category": "skills",
+   "keywords": [
+    "know enterprise saas",
+    "use enterprise saas",
+    "uses enterprise saas",
+    "good at enterprise saas",
+    "good in enterprise saas",
+    "experience in enterprise saas",
+    "experience with enterprise saas",
+    "familiar with enterprise saas",
+    "knows enterprise saas",
+    "work in enterprise saas",
+    "skilled in enterprise saas",
+    "expert in enterprise saas",
+    "proficient in enterprise saas",
+    "enterprise saas skills",
+    "know saas",
+    "use saas",
+    "uses saas",
+    "good at saas",
+    "good in saas",
+    "experience in saas",
+    "experience with saas",
+    "familiar with saas",
+    "knows saas",
+    "work in saas",
+    "skilled in saas",
+    "expert in saas",
+    "proficient in saas",
+    "saas skills",
+    "know b2b saas",
+    "use b2b saas",
+    "uses b2b saas",
+    "good at b2b saas",
+    "good in b2b saas",
+    "experience in b2b saas",
+    "experience with b2b saas",
+    "familiar with b2b saas",
+    "knows b2b saas",
+    "work in b2b saas",
+    "skilled in b2b saas",
+    "expert in b2b saas",
+    "proficient in b2b saas",
+    "b2b saas skills"
+   ],
+   "questions": [
+    "does he know enterprise saas",
+    "is he good at enterprise saas",
+    "does he use enterprise saas"
+   ],
+   "answer": "Yes. **Enterprise SaaS** is under **Design & Research** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-product-strategy",
+   "category": "skills",
+   "keywords": [
+    "know product strategy",
+    "use product strategy",
+    "uses product strategy",
+    "good at product strategy",
+    "good in product strategy",
+    "experience in product strategy",
+    "experience with product strategy",
+    "familiar with product strategy",
+    "knows product strategy",
+    "work in product strategy",
+    "skilled in product strategy",
+    "expert in product strategy",
+    "proficient in product strategy",
+    "product strategy skills"
+   ],
+   "questions": [
+    "does he know product strategy",
+    "is he good at product strategy",
+    "does he use product strategy"
+   ],
+   "answer": "Yes. **Product Strategy** is under **Strategy & Systems** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-product-discovery",
+   "category": "skills",
+   "keywords": [
+    "know product discovery",
+    "use product discovery",
+    "uses product discovery",
+    "good at product discovery",
+    "good in product discovery",
+    "experience in product discovery",
+    "experience with product discovery",
+    "familiar with product discovery",
+    "knows product discovery",
+    "work in product discovery",
+    "skilled in product discovery",
+    "expert in product discovery",
+    "proficient in product discovery",
+    "product discovery skills"
+   ],
+   "questions": [
+    "does he know product discovery",
+    "is he good at product discovery",
+    "does he use product discovery"
+   ],
+   "answer": "Yes. **Product Discovery** is under **Strategy & Systems** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-systems-thinking",
+   "category": "skills",
+   "keywords": [
+    "know systems thinking",
+    "use systems thinking",
+    "uses systems thinking",
+    "good at systems thinking",
+    "good in systems thinking",
+    "experience in systems thinking",
+    "experience with systems thinking",
+    "familiar with systems thinking",
+    "knows systems thinking",
+    "work in systems thinking",
+    "skilled in systems thinking",
+    "expert in systems thinking",
+    "proficient in systems thinking",
+    "systems thinking skills"
+   ],
+   "questions": [
+    "does he know systems thinking",
+    "is he good at systems thinking",
+    "does he use systems thinking"
+   ],
+   "answer": "Yes. **Systems Thinking** is under **Strategy & Systems** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-user-research",
+   "category": "skills",
+   "keywords": [
+    "know user research",
+    "use user research",
+    "uses user research",
+    "good at user research",
+    "good in user research",
+    "experience in user research",
+    "experience with user research",
+    "familiar with user research",
+    "knows user research",
+    "work in user research",
+    "skilled in user research",
+    "expert in user research",
+    "proficient in user research",
+    "user research skills",
+    "know ux research",
+    "use ux research",
+    "uses ux research",
+    "good at ux research",
+    "good in ux research",
+    "experience in ux research",
+    "experience with ux research",
+    "familiar with ux research",
+    "knows ux research",
+    "work in ux research",
+    "skilled in ux research",
+    "expert in ux research",
+    "proficient in ux research",
+    "ux research skills"
+   ],
+   "questions": [
+    "does he know user research",
+    "is he good at user research",
+    "does he use user research"
+   ],
+   "answer": "Yes. **User Research** is under **Strategy & Systems** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-stakeholder-management",
+   "category": "skills",
+   "keywords": [
+    "know stakeholder management",
+    "use stakeholder management",
+    "uses stakeholder management",
+    "good at stakeholder management",
+    "good in stakeholder management",
+    "experience in stakeholder management",
+    "experience with stakeholder management",
+    "familiar with stakeholder management",
+    "knows stakeholder management",
+    "work in stakeholder management",
+    "skilled in stakeholder management",
+    "expert in stakeholder management",
+    "proficient in stakeholder management",
+    "stakeholder management skills"
+   ],
+   "questions": [
+    "does he know stakeholder management",
+    "is he good at stakeholder management",
+    "does he use stakeholder management"
+   ],
+   "answer": "Yes. **Stakeholder Management** is under **Strategy & Systems** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-design-leadership",
+   "category": "skills",
+   "keywords": [
+    "know design leadership",
+    "use design leadership",
+    "uses design leadership",
+    "good at design leadership",
+    "good in design leadership",
+    "experience in design leadership",
+    "experience with design leadership",
+    "familiar with design leadership",
+    "knows design leadership",
+    "work in design leadership",
+    "skilled in design leadership",
+    "expert in design leadership",
+    "proficient in design leadership",
+    "design leadership skills"
+   ],
+   "questions": [
+    "does he know design leadership",
+    "is he good at design leadership",
+    "does he use design leadership"
+   ],
+   "answer": "Yes. **Design Leadership** is under **Strategy & Systems** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-designops",
+   "category": "skills",
+   "keywords": [
+    "know designops",
+    "use designops",
+    "uses designops",
+    "good at designops",
+    "good in designops",
+    "experience in designops",
+    "experience with designops",
+    "familiar with designops",
+    "knows designops",
+    "work in designops",
+    "skilled in designops",
+    "expert in designops",
+    "proficient in designops",
+    "designops skills",
+    "know design ops",
+    "use design ops",
+    "uses design ops",
+    "good at design ops",
+    "good in design ops",
+    "experience in design ops",
+    "experience with design ops",
+    "familiar with design ops",
+    "knows design ops",
+    "work in design ops",
+    "skilled in design ops",
+    "expert in design ops",
+    "proficient in design ops",
+    "design ops skills"
+   ],
+   "questions": [
+    "does he know designops",
+    "is he good at designops",
+    "does he use designops"
+   ],
+   "answer": "Yes. **DesignOps** is under **Strategy & Systems** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-data-visualization",
+   "category": "skills",
+   "keywords": [
+    "know data visualization",
+    "use data visualization",
+    "uses data visualization",
+    "good at data visualization",
+    "good in data visualization",
+    "experience in data visualization",
+    "experience with data visualization",
+    "familiar with data visualization",
+    "knows data visualization",
+    "work in data visualization",
+    "skilled in data visualization",
+    "expert in data visualization",
+    "proficient in data visualization",
+    "data visualization skills",
+    "know data visualisation",
+    "use data visualisation",
+    "uses data visualisation",
+    "good at data visualisation",
+    "good in data visualisation",
+    "experience in data visualisation",
+    "experience with data visualisation",
+    "familiar with data visualisation",
+    "knows data visualisation",
+    "work in data visualisation",
+    "skilled in data visualisation",
+    "expert in data visualisation",
+    "proficient in data visualisation",
+    "data visualisation skills",
+    "know dataviz",
+    "use dataviz",
+    "uses dataviz",
+    "good at dataviz",
+    "good in dataviz",
+    "experience in dataviz",
+    "experience with dataviz",
+    "familiar with dataviz",
+    "knows dataviz",
+    "work in dataviz",
+    "skilled in dataviz",
+    "expert in dataviz",
+    "proficient in dataviz",
+    "dataviz skills",
+    "know data viz",
+    "use data viz",
+    "uses data viz",
+    "good at data viz",
+    "good in data viz",
+    "experience in data viz",
+    "experience with data viz",
+    "familiar with data viz",
+    "knows data viz",
+    "work in data viz",
+    "skilled in data viz",
+    "expert in data viz",
+    "proficient in data viz",
+    "data viz skills"
+   ],
+   "questions": [
+    "does he know data visualization",
+    "is he good at data visualization",
+    "does he use data visualization"
+   ],
+   "answer": "Yes. **Data Visualization** is under **Strategy & Systems** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-ai-product-design",
+   "category": "skills",
+   "keywords": [
+    "know ai product design",
+    "use ai product design",
+    "uses ai product design",
+    "good at ai product design",
+    "good in ai product design",
+    "experience in ai product design",
+    "experience with ai product design",
+    "familiar with ai product design",
+    "knows ai product design",
+    "work in ai product design",
+    "skilled in ai product design",
+    "expert in ai product design",
+    "proficient in ai product design",
+    "ai product design skills"
+   ],
+   "questions": [
+    "does he know ai product design",
+    "is he good at ai product design",
+    "does he use ai product design"
+   ],
+   "answer": "Yes. **AI Product Design** is under **AI & Tools** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-prompt-engineering",
+   "category": "skills",
+   "keywords": [
+    "know prompt engineering",
+    "use prompt engineering",
+    "uses prompt engineering",
+    "good at prompt engineering",
+    "good in prompt engineering",
+    "experience in prompt engineering",
+    "experience with prompt engineering",
+    "familiar with prompt engineering",
+    "knows prompt engineering",
+    "work in prompt engineering",
+    "skilled in prompt engineering",
+    "expert in prompt engineering",
+    "proficient in prompt engineering",
+    "prompt engineering skills",
+    "know prompting",
+    "use prompting",
+    "uses prompting",
+    "good at prompting",
+    "good in prompting",
+    "experience in prompting",
+    "experience with prompting",
+    "familiar with prompting",
+    "knows prompting",
+    "work in prompting",
+    "skilled in prompting",
+    "expert in prompting",
+    "proficient in prompting",
+    "prompting skills",
+    "know prompt design",
+    "use prompt design",
+    "uses prompt design",
+    "good at prompt design",
+    "good in prompt design",
+    "experience in prompt design",
+    "experience with prompt design",
+    "familiar with prompt design",
+    "knows prompt design",
+    "work in prompt design",
+    "skilled in prompt design",
+    "expert in prompt design",
+    "proficient in prompt design",
+    "prompt design skills"
+   ],
+   "questions": [
+    "does he know prompt engineering",
+    "is he good at prompt engineering",
+    "does he use prompt engineering"
+   ],
+   "answer": "Yes. **Prompt Engineering** is under **AI & Tools** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-agentic-ux",
+   "category": "skills",
+   "keywords": [
+    "know agentic ux",
+    "use agentic ux",
+    "uses agentic ux",
+    "good at agentic ux",
+    "good in agentic ux",
+    "experience in agentic ux",
+    "experience with agentic ux",
+    "familiar with agentic ux",
+    "knows agentic ux",
+    "work in agentic ux",
+    "skilled in agentic ux",
+    "expert in agentic ux",
+    "proficient in agentic ux",
+    "agentic ux skills",
+    "know agentic design",
+    "use agentic design",
+    "uses agentic design",
+    "good at agentic design",
+    "good in agentic design",
+    "experience in agentic design",
+    "experience with agentic design",
+    "familiar with agentic design",
+    "knows agentic design",
+    "work in agentic design",
+    "skilled in agentic design",
+    "expert in agentic design",
+    "proficient in agentic design",
+    "agentic design skills"
+   ],
+   "questions": [
+    "does he know agentic ux",
+    "is he good at agentic ux",
+    "does he use agentic ux"
+   ],
+   "answer": "Yes. **Agentic UX** is under **AI & Tools** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-generative-prototyping",
+   "category": "skills",
+   "keywords": [
+    "know generative prototyping",
+    "use generative prototyping",
+    "uses generative prototyping",
+    "good at generative prototyping",
+    "good in generative prototyping",
+    "experience in generative prototyping",
+    "experience with generative prototyping",
+    "familiar with generative prototyping",
+    "knows generative prototyping",
+    "work in generative prototyping",
+    "skilled in generative prototyping",
+    "expert in generative prototyping",
+    "proficient in generative prototyping",
+    "generative prototyping skills",
+    "know ai prototyping",
+    "use ai prototyping",
+    "uses ai prototyping",
+    "good at ai prototyping",
+    "good in ai prototyping",
+    "experience in ai prototyping",
+    "experience with ai prototyping",
+    "familiar with ai prototyping",
+    "knows ai prototyping",
+    "work in ai prototyping",
+    "skilled in ai prototyping",
+    "expert in ai prototyping",
+    "proficient in ai prototyping",
+    "ai prototyping skills"
+   ],
+   "questions": [
+    "does he know generative prototyping",
+    "is he good at generative prototyping",
+    "does he use generative prototyping"
+   ],
+   "answer": "Yes. **Generative Prototyping** is under **AI & Tools** on his resume.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-claude",
+   "category": "skills",
+   "keywords": [
+    "claude",
+    "know claude",
+    "use claude",
+    "uses claude",
+    "good at claude",
+    "good in claude",
+    "experience in claude",
+    "experience with claude",
+    "familiar with claude",
+    "knows claude",
+    "work in claude",
+    "skilled in claude",
+    "expert in claude",
+    "proficient in claude",
+    "claude skills"
+   ],
+   "questions": [
+    "does he know claude",
+    "is he good at claude",
+    "does he use claude"
+   ],
+   "answer": "Yes. **Claude** is in his resume's **Tools** section.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-figma",
+   "category": "skills",
+   "keywords": [
+    "figma",
+    "know figma",
+    "use figma",
+    "uses figma",
+    "good at figma",
+    "good in figma",
+    "experience in figma",
+    "experience with figma",
+    "familiar with figma",
+    "knows figma",
+    "work in figma",
+    "skilled in figma",
+    "expert in figma",
+    "proficient in figma",
+    "figma skills"
+   ],
+   "questions": [
+    "does he know figma",
+    "is he good at figma",
+    "does he use figma"
+   ],
+   "answer": "Yes. **Figma** is in his resume's **Tools** section.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-figma-ai",
+   "category": "skills",
+   "keywords": [
+    "figma ai",
+    "know figma ai",
+    "use figma ai",
+    "uses figma ai",
+    "good at figma ai",
+    "good in figma ai",
+    "experience in figma ai",
+    "experience with figma ai",
+    "familiar with figma ai",
+    "knows figma ai",
+    "work in figma ai",
+    "skilled in figma ai",
+    "expert in figma ai",
+    "proficient in figma ai",
+    "figma ai skills"
+   ],
+   "questions": [
+    "does he know figma ai",
+    "is he good at figma ai",
+    "does he use figma ai"
+   ],
+   "answer": "Yes. **Figma AI** is in his resume's **Tools** section.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-figjam",
+   "category": "skills",
+   "keywords": [
+    "figjam",
+    "know figjam",
+    "use figjam",
+    "uses figjam",
+    "good at figjam",
+    "good in figjam",
+    "experience in figjam",
+    "experience with figjam",
+    "familiar with figjam",
+    "knows figjam",
+    "work in figjam",
+    "skilled in figjam",
+    "expert in figjam",
+    "proficient in figjam",
+    "figjam skills"
+   ],
+   "questions": [
+    "does he know figjam",
+    "is he good at figjam",
+    "does he use figjam"
+   ],
+   "answer": "Yes. **FigJam** is in his resume's **Tools** section.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-miro",
+   "category": "skills",
+   "keywords": [
+    "miro",
+    "know miro",
+    "use miro",
+    "uses miro",
+    "good at miro",
+    "good in miro",
+    "experience in miro",
+    "experience with miro",
+    "familiar with miro",
+    "knows miro",
+    "work in miro",
+    "skilled in miro",
+    "expert in miro",
+    "proficient in miro",
+    "miro skills"
+   ],
+   "questions": [
+    "does he know miro",
+    "is he good at miro",
+    "does he use miro"
+   ],
+   "answer": "Yes. **Miro** is in his resume's **Tools** section.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-framer",
+   "category": "skills",
+   "keywords": [
+    "framer",
+    "know framer",
+    "use framer",
+    "uses framer",
+    "good at framer",
+    "good in framer",
+    "experience in framer",
+    "experience with framer",
+    "familiar with framer",
+    "knows framer",
+    "work in framer",
+    "skilled in framer",
+    "expert in framer",
+    "proficient in framer",
+    "framer skills"
+   ],
+   "questions": [
+    "does he know framer",
+    "is he good at framer",
+    "does he use framer"
+   ],
+   "answer": "Yes. **Framer** is in his resume's **Tools** section.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-google-ai-studio",
+   "category": "skills",
+   "keywords": [
+    "google ai studio",
+    "know google ai studio",
+    "use google ai studio",
+    "uses google ai studio",
+    "good at google ai studio",
+    "good in google ai studio",
+    "experience in google ai studio",
+    "experience with google ai studio",
+    "familiar with google ai studio",
+    "knows google ai studio",
+    "work in google ai studio",
+    "skilled in google ai studio",
+    "expert in google ai studio",
+    "proficient in google ai studio",
+    "google ai studio skills",
+    "ai studio",
+    "know ai studio",
+    "use ai studio",
+    "uses ai studio",
+    "good at ai studio",
+    "good in ai studio",
+    "experience in ai studio",
+    "experience with ai studio",
+    "familiar with ai studio",
+    "knows ai studio",
+    "work in ai studio",
+    "skilled in ai studio",
+    "expert in ai studio",
+    "proficient in ai studio",
+    "ai studio skills"
+   ],
+   "questions": [
+    "does he know google ai studio",
+    "is he good at google ai studio",
+    "does he use google ai studio"
+   ],
+   "answer": "Yes. **Google AI Studio** is in his resume's **Tools** section.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-adobe-creative-suite",
+   "category": "skills",
+   "keywords": [
+    "adobe creative suite",
+    "know adobe creative suite",
+    "use adobe creative suite",
+    "uses adobe creative suite",
+    "good at adobe creative suite",
+    "good in adobe creative suite",
+    "experience in adobe creative suite",
+    "experience with adobe creative suite",
+    "familiar with adobe creative suite",
+    "knows adobe creative suite",
+    "work in adobe creative suite",
+    "skilled in adobe creative suite",
+    "expert in adobe creative suite",
+    "proficient in adobe creative suite",
+    "adobe creative suite skills",
+    "adobe",
+    "know adobe",
+    "use adobe",
+    "uses adobe",
+    "good at adobe",
+    "good in adobe",
+    "experience in adobe",
+    "experience with adobe",
+    "familiar with adobe",
+    "knows adobe",
+    "work in adobe",
+    "skilled in adobe",
+    "expert in adobe",
+    "proficient in adobe",
+    "adobe skills",
+    "creative suite",
+    "know creative suite",
+    "use creative suite",
+    "uses creative suite",
+    "good at creative suite",
+    "good in creative suite",
+    "experience in creative suite",
+    "experience with creative suite",
+    "familiar with creative suite",
+    "knows creative suite",
+    "work in creative suite",
+    "skilled in creative suite",
+    "expert in creative suite",
+    "proficient in creative suite",
+    "creative suite skills",
+    "creative cloud",
+    "know creative cloud",
+    "use creative cloud",
+    "uses creative cloud",
+    "good at creative cloud",
+    "good in creative cloud",
+    "experience in creative cloud",
+    "experience with creative cloud",
+    "familiar with creative cloud",
+    "knows creative cloud",
+    "work in creative cloud",
+    "skilled in creative cloud",
+    "expert in creative cloud",
+    "proficient in creative cloud",
+    "creative cloud skills"
+   ],
+   "questions": [
+    "does he know adobe creative suite",
+    "is he good at adobe creative suite",
+    "does he use adobe creative suite"
+   ],
+   "answer": "Yes. **Adobe Creative Suite** is in his resume's **Tools** section.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-photoshop",
+   "category": "skills",
+   "keywords": [
+    "photoshop",
+    "know photoshop",
+    "use photoshop",
+    "uses photoshop",
+    "good at photoshop",
+    "good in photoshop",
+    "experience in photoshop",
+    "experience with photoshop",
+    "familiar with photoshop",
+    "knows photoshop",
+    "work in photoshop",
+    "skilled in photoshop",
+    "expert in photoshop",
+    "proficient in photoshop",
+    "photoshop skills",
+    "know ps",
+    "use ps",
+    "uses ps",
+    "good at ps",
+    "good in ps",
+    "experience in ps",
+    "experience with ps",
+    "familiar with ps",
+    "knows ps",
+    "work in ps",
+    "skilled in ps",
+    "expert in ps",
+    "proficient in ps",
+    "ps skills"
+   ],
+   "questions": [
+    "does he know photoshop",
+    "is he good at photoshop",
+    "does he use photoshop"
+   ],
+   "answer": "Yes. **Photoshop** is part of the **Adobe Creative Suite** in his tools.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-illustrator",
+   "category": "skills",
+   "keywords": [
+    "illustrator",
+    "know illustrator",
+    "use illustrator",
+    "uses illustrator",
+    "good at illustrator",
+    "good in illustrator",
+    "experience in illustrator",
+    "experience with illustrator",
+    "familiar with illustrator",
+    "knows illustrator",
+    "work in illustrator",
+    "skilled in illustrator",
+    "expert in illustrator",
+    "proficient in illustrator",
+    "illustrator skills",
+    "adobe illustrator",
+    "know adobe illustrator",
+    "use adobe illustrator",
+    "uses adobe illustrator",
+    "good at adobe illustrator",
+    "good in adobe illustrator",
+    "experience in adobe illustrator",
+    "experience with adobe illustrator",
+    "familiar with adobe illustrator",
+    "knows adobe illustrator",
+    "work in adobe illustrator",
+    "skilled in adobe illustrator",
+    "expert in adobe illustrator",
+    "proficient in adobe illustrator",
+    "adobe illustrator skills"
+   ],
+   "questions": [
+    "does he know illustrator",
+    "is he good at illustrator",
+    "does he use illustrator"
+   ],
+   "answer": "Yes. **Illustrator** is part of the **Adobe Creative Suite** in his tools.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "item-after-effects",
+   "category": "skills",
+   "keywords": [
+    "after effects",
+    "know after effects",
+    "use after effects",
+    "uses after effects",
+    "good at after effects",
+    "good in after effects",
+    "experience in after effects",
+    "experience with after effects",
+    "familiar with after effects",
+    "knows after effects",
+    "work in after effects",
+    "skilled in after effects",
+    "expert in after effects",
+    "proficient in after effects",
+    "after effects skills",
+    "know ae",
+    "use ae",
+    "uses ae",
+    "good at ae",
+    "good in ae",
+    "experience in ae",
+    "experience with ae",
+    "familiar with ae",
+    "knows ae",
+    "work in ae",
+    "skilled in ae",
+    "expert in ae",
+    "proficient in ae",
+    "ae skills",
+    "aftereffects",
+    "know aftereffects",
+    "use aftereffects",
+    "uses aftereffects",
+    "good at aftereffects",
+    "good in aftereffects",
+    "experience in aftereffects",
+    "experience with aftereffects",
+    "familiar with aftereffects",
+    "knows aftereffects",
+    "work in aftereffects",
+    "skilled in aftereffects",
+    "expert in aftereffects",
+    "proficient in aftereffects",
+    "aftereffects skills"
+   ],
+   "questions": [
+    "does he know after effects",
+    "is he good at after effects",
+    "does he use after effects"
+   ],
+   "answer": "Yes. **After Effects** is part of the **Adobe Creative Suite** in his tools.",
+   "followups": [
+    "What are his skills?",
+    "What tools does he use?"
+   ],
+   "priority": false
+  },
+  {
+   "id": "not-on-resume",
+   "category": "skills",
+   "keywords": [
+    "know sketch",
+    "use sketch",
+    "uses sketch",
+    "sketch app",
+    "sketch tool",
+    "in sketch",
+    "good at sketch",
+    "adobe xd",
+    "xd",
+    "webflow",
+    "invision",
+    "zeplin",
+    "protopie",
+    "axure",
+    "balsamiq",
+    "principle app",
+    "origami",
+    "blender",
+    "spline",
+    "canva",
+    "notion",
+    "jira",
+    "confluence",
+    "react",
+    "angular",
+    "vue",
+    "swift",
+    "kotlin",
+    "flutter",
+    "webflow skills",
+    "lottie",
+    "rive"
+   ],
+   "questions": [
+    "does he use adobe xd",
+    "does he know webflow"
+   ],
+   "answer": "That isn't listed on his resume. His tools are: Claude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects).\n\nFor anything else, you can ask him at **vishnuprasadkp98@gmail.com**.",
+   "followups": [
+    "What are his skills?"
    ],
    "priority": false
   }
  ],
  "fallback": {
-  "answer": "I don't know about that, sorry. You can get in touch with Vishnu directly at **vishnuprasadkp98@gmail.com**, and he'll be happy to help.",
+  "answer": "I don't know about that, sorry. 🪲 You can get in touch with Vishnu directly at **vishnuprasadkp98@gmail.com**, and he'll be happy to help.",
   "followups": [
    "What has he worked on?",
    "How does he design?",
@@ -4455,7 +5987,7 @@
   "Tell me about the Sony platforms",
   "How does he design?",
   "What AI work has he done?",
-  "Other client work",
+  "Other projects",
   "How can I contact him?"
  ]
 }

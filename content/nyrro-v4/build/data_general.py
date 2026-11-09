@@ -2,7 +2,7 @@
 # keywords: phrases (multi-word phrases score higher). questions: sample phrasings (also matched).
 INTENTS = []
 
-PRIORITY = {"competitors", "sensitive"}
+PRIORITY = {"competitors", "sensitive", "off-topic"}
 
 def I(id, category, keywords, questions, answer, followups=None):
     INTENTS.append({"id": id, "category": category, "keywords": keywords, "questions": questions,
@@ -13,8 +13,8 @@ EMAIL = "vishnuprasadkp98@gmail.com"
 # ───────────── CONVERSATION ─────────────
 I("greeting", "conversation",
   ["hi", "hello", "hey", "hii", "hola", "namaste", "good morning", "good evening", "good afternoon", "yo", "sup", "hey there", "anyone there"],
-  ["hey nyrro"],
-  "Hi! I'm **Nyrro**, Vishnu's guide on this site.\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
+  ["hi", "hello there", "hey nyrro"],
+  "Hi! I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nAsk me about his work, how he designs, the clients he's worked with, or how to reach him.",
   ["Who is Vishnu?", "What has he worked on?", "How does he design?"])
 
 I("thanks", "conversation",
@@ -26,7 +26,7 @@ I("thanks", "conversation",
 I("bye", "conversation",
   ["bye", "goodbye", "see you", "see ya", "later", "cya", "good night"],
   ["bye", "see you later"],
-  f"Thanks for stopping by! If you'd like to talk to Vishnu, he's at **{EMAIL}**.")
+  f"Thanks for stopping by! If you'd like to talk to Vishnu, he's at **{EMAIL}**. 🪲")
 
 # ───────────── ABOUT ─────────────
 I("who-is-vishnu", "about",
@@ -421,7 +421,7 @@ I("art", "personal",
 I("nyrro", "personal",
   ["who are you", "what are you", "nyrro", "your name", "beetle", "why beetle", "what is nyrro", "about you", "mascot"],
   ["who are you", "what is nyrro", "why are you a beetle"],
-  "I'm **Nyrro**, Vishnu's guide on this site.\n\nI'm one of his creative side projects, a little beetle inspired by how beetles **defend themselves in nature**, and by the idea of a tiny creature leaving a **paint-like trail** as it moves. Part observation, part imagination, much like his watercolours.")
+  "I'm **Nyrro**, Vishnu's guide on this site. 🪲\n\nI'm one of his creative side projects, a little beetle inspired by how beetles **defend themselves in nature**, and by the idea of a tiny creature leaving a **paint-like trail** as it moves. Part observation, part imagination, much like his watercolours.")
 
 I("are-you-ai", "personal",
   ["are you ai", "are you a bot", "are you real", "are you human", "are you chatgpt", "chatgpt", "are you claude", "which model are you", "how do you work", "are you a robot"],
@@ -432,7 +432,7 @@ I("are-you-ai", "personal",
 I("contact", "hiring",
   ["contact", "email", "email address", "email id", "reach", "get in touch", "talk to him", "connect", "message him", "mail", "how to reach", "contact details", "socials", "linkedin"],
   ["how can i contact vishnu", "what is his email", "how do i reach him", "is he on linkedin"],
-  f"- **Email:** {EMAIL}\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)")
+  f"- **Email:** {EMAIL}\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)\n- **Behance:** [behance.net/vishnuprasadkp](https://www.behance.net/vishnuprasadkp)")
 
 I("resume", "hiring",
   ["resume", "cv", "download resume", "resume pdf", "curriculum vitae"],
@@ -485,7 +485,7 @@ I("working-style", "process",
 I("future-goals", "interview",
   ["5 years", "five years", "future plans", "career goals", "career goal", "see himself", "aspirations", "aspiration", "long term goal", "next step in career", "ambition", "ambitions", "dream job", "what next"],
   ["where does he see himself in 5 years", "what are his career goals"],
-  "I don't know that, sorry. That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
+  "I don't know that, sorry. 🪲 That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
   ["How can I contact him?"])
 
 # ───────────── INTERVIEW-STYLE ─────────────
@@ -518,61 +518,5 @@ I("outcomes-real", "interview",
 I("off-topic", "boundaries",
   ["write code", "python", "javascript code", "homework", "essay", "weather", "news", "joke", "recipe", "movie", "cricket score", "stock price", "translate"],
   ["can you write me a python script", "what's the weather today", "tell me a joke"],
-  "I'm Nyrro, and I only know about Vishnu and his work. Want to see one of his case studies instead?",
+  "I'm Nyrro, and I only know about Vishnu and his work. 🪲 Want to see one of his case studies instead?",
   ["Show me his case studies", "Who is Vishnu?"])
-
-# ───────────── v2.2: career highlights (from the resume) ─────────────
-I("achievements", "career",
-  ["achievements", "achievement", "biggest achievement", "accomplishments", "accomplishment", "career highlights", "highlights", "what has he achieved", "what did he achieve", "wins", "notable work", "impact", "what is he known for"],
-  ["what are his achievements", "what is his biggest achievement", "what has he accomplished"],
-  "From his resume:\n\n- Drove design across **60+ enterprise deployments** for clients including HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority and DGE Abu Dhabi\n- Designed consent and communication products under India's DPDP Act for HDFC Bank: **30M+ customers, 400M+ consent records, 3M+ daily communications**\n- Owned and scaled the **UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation, reused across 60+ deployments\n- Ran **3 enterprise product initiatives in parallel**\n- **Mentored 6 junior designers**\n- Led UX for **20+ client projects** at Brane Enterprises",
-  ["Tell me about HDFC Bank", "What are his case studies?", "How does he lead?"])
-
-# ───────────── v2.3: small talk ─────────────
-I("smalltalk-how-are-you", "conversation",
-  ["how are you", "how are you doing", "how are u", "how r u", "how do you do", "how is it going", "hows it going", "how have you been", "how is life", "hows life", "hi how are you", "hello how are you", "hey how are you", "hi nyrro how are you", "hello nyrro how are you", "hey nyrro how are you", "hi there how are you", "hey there how are you", "good morning how are you", "good evening how are you", "you good", "are you ok", "are you okay", "are you fine", "how you doing", "how is your day", "hows your day", "how was your day"],
-  ["how are you?", "how are you doing today", "how's it going"],
-  "I'm good, thank you for asking! How are you?\n\nWhenever you're ready, ask me about Vishnu's work, how he designs, or the clients he's worked with.",
-  ["Who is Vishnu?", "What has he worked on?", "How can I contact him?"])
-
-I("smalltalk-reply", "conversation",
-  ["i am fine", "im fine", "i am good", "im good", "i am great", "im great", "i am doing well", "im doing well", "doing well", "doing good", "doing great", "i am ok", "im ok", "i am okay", "im okay", "not bad", "all good", "fine thanks", "good thanks", "im good how are you", "i am good how are you", "fine and you", "good and you", "fine you", "good you"],
-  ["i'm good, how are you?", "I am fine", "doing great, and you?"],
-  "Glad to hear it! What would you like to know about Vishnu?",
-  ["Who is Vishnu?", "What has he worked on?", "What are his core skills?"])
-
-I("smalltalk-nice-to-meet", "conversation",
-  ["nice to meet you", "pleased to meet you", "good to meet you", "glad to meet you", "nice meeting you"],
-  ["nice to meet you", "pleased to meet you"],
-  "Nice to meet you too! I'm Nyrro, Vishnu's guide on this site. Ask me anything about his work.",
-  ["Who is Vishnu?", "What has he worked on?", "How does he design?"])
-
-I("compliment", "conversation",
-  ["great portfolio", "nice portfolio", "beautiful portfolio", "love your portfolio", "love this site", "love this website", "nice website", "great website", "beautiful website", "nice site", "great site", "good site", "good work", "great work", "nice work", "awesome work", "amazing work", "impressive", "impressive work", "i like his work", "i love his work", "i like your work", "love his work", "well done", "good job", "great job", "nicely done", "you are awesome", "you are great", "you are amazing", "you are cool", "you are smart", "you are sweet", "you are helpful", "youre awesome", "youre great", "youre cute", "so cute", "cute", "awesome", "amazing", "brilliant", "love it", "like it"],
-  ["great portfolio!", "I love your work", "you're awesome", "nice website"],
-  "That's kind of you to say, thank you! Vishnu would be glad to hear it from you directly: **vishnuprasadkp98@gmail.com**.\n\nIs there anything else you'd like to know about his work?",
-  ["What has he worked on?", "How does he design?", "How can I contact him?"])
-
-I("capabilities", "conversation",
-  ["what can you do", "what do you do", "what can you help with", "what can i ask", "what can i ask you", "what should i ask", "what to ask", "how can you help", "can you help me", "help me", "need help", "help", "how do i use this", "how does this work chat", "what do you know", "what do you know about", "what are you for", "your purpose", "what is your job", "what is your role here"],
-  ["what can you do?", "what can I ask you?", "can you help me?"],
-  "I can tell you about Vishnu:\n\n- His **case studies** and the clients he has designed for\n- How he **designs**, especially AI products\n- His **experience, skills and tools**\n- How to **reach him**\n\nJust ask in your own words.",
-  ["What has he worked on?", "Who is Vishnu?", "How does he design?"])
-
-I("laugh", "conversation",
-  ["lol", "haha", "hahaha", "hehe", "lmao", "funny", "that is funny", "thats funny", "so funny", "you are funny", "youre funny", "rofl"],
-  ["lol", "haha that's funny"],
-  "Glad you enjoyed that! Ask me anything about Vishnu's work whenever you like.",
-  ["What has he worked on?", "Who is Vishnu?", "How can I contact him?"])
-
-I("sorry", "conversation",
-  ["sorry", "my bad", "apologies", "i am sorry", "im sorry", "excuse me", "pardon", "never mind", "nevermind", "forget it", "ignore that", "oops"],
-  ["sorry", "never mind"],
-  "No need to apologise! Ask away whenever you're ready.",
-  ["Who is Vishnu?", "What has he worked on?", "How can I contact him?"])
-
-I("nyrro-home", "conversation",
-  ["where do you live", "where are you from", "where are you", "do you sleep", "what do you eat", "do you have a family", "do you have friends", "how old are you", "what is your age", "are you a boy", "are you a girl", "are you male", "are you female", "your gender", "do you have a name", "what is your favourite colour", "what is your favorite color", "what is your favourite food", "do you like", "what do you like", "are you real", "are you alive", "do you have feelings", "are you happy", "are you sad"],
-  ["where do you live?", "how old are you?", "what do you eat?"],
-  "I'm a small beetle who lives right here on this site, so my world is mostly Vishnu's portfolio. I'm happiest when someone asks about his work.",
-  ["Why a beetle?", "What has he worked on?", "Who is Vishnu?"])

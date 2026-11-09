@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import NyrroMarkdown from "./NyrroMarkdown";
 import { usePathname, useRouter } from "next/navigation";
 import { pageInfo } from "@/lib/nivvi-pages";
 import MothTrail, { BeetleIcon } from "@/components/copilot/Moth";
@@ -9,27 +8,52 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 
 /* ------------------------------------------------------------------ state */
 
-type Msg = { role: "user" | "assistant"; content: string; next?: string[] };
+type Msg = { role: "user" | "assistant"; content: string; html?: string; next?: string[] };
+
+/* ------------------------------------------------------------------ Nyrro v4 (public/nyrro.bundle.js, locked build) */
+
+type NyrroReply = { answer: string; html: string; followups: string[]; match: { type: string; id: string; aspect?: string; score: number } };
+type NyrroLib = { version: string; fingerprint: string; create: (o?: { onMiss?: (q: string) => void }) => { ask: (q: string) => NyrroReply; reset: () => void }; selfTest: () => unknown };
+const NYRRO_SRC = "/nyrro.bundle.js?v=2ffbb768f784ecad";
+let nyrroLoading: Promise<NyrroLib> | null = null;
+/** Loads the locked Nyrro bundle once (it sets window.Nyrro; the console can run Nyrro.selfTest()). */
+function loadNyrro(): Promise<NyrroLib> {
+  const w = window as unknown as { Nyrro?: NyrroLib };
+  if (w.Nyrro) return Promise.resolve(w.Nyrro);
+  nyrroLoading ??= new Promise<NyrroLib>((resolve, reject) => {
+    const el = document.createElement("script");
+    el.src = NYRRO_SRC;
+    el.async = true;
+    el.onload = () => (w.Nyrro ? resolve(w.Nyrro) : reject(new Error("Nyrro did not load")));
+    el.onerror = () => {
+      nyrroLoading = null;
+      reject(new Error("Nyrro did not load"));
+    };
+    document.head.appendChild(el);
+  });
+  return nyrroLoading;
+}
+/** No emoji in the assistant: taken out where an answer is shown or read aloud (the bundle itself is never changed). */
+const noEmoji = (s: string) =>
+  s
+    .replace(/(\w) *[\p{Extended_Pictographic}\uFE0F\u200D]+ +(?=[A-Z])/gu, "$1. ") // an emoji standing between two sentences becomes their full stop
+    .replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").replace(/ {2,}/g, " ").replace(/ +(<\/p>|<\/li>|\n|$)/g, "$1");
+/** The page an answer is about, opened beside the panel: a case study, the About page, or the resume. */
+const CASE_PAGE: Record<string, string> = { "enterprise-search": "/work/enterprise-search", adeo: "/work/adeo", "agent-workforce": "/work/ai-agent", hdfc: "/work/hdfc", sony: "/work/sony" };
+const ABOUT_TOPICS = new Set(["who-is-vishnu", "summary-oneline", "experience-years", "title-seniority", "career-history", "education", "architecture-link", "languages", "location-regions", "why-designer", "early-career", "evolution", "hobbies", "art"]);
+function pageFor(match: NyrroReply["match"]): string | null {
+  if (match.type === "entity") return CASE_PAGE[match.id] ?? (match.id.startsWith("sony-") ? CASE_PAGE.sony : null);
+  if (match.type === "intent") {
+    if (ABOUT_TOPICS.has(match.id)) return "/about";
+    if (match.id === "resume") return "/resume";
+  }
+  return null;
+}
 type Ctx = { open: boolean; toggle: () => void; close: () => void; show: () => void };
 const NivviCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () => {}, show: () => {} });
 export const useNivvi = () => useContext(NivviCtx);
 
 const ACCENT = "#e4572e";
-
-/** Splits a streamed reply into the visible text and the trailing "NEXT: a | b | c" suggestions. */
-function parseReply(raw: string) {
-  const i = raw.lastIndexOf("NEXT:");
-  if (i === -1) return { text: raw.trimEnd(), next: [] as string[] };
-  return {
-    text: raw.slice(0, i).trimEnd(),
-    next: raw
-      .slice(i + 5)
-      .split("|")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .slice(0, 3),
-  };
-}
 
 export function NivviProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -395,7 +419,10 @@ function NivviPanel() {
   }, []);
 
   useEffect(() => {
-    if (open) setTimeout(() => input.current?.focus({ preventScroll: true }), 350);
+    if (open) {
+      setTimeout(() => input.current?.focus({ preventScroll: true }), 350);
+      loadNyrro().catch(() => {}); // ready before the first question
+    }
     else {
       cancelled.current = true;
       rec.current?.abort();
@@ -439,40 +466,29 @@ function NivviPanel() {
     setMessages([...history, { role: "assistant", content: "" }]);
     setBusy(true);
     setSignal({ kind: "send", id: Date.now() });
-    // Nyrro answers on the device from the approved knowledge base: no API. It is rebuilt from the whole
-    // conversation each time, so it remembers what was said (no repeats, follow-ups apply to the last project)
-    // and "regenerate" behaves.
+    // Nyrro answers on the device from the locked v4 bundle: no API, no answers of our own. A fresh bot replays the
+    // conversation, so it remembers what was said (its own repeat handling, follow-ups about the last project) and
+    // "regenerate" gives the same answer.
     let finalText = "";
+    let html = "";
     let next: string[] = [];
     try {
-      const [{ default: kb }, mod] = await Promise.all([import("@/lib/nyrro/nyrro-knowledge-base.json"), import("@/lib/nyrro/nyrro-matcher")]);
-      const createNyrro = (mod as unknown as { default?: typeof mod.default }).default ?? (mod as unknown as typeof mod.default);
-      const nyrro = createNyrro(kb);
+      const Nyrro = await loadNyrro();
+      const bot = Nyrro.create();
       const questions = history.filter((m) => m.role === "user").map((m) => m.content);
-      for (const q of questions.slice(0, -1)) nyrro.ask(q);
-      const reply = nyrro.ask(questions[questions.length - 1]);
-      finalText = reply.answer;
-      // Asking about one of the five case studies opens it on the left, beside the panel (not on phones, where the panel is full screen).
-      const slug = ({ "enterprise-search": "enterprise-search", adeo: "adeo", "agent-workforce": "ai-agent", hdfc: "hdfc", sony: "sony" } as Record<string, string>)[reply.match.id];
-      // Questions about his art or hobbies open the About page, where the paintings are.
-      if (reply.match.type === "intent" && (reply.match.id === "art" || reply.match.id === "hobbies") && !window.matchMedia("(max-width: 767px)").matches && !window.location.pathname.startsWith("/about")) router.push("/about");
-      if (reply.match.type === "entity" && slug && !window.matchMedia("(max-width: 767px)").matches && !window.location.pathname.startsWith(`/work/${slug}`)) router.push(`/work/${slug}`);
-      next = (reply.followups ?? []).slice(0, 4);
-      // Only talk about case studies when the visitor is asking about work: a skills or contact answer should not
-      // end with "Tell me about ADEO". Those chips are swapped for general ones the visitor has not asked yet.
-      const aboutWork = reply.match.type === "entity" || reply.match.type === "fallback" || /^(projects-list|industries|best-problems|proudest|most-complex|platforms|success-metrics|common-thread|outcomes-real|current-work|other-|domain-)/.test(reply.match.id);
-      if (!aboutWork) {
-        const work = /(adeo|hdfc|sony|enterprise search|agent workforce|other client work|case stud)/i;
-        const asked = new Set(questions.map((q) => q.toLowerCase()));
-        const pool = ["What are his core skills?", "What tools does he use?", "How does he design?", "Where did he study?", "What does he do outside of design?", "Why should we hire him?", "How can I contact him?"];
-        next = next.filter((n) => !work.test(n));
-        for (const q of pool) if (next.length < 4 && !asked.has(q.toLowerCase()) && !next.includes(q) && q.toLowerCase() !== questions[questions.length - 1].toLowerCase()) next.push(q);
-      }
+      for (const q of questions.slice(0, -1)) bot.ask(q);
+      const r = bot.ask(questions[questions.length - 1]);
+      finalText = r.answer;
+      html = r.html;
+      next = r.followups ?? [];
+      // the page the answer is about opens on the left, beside the panel (not on phones, where the panel fills the screen)
+      const to = pageFor(r.match);
+      if (to && !window.matchMedia("(max-width: 767px)").matches && window.location.pathname !== to) router.push(to);
       await new Promise((r) => setTimeout(r, 250));
     } catch {
       finalText = "I couldn't reach my notes just now. Please try again, or email Vishnu at vishnuprasadkp98@gmail.com.";
     }
-    setMessages([...history, { role: "assistant", content: finalText, next }]);
+    setMessages([...history, { role: "assistant", content: finalText, html, next }]);
     setBusy(false);
     setSignal({ kind: "reply", id: Date.now() });
     if (byVoice.current && finalText) {
@@ -511,7 +527,7 @@ function NivviPanel() {
     const browserVoice = () => {
       if (!("speechSynthesis" in window)) return setSpeaking(null);
       // Speak sentence by sentence: long single utterances get cut off in Chrome.
-      const parts = plain(text).split(/(?<=[.!?])\s+/).filter(Boolean);
+      const parts = plain(noEmoji(text)).split(/(?<=[.!?])\s+/).filter(Boolean);
       const voice = pickVoice();
       parts.forEach((part, k) => {
         const u = new SpeechSynthesisUtterance(part);
@@ -669,7 +685,24 @@ function NivviPanel() {
               ) : (
                 <div key={i} data-ledge="msg-a" className="text-[15px] leading-[24px]">
                   {m.content ? (
-                    <NyrroMarkdown text={m.content} onNavigate={() => window.matchMedia("(max-width: 767px)").matches && close()} />
+                    m.html ? (
+                      <div
+                        className="nyrro-answer"
+                        dangerouslySetInnerHTML={{ __html: noEmoji(m.html) }}
+                        onClick={(e) => {
+                          // links to this site change the page beside the panel; other sites open in a new tab (as given)
+                          const a = (e.target as HTMLElement).closest("a");
+                          if (!a) return;
+                          const url = new URL(a.href, window.location.href);
+                          if (url.origin !== window.location.origin && !/^(www\.)?vishnuprasad\.(space|design)$/.test(url.hostname)) return;
+                          e.preventDefault();
+                          router.push(url.pathname + url.search + url.hash);
+                          if (window.matchMedia("(max-width: 767px)").matches) close();
+                        }}
+                      />
+                    ) : (
+                      <p>{m.content}</p>
+                    )
                   ) : (
                     <span className="inline-flex items-center gap-1 py-2" aria-label="Nyrro is thinking">
                       {[0, 1, 2].map((d) => (

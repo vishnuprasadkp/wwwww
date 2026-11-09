@@ -1,6 +1,6 @@
 const kb=require("../nyrro-knowledge-base.json"),n=require("../nyrro-matcher.js")(kb);
 const T=[["what kind of designer is he","who-is-vishnu"],["give me a quick intro","who-is-vishnu"],["how senior is he","title-seniority"],
-["did he study design","education"],["what's his background in architecture","architecture-link"],["is he good with figma","tools"],
+["did he study design","education"],["what's his background in architecture","architecture-link"],["is he good with figma","item-figma"],
 ["what's his process like","design-process"],["how does he start a new project","design-process"],["what are his core beliefs as a designer","principles"],
 ["how does he make sure ai is trustworthy","ai-trust"],["does he use ai in every project","when-not-ai"],["has he worked with llms","ai-experience"],
 ["how does he collaborate with product managers","stakeholders"],["does he manage people","leadership"],["has he scaled a design system","design-system"],
@@ -12,6 +12,6 @@ const T=[["what kind of designer is he","who-is-vishnu"],["give me a quick intro
 ["key features of ajman one","ajman:features"],["what did docebo want","docebo:overview"],["shaw industries results","shaw:outcomes"],
 ["what is sharek","cgb:overview"],["stowers outlook assistant","stowers:overview"],["virtusa results","virtusa:outcomes"],
 ["how can i hire vishnu","open-to-work"],["his email address?","contact"],["how much does he charge","sensitive"],["are you chatgpt","are-you-ai"],
-["what is the capital of france","fallback"],["asdfgh","fallback"]];
+["what is the capital of france","off-topic"],["asdfgh","fallback"]];
 let p=0,f=[];for(const[r,e]of T){n.reset();const m=n.ask(r).match;const g=m.type==="entity"?`${m.id}:${m.aspect}`:m.type==="intent"?m.id:"fallback";if(g===e)p++;else f.push(`  ✗ "${r}" → ${g} (${m.score}) expected ${e}`)}
 console.log(`${p}/${T.length}`);console.log(f.join("\n"));

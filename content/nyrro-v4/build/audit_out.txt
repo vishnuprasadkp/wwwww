@@ -1,0 +1,178 @@
+What are his core skills?
+   → [skills] Here are Vishnu's skills, exactly as listed on his resume:
+what skills does he have
+   → [skills] Here are Vishnu's skills, exactly as listed on his resume:
+list his skills
+   → [skills] Here are Vishnu's skills, exactly as listed on his resume:
+skills
+   → [skills] Here are Vishnu's skills, exactly as listed on his resume:
+what are vishnu's skills
+   → [skills] Here are Vishnu's skills, exactly as listed on his resume:
+technical skills
+   → [skills] Here are Vishnu's skills, exactly as listed on his resume:
+his design skills
+   → [skills-design] His design skills, from his resume:
+ui ux skills
+   → [skills-design] His design skills, from his resume:
+does he know information architecture
+   → [skills-design] His design skills, from his resume:
+does he know interaction design
+   → [skills-design] His design skills, from his resume:
+what are his research skills
+   → [skills-research] His research and validation skills, from his resume: User Research, Usability Testing, Journey Mapping and Product Disco
+does he do usability testing
+   → [skills-research] His research and validation skills, from his resume: User Research, Usability Testing, Journey Mapping and Product Disco
+what are his ai skills
+   → [skills-ai] His AI skills, from his resume: AI Product Design, Agentic UX, Prompt Engineering, Generative Prototyping, and Claude.
+does he know prompt engineering
+   → [skills-ai] His AI skills, from his resume: AI Product Design, Agentic UX, Prompt Engineering, Generative Prototyping, and Claude.
+what are his soft skills
+   → [skills-soft] His people skills show up most in stakeholder management, design leadership and mentoring:
+is he a good communicator
+   → [skills-soft] His people skills show up most in stakeholder management, design leadership and mentoring:
+what are his strengths
+   → [strengths] His three biggest strengths:
+what is he really good at
+   → [strengths] His three biggest strengths:
+what tools does he use
+   → [tools] The tools on his resume: Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite.
+is he good at figma
+   → [tools] The tools on his resume: Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite.
+does he know framer
+   → [tools] The tools on his resume: Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite.
+does he use adobe
+   → [tools] The tools on his resume: Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite.
+what is his expertise
+   → [skills] Here are Vishnu's skills, exactly as listed on his resume:
+what's his specialization
+   → [skills] Here are Vishnu's skills, exactly as listed on his resume:
+what domains is he expert in
+   → [industries] His case studies cover AI software (UnifyApps), government (Abu Dhabi), banking (HDFC Bank) and media (Sony).
+is he good at design systems
+   → [design-system] Yes. He owns the UnifyApps design system, which covers AI, data quality, governance and workflow automation.
+can he do data visualization
+   → [dashboards] He designs data-heavy products so they show what needs attention first:
+does he know accessibility
+   → [accessibility] Yes. Accessibility (WCAG) is on his resume. He enforces WCAG 2.1 on his team's work and has run WCAG 2.1 AA audits of cl
+what is designops
+   → [skills-strategy] His strategy and systems skills, from his resume: Product Strategy, Product Discovery, Systems Thinking, User Research, 
+does he know enterprise saas
+   → [skills-design] His design skills, from his resume:
+what can he do for my company
+   → [why-hire] Five reasons:
+what kind of work does he do
+   → [who-is-vishnu] Vishnu Prasad K P is a product designer with 5+ years of experience. He's currently a Senior Product Designer at ICD (It
+what does he do
+   → [who-is-vishnu] Vishnu Prasad K P is a product designer with 5+ years of experience. He's currently a Senior Product Designer at ICD (It
+who is he
+   → [who-is-vishnu] Vishnu Prasad K P is a product designer with 5+ years of experience. He's currently a Senior Product Designer at ICD (It
+tell me about yourself
+   → [nyrro] I'm Nyrro, Vishnu's guide on this site. 🪲
+what is his job
+   → [title-seniority] His title is Senior Product Designer at ICD.
+where does he work
+   → [current-work] He's currently a Senior Product Designer at ICD, leading design for UnifyApps:
+what is his role
+   → [title-seniority] His title is Senior Product Designer at ICD.
+how much experience
+   → [experience-years] Vishnu has 5+ years of product design experience:
+is he senior
+   → [title-seniority] His title is Senior Product Designer at ICD.
+what has he worked on
+   → [projects-list] Vishnu's portfolio features five case studies:
+what are his best projects
+   → [proudest] That's best asked to Vishnu himself. Two case studies show his thinking best:
+show me his case studies
+   → [projects-list] Vishnu's portfolio features five case studies:
+tell me about the first case study
+   → [enterprise-search:overview] Intelligent Enterprise Search Platform (UnifyApps)
+what is enterprise search
+   → [enterprise-search:overview] Intelligent Enterprise Search Platform (UnifyApps)
+explain adeo in simple words
+   → [adeo:overview] Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)
+what did he do in hdfc
+   → [hdfc:overview] Consent at the Scale of a Nation's Bank (HDFC Bank)
+what was his contribution to sony
+   → [sony:role] Vishnu was the Lead Product Designer across all four platforms, May 2025 – July 2026, collaborating with legal, complian
+agent workforce in short
+   → [agent-workforce:overview] Agent Workforce Platform (UnifyApps)
+how does he design
+   → [design-process] His process has seven steps:
+what is his design process
+   → [design-process] His process has seven steps:
+how does he approach problems
+   → [design-process] His process has seven steps:
+how does he solve problems
+   → [design-process] His process has seven steps:
+how does he think
+   → [principles] The principles he designs by:
+what's his design philosophy
+   → [principles] The principles he designs by:
+how does he handle feedback
+   → [working-style] Organised and collaborative.
+how does he prioritize
+   → [multitasking] He usually runs several projects in parallel. A shared design system and reusable patterns keep quality consistent acros
+how does he work with developers
+   → [engineers] He works closely with engineers:
+how does he work with pms
+   → [stakeholders] He works directly with senior stakeholders and keeps them involved through regular review cycles:
+does he lead
+   → [leadership] He leads design on his projects and mentors 6 junior designers:
+how many people has he managed
+   → [leadership] He leads design on his projects and mentors 6 junior designers:
+does he mentor
+   → [mentoring] Yes. He mentors 6 junior designers through regular critiques and growth planning. He helps them think about the whole pr
+how is he as a team member
+   → [working-style] Organised and collaborative.
+is he creative
+   → [art] He paints mostly watercolours and live sketches, with some oil painting.
+what are his achievements
+   → [success-metrics] Results from his case studies, with their sources:
+what awards has he won
+   → [awards-certs] I don't have any information about awards or certifications, sorry. 🪲 You can ask Vishnu directly at vishnuprasadkp98@g
+does he have certifications
+   → [awards-certs] I don't have any information about awards or certifications, sorry. 🪲 You can ask Vishnu directly at vishnuprasadkp98@g
+what did he study
+   → [education] He has a Bachelor of Planning & Architecture from NIT Bhopal (2017 – 2021).
+is he an architect
+   → [architecture-link] Planning and architecture taught him to understand a whole system before changing any part of it. He brings that to soft
+why did he become a designer
+   → [why-designer] I don't know his personal story, sorry. 🪲 He studied Planning & Architecture before moving into product design. For the
+what does he do in free time
+   → [who-is-vishnu] Vishnu Prasad K P is a product designer with 5+ years of experience. He's currently a Senior Product Designer at ICD (It
+does he paint
+   → [art] He paints mostly watercolours and live sketches, with some oil painting.
+what languages
+   → [languages] He speaks four languages:
+where is he from
+   → [location-regions] He's based in India and works with clients in India, the UAE, Qatar and the US. For example, HDFC Bank is in India and D
+where does he live
+   → [sensitive] That's best discussed with Vishnu directly. You can reach him at vishnuprasadkp98@gmail.com.
+is he open to work
+   → [open-to-work] Vishnu is always open to conversations. Email him at vishnuprasadkp98@gmail.com or message him on LinkedIn.
+how can i contact him
+   → [contact] The best way to reach Vishnu is email: vishnuprasadkp98@gmail.com
+can i call him
+   → [contact] The best way to reach Vishnu is email: vishnuprasadkp98@gmail.com
+what's his salary
+   → [sensitive] That's best discussed with Vishnu directly. You can reach him at vishnuprasadkp98@gmail.com.
+why should i hire him
+   → [why-hire] Five reasons:
+is he good for a startup
+   → [fallback] I don't know about that, sorry. 🪲 You can get in touch with Vishnu directly at vishnuprasadkp98@gmail.com, and he'll be
+can he work remotely
+   → [remote] He already works with international teams: clients across India, the UAE, Qatar and the US, and co-delivery with Frog De
+what are his weaknesses
+   → [weakness] I don't know that, sorry. That's a question for Vishnu himself: vishnuprasadkp98@gmail.com. His case studies are open ab
+tell me something interesting
+   → [hobbies] Outside work he:
+what is ai
+   → [off-topic] I'm Nyrro, and I only know about Vishnu and his work. 🪲 Want to see one of his case studies instead?
+what is the meaning of life
+   → [off-topic] I'm Nyrro, and I only know about Vishnu and his work. 🪲 Want to see one of his case studies instead?
+hello
+   → [greeting] Hi! I'm Nyrro, Vishnu's guide on this site. 🪲
+thanks
+   → [thanks] Glad that helped! Anything else you'd like to know about Vishnu's work?
+who made you
+   → [are-you-ai] I'm a small assistant built on Vishnu's portfolio, case studies and project work. For anything I can't answer, Vishnu is

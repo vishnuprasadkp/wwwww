@@ -1,7 +1,6 @@
 /**
- * What Nyrro knows about "where the visitor is". Pure data (no fs), shared by the panel (suggested
- * questions) and the API route (so answers and follow-ups stay on the page being read).
- * Every question here is answerable from that page's own content.
+ * Where the visitor is: the page's title and the starter questions the panel offers there.
+ * Questions only; every one is answered by the locked Nyrro bundle (public/nyrro.bundle.js).
  */
 export type PageInfo = {
   key: string;

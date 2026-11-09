@@ -126,6 +126,14 @@
 }
 
 /* Nyrro copilot */
+/* Nyrro's answers: the locked bundle's HTML (p, strong, em, ul, ol, li, a), styled as the chat has always looked */
+.nyrro-answer > * + * { margin-top: 12px; }
+.nyrro-answer ul { list-style: disc; padding-left: 20px; }
+.nyrro-answer ol { list-style: decimal; padding-left: 20px; }
+.nyrro-answer li + li { margin-top: 4px; }
+.nyrro-answer em { font-style: italic; }
+.nyrro-answer a { text-decoration: underline; text-underline-offset: 4px; overflow-wrap: anywhere; }
+.nyrro-answer a:hover { color: var(--color-pigment-soft); }
 @keyframes nivvi-orb { 0%, 100% { transform: scale(0.55); opacity: 0.5; } 50% { transform: scale(1.35); opacity: 1; } }
 @keyframes nivvi-dot { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
 @keyframes nivvi-pulse { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(1.5); opacity: 0; } }

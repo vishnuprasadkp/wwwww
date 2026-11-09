@@ -129,17 +129,25 @@
     function scoreIntents(text, toks) {
       const ct = new Set(qsTokens(text));
       const res = [];
+      // Longer phrases shadow single words inside them: "information architecture" beats "architecture".
+      const multi = [];
+      for (const it of intents) for (const k of it._kw) if (k.includes(" ") && text.includes(" " + k + " ")) multi.push(k);
+      const shadowed = w => multi.some(p => (" " + p + " ").includes(" " + w + " "));
       for (const it of intents) {
         let kw = 0;
         for (const k of it._kw) {
           const h = phraseHit(text, toks, k);
-          if (h) kw = Math.max(kw, GENERIC.has(k) ? 0.5 : h * (1 + 0.7 * (k.split(" ").length - 1)));
+          if (!h) continue;
+          const single = !k.includes(" ");
+          const w = GENERIC.has(k) ? 0.5 : single && shadowed(k) && !it._kw.some(x => x.includes(" ") && text.includes(" " + x + " ")) ? 0.35
+                  : h * (1 + 0.7 * (k.split(" ").length - 1));
+          kw = Math.max(kw, w);
         }
         let qs = 0;
         if (ct.size) for (const q of it._q) {
           if (!q.size) continue;
           let inter = 0; for (const w of ct) if (q.has(w)) inter++;
-          const sim = inter / Math.max(q.size, ct.size);   // overlap with sample phrasing
+          const sim = (inter / Math.max(q.size, ct.size)) * (inter === 1 ? 0.6 : 1);   // overlap with sample phrasing (one shared word counts less)
           qs = Math.max(qs, sim);
         }
         const score = kw + qs * 2.5;
@@ -232,6 +240,7 @@
                         match: { type: "repeat", id: it.id, score: r.score } };
         }
         shown.add(it.id);
+        (it.covers || []).forEach(c => shown.add(c));
         return { answer: it.answer, followups: freshChips(it.followups || [], lastEntity, it.id),
                  match: { type: "intent", id: it.id, score: r.score } };
       }
