@@ -143,7 +143,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
 
   // drawn with the film's pen: each line swells and tapers, as a sketch; the swell belongs to the beetle (objPress), so
   // as it flies its lines hold their shape instead of shimmering, and the wings stay drawn as they turn (edge)
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 0 }, objPress: { value: 1 }, edge: { value: new THREE.Vector2(0.0, 0.06) } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 0 }, objPress: { value: 1 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 0 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
@@ -156,12 +156,12 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     1,
     { ink, dust: ink, dots: 0, wingK: 0.24 },
   );
-  // no dust and no bubbles: only the drawing. And each shell is drawn from outside only: open, its inside would add a
-  // second set of crossing stripes, which reads as a dark patch
+  // no dust and no bubbles: only the drawing. The belly gets a few more bands, so with its cases lifted its body still
+  // reads as a body, not an empty outline
   b.root.traverse((o) => {
     if ((o as THREE_NS.Points).isPoints) o.visible = false;
     const m = (o as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial | undefined;
-    if (m && (m as THREE_NS.ShaderMaterial).isShaderMaterial && m.uniforms?.merid) m.side = THREE.FrontSide;
+    if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 3) m.uniforms.rings.value = 5;
   });
   const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
   const shellWeight = shellMat.uniforms.weight.value as number;
@@ -194,9 +194,9 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       const s = i === 0 ? 1 : -1;
       c.rotation.set(0.4 * open, s * 0.22 * open, -s * 0.85 * open);
     });
-    // lifted, the cases are seen edge-on and their stripes would bunch into a dark patch: as they open, only their outline stays
-    shellMat.uniforms.stripes.value = 1 - ease(open / 0.6);
-    shellMat.uniforms.weight.value = shellWeight * (1 - 0.5 * ease(open / 0.6)); // and seen edge-on, a lighter outline
+    // lifted, the cases are seen more edge-on: a slightly lighter outline, the stripes kept (on their outer face only)
+    shellMat.uniforms.weight.value = shellWeight * (1 - 0.25 * ease(open / 0.6));
+    shellMat.uniforms.stripes.value = 1 - ease((open - 0.35) / 0.45); // a lifted case is seen edge-on: its outline only, over the banded belly
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;

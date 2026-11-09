@@ -250,7 +250,7 @@ const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
 uniform vec3 ink;
 uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
-uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -282,11 +282,18 @@ void main(){
   float n = dot(N, L) * 0.5 + 0.5;
   float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1 * (1.0 - even);
   // lines drawn across the form, so it reads round: along the wing cases (and the seam), around the body
+  // backLines: how much of the stripes the inside of a shell shows (an open shell's inside, striped too, reads as a dark patch)
+  float face = gl_FrontFacing ? 1.0 : backLines;
   if (merid > 0.0) {
-    a = max(a, lineAt(abs(vObj.x) * merid + jit, 1.2 * pressure * px) * smoothstep(0.03, 0.07, abs(vObj.x)) * (0.5 + 0.5 * n) * stripes);
-    a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px) * stripes);
+    // meridAng: the stripes run round the curve of the shell (as a real wing case's grooves), so they show from above and
+    // from the side alike; otherwise they are straight lines along it, as seen from above
+    float m = mix(abs(vObj.x) * merid, atan(vObj.y + 0.09, abs(vObj.x)) * merid * 0.42, meridAng);
+    // round the curve, the grooves run together at the tail: they stop short of it, as a wing case's grooves do
+    float tail = mix(1.0, smoothstep(-0.88, -0.62, vObj.z), meridAng);
+    a = max(a, lineAt(m + jit, 1.2 * pressure * px) * smoothstep(0.03, 0.07, abs(vObj.x)) * (0.5 + 0.5 * n) * stripes * face * tail);
+    a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px) * stripes * face);
   }
-  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * (0.45 + 0.55 * n) * stripes);
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * (0.45 + 0.55 * n) * stripes * face);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
     vec2 q = fc / 3.2;
@@ -304,7 +311,7 @@ void main(){
   gl_FragColor = vec4(ink * a, a);
 }`;
 
-export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number }; objPress?: { value: number }; edge?: { value: THREE.Vector2 } };
+export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number }; objPress?: { value: number }; edge?: { value: THREE.Vector2 }; meridAng?: { value: number }; backLines?: { value: number } };
 type Lines = { merid?: number; rings?: number; hatch?: number; weight?: number };
 const INK = new THREE.Vector3(0.96, 0.96, 0.96); // pure white ink, no warmth: white and grey only
 function sketchMaterial(shared: SketchU, lines: Lines = {}) {
@@ -321,6 +328,8 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
       even: shared.even ?? { value: 0 },
       stripes: { value: 1 }, // how much of its drawn stripes or rings show (1: all)
       objPress: shared.objPress ?? { value: 0 },
+      meridAng: shared.meridAng ?? { value: 0 },
+      backLines: shared.backLines ?? { value: 1 },
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },
