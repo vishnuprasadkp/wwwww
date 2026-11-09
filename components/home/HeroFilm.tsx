@@ -273,7 +273,7 @@ void main(){
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
-  a *= 0.55; // a light hand: the lines are faint, the dust carries the form
+  a *= 0.8; // a fine outline, like the wing's; the dust carries the form
   gl_FragColor = vec4(ink * a, a);
 }`;
 
@@ -384,13 +384,14 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   root.add(body);
 
   // drawn, not painted: only lines of white ink, nothing filled
-  const shell = sketchMaterial(sk, { merid: 7.5, hatch: 1, weight: 1.15 });
-  const front = sketchMaterial(sk, { rings: 9, hatch: 0.7 });
+  // drawn as the wings are: only a fine outline, and the dust; nothing drawn across it
+  const shell = sketchMaterial(sk, { weight: 0.8 });
+  const front = sketchMaterial(sk, { weight: 0.75 });
   const black = sketchMaterial(sk, { weight: 0.9 }); // the eyes
   const cream = sketchMaterial(sk, { weight: 0.8 });
   const legMat = sketchMaterial(sk, { weight: 0.9 });
   const amber = legMat;
-  const bellyMat = sketchMaterial(sk, { rings: 3.2, hatch: 0.6 });
+  const bellyMat = sketchMaterial(sk, { weight: 0.7 });
 
   const mapTop = (g: THREE.BufferGeometry, front: number, back: number, halfW: number, rowFront: number, rowBack: number) => {
     const p = g.attributes.position;
@@ -912,9 +913,9 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > 20) {
+      if (mayPerch && !out && t - wand.lastLook > 12) {
         const headingToSide = Math.cos(wand.h) * Math.sign(nx) > 0.3;
-        if (Math.abs(nx) > 0.62 && headingToSide && Math.random() < 0.55) {
+        if (Math.abs(nx) > 0.55 && headingToSide && Math.random() < 0.85) {
           fly.perch = true;
           fs.perchSide = nx > 0 ? 1 : -1;
           const end = onFrame(fs.perchSide * 0.95, clamp(ny, -0.6, 0.45), clamp(camera.position.distanceTo(fly.p), 7, 8.5), new THREE.Vector3());
@@ -924,7 +925,7 @@ void main(){
           wand.lastLook = t;
           return;
         }
-        if (Math.abs(nx) < 0.5 && Math.abs(ny) < 0.6 && Math.random() < 0.3) {
+        if (Math.abs(nx) < 0.55 && Math.abs(ny) < 0.75 && Math.random() < 0.45) {
           fly.face = true;
           const spot = fly.p.clone().addScaledVector(fly.v.clone().normalize(), 0.6);
           lift(spot);
@@ -937,18 +938,24 @@ void main(){
       }
       if (out) {
         // out of sight: it turns back towards the box, coming in somewhere near where it went out
-        const back = Math.atan2(-ny * 0.8, -nx);
+        const back = Math.atan2(-Math.max(ny, -0.2) * 0.8 - 0.3, -nx);
         wand.h = back + rnd(-0.7, 0.7);
       } else {
         // a new heading, turned from the last: mostly a gentle bend, sometimes a sharp swerve
         wand.h += Math.random() < 0.75 ? rnd(-0.9, 0.9) : rnd(-2, 2);
         // like a heavy beetle it sinks more than it climbs: high up, it tends to turn down again
-        if (Math.sin(wand.h) > 0.2 && (ny > 0 || Math.random() < 0.4)) wand.h = -wand.h + rnd(-0.3, 0.3);
+        if (Math.sin(wand.h) > 0.2 && ny > -0.2) wand.h = -wand.h + rnd(-0.3, 0.3);
       }
       const len = rnd(0.55, 1.1);
       wand.d = clamp(wand.d + rnd(-1.2, 1.2), 7, 10);
-      const tx = clamp(nx + Math.cos(wand.h) * len, -1.75, 1.75);
-      const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, -1.6, 1.5);
+      // it keeps to the lower part of the box, where it is seen whole; if it has drifted up it turns down again
+      if (ny > -0.05 && Math.sin(wand.h) > 0) wand.h = -wand.h;
+      if (ny < -0.75 && Math.sin(wand.h) < 0) wand.h = -wand.h; // near the foot of the box it levels out and rises a little
+      // mostly it stays in view; now and then it wanders out past a side (or below) for a moment and comes back
+      const roam = Math.random() < 0.18;
+      const tx = clamp(nx + Math.cos(wand.h) * len, roam ? -1.7 : -0.85, roam ? 1.7 : 0.85);
+      const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, roam ? -1.4 : -0.9, 0.05);
+      if (Math.abs(tx) >= 0.85 && !roam) wand.h = Math.PI - wand.h; // at a side it turns along it instead of running into it
       const p = onFrame(tx, ty, wand.d, new THREE.Vector3());
       lift(p);
       fly.pts = [p];
