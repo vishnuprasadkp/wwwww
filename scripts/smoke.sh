@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Starts the production server (run `npm run build` first), checks every page and the Nyrro API, then stops it.
+# Starts the production server (run `npm run build` first), checks every page, the icons and Nyrro, then stops it.
 set -euo pipefail
 PORT="${SMOKE_PORT:-3456}"
 BASE="http://localhost:$PORT"
@@ -20,12 +20,12 @@ for path in / /about /resume /work/enterprise-search /work/adeo /work/ai-agent /
 done
 
 # Static files the pages depend on
-for file in /icon.png /resume/Vishnu_Prasad_Resume.pdf /images/site/paper.webp; do
+for file in /icon.svg /apple-icon.png /resume/Vishnu_Prasad_Resume.pdf /images/site/paper.webp; do
   code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE$file")
   [ "$code" = "200" ] && echo "ok   $code $file" || { echo "FAIL $code $file"; fail=1; }
 done
 
-# Nyrro: the locked v4 bundle is served, and its answers are exactly the approved ones
+# Nyrro: the locked v5 bundle is served, and its answers are exactly the approved ones
 code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/nyrro.bundle.js")
 [ "$code" = "200" ] && echo "ok   $code /nyrro.bundle.js" || { echo "FAIL $code /nyrro.bundle.js"; fail=1; }
 if node -e 'const t=require("./public/nyrro.bundle.js").selfTest(); process.exit(t.ok && t.fingerprint==="5baa25561b10f981" ? 0 : 1)'; then echo "ok   Nyrro.selfTest()"; else echo "FAIL Nyrro.selfTest()"; fail=1; fi
