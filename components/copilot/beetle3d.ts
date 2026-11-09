@@ -199,7 +199,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       c.rotation.set(0.32 * open, s * 0.12 * open, -s * 0.42 * open);
     });
     shellMat.uniforms.weight.value = shellWeight * (1 - 0.15 * ease(open / 0.6));
-    shellMat.uniforms.stripes.value = 1 - ease((open - 0.35) / 0.4); // lifted, a case is seen edge-on: its outline over the banded belly
+    shellMat.uniforms.stripes.value = 1; // the cases keep their lines in every pose: the body is never an empty outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;

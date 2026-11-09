@@ -280,7 +280,7 @@ void main(){
   a *= mix(mix(0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0)), 1.0, even), 1.0, objPress);
   vec3 L = normalize(vec3(-0.45, 0.75, 0.55));
   float n = dot(N, L) * 0.5 + 0.5;
-  float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1 * (1.0 - even);
+  float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1 * (1.0 - even) * (1.0 - objPress); // objPress: smooth lines, no wobble
   // lines drawn across the form, so it reads round: along the wing cases (and the seam), around the body
   // backLines: how much of the stripes the inside of a shell shows (an open shell's inside, striped too, reads as a dark patch)
   float face = gl_FrontFacing ? 1.0 : backLines;
@@ -289,7 +289,7 @@ void main(){
     // from the side alike; otherwise they are straight lines along it, as seen from above
     float m = mix(abs(vObj.x) * merid, atan(vObj.y + 0.09, abs(vObj.x)) * merid * 0.42, meridAng);
     // round the curve, the grooves run together at the tail: they stop short of it, as a wing case's grooves do
-    float tail = mix(1.0, smoothstep(-0.84, -0.76, vObj.z), meridAng);
+    float tail = mix(1.0, smoothstep(-0.81, -0.785, vObj.z), meridAng); // a crisp end, as an ink line
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, objPress);
     a = max(a, lineAt(m + jit, 1.2 * pressure * px) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * tail);
