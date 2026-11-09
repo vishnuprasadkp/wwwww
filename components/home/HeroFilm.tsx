@@ -721,7 +721,8 @@ export default function HeroFilm() {
     /* ---------------- stage, camera, light ---------------- */
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(24, aspect, 0.05, 80);
-    const CAM = new THREE.Vector3(0, 2.5, 6); // once it is flying, the camera is raised and looks down a little: you see it from above and from the side
+    const FLOOR = -1.1; // the ground its shade falls on, below the bottom of the box
+    const CAM = new THREE.Vector3(0, 1.4, 6); // a little above its flight, looking nearly level: it is seen from above and the side, low and high alike
     camera.position.copy(CAM);
     camera.lookAt(0, 0.3, 0);
     scene.add(camera);
@@ -871,7 +872,7 @@ void main(){
     const T_FREE = T_LIFT + 2.8;
     // not always the walk-in: half the time the film opens with the beetle already there, peeping in at you
     const skipIntro = true; // the walk-in is set aside for now: it opens already looking at you
-    const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0, pts: [] as THREE.Vector3[], idx: 0, gone: 0, hidden: false, perch: false };
+    const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0, pts: [] as THREE.Vector3[], idx: 0, gone: 0, hidden: false, perch: false, face: false };
     const ndcNow = new THREE.Vector3();
     /* Its flight is a series of passes. It comes in from beyond one edge of the frame (a side, the top or the bottom), crosses
        the box on a diagonal through some point inside it, nearer or further, and goes out past another edge. Then it is gone
@@ -879,7 +880,7 @@ void main(){
        is heading for, where it settles and looks at you. */
     type Edge = "L" | "R" | "T" | "B";
     const edgePoint = (e: Edge, d0: number, out = new THREE.Vector3()) => {
-      const d = e === "B" ? Math.min(d0, 3.6) : d0; // out past the bottom means passing close under you
+      const d = d0;
       const [nx, ny] = e === "L" ? [-1.45, rnd(-0.9, 0.5)] : e === "R" ? [1.45, rnd(-0.9, 0.5)] : e === "T" ? [rnd(-0.8, 0.8), 1.6] : [rnd(-0.8, 0.8), -1.5];
       return onFrame(nx, ny, d, out);
     };
@@ -893,8 +894,8 @@ void main(){
       };
       // mostly straight across at about the same distance, so you see it from the side and from above; now and then it
       // comes a little nearer or goes a little further
-      const dIn = rnd(6, 9);
-      const dOut = clamp(dIn + (Math.random() < 0.3 ? rnd(-2.2, 2.2) : rnd(-0.8, 0.8)), 5.5, 10);
+      const dIn = rnd(7, 9.5);
+      const dOut = clamp(dIn + (Math.random() < 0.3 ? rnd(-1.8, 1.8) : rnd(-0.8, 0.8)), 6.8, 10.5); // never right up against you
       // it comes back the way it went: out past the left, back in from the left (now and then from somewhere else)
       const inEdge = lastEdge; // it turns round out of sight and comes back in the way it went out, never from somewhere else
       const outEdge = pick([inEdge]);
@@ -904,8 +905,8 @@ void main(){
       const side = outEdge === "L" ? -1 : 1;
       fly.perch = mayPerch && (outEdge === "L" || outEdge === "R") && Math.random() < (side === lastPerchSide ? 0.15 : 0.5);
       // the middle of the crossing anywhere in the box, high or low
-      const mid = onFrame(rnd(-0.6, 0.6), rnd(-0.88, 0.45), (dIn + dOut) / 2, new THREE.Vector3());
-      const end = fly.perch ? onFrame(side * 0.95, rnd(-0.6, 0.4), clamp((dIn + dOut) / 2, 5.6, 7.5), new THREE.Vector3()) : edgePoint(outEdge, dOut, new THREE.Vector3());
+      const mid = onFrame(rnd(-0.6, 0.6), Math.random() < 0.6 ? rnd(-0.85, -0.3) : rnd(-0.3, 0.4), (dIn + dOut) / 2, new THREE.Vector3());
+      const end = fly.perch ? onFrame(side * 0.95, rnd(-0.6, 0.4), clamp((dIn + dOut) / 2, 7, 8.5), new THREE.Vector3()) : edgePoint(outEdge, dOut, new THREE.Vector3());
       if (fly.perch) {
         fs.perchSide = side;
         lastPerchSide = side;
@@ -917,16 +918,27 @@ void main(){
         fly.roll = 0;
       }
       // never below the floor: seen from above now, a low point on screen can lie under it
-      const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, 0.3));
+      const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, FLOOR + 0.35));
       lift(mid);
       if (!fly.perch) lift(end);
       if (!fromHere) lift(fly.p);
+      fly.face = mayPerch && !fly.perch && Math.random() < 0.35;
+      if (fly.face) {
+        // it comes round to face you: a point in front of you, a fair way off, low in the box
+        const spot = onFrame(rnd(-0.45, 0.45), rnd(-0.6, -0.15), rnd(7.5, 8.5), new THREE.Vector3());
+        lift(spot);
+        fly.pts = [mid, spot];
+        fly.idx = 0;
+        fly.target.copy(mid);
+        fly.hidden = false;
+        return;
+      }
       fly.pts = [mid, end];
       if (!fly.perch) {
         // past the edge it does not vanish and reappear somewhere else: it flies on a little out of sight, swings round in a
         // wide loop, higher or lower, and comes back in near where it went out, facing back into the box
         const out = end.clone().sub(mid).normalize();
-        const up = Math.random() < 0.5 ? 1 : -1;
+        const up = Math.random() < 0.4 ? 1 : -1; // it swings round lower more often than higher, so it comes back down
         const loop = end.clone().addScaledVector(out, 2.2).add(new THREE.Vector3(0, up * rnd(0.6, 1.2), rnd(-1.5, 1.5)));
         const back = end.clone().addScaledVector(out, 0.8).add(new THREE.Vector3(0, up * rnd(0.9, 1.6), rnd(-1.2, 1.2)));
         lift(loop);
@@ -935,7 +947,7 @@ void main(){
         ndcNow.copy(end).project(camera);
         const inX = clamp(ndcNow.x, -1, 1) * 0.6;
         const inY = clamp(ndcNow.y + up * 0.5, -0.85, 0.4) * (outEdge === "T" || outEdge === "B" ? 0.6 : 1);
-        const reenter = onFrame(inX, inY, clamp(camera.position.distanceTo(end) + rnd(-1, 1), 5.5, 9.5), new THREE.Vector3());
+        const reenter = onFrame(inX, inY, clamp(camera.position.distanceTo(end) + rnd(-1, 1), 7, 10), new THREE.Vector3());
         lift(reenter);
         fly.pts.push(loop, back, reenter);
       }
@@ -996,11 +1008,9 @@ void main(){
       fs.mode = "land";
       if (fs.after === "face") {
         // it comes round to face you, somewhere in the frame, and hangs there on its beating wings, looking at you
-        const z = rnd(-4.8, -3); // far enough that its whole wings, raised above it, stay in the frame
-        const d = CAM.z - z;
-        const hw = d * Math.tan((12 * Math.PI) / 180) * aspect;
-        fs.toP.set(rnd(-0.5, 0.5) * hw, rnd(-0.15, 0.1), z);
-        fs.yaw = rnd(-0.3, 0.3);
+        // where it has flown to, turned square to you
+        fs.toP.copy(fly.pts[fly.pts.length - 1]);
+        fs.yaw = Math.atan2(camera.position.x - fs.toP.x, camera.position.z - fs.toP.z);
         fs.toQ.copy(qFromEuler(0.12, fs.yaw, 0)); // nearly level, so its wings spread out behind it rather than up out of the frame
         fs.arc = 0;
         fs.dur = 2.8;
@@ -1012,7 +1022,7 @@ void main(){
         ndcNow.copy(b.root.position).project(camera);
         const nx = fs.perchSide;
         const ny = clamp(ndcNow.y, -0.6, 0.45);
-        const d = clamp(camera.position.distanceTo(b.root.position), 5.6, 7.5); // where it is: it does not swell towards you as it turns
+        const d = clamp(camera.position.distanceTo(b.root.position), 6.8, 8.5); // where it is: it does not swell towards you as it turns
         const P = onFrame(nx, ny, d, vB);
         const C = onFrame(0, 0, d, vC);
         camera.getWorldDirection(fwd);
@@ -1051,7 +1061,7 @@ void main(){
       fs.fromFace = fs.mode === "face";
       fs.mode = "takeoff";
       // up and away into the box, towards its middle
-      const goal = onFrame(rnd(-0.6, 0.6), rnd(-0.85, -0.5), rnd(5.6, 7.5), new THREE.Vector3()); // out into the lower part of the box
+      const goal = onFrame(rnd(-0.6, 0.6), rnd(-0.85, -0.5), rnd(7.2, 9), new THREE.Vector3()); // out into the lower part of the box
       fs.toP.copy(fs.fromP).lerp(goal, 0.6);
       const dir = goal.clone().sub(fs.fromP);
       fs.yaw = Math.atan2(dir.x, dir.z);
@@ -1123,7 +1133,11 @@ void main(){
             b.root.quaternion.copy(qFromEuler(0.3 + climb + 0.06 * Math.sin(t * 0.6), fly.yaw, fly.roll));
             ndcNow.copy(fly.p).project(camera);
             const last = fly.idx === fly.pts.length - 1;
-            if (last && fly.perch && Math.abs(ndcNow.x) > 0.72) {
+            if (last && fly.face && dist < 1.1) {
+              fs.after = "face";
+              planLanding(t, b); // in front of you now: it turns to face you and hangs there
+            } else if (last && fly.perch && Math.abs(ndcNow.x) > 0.72) {
+              fs.after = "perch";
               planLanding(t, b); // it has reached the side it was heading for: it settles there and looks at you
             } else if (last && !fly.perch) {
               // back in the box: on to the next crossing, from right here, so the path never breaks
@@ -1285,9 +1299,9 @@ void main(){
         pu.position.copy(eyeTmp.normalize().multiplyScalar(0.078));
       }
       // the soft shade below it: it follows it across the floor, spreads and fades as it rises
-      const hgt = Math.max(0, wp.y);
+      const hgt = Math.max(0, wp.y - FLOOR);
       const sz = b.root.scale.x * BODY * (1.9 + hgt * 0.9);
-      shadow.position.set(wp.x, 0.004, wp.z);
+      shadow.position.set(wp.x, FLOOR + 0.004, wp.z);
       shadow.scale.set(sz * 1.25, sz, 1);
       shadow.rotation.z = -Math.atan2(Math.sin(b.root.rotation.y), Math.cos(b.root.rotation.y));
       shadowMat.opacity = (shadowAmt / 0.38) * 0.42 / (1 + hgt * 0.8);
@@ -1403,7 +1417,7 @@ void main(){
       // part of the frame and its wings have the whole sky above it
       const up = skipIntro ? 1 : smooth(T_LIFT, T_LIFT + 3.5, t);
       camera.position.set(CAM.x + Math.sin(t * 0.21) * 0.06, 0.42 + (CAM.y - 0.42) * up + Math.sin(t * 0.17) * 0.03, CAM.z);
-      camera.lookAt(0, 0.3 + 0.1 * up, 0);
+      camera.lookAt(0, 0.3 + 0.25 * up, 0);
       pose(t, dt);
       stepDust(t, dt);
       sketchU.time.value = t;
