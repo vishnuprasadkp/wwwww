@@ -360,7 +360,7 @@ function surfaceDust(geo: THREE.BufferGeometry, n: number) {
     const nn = new THREE.Vector3().crossVectors(e1, e2).normalize();
     pos.push(p.x, p.y, p.z);
     nor.push(nn.x, nn.y, nn.z);
-    seed.push(0.45 + Math.random() * 0.9, Math.random(), Math.random() < 0.72 ? 1 : 0, Math.random() * Math.random());
+    seed.push(0.45 + Math.random() * 0.9, Math.random(), Math.random() < 0.8 ? 1 : 0, Math.random() * (0.35 + 0.65 * Math.random())); // most stream out, many far, into a wide cloud round it
   }
   const out = new THREE.BufferGeometry();
   out.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
@@ -631,7 +631,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
 
   // a larger beetle overall, its body a touch smaller against its wings
   // the body smaller, the wings as large as before
-  root.scale.setScalar(2.6);
+  root.scale.setScalar(2.9);
   body.scale.setScalar(BODY);
   for (const w of wings) w.scale.setScalar(0.88 / BODY);
   // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
@@ -667,7 +667,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     if (!g.boundingSphere) g.computeBoundingSphere();
     const size = g.boundingSphere!.radius * Math.max(m.scale.x, m.scale.y, m.scale.z);
     if (!(g instanceof THREE.SphereGeometry) || size < 0.15) continue;
-    const dots = new THREE.Points(surfaceDust(g, Math.round(4000 + 14000 * Math.min(1, size * 2))), dustBody);
+    const dots = new THREE.Points(surfaceDust(g, Math.round(8000 + 26000 * Math.min(1, size * 2))), dustBody);
     dots.renderOrder = 23;
     dots.frustumCulled = false;
     m.add(dots);
@@ -832,7 +832,7 @@ void main(){
       return { pos, alpha, geo };
     };
     // drifting in the air all the time: a few short marks, like the quick strokes round a sketch
-    const N = 900;
+    const N = 1600;
     const air = makeStrokes(N);
     const airSeed = Array.from({ length: N }, () => ({ x: rnd(-6, 6), y: rnd(0, 2.4), z: rnd(-9, 3.5), len: rnd(0.04, 0.12), ang: rnd(-0.6, 0.6), ph: rnd(0, 6.28), a: rnd(0.25, 0.6) }));
 
@@ -908,7 +908,7 @@ void main(){
       fs.mode = "land";
       if (fs.after === "face") {
         // it comes round to face you, somewhere in the frame, and hangs there on its beating wings, looking at you
-        const z = rnd(-4.2, -2.4); // far enough that its whole wings, raised above it, stay in the frame
+        const z = rnd(-4.8, -3); // far enough that its whole wings, raised above it, stay in the frame
         const d = CAM.z - z;
         const hw = d * Math.tan((12 * Math.PI) / 180) * aspect;
         fs.toP.set(rnd(-0.5, 0.5) * hw, rnd(-0.15, 0.1), z);
@@ -1127,7 +1127,7 @@ void main(){
       });
 
       // short pen strokes flick off the wings as they beat and drift away into the air
-      emitCarry += dt * 160 * unfold;
+      emitCarry += dt * 260 * unfold;
       while (emitCarry >= 1) {
         emitCarry -= 1;
         const wi = Math.random() < 0.5 ? 0 : 1;
@@ -1140,7 +1140,7 @@ void main(){
       // the same dust rises off its body wherever it goes, like smoke: thick as it comes walking out of the haze, a soft
       // trail after that, walking or flying
       if (b.root.visible) {
-        bodyCarry += dt * (walking0 ? 150 : 70);
+        bodyCarry += dt * (walking0 ? 260 : 180);
         b.root.getWorldPosition(wp);
         while (bodyCarry >= 1) {
           bodyCarry -= 1;
@@ -1158,7 +1158,7 @@ void main(){
     };
 
     /* ---------------- strokes off the wings ---------------- */
-    const DN = 4000;
+    const DN = 8000;
     const dust = makeStrokes(DN);
     const dustVel = new Float32Array(DN * 3);
     const dustDir = new Float32Array(DN * 3);
@@ -1315,7 +1315,7 @@ void main(){
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.9, 18000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.9, 26000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
