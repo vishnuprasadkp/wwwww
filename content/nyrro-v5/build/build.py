@@ -170,6 +170,12 @@ for section, items in RESUME_ITEMS.items():
                         "questions": [f"does he know {names[0]}", f"is he good at {names[0]}", f"does he use {names[0]}"],
                         "answer": f"Yes. **{item}** is {where}.", "followups": ["What are his skills?", "What tools does he use?"], "priority": False})
         _by[iid] = INTENTS[-1]
+from data_v5 import A5, F5, EXTRA5
+for k, ans in A5.items():
+    assert k in _by, f"v5 answer for unknown topic {k}"
+    _by[k]["answer"] = ans
+for k, fu in F5.items(): _by[k]["followups"] = fu
+for k, kws in EXTRA5.items(): _by[k]["keywords"] += [x for x in kws if x not in _by[k]["keywords"]]
 from data_v4 import A_NOT_ON_RESUME, NOT_ON_RESUME_KW
 INTENTS.append({"id": "not-on-resume", "category": "skills", "keywords": NOT_ON_RESUME_KW,
                 "questions": ["does he use adobe xd", "does he know webflow"],
@@ -214,7 +220,7 @@ for e in ENTITIES:
     e["weakAliases"] = [a for a in e["aliases"] if a in WEAK_ALIASES]
     e["aliases"] = [a for a in e["aliases"] if a not in WEAK_ALIASES]
 
-kb = {"version": "4.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
+kb = {"version": "5.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
       "aspects": ASPECTS, "aspectLabels": {"problem":"the problem","users":"the users","features":"the features","strategy":"the approach","decisions":"the decisions and trade-offs","outcomes":"the outcomes","ai":"how AI is used","learnings":"the learnings","role":"his role and timeline","voting":"voting","unknown":"that"}, "aspectBoost": {"voting": 1.5}, "aspectFollowups": ASPECT_FOLLOWUPS, "spellfix": SPELLFIX,
       "entities": ENTITIES, "intents": INTENTS, "fallback": FALLBACK, "contactEmail": "vishnuprasadkp98@gmail.com",
       "whichProjectAnswer": "Which project would you like to know about? Here are his five case studies:",

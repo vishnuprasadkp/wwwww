@@ -1,9 +1,10 @@
 import json
 kb=json.load(open('../nyrro-knowledge-base.json'))
-L=["# Nyrro v4 — Question & Answer Catalogue","",f"Generated from the locked build (v{kb['version']}). **{len(kb['intents'])} topics · {len(kb['entities'])} projects/companies.** Every answer opens by answering the question directly.","",
+L=["# Nyrro v5 — Question & Answer Catalogue","",f"Generated from the locked build (v{kb['version']}). **{len(kb['intents'])} topics · {len(kb['entities'])} projects/companies.** Every answer opens by answering the question directly.","",
 "## Rules Nyrro follows","",
 "- **Source-only:** every answer comes from the resume, About page, case studies, Notion projects or the 2023 portfolio. Nothing is invented.",
-"- **Skills and tools are copied from the resume as-is**, with no commentary.",
+"- **Skills and tools are copied from the resume as-is**, after a short 1–2 sentence intro.",
+"- **General questions open with how Vishnu approaches the topic** (from his resume, About page and own words), then examples from the case studies.",
 "- **The 5 case studies come first.** Other client work appears only when a visitor names the client, asks for \"other projects\", or asks about a field the case studies don't cover.",
 "- **No repeated answers.** Suggestions never point to something already answered.",
 "- **Honest when it doesn't know:** _\""+kb['fallback']['answer'].replace('**','')+"\"_","","---",""]
@@ -27,4 +28,4 @@ for title,flt in groups:
     for e in filter(flt,kb['entities']):
         L+=[f"### {e['label']}\n","**Recognised by:** "+", ".join(e['aliases']+e.get('weakAliases',[])),""]
         for k,v in e['answers'].items(): L+=[f"**{an.get(k,k)}**\n","\n".join("> "+l if l else ">" for l in v.split("\n")),""]
-open('../nyrro-qa-catalogue_v4.md','w').write("\n".join(L))
+open('../nyrro-qa-catalogue_v5.md','w').write("\n".join(L))

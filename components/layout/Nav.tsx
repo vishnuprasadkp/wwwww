@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav } from "@/lib/site";
 import { NivviButton, useNivvi } from "@/components/copilot/Nivvi";
-import { LOGO_D, LOGO_VIEWBOX } from "@/lib/logo";
+import { LOGO_D, LOGO_VIEWBOX, LOGO_WEIGHT } from "@/lib/logo";
 
 export default function Nav() {
   const pathname = usePathname();
@@ -28,7 +28,7 @@ export default function Nav() {
         {isHome ? (
           <Link href="/" aria-label="Home" className="justify-self-start transition-colors duration-300 hover:text-pigment">
             {/* the "vp." signature, in the header's own colour */}
-            <svg width="30" height="30" viewBox={LOGO_VIEWBOX} fill="currentColor" aria-hidden="true" className="block">
+            <svg width="30" height="30" viewBox={LOGO_VIEWBOX} fill="currentColor" stroke="currentColor" strokeWidth={LOGO_WEIGHT} strokeLinejoin="round" aria-hidden="true" className="block overflow-visible">
               <path d={LOGO_D} />
             </svg>
           </Link>

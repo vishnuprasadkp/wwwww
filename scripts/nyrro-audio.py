@@ -2,7 +2,7 @@
 """
 Makes the recordings Nyrro plays when someone presses the speaker button.
 
-Every answer in content/nyrro-v4/nyrro-knowledge-base.json is read aloud with the open-source Kokoro voice "af_heart"
+Every answer in content/nyrro-v5/nyrro-knowledge-base.json is read aloud with the open-source Kokoro voice "af_heart"
 (offline, Apache-2.0) and saved as public/nyrro-audio/<hash>.m4a, where <hash> is the FNV-1a hash of the answer text
 (the same hash components/copilot/Nivvi.tsx computes in the browser). Run again whenever the answers change:
 
@@ -71,7 +71,7 @@ def collect(kb):
 
 def main():
     only = int(sys.argv[sys.argv.index("--only") + 1]) if "--only" in sys.argv else None
-    kb = json.load(open(os.path.join(ROOT, "content/nyrro-v4/nyrro-knowledge-base.json"), encoding="utf-8"))
+    kb = json.load(open(os.path.join(ROOT, "content/nyrro-v5/nyrro-knowledge-base.json"), encoding="utf-8"))
     texts = collect(kb)[:only]
     os.makedirs(OUT, exist_ok=True)
     tts = Kokoro(os.path.join(MODEL, "kokoro-v1.0.int8.onnx"), os.path.join(MODEL, "voices-v1.0.bin"))

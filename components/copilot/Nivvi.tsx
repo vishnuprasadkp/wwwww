@@ -10,11 +10,11 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 
 type Msg = { role: "user" | "assistant"; content: string; html?: string; next?: string[] };
 
-/* ------------------------------------------------------------------ Nyrro v4 (public/nyrro.bundle.js, locked build) */
+/* ------------------------------------------------------------------ Nyrro v5 (public/nyrro.bundle.js, locked build) */
 
 type NyrroReply = { answer: string; html: string; followups: string[]; match: { type: string; id: string; aspect?: string; score: number } };
 type NyrroLib = { version: string; fingerprint: string; create: (o?: { onMiss?: (q: string) => void }) => { ask: (q: string) => NyrroReply; reset: () => void }; selfTest: () => unknown };
-const NYRRO_SRC = "/nyrro.bundle.js?v=2ffbb768f784ecad";
+const NYRRO_SRC = "/nyrro.bundle.js?v=39cde9602569f256";
 let nyrroLoading: Promise<NyrroLib> | null = null;
 /** Loads the locked Nyrro bundle once (it sets window.Nyrro; the console can run Nyrro.selfTest()). */
 function loadNyrro(): Promise<NyrroLib> {
@@ -38,16 +38,83 @@ const noEmoji = (s: string) =>
   s
     .replace(/(\w) *[\p{Extended_Pictographic}\uFE0F\u200D]+ +(?=[A-Z])/gu, "$1. ") // an emoji standing between two sentences becomes their full stop
     .replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").replace(/ {2,}/g, " ").replace(/ +(<\/p>|<\/li>|\n|$)/g, "$1");
-/** The page an answer is about, opened beside the panel: a case study, the About page, or the resume. */
+/**
+ * Where an answer lives on the site, shown on the left beside the panel: the page, and the part of it the answer is
+ * about. Every topic of the v5 knowledge base is placed (grouped as the bundle groups them); greetings, Nyrro itself,
+ * views on AI and interview-style questions leave the page as it is.
+ */
 const CASE_PAGE: Record<string, string> = { "enterprise-search": "/work/enterprise-search", adeo: "/work/adeo", "agent-workforce": "/work/ai-agent", hdfc: "/work/hdfc", sony: "/work/sony" };
-const ABOUT_TOPICS = new Set(["who-is-vishnu", "summary-oneline", "experience-years", "title-seniority", "career-history", "education", "architecture-link", "languages", "location-regions", "why-designer", "early-career", "evolution", "hobbies", "art"]);
-function pageFor(match: NyrroReply["match"]): string | null {
-  if (match.type === "entity") return CASE_PAGE[match.id] ?? (match.id.startsWith("sony-") ? CASE_PAGE.sony : null);
-  if (match.type === "intent") {
-    if (ABOUT_TOPICS.has(match.id)) return "/about";
-    if (match.id === "resume") return "/resume";
+// a case study's sections (components/case/Section.tsx: the id is its label): which one answers which part of a case
+const ASPECT_SECTION: Record<string, string[]> = {
+  problem: ["the-problem", "engagement"],
+  users: ["discovery", "engagement"],
+  features: ["design-strategy", "engagement"],
+  strategy: ["design-strategy", "engagement"],
+  decisions: ["design-strategy", "reflections"],
+  ai: ["design-strategy", "engagement"],
+  voting: ["design-strategy", "engagement"],
+  outcomes: ["outcomes"],
+  learnings: ["reflections"],
+  role: ["engagement"],
+};
+// HDFC and Sony tell their story in three sections; the other three case studies have all six
+const SHORT_CASES = new Set(["/work/hdfc", "/work/sony"]);
+const pageHas = (path: string, id: string) =>
+  !path.startsWith("/work/") || !SHORT_CASES.has(path) || ["engagement", "outcomes", "reflections"].includes(id) || id.startsWith("sony-");
+const topics = (s: string) => new Set(s.split(" "));
+const ABOUT = topics("who-is-vishnu summary-oneline experience-years title-seniority career-history education architecture-link languages location-regions why-designer early-career evolution branding");
+const HOW_HE_DESIGNS = topics("design-process unique-approach principles research tradeoffs simplicity stakeholders working-style");
+const OUTSIDE_WORK = topics("hobbies art");
+const CONNECT = topics("contact open-to-work why-hire lead-fit remote");
+const RESUME = topics("resume links skills tools platforms dashboards coding prototyping strengths not-on-resume");
+const WORK = topics("current-work success-metrics outcomes-real projects-list industries best-problems proudest most-complex common-thread adapt-domains other-projects other-banking other-government other-agentic project-count where-to-start");
+/** The page (and the section on it) for an answer: a path, a path#section (one of several, the first the page has), or null. */
+function pageFor(match: NyrroReply["match"]): { path: string; sections: string[] } | null {
+  if (match.type === "entity") {
+    // one of Sony's four platforms: the Sony case study, at that platform
+    if (match.id.startsWith("sony-")) return { path: CASE_PAGE.sony, sections: [match.id] };
+    const path = CASE_PAGE[match.id];
+    if (!path) return null; // other client work has no page of its own
+    // Sony's features are its four platforms: the first of them
+    if (match.id === "sony" && match.aspect === "features") return { path, sections: ["sony-clm"] };
+    return { path, sections: (match.aspect && ASPECT_SECTION[match.aspect]) || [] };
   }
+  if (match.type !== "intent") return null;
+  const id = match.id;
+  if (OUTSIDE_WORK.has(id)) return { path: "/about", sections: ["outside-the-screen"] };
+  if (HOW_HE_DESIGNS.has(id)) return { path: "/about", sections: ["how-i-design"] };
+  if (CONNECT.has(id)) return { path: "/about", sections: ["lets-connect"] };
+  if (ABOUT.has(id)) return { path: "/about", sections: [] };
+  if (RESUME.has(id) || id.startsWith("skills-") || id.startsWith("item-")) return { path: "/resume", sections: [] };
+  if (WORK.has(id) || id.startsWith("domain-")) return { path: "/", sections: ["cases"] };
   return null;
+}
+/** Opens a page on the left the way the site's own links do (the page eases out, the new one in, then glides to the
+ *  section); on the same page it only glides to the section. Without the site's motion, a plain route change. */
+function openBeside(to: { path: string; sections: string[] }, push: (href: string) => void, sectionsHere: (ids: string[]) => string | undefined) {
+  const here = window.location.pathname === to.path;
+  const section = here ? sectionsHere(to.sections) : to.sections.find((id) => pageHas(to.path, id));
+  if (here && !section) return;
+  const href = to.path + (section ? `#${section}` : "");
+  if (!(window as unknown as { __lenis?: unknown }).__lenis) return push(href);
+  // components/layout/Motion.tsx carries it out, exactly as a click on a link in the page. The browser itself never follows
+  // this link (a full reload would lose the conversation): if the site's motion does not take it (it is still busy with
+  // a page change), the page is changed in place instead.
+  const a = document.createElement("a");
+  a.href = href;
+  a.style.display = "none";
+  let taken = false;
+  a.addEventListener("click", (e) => {
+    taken = e.defaultPrevented;
+    e.preventDefault();
+  });
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  if (!taken) return push(href);
+  // and if the site's page change does not finish (the tab was put in the background, which pauses its animation), the
+  // page is changed in place a moment later all the same
+  if (to.path !== window.location.pathname) window.setTimeout(() => window.location.pathname !== to.path && push(href), 1600);
 }
 type Ctx = { open: boolean; toggle: () => void; close: () => void; show: () => void };
 const NivviCtx = createContext<Ctx>({ open: false, toggle: () => {}, close: () => {}, show: () => {} });
@@ -466,7 +533,7 @@ function NivviPanel() {
     setMessages([...history, { role: "assistant", content: "" }]);
     setBusy(true);
     setSignal({ kind: "send", id: Date.now() });
-    // Nyrro answers on the device from the locked v4 bundle: no API, no answers of our own. A fresh bot replays the
+    // Nyrro answers on the device from the locked v5 bundle: no API, no answers of our own. A fresh bot replays the
     // conversation, so it remembers what was said (its own repeat handling, follow-ups about the last project) and
     // "regenerate" gives the same answer.
     let finalText = "";
@@ -483,7 +550,8 @@ function NivviPanel() {
       next = r.followups ?? [];
       // the page the answer is about opens on the left, beside the panel (not on phones, where the panel fills the screen)
       const to = pageFor(r.match);
-      if (to && !window.matchMedia("(max-width: 767px)").matches && window.location.pathname !== to) router.push(to);
+      if (to && !window.matchMedia("(max-width: 767px)").matches)
+        openBeside(to, (href) => router.push(href), (ids) => ids.find((id) => document.getElementById(id)));
       await new Promise((r) => setTimeout(r, 250));
     } catch {
       finalText = "I couldn't reach my notes just now. Please try again, or email Vishnu at vishnuprasadkp98@gmail.com.";

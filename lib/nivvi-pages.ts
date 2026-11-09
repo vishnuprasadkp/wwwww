@@ -74,7 +74,7 @@ const CASES: Record<string, PageInfo> = {
       "What problem did Sony solve?",
       "Who were the users of Sony?",
       "What were the outcomes of Sony?",
-      "What were the key design decisions on Sony?",
+      "What are the key features of Sony?",
       "What did he learn from Sony?",
     ],
   },
@@ -86,7 +86,7 @@ const ABOUT: PageInfo = {
   prompts: [
     "What is Vishnu's background?",
     "How does architecture shape his design?",
-    "What does he do outside of design?",
+    "What are his hobbies?",
     "How does he approach design?",
   ],
 };

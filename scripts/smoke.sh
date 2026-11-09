@@ -28,7 +28,7 @@ done
 # Nyrro: the locked v4 bundle is served, and its answers are exactly the approved ones
 code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/nyrro.bundle.js")
 [ "$code" = "200" ] && echo "ok   $code /nyrro.bundle.js" || { echo "FAIL $code /nyrro.bundle.js"; fail=1; }
-if node -e 'const t=require("./public/nyrro.bundle.js").selfTest(); process.exit(t.ok && t.fingerprint==="2ffbb768f784ecad" ? 0 : 1)'; then echo "ok   Nyrro.selfTest()"; else echo "FAIL Nyrro.selfTest()"; fail=1; fi
+if node -e 'const t=require("./public/nyrro.bundle.js").selfTest(); process.exit(t.ok && t.fingerprint==="39cde9602569f256" ? 0 : 1)'; then echo "ok   Nyrro.selfTest()"; else echo "FAIL Nyrro.selfTest()"; fail=1; fi
 
 [ "$fail" = "0" ] || { echo; echo "Smoke test failed. Server log:"; tail -30 /tmp/smoke-server.log; exit 1; }
 echo "Smoke test passed."

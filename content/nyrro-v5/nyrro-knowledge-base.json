@@ -1,5 +1,5 @@
 {
- "version": "4.0.0",
+ "version": "5.0.0",
  "assistant": "Nyrro",
  "owner": "Vishnu Prasad K P",
  "aspects": {
@@ -1527,7 +1527,7 @@
     "who is this designer",
     "what does vishnu do"
    ],
-   "answer": "**Vishnu Prasad K P** is a **Senior Product Designer at ICD (Itu Chaudhuri Design)**, working with UnifyApps.\n\nHe's a product designer with 5+ years of experience in enterprise SaaS, AI and data-heavy platforms. He takes complex, high-stakes systems from discovery to launch.",
+   "answer": "**Vishnu Prasad K P** is a **Senior Product Designer at ICD (Itu Chaudhuri Design)**, working with UnifyApps. He's a product designer with 5+ years of experience in enterprise SaaS, AI and data-heavy platforms, and takes complex, high-stakes systems from discovery to launch.\n\nHe has worked on **100+ use cases** across ICD, UnifyApps, Brane Enterprises and Kocha, focusing on **agentic systems, search, automation and decision-making tools**.",
    "followups": [
     "What are his skills?",
     "What has he worked on?",
@@ -1865,7 +1865,7 @@
     "any experience with data visualization",
     "can he design analytics products"
    ],
-   "answer": "**Data Visualization** is on his resume. Examples from his case studies:\n\n- **Sony Social Intelligence Command:** ~2.47M monthly social mentions combined with broadcast ratings\n- **HDFC Bank:** real-time monitoring of consent violations",
+   "answer": "Data-heavy platforms are a core part of Vishnu's experience, and **Data Visualization** is on his resume.\n\n- **Sony Social Intelligence Command:** ~2.47M monthly social mentions combined with broadcast ratings\n- **HDFC Bank:** real-time monitoring of consent violations",
    "followups": [
     "Tell me about Sony",
     "Other projects"
@@ -1954,7 +1954,7 @@
     "what can he do",
     "what does he know"
    ],
-   "answer": "**Design & Research**\nProduct Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems, Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS\n\n**Strategy & Systems**\nProduct Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design Leadership, DesignOps, Data Visualization\n\n**AI & Tools**\nClaude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping\n\n**Tools**\nClaude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects)",
+   "answer": "His skills cover design and research, product strategy and systems, and AI, built over 5+ years of designing enterprise SaaS, AI and data-heavy platforms.\n\nHere are the skills from his resume:\n\n**Design & Research**\nProduct Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems, Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS\n\n**Strategy & Systems**\nProduct Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design Leadership, DesignOps, Data Visualization\n\n**AI & Tools**\nClaude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping\n\n**Tools**\nClaude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects)",
    "followups": [
     "What has he worked on?",
     "How does he design?",
@@ -1995,7 +1995,7 @@
     "what software does he know",
     "how does he use claude"
    ],
-   "answer": "Claude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects)",
+   "answer": "The tools on his resume:\n\nClaude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects)",
    "followups": [
     "What are his skills?",
     "What has he worked on?"
@@ -2086,9 +2086,9 @@
     "how does he approach a new project",
     "how does he solve problems"
    ],
-   "answer": "From his About page: his process is **research-first**. He maps the **people, dependencies, goals and failure points** before designing screens. He **owns projects end to end** and invests in **clear flows, reusable patterns and documented components**.",
+   "answer": "Vishnu's process is research-first. Before designing any screens, he maps the people, dependencies, goals and failure points, a habit from studying Planning & Architecture, where he learned to understand systems before changing them. He owns projects end to end, from discovery to launch, and invests in clear flows, reusable patterns and documented components.\n\nIn his case studies:\n\n- **Enterprise Search:** three user roles (employees, administrators, compliance teams) shaped one copilot model: Ask → Configure → Govern\n- **ADEO:** committee work was structured as Analyse → Deliberate → Decide & Record\n- **Agent Workforce:** Configure → Orchestrate → Tune, with three build modes for different users",
    "followups": [
-    "What are his skills?",
+    "What makes his approach unique?",
     "Tell me about ADEO"
    ],
    "priority": false
@@ -2117,7 +2117,7 @@
     "how is he different from other designers",
     "what sets him apart"
    ],
-   "answer": "From his About page: he treats **design as a system problem**, and wants AI tools to be **useful, understandable and trustworthy**. His process is research-first: people, dependencies, goals and failure points come before screens.",
+   "answer": "Vishnu treats design as a system problem. He doesn't see a product as a collection of screens; he works out how the people, dependencies and decisions connect first.\n\nIn his case studies:\n\n- **ADEO:** voting deliberately requires a rationale, because important decisions benefit from deliberate interactions, not speed\n- **Enterprise Search:** sync failures and unverified agents are shown openly, to build trust",
    "followups": [
     "Tell me about ADEO",
     "What are his design principles?"
@@ -2145,7 +2145,7 @@
     "what is his design philosophy",
     "what does he believe about design"
    ],
-   "answer": "Reflections from his case studies:\n\n- **Enterprise Search:** trust drives adoption more than AI performance\n- **ADEO:** important decisions benefit from deliberate interactions, not speed\n- **Agent Workforce:** simplicity means showing each user the right level of complexity\n- **HDFC Bank:** good records create compliance naturally\n- **Sony:** AI should act before the problem happens",
+   "answer": "Vishnu's principles come from the products he has built, and each case study ends with them.\n\n- **Enterprise Search:** trust drives adoption more than AI performance\n- **ADEO:** important decisions benefit from deliberate interactions, not speed\n- **Agent Workforce:** simplicity means showing each user the right level of complexity\n- **HDFC Bank:** good records create compliance naturally\n- **Sony:** AI should act before the problem happens",
    "followups": [
     "How does he design for trust in AI?"
    ],
@@ -2176,7 +2176,7 @@
     "how does he validate designs",
     "how does he gather requirements"
    ],
-   "answer": "- **UnifyApps projects:** the product team defined the roles and led the research; their findings shaped the design decisions\n- **ADEO:** research was continuous, with requirements gathered from the client, multiple design iterations, and validation at each major decision\n\nUser Research, Usability Testing and Journey Mapping are on his resume.",
+   "answer": "Research shapes Vishnu's design decisions, and User Research, Usability Testing and Journey Mapping are on his resume.\n\n- **UnifyApps projects:** the product team defined the roles and led the research; their findings shaped the design decisions\n- **ADEO:** research was continuous, with requirements gathered from the client, multiple design iterations, and validation at each major decision",
    "followups": [
     "What are his research skills?",
     "Tell me about ADEO"
@@ -2204,7 +2204,7 @@
     "give an example of a hard design decision",
     "what compromises did he make"
    ],
-   "answer": "From his case studies:\n\n- **ADEO:** members only see their own committees. That keeps them focused, but members of several committees need a separate view.\n- **ADEO:** every vote requires a rationale, which deliberately slows voting down\n- **Agent Workforce:** Simple mode hides technical controls, so engineers may find it limiting; Advanced mode exists for them\n- **Agent Workforce:** traces show gaps openly, which looks less polished but avoids confident wrong answers",
+   "answer": "Vishnu names the cost of key design decisions instead of presenting them as free wins. His case studies spell them out:\n\n- **ADEO:** members see only their own committees. That keeps them focused, but members of several committees need a separate view.\n- **ADEO:** every vote requires a rationale, which deliberately slows voting down\n- **Agent Workforce:** Simple mode hides technical controls, so engineers may find it limiting; Advanced mode exists for them\n- **Agent Workforce:** traces show gaps openly, which looks less polished but avoids confident wrong answers",
    "followups": [
     "Tell me about ADEO",
     "Tell me about the Agent Workforce Platform"
@@ -2229,7 +2229,7 @@
     "how does he simplify complex products",
     "how does he handle complexity"
    ],
-   "answer": "- **Agent Workforce Platform:** \"Simplicity means showing each user the right level of complexity, not removing features.\" It has Simple, Workflow and Advanced modes.\n- **HDFC Bank:** complex compliance information was organised, not removed.",
+   "answer": "For Vishnu, simplicity in complex products means showing each user the right level of complexity, not removing features.\n\n- **Agent Workforce Platform:** Simple, Workflow and Advanced modes for different users\n- **HDFC Bank:** complex compliance information was organised, not removed",
    "followups": [
     "Tell me about the Agent Workforce Platform"
    ],
@@ -2277,7 +2277,7 @@
     "how does he align different teams",
     "how does he handle competing stakeholder needs"
    ],
-   "answer": "- **HDFC Bank:** worked with HDFC's senior management and product team from brief through Final-for-Dev handoff\n- **Sony:** collaborated with legal, compliance, broadcast operations, content strategy and corporate governance teams\n- **ADEO:** worked alongside Frog Design and Nagarro Design\n\n**Stakeholder Management** is on his resume.",
+   "answer": "Vishnu works directly with product, engineering and executive stakeholders in iterative review cycles, and influences product direction at the executive level. Stakeholder Management is on his resume.\n\n- **HDFC Bank:** worked with HDFC's senior management and product team from brief through Final-for-Dev handoff\n- **Sony:** collaborated with legal, compliance, broadcast operations, content strategy and corporate governance teams\n- **ADEO:** worked alongside Frog Design and Nagarro Design",
    "followups": [
     "How does he work with engineers?",
     "Tell me about HDFC Bank"
@@ -2350,7 +2350,16 @@
     "projects with ai",
     "uses ai",
     "llms",
-    "which projects use ai"
+    "which projects use ai",
+    "work with ai",
+    "works with ai",
+    "approach ai",
+    "approach to ai",
+    "use ai",
+    "ai approach",
+    "how does he use ai",
+    "his ai work",
+    "ai in his work"
    ],
    "questions": [
     "does he have ai experience",
@@ -2358,10 +2367,11 @@
     "has he worked on generative ai",
     "tell me about his ai work"
    ],
-   "answer": "AI products from his case studies:\n\n- **Enterprise Search:** AI answers with sources across a company's tools, plus an agent marketplace\n- **Agent Workforce Platform:** building, governing and running AI agents\n- **ADEO:** AI briefings, an archive assistant and live minutes for government committees\n- **HDFC Bank:** AI that infers preferences and simplifies legal disclosures\n- **Sony:** AI contract review, minutes generation, scheduling conflict detection and social intelligence\n\nAI Product Design, Agentic UX and Prompt Engineering are on his resume.",
+   "answer": "Vishnu is a product designer who applies AI when a product needs it, not an \"AI designer\". He treats AI as specific mechanisms, like search, summaries and agents, rather than buzzwords. At ICD he leads design on AI products for UnifyApps across 60+ enterprise deployments.\n\nWhere you can see it in his case studies:\n\n- **Enterprise Search:** AI answers with sources across a company's tools, plus an agent marketplace\n- **Agent Workforce Platform:** building, governing and running AI agents\n- **ADEO:** AI briefings, an archive assistant and live minutes for government committees\n- **HDFC Bank:** AI that infers preferences and simplifies legal disclosures\n- **Sony:** AI contract review, minutes generation, scheduling conflict detection and social intelligence",
    "followups": [
     "How does he design for trust in AI?",
-    "What are his AI skills?"
+    "What are his AI skills?",
+    "Tell me about the Agent Workforce Platform"
    ],
    "priority": false
   },
@@ -2387,7 +2397,7 @@
     "how does he handle ai hallucinations",
     "how does he make ai explainable"
    ],
-   "answer": "From his case study reflections:\n\n- **Enterprise Search:** trust drives adoption more than AI performance; showing sources makes verification easy; transparency about failures builds confidence\n- **ADEO:** AI content is clearly labelled so users always know what was machine-generated\n- **Sony:** people trust AI more when they can see how it reached a result",
+   "answer": "Vishnu wants AI tools to be useful, understandable and trustworthy. In his work, people should be able to see where an AI answer came from, know when content was machine-generated, and stay in control of decisions that matter.\n\nFrom his case study reflections:\n\n- **Enterprise Search:** trust drives adoption more than AI performance; showing sources makes verification easy; transparency about failures builds confidence\n- **ADEO:** AI content is clearly labelled so users always know what was machine-generated\n- **Sony:** people trust AI more when they can see how it reached a result",
    "followups": [
     "Tell me about Enterprise Search"
    ],
@@ -2412,7 +2422,7 @@
     "who stays in control of the ai",
     "how does he balance automation and human review"
    ],
-   "answer": "- **ADEO:** AI produces drafts; humans review, edit and approve them before they become official records. Every vote requires a rationale.\n- **Agent Workforce:** compliance reviewers see audit history and security controls before approving an agent.",
+   "answer": "In Vishnu's products, AI supports people rather than replacing their judgement. AI prepares and drafts; people review, edit and approve anything that becomes official.\n\n- **ADEO:** AI drafts minutes, action items and resolutions; humans approve them before they become official records. Every vote requires a rationale.\n- **Agent Workforce:** compliance reviewers see audit history and security controls before approving an agent.",
    "followups": [
     "Tell me about ADEO"
    ],
@@ -2440,7 +2450,7 @@
     "what agentic work has he done",
     "does he know agentic ux"
    ],
-   "answer": "**Agent Workforce Platform** (UnifyApps): three ways to build AI agents (Simple, Workflow and Advanced), with guardrails and PII rules set during configuration, execution traces, and reusable skills.\n\n**Enterprise Search** also includes an **Agent Marketplace** of ready-made agents, each showing whether it's verified.",
+   "answer": "Agentic systems are one of Vishnu's main focus areas, alongside search, automation and decision-making tools. Agentic UX and AI Product Design are on his resume.\n\n- **Agent Workforce Platform:** three ways to build AI agents (Simple, Workflow and Advanced), with guardrails and PII rules set during configuration, execution traces and reusable skills\n- **Enterprise Search:** an Agent Marketplace of ready-made agents, each showing whether it's verified",
    "followups": [
     "Tell me about the Agent Workforce Platform",
     "Other agentic projects"
@@ -2470,7 +2480,7 @@
     "how does he design for compliance",
     "how does he handle ai safety"
    ],
-   "answer": "- **Agent Workforce:** guardrails and PII rules are set during configuration; every interaction is captured as a trace\n- **HDFC Bank:** consent actions are logged automatically in the normal workflow, creating an audit trail\n- **Enterprise Search:** compliance teams can see what data the platform can access and audit it",
+   "answer": "Vishnu designs AI for the people who oversee it, not only the people who use it. Admins and compliance reviewers are core users in his products, and governance is built into the workflow from the start.\n\n- **Agent Workforce:** guardrails and PII rules are set during configuration; every interaction is captured as a trace\n- **HDFC Bank:** consent actions are logged automatically in the normal workflow, creating an audit trail\n- **Enterprise Search:** compliance teams can see what data the platform can access and audit it",
    "followups": [
     "Tell me about HDFC Bank"
    ],
@@ -2499,7 +2509,7 @@
     "what is his view on copilots",
     "has he designed conversational interfaces"
    ],
-   "answer": "- **Enterprise Search:** works as a copilot across Search, Chat, Agents, Spaces and Apps\n- **ADEO:** a conversational assistant that searches the five-year archive inside the session\n- **Sony:** a copilot that checks each scheduled event against its executed rights agreement",
+   "answer": "Conversational assistants appear in several of Vishnu's AI products at UnifyApps.\n\n- **Enterprise Search:** works as a copilot across Search, Chat, Agents, Spaces and Apps\n- **ADEO:** a conversational assistant that searches the five-year archive inside the session\n- **Sony:** a copilot that checks each scheduled event against its executed rights agreement",
    "followups": [
     "Tell me about Enterprise Search",
     "Other projects"
@@ -2528,7 +2538,7 @@
     "when does he decide ai is not needed",
     "has he done non ai projects"
    ],
-   "answer": "His Mphasis visitor management project has **no AI features** in its project content. AI there is listed only as possible future extensions.",
+   "answer": "No. Vishnu applies AI only when a product needs it. For example, his Mphasis visitor management project has no AI features; AI is listed there only as possible future extensions.",
    "followups": [
     "What AI work has he done?"
    ],
@@ -2547,7 +2557,7 @@
    "questions": [
     "is he an ai designer"
    ],
-   "answer": "He describes himself as a **product designer who applies AI when a product needs it**, not as an \"AI designer\".",
+   "answer": "No. Vishnu describes himself as a **product designer who applies AI when a product needs it**, not as an \"AI designer\". He treats AI behaviour as specific mechanisms rather than buzzwords.",
    "followups": [],
    "priority": false
   },
@@ -2583,7 +2593,7 @@
     "has he worked with rag",
     "has he designed document extraction"
    ],
-   "answer": "AI products from his case studies:\n\n- **Enterprise Search:** AI answers with sources across a company's tools, plus an agent marketplace\n- **Agent Workforce Platform:** building, governing and running AI agents\n- **ADEO:** AI briefings, an archive assistant and live minutes for government committees\n- **HDFC Bank:** AI that infers preferences and simplifies legal disclosures\n- **Sony:** AI contract review, minutes generation, scheduling conflict detection and social intelligence\n\nAI Product Design, Agentic UX and Prompt Engineering are on his resume.",
+   "answer": "Because he treats AI as specific mechanisms rather than a feature, some patterns repeat across Vishnu's work.\n\n- **Answers with sources:** Enterprise Search\n- **An AI briefing before the full document:** ADEO\n- **Three levels of control for different users:** Agent Workforce Platform\n- **Legal text in plain language:** HDFC Bank\n- **Early warnings on risks, conflicts and spikes:** Sony",
    "followups": [
     "How does he design for trust in AI?"
    ],
@@ -2623,7 +2633,7 @@
     "has he led teams",
     "is he a good leader"
    ],
-   "answer": "From his resume:\n\n- Led product design across **60+ enterprise deployments**\n- Owned and scaled the **UnifyApps design system**\n- Managed **3 enterprise initiatives in parallel**\n- Established **design-to-engineering handoff and review workflows**\n- **Mentored 6 junior designers** through critiques and growth planning",
+   "answer": "Vishnu works at lead scope: he owns design end to end on his projects, works directly with executive stakeholders, and mentors designers on his team. Design Leadership is on his resume.\n\nFrom his resume:\n\n- Led product design across **60+ enterprise deployments**\n- Owned and scaled the **UnifyApps design system**\n- Managed **3 enterprise initiatives in parallel**\n- Established **design-to-engineering handoff and review workflows**\n- **Mentored 6 junior designers** through critiques and growth planning",
    "followups": [
     "Does he mentor designers?",
     "Can he lead a design team?"
@@ -2654,7 +2664,7 @@
     "does he mentor designers",
     "how does he mentor"
    ],
-   "answer": "From his resume: he **mentored 6 junior designers** through critiques and growth planning, and enforced WCAG 2.1 accessibility across products.",
+   "answer": "Yes. Mentoring is part of Vishnu's role at ICD.\n\nFrom his resume: he **mentored 6 junior designers** through critiques and growth planning, and enforced WCAG 2.1 accessibility across products.",
    "followups": [
     "Does he have leadership experience?"
    ],
@@ -2690,7 +2700,7 @@
     "how is his developer handoff",
     "does he work well with developers"
    ],
-   "answer": "From his resume:\n\n- Established **design-to-engineering handoff and review workflows** that reduced rework and implementation inconsistencies\n- At Brane, shipped responsive products with **clean developer handoff**\n\nIn the **Agent Workforce Platform**, engineers are one of the three user roles; Advanced mode gives them precise control.",
+   "answer": "Vishnu works with engineering from discovery to launch.\n\n- From his resume: he **established design-to-engineering handoff and review workflows** that reduced rework and implementation inconsistencies\n- At Brane, he shipped responsive products with **clean developer handoff**\n- In the **Agent Workforce Platform**, engineers are one of the three user roles; Advanced mode gives them precise control",
    "followups": [
     "Has he built a design system?"
    ],
@@ -2722,7 +2732,7 @@
     "does he have design system experience",
     "has he built a design system"
    ],
-   "answer": "From his resume: he **owned and scaled the UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation, **reused across 60+ deployments**. Design Systems and Component Libraries are on his resume.",
+   "answer": "Yes. Vishnu builds design systems that shorten delivery time.\n\nFrom his resume: he **owned and scaled the UnifyApps design system** across AI, Data Quality, Governance and Workflow Automation, **reused across 60+ deployments**. Design Systems and Component Libraries are on his resume.",
    "followups": [
     "How does he work with engineers?"
    ],
@@ -2747,7 +2757,7 @@
     "does he care about accessibility",
     "does he know wcag"
    ],
-   "answer": "**Accessibility (WCAG)** is on his resume, and he **enforced WCAG 2.1 accessibility across products** at ICD.",
+   "answer": "Yes. **Accessibility (WCAG)** is on Vishnu's resume, and at ICD he **enforced WCAG 2.1 accessibility across products**.",
    "followups": [],
    "priority": false
   },
@@ -2771,7 +2781,7 @@
     "how does he manage multiple projects",
     "how does he handle deadlines"
    ],
-   "answer": "From his resume: he **managed 3 enterprise initiatives in parallel**, balancing stakeholder priorities, engineering constraints and timelines.",
+   "answer": "Running several projects at once is a normal part of Vishnu's role.\n\nFrom his resume: he **managed 3 enterprise initiatives in parallel**, balancing stakeholder priorities, engineering constraints and timelines.",
    "followups": [
     "Has he built a design system?"
    ],
@@ -2911,7 +2921,7 @@
     "what kinds of problems does he solve best",
     "what is his sweet spot"
    ],
-   "answer": "From his About page, his focus areas are **agentic systems, search, automation and decision-making tools**. His resume describes his work as taking **complex, high-stakes systems from discovery to launch**.",
+   "answer": "Vishnu works best on complex, high-stakes systems that run real work. His focus areas are **agentic systems, search, automation and decision-making tools**, and he takes them from discovery to launch.\n\n- **Search:** Enterprise Search\n- **Agentic systems:** Agent Workforce Platform\n- **Decision-making tools:** ADEO\n- **Compliance & data:** HDFC Bank\n- **Automation across teams:** the Sony platforms",
    "followups": [
     "Tell me about Enterprise Search",
     "Tell me about ADEO"
@@ -3321,7 +3331,7 @@
    "questions": [
     "has he designed knowledge management tools"
    ],
-   "answer": "His **Intelligent Enterprise Search** case study connects a company's tools into one shared knowledge index, with direct answers and sources, plus an agent marketplace.",
+   "answer": "Search is one of Vishnu's main focus areas. His **Intelligent Enterprise Search** case study connects a company's tools into one shared knowledge index, with direct answers and sources, plus an agent marketplace.",
    "followups": [
     "Tell me about Enterprise Search",
     "Other projects"
@@ -3747,7 +3757,7 @@
     "what value would he bring",
     "is he a good fit for our team"
    ],
-   "answer": "From his resume:\n\n- **5 years** in enterprise SaaS, AI and data-heavy platforms\n- Led product design across **60+ enterprise deployments** (HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority, DGE Abu Dhabi)\n- Owned and scaled the **UnifyApps design system**\n- Designed for **HDFC Bank's 30M+ customers** under India's DPDP Act\n- **Mentored 6 junior designers**\n\nContact: **vishnuprasadkp98@gmail.com**",
+   "answer": "Vishnu has designed high-stakes products for banks, governments and global enterprises, working directly with product, engineering and executive stakeholders.\n\nFrom his resume:\n\n- **5+ years** in enterprise SaaS, AI and data-heavy platforms\n- Led product design across **60+ enterprise deployments** (HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority, DGE Abu Dhabi)\n- Owned and scaled the **UnifyApps design system**\n- Designed for **HDFC Bank's 30M+ customers** under India's DPDP Act\n- **Mentored 6 junior designers**\n\nContact: **vishnuprasadkp98@gmail.com**",
    "followups": [
     "How can I contact him?"
    ],
@@ -3952,7 +3962,7 @@
     "is he detail oriented",
     "what is he like to work with"
    ],
-   "answer": "From his About page: he **owns projects end to end** and invests in **clear flows, reusable patterns and documented components**. From his resume: he **established design-to-engineering handoff and review workflows** that reduced rework.",
+   "answer": "Vishnu works in iterative review cycles with PMs and senior stakeholders.\n\nFrom his resume: he **established design-to-engineering handoff and review workflows** that reduced rework, and **managed 3 enterprise initiatives in parallel**.",
    "followups": [
     "How does he work with engineers?",
     "How can I contact him?"
@@ -4178,7 +4188,7 @@
     "is he a ux designer or ui designer",
     "does he do ui as well as ux"
    ],
-   "answer": "**Design & Research**\nProduct Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems, Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS",
+   "answer": "Vishnu owned and scaled the UnifyApps design system, reused across 60+ deployments.\n\nHis design skills, from his resume:\n\n**Design & Research**\nProduct Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems, Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS",
    "followups": [
     "What are his skills?",
     "What tools does he use?"
@@ -4203,7 +4213,7 @@
     "what are his research skills",
     "does he do usability testing"
    ],
-   "answer": "From his resume: **User Research, Product Discovery, Usability Testing, Journey Mapping.**",
+   "answer": "Research comes before screens in Vishnu's process.\n\nFrom his resume: **User Research, Product Discovery, Usability Testing, Journey Mapping.**",
    "followups": [
     "What are his skills?",
     "How does he do research?"
@@ -4232,7 +4242,7 @@
     "does he have product thinking",
     "is he strategic"
    ],
-   "answer": "**Strategy & Systems**\nProduct Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design Leadership, DesignOps, Data Visualization",
+   "answer": "Vishnu works beyond screens: he takes products from discovery to launch with product, engineering and executive stakeholders, and influences product direction at the executive level.\n\nFrom his resume:\n\n**Strategy & Systems**\nProduct Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design Leadership, DesignOps, Data Visualization",
    "followups": [
     "What are his skills?"
    ],
@@ -4256,10 +4266,10 @@
     "is he familiar with prompt engineering",
     "does he know agentic ux"
    ],
-   "answer": "**AI & Tools**\nClaude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping",
+   "answer": "At ICD, Vishnu leads design on AI products for UnifyApps: AI search, AI agents and AI decision tools.\n\nHis AI skills, from his resume:\n\n**AI & Tools**\nClaude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping",
    "followups": [
-    "What are his skills?",
-    "What AI work has he done?"
+    "How does he work with AI?",
+    "What are his skills?"
    ],
    "priority": false
   },
@@ -4291,7 +4301,7 @@
     "how are his communication skills",
     "is he a team player"
    ],
-   "answer": "From his resume: **Stakeholder Management** and **Design Leadership**. He also mentored 6 junior designers through critiques and growth planning.",
+   "answer": "Vishnu works directly with product, engineering and executive stakeholders in iterative review cycles, and mentors designers on his team.\n\nFrom his resume: **Stakeholder Management** and **Design Leadership**. He mentored 6 junior designers through critiques and growth planning.",
    "followups": [
     "What are his skills?",
     "Does he have leadership experience?"

@@ -1,4 +1,4 @@
-# Nyrro v4 — integration brief (for Claude Code)
+# Nyrro v5 — integration brief (for Claude Code)
 
 Nyrro is the beetle assistant on vishnuprasad.space. It answers visitors' questions about Vishnu with **no AI API**: a locked knowledge base and a matcher, shipped as **one file: `dist/nyrro.bundle.js`**.
 
@@ -25,7 +25,7 @@ function onUserMessage(text) {
 4. **Verify** in the browser console on the live site, and include the output in your summary:
 
 ```js
-Nyrro.selfTest()   // must return { ok: true, fingerprint: "2ffbb768f784ecad", ... }
+Nyrro.selfTest()   // must return { ok: true, fingerprint: "39cde9602569f256", ... }
 ```
 
 If `ok` is false, the site is serving modified answers. Fix the integration, not the bundle.
@@ -48,11 +48,11 @@ If `ok` is false, the site is serving modified answers. Fix the integration, not
 ## Reference
 
 - `nyrro-demo.html`: a complete working chat using the bundle. Open it in a browser to see the expected behaviour.
-- `nyrro-qa-catalogue_v4.md`: every topic, example question and answer.
+- `nyrro-qa-catalogue_v5.md`: every topic, example question and answer.
 
 ## Changing content (Vishnu's team only)
 
-Edit `build/data_v4.py` (general answers; **source-only**: resume, About page, case studies, Notion, 2023 portfolio; skills and tools copied from the resume as-is) or `build/data_projects.py` (projects), then:
+Edit `build/data_v5.py` (general answers; **source-only**: resume, About page, case studies, Notion, 2023 portfolio; skills and tools copied from the resume as-is) or `build/data_projects.py` (projects), then:
 
 ```bash
 cd build
