@@ -16,9 +16,72 @@ export type BeetlePose = {
 };
 export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; canvas: HTMLCanvasElement; still: () => string };
 
-/** One drawing everywhere (loader, header icon, assistant): the line width, and how fine the wings' outline is. */
-export const BEETLE_LINE = 0.28;
-const WING_RES = 5; // the wing is drawn about as large as it shows, so its outline (2 px in the drawing) is one fine line
+/** One drawing everywhere (loader, header icon, assistant): the weight of its pen. */
+export const BEETLE_LINE = 1.05;
+
+type P2 = [number, number];
+/** Points along a smooth curve through `pts` (Catmull-Rom). */
+const through = (pts: P2[], n = 36): P2[] => {
+  const out: P2[] = [];
+  for (let i = 0; i < n; i++) {
+    const f = (i / (n - 1)) * (pts.length - 1);
+    const k = Math.min(pts.length - 2, Math.floor(f));
+    const t = f - k;
+    const p0 = pts[Math.max(0, k - 1)];
+    const p1 = pts[k];
+    const p2 = pts[k + 1];
+    const p3 = pts[Math.min(pts.length - 1, k + 2)];
+    const c = (a: number, b: number, cc: number, d: number) => 0.5 * (2 * b + (-a + cc) * t + (2 * a - 5 * b + 4 * cc - d) * t * t + (-a + 3 * b - 3 * cc + d) * t * t * t);
+    out.push([c(p0[0], p1[0], p2[0], p3[0]), c(p0[1], p1[1], p2[1], p3[1])]);
+  }
+  return out;
+};
+
+/**
+ * The wing, sketched: its outline and a few veins, each a pen stroke that swells in the middle and tapers to a point at
+ * each end, as in the loader's drawing. Laid out as the film's wing picture is (root at the left, the leading edge at the
+ * top), so it sits on the same wing.
+ */
+function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], size: number) {
+  const W = Math.max(128, Math.round(size * 4.2));
+  const H = Math.round((W * 766) / 1282);
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+  const g = c.getContext("2d")!;
+  g.strokeStyle = `rgb(${Math.round(rgb[0] * 255)},${Math.round(rgb[1] * 255)},${Math.round(rgb[2] * 255)})`;
+  g.lineCap = "round";
+  g.lineJoin = "round";
+  const pen = W / 68; // the pen's full width at the middle of a stroke
+  const stroke = (pts: P2[], weight: number, seed: number) => {
+    const q = through(pts.map(([u, v]) => [u * W, v * H] as P2));
+    for (let i = 0; i < q.length - 1; i++) {
+      const t = i / (q.length - 2);
+      // pressure: light at the start, full in the middle, lifting off at the end, a little unsteady
+      const pr = Math.pow(Math.sin(Math.PI * Math.min(1, t * 0.96 + 0.02)), 0.55) * (0.85 + 0.15 * Math.sin(t * 9 + seed));
+      g.lineWidth = Math.max(0.6, pen * weight * (0.2 + 0.8 * pr));
+      g.beginPath();
+      g.moveTo(q[i][0], q[i][1]);
+      g.lineTo(q[i + 1][0], q[i + 1][1]);
+      g.stroke();
+    }
+  };
+  // the outline: the leading edge, then round the tip and back along the trailing edge
+  stroke([[0.08, 0.45], [0.3, 0.31], [0.55, 0.245], [0.8, 0.245], [0.95, 0.32], [0.975, 0.42]], 1, 1);
+  stroke([[0.975, 0.4], [0.93, 0.56], [0.79, 0.68], [0.58, 0.745], [0.38, 0.725], [0.2, 0.61], [0.09, 0.5]], 1, 2.3);
+  // a few veins, fanning out from the root
+  stroke([[0.1, 0.45], [0.35, 0.345], [0.62, 0.295], [0.87, 0.3]], 0.75, 3.1);
+  stroke([[0.11, 0.47], [0.4, 0.425], [0.66, 0.435], [0.9, 0.475]], 0.65, 4.7);
+  stroke([[0.12, 0.49], [0.36, 0.535], [0.6, 0.605], [0.77, 0.665]], 0.6, 5.2);
+  stroke([[0.13, 0.505], [0.27, 0.585], [0.42, 0.69]], 0.55, 6.6);
+  // and two short cross-veins
+  stroke([[0.63, 0.3], [0.61, 0.43]], 0.45, 7.4);
+  stroke([[0.5, 0.43], [0.47, 0.575]], 0.4, 8.9);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.NoColorSpace;
+  t.anisotropy = 4;
+  return t;
+}
 /** The canvas round a beetle of `size`: square, centred on its box, with room for its wings. */
 export const beetleCanvas = (size: number) => Math.round(size * 4.6);
 
@@ -35,7 +98,7 @@ const hexRgb = (h: string): [number, number, number] => {
 /** Mounts the beetle as a canvas centred on `box` (the roaming beetle's own element, which turns it to its heading). */
 export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink: string; pr?: number }): Promise<Beetle3D | null> {
   const [THREE, film] = await Promise.all([import("three"), import("@/components/home/HeroFilm")]);
-  const { buildBeetle, drawnWing, stippledWing, WING, BODY } = film;
+  const { buildBeetle, stippledWing, WING, BODY } = film;
 
   const img = await new Promise<HTMLImageElement | null>((res) => {
     const i = new Image();
@@ -74,14 +137,14 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
   camera.position.set(0, STAND + D * Math.cos(TILT), -D * Math.sin(TILT));
   camera.lookAt(0, STAND, 0.03);
 
-  // every line one steady, fine width (as in the loader's drawing), however the surface turns
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * BEETLE_LINE }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 } };
+  // drawn with the film's pen: each line swells and tapers, and the drawing is redrawn a little a few times a second, as a sketch
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * BEETLE_LINE }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 0 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
   const b = buildBeetle(
-    // the wings as strokes only: their outline and veins, drawn at a size that suits this small beetle
-    drawnWing(img, [Math.round(ink[0] * 255), Math.round(ink[1] * 255), Math.round(ink[2] * 255)], Math.round(opts.size * WING_RES), true),
+    // the wings, sketched: an outline and a few veins, in the same pen
+    sketchedWing(THREE, ink, opts.size),
     stippledWing(img, 4.4, 1),
     sk,
     proj,
