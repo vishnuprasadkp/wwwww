@@ -26,7 +26,7 @@ const ready = (img: HTMLImageElement) => (img.complete && img.naturalWidth ? img
 const COVERED = { opacity: 0, y: 40 };
 const REVEAL = { opacity: 1, y: 0, duration: 1.4, ease: "expo.out", clearProps: "transform" };
 
-let pendingHash = ""; // an anchor on the page we are going to ("#cases"): the new page opens at its top, then glides there
+let pendingHash = ""; // an anchor on the page we are going to ("#cases"): the new page opens right there, then fades in
 
 const target = (hash: string) => (hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null);
 // a gentle in-and-out glide, longer for a longer way (never abrupt at either end)
@@ -97,7 +97,7 @@ export default function Motion() {
       gsap.to(main, {
         opacity: 0,
         y: -14,
-        duration: 0.36,
+        duration: url.hash ? 0.28 : 0.36, // going to a section: a quick step out
         ease: "power2.in",
         onComplete: () => {
           pendingHash = url.hash;
@@ -191,17 +191,25 @@ export default function Motion() {
         window.__lenis?.scrollTo(0, { immediate: true, force: true });
         ctx = gsap.context(build);
         html().setAttribute("data-motion-ready", "");
-        if (pendingHash) {
-          const hash = pendingHash;
-          pendingHash = "";
-          const t = window.setTimeout(() => {
-            const el = target(hash);
-            if (el) {
-              glide(el);
-              history.replaceState(null, "", location.pathname + location.search + hash);
-            }
-          }, 700);
-          cleanups.push(() => window.clearTimeout(t));
+        const hash = pendingHash;
+        pendingHash = "";
+        const section = hash ? target(hash) : null;
+        const main = document.querySelector<HTMLElement>("main");
+        if (section && main) {
+          // Going to a section of another page (the Cases link, from anywhere): the page opens already at that section, while it
+          // is still out of sight, then eases in. No long scroll down from the top, no jump once it is showing.
+          gsap.set(main, { opacity: 0, y: 14 });
+          window.__lenis?.scrollTo(section, { immediate: true, force: true });
+          history.replaceState(null, "", location.pathname + location.search + hash);
+          ScrollTrigger.refresh();
+          // a picture above it can still settle into its size: keep the section where it is until the page is showing
+          const hold = () => {
+            const off = section.getBoundingClientRect().top;
+            if (Math.abs(off) > 2) window.__lenis?.scrollTo(section, { immediate: true, force: true });
+          };
+          const t1 = window.setTimeout(hold, 60);
+          gsap.to(main, { opacity: 1, y: 0, duration: 0.5, delay: 0.08, ease: "power2.out", clearProps: "opacity,transform", onStart: hold });
+          cleanups.push(() => window.clearTimeout(t1));
         }
         ScrollTrigger.refresh();
         // pictures that arrive late push the page down: measure again so each trigger sits where its card really is
