@@ -946,7 +946,7 @@ void main(){
       }
       if (out) {
         // out of sight: it turns back towards the box, coming in somewhere near where it went out
-        const back = Math.atan2(-Math.max(ny, -0.2) * 0.8 - 0.3, -nx);
+        const back = Math.atan2(-ny * 0.6, -nx);
         wand.h = back + rnd(-0.7, 0.7);
       } else {
         // a new heading, turned from the last: mostly a gentle bend, sometimes a sharp swerve
@@ -960,11 +960,11 @@ void main(){
       wand.d = depthMove < 0.25 ? rnd(10.5, 13) : depthMove < 0.5 ? rnd(6.2, 7.2) : clamp(wand.d + rnd(-1.5, 1.5), 6.5, 12);
       // where in the box it keeps to: at the top of the page, low (the box is short and its wings rise above it); at the
       // foot, the whole height
-      const yLo = TOP ? -0.95 : -0.85;
-      const yHi = TOP ? -0.2 : 0.5;
+      const yLo = -0.62; // low enough to glide near the foot of the box, high enough that its legs and body are all in view
+      const yHi = 0.4;
       if (ny > yHi - 0.05 && Math.sin(wand.h) > 0) wand.h = -wand.h;
       if (ny < yLo + 0.15 && Math.sin(wand.h) < 0) wand.h = -wand.h;
-      const roam = Math.random() < 0.18;
+      const roam = Math.random() < 0.1; // only now and then out past a side, never out of the top or bottom
       const lift2 = (v: THREE.Vector3) => (lift(v), v);
       // now and then a swoop: it dips down low and rises up again, as if gathering itself, a slow sweep that lifts
       if (!out && !roam && Math.random() < (TOP ? 0.2 : 0.3)) {
@@ -982,7 +982,7 @@ void main(){
       }
       // mostly it stays in view; now and then it wanders out past a side (or below) for a moment and comes back
       const tx = clamp(nx + Math.cos(wand.h) * len, roam ? -1.7 : -0.85, roam ? 1.7 : 0.85);
-      const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, roam ? -1.4 : yLo, yHi);
+      const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, yLo, yHi);
       if (Math.abs(tx) >= 0.85 && !roam) wand.h = Math.PI - wand.h + rnd(-0.3, 0.3); // at a side it bends round, back into the box
       const p = onFrame(tx, ty, wand.d, new THREE.Vector3());
       lift(p);
@@ -1098,7 +1098,7 @@ void main(){
       fs.fromFace = fs.mode === "face";
       fs.mode = "takeoff";
       // up and away into the box, towards its middle
-      const goal = onFrame(rnd(-0.6, 0.6), rnd(-0.85, -0.5), rnd(7.2, 9), new THREE.Vector3()); // out into the lower part of the box
+      const goal = onFrame(rnd(-0.6, 0.6), rnd(-0.5, 0.1), rnd(7.2, 9), new THREE.Vector3()); // out into the box
       fs.toP.copy(fs.fromP).lerp(goal, 0.6);
       const dir = goal.clone().sub(fs.fromP);
       fs.yaw = Math.atan2(dir.x, dir.z);
@@ -1143,7 +1143,7 @@ void main(){
             fs.mode = "fly";
             fs.air = 1;
             fly.hidden = true;
-            fly.gone = t + rnd(0.8, 1.4);
+            fly.gone = t + rnd(0.2, 0.5);
             introPending = true;
           }
         }
@@ -1154,11 +1154,12 @@ void main(){
             b.root.position.copy(fly.p);
             if (t > fly.gone) {
               if (introPending) {
-                // it opens coming down from above the frame, flying down into the box: you see it from above, its back
-                // and its spread wings
+                // it opens flying in from beyond the left or the right, at about the middle height, its whole body
+                // coming into view at once, on a heading into the box that is different every time
                 introPending = false;
-                onFrame(rnd(-0.5, 0.5), 1.6, rnd(8, 9), fly.p);
-                wand.h = -Math.PI / 2 + rnd(-0.35, 0.35);
+                const side = Math.random() < 0.5 ? -1 : 1;
+                onFrame(side * 1.45, rnd(-0.45, 0.25), rnd(7.5, 9.5), fly.p);
+                wand.h = (side > 0 ? Math.PI : 0) + rnd(-0.45, 0.45);
                 wand.lastLook = t - 9; // it will stop to look at you soon after it arrives
               }
               newPass(t, true, false);
@@ -1183,6 +1184,14 @@ void main(){
               cur.applyAxisAngle(axis.normalize(), Math.min(ang, maxTurn));
             }
             fly.v.copy(cur).multiplyScalar(SPEED);
+            // a soft floor and ceiling inside the box: nearing the foot (or the top) it eases its climb or dive and turns
+            // back, so its legs and body never slip out of view below, nor its wings above
+            ndcNow.copy(fly.p).project(camera);
+            if (Math.abs(ndcNow.x) < 1.1) {
+              if (ndcNow.y < -0.5) fly.v.y += Math.min(1, (-0.5 - ndcNow.y) * 6) * 0.6 * dt * 4;
+              if (ndcNow.y > 0.45) fly.v.y -= Math.min(1, (ndcNow.y - 0.45) * 6) * 0.6 * dt * 4;
+              fly.v.setLength(SPEED);
+            }
             fly.p.addScaledVector(fly.v, dt);
             const sp = Math.hypot(fly.v.x, fly.v.z);
             // its body turns to its heading only so fast, and only as much as it is moving across (flying straight up or
