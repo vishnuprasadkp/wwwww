@@ -637,7 +637,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
 
   // a larger beetle overall, its body a touch smaller against its wings
   // the body smaller, the wings as large as before
-  root.scale.setScalar(2.9);
+  root.scale.setScalar(3.3);
   body.scale.setScalar(BODY);
   for (const w of wings) w.scale.setScalar(0.88 / BODY);
   // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
@@ -721,7 +721,7 @@ export default function HeroFilm() {
     /* ---------------- stage, camera, light ---------------- */
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(24, aspect, 0.05, 80);
-    const FLOOR = -1.1; // the ground its shade falls on, below the bottom of the box
+    const FLOOR = -3.4; // the ground far below the box, so it can dive out through the bottom as freely as anywhere
     const CAM = new THREE.Vector3(0, 1.4, 6); // a little above its flight, looking nearly level: it is seen from above and the side, low and high alike
     camera.position.copy(CAM);
     camera.lookAt(0, 0.3, 0);
@@ -881,13 +881,14 @@ void main(){
     type Edge = "L" | "R" | "T" | "B";
     const edgePoint = (e: Edge, d0: number, out = new THREE.Vector3()) => {
       const d = d0;
-      const [nx, ny] = e === "L" ? [-1.45, rnd(-0.9, 0.5)] : e === "R" ? [1.45, rnd(-0.9, 0.5)] : e === "T" ? [rnd(-0.8, 0.8), 1.6] : [rnd(-0.8, 0.8), -1.5];
+      const [nx, ny] = e === "L" ? [-1.45, rnd(-0.9, -0.1)] : e === "R" ? [1.45, rnd(-0.9, -0.1)] : e === "T" ? [rnd(-0.8, 0.8), 1.6] : [rnd(-0.9, 0.9), -1.6];
       return onFrame(nx, ny, d, out);
     };
     let lastEdge: Edge = Math.random() < 0.5 ? "L" : "R";
     let lastPerchSide = 0;
+    let introPending = false;
     const newPass = (t: number, fromHere: boolean, mayPerch = true) => {
-      const edges: Edge[] = ["L", "R", "T", "B"]; // every way out is as likely as any other: up, down, left, right
+      const edges: Edge[] = ["B", "B", "B", "L", "R", "L", "R", "T"]; // mostly gliding down and out the bottom or the lower sides
       const pick = (not: Edge[]) => {
         const c = edges.filter((e) => !not.includes(e));
         return c[Math.floor(Math.random() * c.length)];
@@ -905,7 +906,7 @@ void main(){
       const side = outEdge === "L" ? -1 : 1;
       fly.perch = mayPerch && (outEdge === "L" || outEdge === "R") && Math.random() < (side === lastPerchSide ? 0.15 : 0.5);
       // the middle of the crossing anywhere in the box, high or low
-      const mid = onFrame(rnd(-0.6, 0.6), Math.random() < 0.6 ? rnd(-0.85, -0.3) : rnd(-0.3, 0.4), (dIn + dOut) / 2, new THREE.Vector3());
+      const mid = onFrame(rnd(-0.6, 0.6), rnd(-0.55, 0.05), (dIn + dOut) / 2, new THREE.Vector3());
       const end = fly.perch ? onFrame(side * 0.95, rnd(-0.6, 0.4), clamp((dIn + dOut) / 2, 7, 8.5), new THREE.Vector3()) : edgePoint(outEdge, dOut, new THREE.Vector3());
       if (fly.perch) {
         fs.perchSide = side;
@@ -935,21 +936,18 @@ void main(){
       }
       fly.pts = [mid, end];
       if (!fly.perch) {
-        // past the edge it does not vanish and reappear somewhere else: it flies on a little out of sight, swings round in a
-        // wide loop, higher or lower, and comes back in near where it went out, facing back into the box
-        const out = end.clone().sub(mid).normalize();
-        const up = Math.random() < 0.4 ? 1 : -1; // it swings round lower more often than higher, so it comes back down
-        const loop = end.clone().addScaledVector(out, 2.2).add(new THREE.Vector3(0, up * rnd(0.6, 1.2), rnd(-1.5, 1.5)));
-        const back = end.clone().addScaledVector(out, 0.8).add(new THREE.Vector3(0, up * rnd(0.9, 1.6), rnd(-1.2, 1.2)));
-        lift(loop);
-        lift(back);
-        // and then into the frame again, a little way in from that same edge
+        // past the edge it does not vanish and reappear somewhere else: out of sight, it swings round beyond the nearer side
+        // of the box and climbs there, unseen, then comes back in from that side, up high, to glide down across the box again
         ndcNow.copy(end).project(camera);
-        const inX = clamp(ndcNow.x, -1, 1) * 0.6;
-        const inY = clamp(ndcNow.y + up * 0.5, -0.85, 0.4) * (outEdge === "T" || outEdge === "B" ? 0.6 : 1);
-        const reenter = onFrame(inX, inY, clamp(camera.position.distanceTo(end) + rnd(-1, 1), 7, 10), new THREE.Vector3());
+        const sd = Math.abs(ndcNow.x) > 0.15 ? Math.sign(ndcNow.x) : Math.random() < 0.5 ? -1 : 1;
+        const dd = clamp(camera.position.distanceTo(end), 7, 10);
+        const round1 = onFrame(sd * 1.55, clamp(ndcNow.y, -1.4, 1.2), dd, new THREE.Vector3());
+        const round2 = onFrame(sd * 1.55, rnd(0.15, 0.55), dd + rnd(-0.6, 0.6), new THREE.Vector3());
+        const reenter = onFrame(sd * 0.72, rnd(0.05, 0.45), clamp(dd + rnd(-0.8, 0.8), 7, 10), new THREE.Vector3());
+        lift(round1);
+        lift(round2);
         lift(reenter);
-        fly.pts.push(loop, back, reenter);
+        fly.pts.push(round1, round2, reenter);
       }
       fly.idx = 0;
       fly.target.copy(mid);
@@ -1101,20 +1099,35 @@ void main(){
           fs.until = t + rnd(7, 10);
           fs.after = "perch";
           if (skipIntro) {
-            // the box is empty at first; then it comes in from beyond an edge
+            // the opening: the box is empty for a moment, then it sweeps in from beyond a corner, any corner, on a long
+            // diagonal, curving down through the lower part of the box
             fs.mode = "fly";
             fs.air = 1;
             fly.hidden = true;
-            fly.gone = t + rnd(0.6, 1.4);
-            edgePoint("L", 9, fly.p);
+            fly.gone = t + rnd(0.8, 1.4);
+            introPending = true;
           }
         }
         if (fs.mode === "fly") {
           fs.air = 1;
           if (fly.hidden) {
-            // out of sight for a moment; then it comes back in from another edge
+            // out of sight for a moment; then it comes in
             b.root.position.copy(fly.p);
-            if (t > fly.gone) newPass(t, false);
+            if (t > fly.gone) {
+              newPass(t, false, false);
+              if (introPending) {
+                introPending = false;
+                const cx = Math.random() < 0.5 ? -1 : 1;
+                const cy = Math.random() < 0.6 ? 1 : -1;
+                onFrame(cx * 1.5, cy * 1.35, rnd(8.5, 10), fly.p);
+                const sweep = onFrame(-cx * rnd(0.05, 0.35), rnd(-0.65, -0.35), rnd(7.5, 8.5), new THREE.Vector3());
+                fly.pts[0].copy(sweep);
+                fly.target.copy(sweep);
+                fly.v.copy(sweep).sub(fly.p).normalize().multiplyScalar(0.6);
+                fly.yaw = Math.atan2(fly.v.x, fly.v.z);
+                b.root.position.copy(fly.p);
+              }
+            }
           } else {
             const want = fly.target.clone().sub(fly.p);
             const dist = want.length();
@@ -1339,7 +1352,7 @@ void main(){
         const oz = at.z - smokeFrom.z;
         const ol = Math.hypot(ox, oz) || 1;
         dustVel[i * 3] = (ox / ol) * rnd(0.04, 0.16) + rnd(-0.05, 0.05);
-        dustVel[i * 3 + 1] = rnd(0.03, 0.16);
+        dustVel[i * 3 + 1] = rnd(-0.1, 0.04);
         dustVel[i * 3 + 2] = (oz / ol) * rnd(0.04, 0.16) + rnd(-0.05, 0.05);
         dustLen[i] = rnd(0.03, 0.09);
         dustLife[i] = rnd(2.2, 4.5);
