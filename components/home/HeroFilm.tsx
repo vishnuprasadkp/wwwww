@@ -466,7 +466,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   });
 
   // wings: the beetle's own painted wings, folded under the cases until it flies
-  const WL = 3.1; // large: the wings lead
+  const WL = 3.6; // large: the wings lead
   const wg = new THREE.PlaneGeometry(WL, WL * WING_ASPECT, 28, 14);
   wg.translate(-(WING_BASE[0] - 0.5) * WL, -(0.5 - WING_BASE[1]) * WL * WING_ASPECT, 0);
   wg.rotateX(Math.PI / 2); // flat, the front edge forwards (+z)
@@ -723,7 +723,7 @@ void main(){
     let beetle: ReturnType<typeof buildBeetle> | null = null;
 
     const WALK_FROM = -6; // far back in the smoke
-    const WALK_TO = 3.2; // close in front of you
+    const WALK_TO = 1.5; // in front of you, but not too close
     const T_WALK0 = 1.2;
     const WALK_SPEED = 1.25;
     const T_STOP = T_WALK0 + (WALK_TO - WALK_FROM) / WALK_SPEED;
@@ -744,6 +744,7 @@ void main(){
     const wp = new THREE.Vector3();
     const emitAt = new THREE.Vector3();
     let emitCarry = 0;
+    let bodyCarry = 0;
 
     /* after the intro: it flies, and now and then comes down to walk a little on the floor, or lands on the frame itself, on
        the glass between you, at an edge or a corner, and peeps in at you; then it takes off again */
@@ -856,7 +857,7 @@ void main(){
 
       if (k < T_FREE) {
         // it rises to your eye level and hovers there facing you, wings spread
-        b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 4.2 * lift); // it drifts back as it rises, so its whole wings are in the frame
+        b.root.position.set(meander + 0.05 * Math.sin(k * 0.9) * lift, 0.18 * lift + 0.03 * Math.sin(k * 1.4) * lift, zWalk - 2.6 * lift); // it drifts back as it rises, so its whole wings are in the frame
         b.root.rotation.set(0.55 * lift, Math.cos(walkT * 0.55) * 0.25 * (1 - slow) + 0.38 * Math.sin((k - T_LIFT) * 0.45) * lift, 0.06 * Math.sin(k * 1.1) * lift); // tipped up as beetles fly, turning slowly so the wings face you
       } else {
         if (!fly.on) {
@@ -1005,6 +1006,20 @@ void main(){
         b.wings[wi].localToWorld(emitAt);
         spawn(emitAt, t);
       }
+      // the same dust rises off its body wherever it goes, like smoke: thick as it comes walking out of the haze, a soft
+      // trail after that, walking or flying
+      if (b.root.visible) {
+        bodyCarry += dt * (walking0 ? 150 : 70);
+        b.root.getWorldPosition(wp);
+        while (bodyCarry >= 1) {
+          bodyCarry -= 1;
+          const th = rnd(0, 6.283);
+          const ph = rnd(-0.3, 1.3);
+          emitAt.set(Math.cos(th) * 0.44 * Math.cos(ph * 0.6), 0.05 + Math.sin(ph) * 0.38, Math.sin(th) * 0.55);
+          b.body.localToWorld(emitAt);
+          spawn(emitAt, t, wp);
+        }
+      }
 
       b.root.getWorldPosition(wp);
       key1.position.set(wp.x - 0.7, 7, wp.z + 1.4); // light from almost overhead: the shadow lies right under its body and legs
@@ -1012,7 +1027,7 @@ void main(){
     };
 
     /* ---------------- strokes off the wings ---------------- */
-    const DN = 1000;
+    const DN = 2600;
     const dust = makeStrokes(DN);
     const dustVel = new Float32Array(DN * 3);
     const dustDir = new Float32Array(DN * 3);
@@ -1020,7 +1035,7 @@ void main(){
     const dustLife = new Float32Array(DN).fill(1);
     const dustLen = new Float32Array(DN);
     let dustNext = 0;
-    const spawn = (at: THREE.Vector3, t: number) => {
+    const spawn = (at: THREE.Vector3, t: number, smokeFrom?: THREE.Vector3) => {
       const i = dustNext;
       dustNext = (dustNext + 1) % DN;
       dust.pos[i * 6] = at.x;
@@ -1037,6 +1052,17 @@ void main(){
       dustLen[i] = rnd(0.05, 0.16);
       dustBorn[i] = t;
       dustLife[i] = rnd(1.4, 3);
+      if (smokeFrom) {
+        // smoke: it drifts out from the body and rises slowly, spreading, and lingers
+        const ox = at.x - smokeFrom.x;
+        const oz = at.z - smokeFrom.z;
+        const ol = Math.hypot(ox, oz) || 1;
+        dustVel[i * 3] = (ox / ol) * rnd(0.04, 0.16) + rnd(-0.05, 0.05);
+        dustVel[i * 3 + 1] = rnd(0.03, 0.16);
+        dustVel[i * 3 + 2] = (oz / ol) * rnd(0.04, 0.16) + rnd(-0.05, 0.05);
+        dustLen[i] = rnd(0.03, 0.09);
+        dustLife[i] = rnd(2.2, 4.5);
+      }
     };
     const stepDust = (t: number, dt: number) => {
       for (let i = 0; i < DN; i++) {
@@ -1158,7 +1184,7 @@ void main(){
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.1, 5000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.6, 6000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
