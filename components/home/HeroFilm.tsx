@@ -853,11 +853,9 @@ void main(){
     const skipIntro = true; // the walk-in is set aside for now: it opens already looking at you
     const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0 };
     const pickTarget = (t: number) => {
-      // somewhere in view: nearer or further, left or right, a little higher or lower
-      const z = rnd(-3.4, -0.6);
-      const d = CAM.z - z;
-      const hh = d * Math.tan((12 * Math.PI) / 180);
-      fly.target.set(rnd(-0.72, 0.72) * hh * aspect, 0.02 + rnd(0, 0.18) * hh, z); // low in the box and all across it, so its raised wings are always in view
+      // somewhere in the lower half of the frame, left or right, nearer or further: its body low, so its whole wings beat
+      // in plain view above it
+      onFrame(rnd(-0.8, 0.8), rnd(-0.78, -0.2), rnd(5.6, 8.5), fly.target);
       fly.next = t + rnd(6, 9);
     };
     const wp = new THREE.Vector3();
@@ -918,7 +916,9 @@ void main(){
         fs.dur = 2.8;
       } else {
         // onto the frame: an edge or a corner, on the glass between you, its head turned in towards you
-        const spots: [number, number][] = [[-1, rnd(-0.5, 0.55)], [1, rnd(-0.5, 0.55)], [rnd(-0.6, 0.6), 1], [rnd(-0.6, 0.6), -1], [-1, 1], [1, 1], [-1, -1], [1, -1]];
+        // from the left or right side, where the body stays outside and only the face comes in (the frame is too short for that
+        // at the top or bottom)
+        const spots: [number, number][] = [[-1, rnd(-0.55, 0.5)], [1, rnd(-0.55, 0.5)], [-1, rnd(-0.55, 0.5)], [1, rnd(-0.55, 0.5)]];
         let pick = Math.floor(Math.random() * spots.length);
         if (pick === fs.lastPerch) pick = (pick + 1 + Math.floor(Math.random() * (spots.length - 1))) % spots.length;
         fs.lastPerch = pick;
@@ -930,13 +930,26 @@ void main(){
         const inward = C.clone().sub(P);
         inward.addScaledVector(fwd, -inward.dot(fwd)).normalize();
         // its back away from you, its feet on the glass, its head pointing in from the edge
-        const up = fwd.clone(); // away from you
-        const zA = inward.clone().applyAxisAngle(up, rnd(-0.35, 0.35));
+        // its back away from you and leaning out past the edge, so the shell stays outside the frame and only its face leans in
+        const up = fwd.clone().multiplyScalar(Math.cos(1.0)).addScaledVector(inward, -Math.sin(1.0)).normalize();
+        const zA0 = inward.clone().addScaledVector(up, -inward.dot(up)).normalize();
+        const zA = zA0.applyAxisAngle(up, rnd(-0.3, 0.3));
         const xA = new THREE.Vector3().crossVectors(up, zA).normalize();
         mTmp.makeBasis(xA, up, zA);
         fs.toQ.setFromRotationMatrix(mTmp);
-        // its body beyond the edge, its whole head and antennae in the frame
-        fs.toP.copy(P).addScaledVector(inward, -0.32);
+        // its body beyond the edge: only its face, whole, and its antennae come into the frame
+        fs.toP.copy(P).addScaledVector(inward, -0.25);
+        // then placed by where its face lands on screen: moved in or out until the whole face sits just inside the edge
+        const S = b.root.scale.x;
+        const headAt = new THREE.Vector3();
+        const inset = (h: THREE.Vector3) => Math.min(nx !== 0 && Math.abs(nx) === 1 ? 1 - Math.abs(h.x) : 9, Math.abs(ny) === 1 ? 1 - Math.abs(h.y) : 9);
+        const want = Math.abs(ny) === 1 ? 0.34 : 0.075; // the frame is wide and short: a little more room top and bottom
+        for (let it = 0; it < 24; it++) {
+          headAt.set(0, STAND * S, 0.62 * BODY * S).applyQuaternion(fs.toQ).add(fs.toP).project(camera);
+          const err = want - inset(headAt);
+          if (Math.abs(err) < 0.015) break;
+          fs.toP.addScaledVector(inward, err * 1.2);
+        }
         fs.arc = 0;
         fs.dur = 3.2;
       }
@@ -988,18 +1001,17 @@ void main(){
           fly.yaw = b.root.rotation.y;
           pickTarget(t);
           fs.until = t + rnd(7, 10);
-          fs.after = Math.random() < 0.5 ? "face" : "perch";
+          fs.after = "perch";
           if (skipIntro) {
-            // it opens already there, looking at you: hanging in the air in front of you, or peeping in from the frame
-            fs.after = Math.random() < 0.55 ? "face" : "perch";
+            // it opens already there, looking at you: its face peeping in from the frame
+            fs.after = "perch";
             planLanding(t, b);
             b.root.position.copy(fs.toP);
             b.root.quaternion.copy(fs.toQ);
-            fs.mode = fs.after;
-            fs.peek = fs.after === "perch" ? 1 : 0;
-            fs.air = fs.after === "face" ? 1 : 0;
+            fs.mode = "perch";
+            fs.peek = 1;
+            fs.air = 0;
             fs.until = t + rnd(4.5, 6);
-            fs.after = fs.after === "face" ? "perch" : "face";
           }
         }
         if (fs.mode === "fly") {
@@ -1043,7 +1055,7 @@ void main(){
               pickTarget(t);
               fs.until = t + rnd(6, 9);
               // back somewhere else, to look at you again: the other way from last time, more often than not
-              fs.after = Math.random() < 0.7 ? (fs.after === "face" ? "perch" : "face") : fs.after;
+              fs.after = "perch"; // back to another place on the frame, to look at you again
             }
           }
         } else if (fs.mode === "face") {

@@ -14,7 +14,8 @@ import LogoMarquee from "./LogoMarquee";
 export default function Hero() {
   return (
     <section className="overflow-x-clip">
-      <div className="flex min-h-[max(560px,calc(100svh-57px))] flex-col">
+      {/* exactly one screen under the header: the film at the top, the introduction at the very foot, open space between */}
+      <div className="flex flex-col" style={{ minHeight: "max(520px, calc(100svh - 57px))" }}>
         <div className="relative" style={{ height: "clamp(240px, 21.7vw, 460px)", background: "#545454" }}>
           {/* the dark grey painting from the foot of the home page; the beetle film is drawn over it */}
           <HeroInk palette={HERO_INK} spread={false} refHeight={900} speed={1.6} />
