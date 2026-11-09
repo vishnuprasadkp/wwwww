@@ -156,7 +156,7 @@ const mirrorPts = (pts: Pt[]): Pt[] => pts.map(([x, y]) => [40 - x, y] as Pt);
 const CASE_PTS = poly([[300, 243], [335, 237], [372, 244], [398, 266], [414, 305], [418, 350], [409, 405], [386, 448], [352, 477], [318, 487], [301, 486]]);
 const FW = closedPath(smooth(CASE_PTS, 5));
 const HW = "M20.6 15C26.4 14.2 30 18 29.6 23.6C29 29.6 25 34.6 20.6 37.2C20 30 19.8 22 20.6 15Z";
-const FW_EDGE = stroke(smooth(CASE_PTS, 5), 0.95, 3, 0.06);
+const FW_EDGE = stroke(smooth(CASE_PTS, 5), 0.6, 3, 0.04);
 // the stripes: long, parallel, following the roundness of the case, fat in the middle and fine at each end
 const CASE_TOP = fy(243);
 const CASE_H = fy(486) - fy(243);
@@ -166,9 +166,9 @@ const meridian = (d: number, t0: number, t1: number): Pt[] =>
     return [20 + d * Math.pow(Math.sin(Math.PI * (0.04 + 0.92 * t)), 0.65), CASE_TOP + CASE_H * t] as Pt;
   });
 const STRIPES = [
-  [2.6, 0.09, 0.93, 1.0], [4.9, 0.12, 0.9, 1.0],
+  [1.5, 0.08, 0.94, 0.42], [3.2, 0.09, 0.93, 0.45], [5.0, 0.12, 0.9, 0.45],
 ].map((d, i) => stroke(meridian(d[0], d[1], d[2]), d[3], i * 2.7 + 1, 0.05)).join("");
-const SEAM = stroke(smooth(poly([[299, 243], [300, 300], [298, 380], [300, 487]])), 0.9, 27, 0.05);
+const SEAM = stroke(smooth(poly([[299, 243], [300, 300], [298, 380], [300, 487]])), 0.55, 27, 0.04);
 const HW_VEIN = stroke(curve([21.6, 18.4], [26, 18.4], [28.4, 22], [28, 27]), 0.7, 29);
 // the abdomen under the wing cases: seen only when they open
 const ABD = "M20 14.2C24.6 14.2 26.4 20 25.8 26.5C25.2 32 22.2 35.6 20 38.6C17.8 35.6 14.8 32 14.2 26.5C13.6 20 15.4 14.2 20 14.2Z";
@@ -183,12 +183,12 @@ const ABD_LINES = [
 const SHIELD_PTS = poly([[222, 233], [226, 214], [242, 191], [270, 173], [300, 168], [333, 173], [362, 189], [386, 212], [392, 233]]);
 const SHIELD = closedPath(smooth(SHIELD_PTS, 5)) ;
 const SHIELD_EDGE =
-  stroke(smooth(SHIELD_PTS.slice(0, 4), 5), 1, 17, 0.05) + stroke(smooth(SHIELD_PTS.slice(5), 5), 1, 18, 0.05); // not across the head
-const SHIELD_BOT = stroke(smooth(poly([[222, 233], [255, 244], [300, 249], [345, 244], [392, 233]]), 5), 0.7, 19, 0.05);
+  stroke(smooth(SHIELD_PTS.slice(0, 4), 5), 0.6, 17, 0.04) + stroke(smooth(SHIELD_PTS.slice(5), 5), 0.6, 18, 0.04); // not across the head
+const SHIELD_BOT = stroke(smooth(poly([[222, 233], [255, 244], [300, 249], [345, 244], [392, 233]]), 5), 0.5, 19, 0.04);
 // the head: a small rounded box with a dot for each eye, a line for the mouth, and two short curved horns
 const HEAD_PTS = poly([[279, 154], [281, 141], [298, 135], [332, 135], [347, 141], [350, 154], [345, 172], [331, 182], [299, 182], [284, 172], [279, 154]]);
 const HEAD = closedPath(smooth(HEAD_PTS, 4));
-const HEAD_EDGE = stroke(smooth(HEAD_PTS, 4), 0.8, 23, 0.04);
+const HEAD_EDGE = stroke(smooth(HEAD_PTS, 4), 0.55, 23, 0.03);
 const MOUTH = stroke(smooth(poly([[301, 171], [315, 176], [329, 171]])), 0.45, 25, 0.03);
 const HORN_L = ribbon(smooth(poly([[283, 141], [263, 131], [251, 116], [250, 106]])), (t) => 0.5 * (0.55 + 0.45 * Math.pow(1 - t * 0.6, 0.6)));
 const HORN_R = ribbon(smooth(poly([[347, 138], [369, 129], [379, 116], [379, 107]])), (t) => 0.5 * (0.55 + 0.45 * Math.pow(1 - t * 0.6, 0.6)));
@@ -215,6 +215,41 @@ const DOME_STRIPES = [
   stroke(curve([19.6, 19.6], [23.6, 21.4], [26.4, 25.6], [25.4, 32.6]), 0.9, 43, 0.08),
   stroke(curve([22.2, 14], [28.2, 14.2], [31.6, 20], [30.6, 26.6]), 0.8, 45, 0.08),
 ].join("");
+
+/* Drawn like the beetle in the films: fine, even lines; jointed legs (out from the body, a knee, the shin down); jointed
+   feelers ending in a small oval club; ring eyes; and a fine dusting of dots along its outline. */
+const LINE = 0.5;
+const even = (pts: Pt[], w = LINE) => ribbon(pts, () => w);
+const VLEG_L: Pt[][] = [
+  [[15.4, 17.2], [11.6, 14.6], [10.4, 10.6]],
+  [[14.6, 24.2], [10.4, 23.2], [8.6, 27]],
+  [[15.2, 31], [11.6, 33.2], [10.8, 37.4]],
+];
+const VLEGS = [...VLEG_L, ...VLEG_L.map((l) => mirror(l))].map((l) => even([...sample(l[0], l[0], l[1], l[1], 4), ...sample(l[1], l[1], l[2], l[2], 5).slice(1)], 0.55)).join("");
+const VANT_L: Pt[] = [[18.6, 6.4], [17, 4.4], [15.2, 3.2], [13.2, 2.7]];
+const VANT = [VANT_L, mirror(VANT_L)].map((l) => even([...sample(l[0], l[0], l[1], l[1], 3), ...sample(l[1], l[1], l[2], l[2], 3).slice(1), ...sample(l[2], l[2], l[3], l[3], 3).slice(1)], 0.42)).join("");
+// the dust: tiny dots strewn just outside its outline, the same every time it is drawn
+const DUST: [number, number, number][] = (() => {
+  const out: [number, number, number][] = [];
+  const caseOut = smooth(CASE_PTS, 5);
+  const rimR = [...caseOut, ...mirrorPts(caseOut)];
+  // integer hash: identical on the server and in the browser (no float drift, no hydration mismatch)
+  const h = (i: number) => {
+    let x = Math.imul(i + 0x9e37, 0x85ebca6b) >>> 0;
+    x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35) >>> 0;
+    return ((x ^ (x >>> 16)) >>> 0) / 4294967296;
+  };
+  const r2 = (v: number) => Math.round(v * 100) / 100;
+  for (let i = 0; i < 46; i++) {
+    const p = rimR[Math.floor(h(i) * rimR.length)];
+    const dx = p[0] - 20;
+    const dy = p[1] - 25;
+    const l = Math.hypot(dx, dy) || 1;
+    const off = 0.5 + h(i + 99) * 2.2;
+    out.push([r2(p[0] + (dx / l) * off), r2(p[1] + (dy / l) * off), r2(0.14 + h(i + 57) * 0.24)]);
+  }
+  return out;
+})();
 
 /** Whether this beetle is drawn for a dark ground (white ink on the dark), judged from the colours it is given. */
 const onDark = (c: MothColors) => lumOf(c.deep) > 0.72;
@@ -262,10 +297,16 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
             <rect x="20" y="-10" width="30" height="60" />
           </clipPath>
         </defs>
-        <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={HORN_L} fill={ink} />
-        <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={HORN_R} fill={ink} />
-        <ellipse cx={fx(250)} cy={fy(105)} rx=".5" ry=".42" fill={ink} />
-        <ellipse cx={fx(379)} cy={fy(106)} rx=".5" ry=".42" fill={ink} />
+        {/* the dust about it, as in the films */}
+        {DUST.map(([x, y, r], i) => (
+          <circle key={i} cx={x} cy={y} r={r} fill={ink} opacity={0.55} />
+        ))}
+        {/* feelers: jointed, each ending in a small oval club */}
+        <g className="moth-ant" style={{ transformOrigin: "20px 7px" }}>
+          <path d={VANT} fill={ink} />
+          <ellipse cx={VANT_L[3][0] - 0.6} cy={VANT_L[3][1] - 0.1} rx=".95" ry=".5" fill={paper} stroke={ink} strokeWidth=".38" transform={`rotate(-14 ${VANT_L[3][0] - 0.6} ${VANT_L[3][1] - 0.1})`} />
+          <ellipse cx={40 - VANT_L[3][0] + 0.6} cy={VANT_L[3][1] - 0.1} rx=".95" ry=".5" fill={paper} stroke={ink} strokeWidth=".38" transform={`rotate(14 ${40 - VANT_L[3][0] + 0.6} ${VANT_L[3][1] - 0.1})`} />
+        </g>
         <g clipPath={`url(#${id})`}>{under}</g>
         <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
           {under}
@@ -278,23 +319,16 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
           {cases}
         </g>
         {/* the legs are in front of the wings: when the cases swing open they must not cover them */}
-        <path d={LEG_INK} fill={ink} />
-        {LEG_ALL.map((l, i) => {
-          const hip = l[0];
-          const foot = l[l.length - 1];
-          const left = i < 3;
-          return (
-            <g key={i}>
-              <ellipse cx={hip[0]} cy={hip[1]} rx=".6" ry=".45" fill={ink} />
-              <ellipse cx={foot[0]} cy={foot[1]} rx=".95" ry=".52" fill={ink} transform={`rotate(${left ? (i === 0 ? -12 : i === 1 ? 4 : 28) : i === 3 ? 12 : i === 4 ? -4 : -28} ${foot[0]} ${foot[1]})`} />
-            </g>
-          );
-        })}
+        {/* jointed legs: out from the body to the knee, then the shin down */}
+        <path d={VLEGS} fill={ink} />
         <path d={SHIELD_BOT} fill={ink} />
         <path d={SHIELD_EDGE} fill={ink} />
         <path d={HEAD_EDGE} fill={ink} />
-        <ellipse cx={fx(289)} cy={fy(156)} rx=".5" ry=".58" fill={ink} />
-        <ellipse cx={fx(341)} cy={fy(156)} rx=".5" ry=".58" fill={ink} />
+        {/* ring eyes, each with a fine ring for its pupil */}
+        <circle cx={fx(287)} cy={fy(155)} r=".95" fill={paper} stroke={ink} strokeWidth=".4" />
+        <circle cx={fx(343)} cy={fy(155)} r=".95" fill={paper} stroke={ink} strokeWidth=".4" />
+        <circle cx={fx(287)} cy={fy(156)} r=".38" fill="none" stroke={ink} strokeWidth=".26" />
+        <circle cx={fx(343)} cy={fy(156)} r=".38" fill="none" stroke={ink} strokeWidth=".26" />
       </svg>
       {star && <MothStar size={size} />}
     </span>
@@ -329,8 +363,8 @@ export function MothSideIcon({ size = 28, colors = MOTH_COLORS }: { size?: numbe
       <path d={DOME_STRIPES} fill={ink} />
       <path d={DOME_BACK} fill={ink} />
       <path d={DOME_EDGE} fill={ink} />
-      <ellipse cx="16.8" cy="12.4" rx="2.5" ry="3" fill={ink} />
-      <ellipse cx="16.3" cy="11.5" rx=".7" ry=".9" fill={paper} />
+      <ellipse cx="16.8" cy="12.4" rx="2.5" ry="3" fill={paper} stroke={ink} strokeWidth=".6" />
+      <circle cx="15.9" cy="11.8" r="1" fill="none" stroke={ink} strokeWidth=".45" />
       <path d="M14 8.8C13.8 6 17.2 6 17 8.8Z" fill={ink} />
       <path className="moth-ant" style={{ transformOrigin: "16px 6px" }} d={SIDE_ANT_D} fill={ink} />
     </svg>
