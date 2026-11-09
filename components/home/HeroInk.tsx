@@ -25,6 +25,7 @@ uniform float aspect;
 uniform vec2 seed;
 uniform float scale;
 uniform float speed;
+uniform float grainAmt;
 uniform vec3 uPale; uniform vec3 uLight; uniform vec3 uMid; uniform vec3 uDeep; uniform vec3 uGrey;
 
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
@@ -72,6 +73,12 @@ void main(){
   // the grain of the paper
   vec2 g = gl_FragCoord.xy;
   col += (hash(g) - 0.5) * 0.022 + (noise(g * 0.5) - 0.5) * 0.02;
+  // a fine film grain over it all: tiny dark specks that shimmer, never larger than a pixel or two
+  if (grainAmt > 0.0) {
+    float fr = floor(time * 12.0);
+    float gn = hash(g + vec2(fr * 37.0, fr * 11.0));
+    col -= grainAmt * ((gn - 0.5) * 0.05 + step(0.93, gn) * 0.05);
+  }
   gl_FragColor = vec4(col, 1.0);
 }`;
 
@@ -96,7 +103,7 @@ export const TERRACOTTA: InkPalette = {
  * `refHeight`: draw the shapes at the size they have in a box this many pixels tall, so a shorter box shows the same
  * painting (the home hero shows the AI agent case study's 900px painting, at its size).
  */
-export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight, speed = 1 }: { palette?: InkPalette; spread?: boolean; refHeight?: number; speed?: number }) {
+export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight, speed = 1, grain = 0 }: { palette?: InkPalette; spread?: boolean; refHeight?: number; speed?: number; grain?: number }) {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const [key, setKey] = useState(0);
 
@@ -151,6 +158,7 @@ export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight
     const uReveal = u("reveal");
     gl.uniform1f(u("aspect"), W / H);
     gl.uniform1f(u("speed"), speed);
+    gl.uniform1f(u("grainAmt"), grain);
     gl.uniform1f(u("scale"), refHeight ? Math.min(1, Math.max(0.2, H / refHeight)) : 1);
     gl.uniform2f(u("seed"), Math.random() * 50, Math.random() * 50);
     gl.uniform3f(u("uPale"), ...palette.pale);

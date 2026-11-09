@@ -867,27 +867,21 @@ void main(){
     const skipIntro = true; // the walk-in is set aside for now: it opens already looking at you
     const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0 };
     const ndcNow = new THREE.Vector3();
+    let lastFar = true;
     const pickTarget = (t: number) => {
-      // where it is on screen now, so the next leg goes somewhere else: across, diagonally, up or down, near or far
+      // Corner to corner, and near to far: from wherever it is, it heads for one of the other corners of the box, crossing it
+      // on a diagonal, and if it was far off it comes close (towards you, so you see its face and its wings from the front),
+      // if it was close it goes away into the distance. Now and then it leaves the frame and comes back elsewhere.
       ndcNow.copy(fly.p).project(camera);
-      const r = Math.random();
-      const side = ndcNow.x > 0 ? -1 : 1;
-      let nx: number;
-      let ny: number;
-      if (r < 0.16) {
-        // out of the frame altogether for a moment, then it comes back in somewhere else
-        nx = side * rnd(1.35, 1.7);
-        ny = rnd(-0.8, 0.5);
-      } else if (r < 0.34) {
-        // up high for a while
-        nx = rnd(-0.8, 0.8);
-        ny = rnd(0.15, 0.55);
-      } else {
-        // mostly low, across to the other side, on a diagonal
-        nx = side * rnd(0.2, 0.85);
-        ny = ndcNow.y > -0.55 ? rnd(-0.92, -0.65) : rnd(-0.6, -0.3);
-      }
-      onFrame(nx, ny, rnd(4.8, 10), fly.target);
+      const qx = ndcNow.x > 0 ? 1 : -1;
+      const qy = ndcNow.y > -0.45 ? 1 : -1;
+      const corners: [number, number][] = [[-1, -1], [1, -1], [-1, 1], [1, 1]].filter(([cx, cy]) => cx !== qx || cy !== qy) as [number, number][];
+      const [cx, cy] = corners[Math.floor(Math.random() * corners.length)];
+      const out = Math.random() < 0.14;
+      const nx = out ? cx * rnd(1.35, 1.7) : cx * rnd(0.45, 0.85);
+      const ny = cy > 0 ? rnd(0.0, 0.45) : rnd(-0.92, -0.6);
+      lastFar = !lastFar;
+      onFrame(nx, ny, lastFar ? rnd(8, 10.5) : rnd(4.4, 5.6), fly.target);
       fly.next = t + rnd(5, 8);
     };
     const wp = new THREE.Vector3();
@@ -916,6 +910,8 @@ void main(){
       yaw: 0,
       peek: 0,
       lastPerch: -1,
+      perchSide: 1,
+      heading: false,
     };
     const qTmp = new THREE.Quaternion();
     const eTmp = new THREE.Euler();
@@ -950,11 +946,10 @@ void main(){
         // onto the frame: an edge or a corner, on the glass between you, its head turned in towards you
         // from the left or right side, where the body stays outside and only the face comes in (the frame is too short for that
         // at the top or bottom)
-        const spots: [number, number][] = [[-1, rnd(-0.55, 0.5)], [1, rnd(-0.55, 0.5)], [-1, rnd(-0.55, 0.5)], [1, rnd(-0.55, 0.5)]];
-        let pick = Math.floor(Math.random() * spots.length);
-        if (pick === fs.lastPerch) pick = (pick + 1 + Math.floor(Math.random() * (spots.length - 1))) % spots.length;
-        fs.lastPerch = pick;
-        const [nx, ny] = spots[pick];
+        // the side it has flown to, at about the height it is flying at
+        ndcNow.copy(b.root.position).project(camera);
+        const nx = fs.perchSide;
+        const ny = clamp(ndcNow.y, -0.55, 0.45);
         const d = rnd(4.1, 4.8);
         const P = onFrame(nx, ny, d, vB);
         const C = onFrame(0, 0, d, vC);
@@ -1048,7 +1043,7 @@ void main(){
           }
         }
         if (fs.mode === "fly") {
-          if (t > fly.next || fly.p.distanceTo(fly.target) < 0.4) pickTarget(t);
+          if (!fs.heading && (t > fly.next || fly.p.distanceTo(fly.target) < 0.4)) pickTarget(t);
           // a slow glide towards where it is going; it only ever eases
           const want = fly.target.clone().sub(fly.p);
           const dist = want.length();
@@ -1068,9 +1063,23 @@ void main(){
           b.root.quaternion.copy(qFromEuler(0.3 + climb + 0.06 * Math.sin(t * 0.6), fly.yaw, fly.roll));
           fs.air = 1;
           if (t > fs.until) {
-            // only now and then does it come to look at you; most of the time it just flies on
-            if (Math.random() < 0.3 && Math.abs(ndcNow.copy(fly.p).project(camera).x) < 1.1) planLanding(t, b);
-            else fs.until = t + rnd(10, 16);
+            // only now and then does it come to look at you: then it flies on to the side it is nearest to, low, and settles
+            // there, at the edge, before it turns its face to you
+            if (!fs.heading && Math.random() < 0.3) {
+              ndcNow.copy(fly.p).project(camera);
+              fs.perchSide = ndcNow.x > 0 ? 1 : -1;
+              fs.heading = true;
+              onFrame(fs.perchSide * 0.95, clamp(ndcNow.y, -0.55, 0.4), rnd(4.6, 5.4), fly.target);
+              fly.next = t + 30;
+              fs.until = t + 30;
+            } else if (!fs.heading) fs.until = t + rnd(10, 16);
+          }
+          if (fs.heading) {
+            ndcNow.copy(fly.p).project(camera);
+            if (Math.abs(ndcNow.x) > 0.72 || fly.p.distanceTo(fly.target) < 0.5) {
+              fs.heading = false;
+              planLanding(t, b);
+            }
           }
         } else if (fs.mode === "land" || fs.mode === "takeoff") {
           const u = clamp((t - fs.t0) / fs.dur, 0, 1);
