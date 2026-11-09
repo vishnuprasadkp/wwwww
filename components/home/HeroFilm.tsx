@@ -250,7 +250,7 @@ const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
 uniform vec3 ink;
 uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
-uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -281,10 +281,10 @@ void main(){
   float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1 * (1.0 - even);
   // lines drawn across the form, so it reads round: along the wing cases (and the seam), around the body
   if (merid > 0.0) {
-    a = max(a, lineAt(abs(vObj.x) * merid + jit, 1.2 * pressure * px) * smoothstep(0.03, 0.07, abs(vObj.x)) * (0.5 + 0.5 * n));
-    a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px));
+    a = max(a, lineAt(abs(vObj.x) * merid + jit, 1.2 * pressure * px) * smoothstep(0.03, 0.07, abs(vObj.x)) * (0.5 + 0.5 * n) * stripes);
+    a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px) * stripes);
   }
-  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * (0.45 + 0.55 * n));
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * (0.45 + 0.55 * n) * stripes);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
     vec2 q = fc / 3.2;
@@ -317,6 +317,7 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
       px: shared.px,
       ink: shared.ink ?? { value: INK },
       even: shared.even ?? { value: 0 },
+      stripes: { value: 1 }, // how much of its drawn stripes or rings show (1: all)
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },

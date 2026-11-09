@@ -367,7 +367,7 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
  * beetle steps out of one.
  */
 export function BeetleIcon({ size = 24, star = true, className = "" }: { size?: number; star?: boolean; className?: string }) {
-  const file = size <= 24 ? 24 : size <= 28 ? 28 : 64;
+  const file = size <= 20 ? 20 : size <= 24 ? 24 : 64;
   const C = beetleCanvas(size);
   return (
     <span className={className} style={{ position: "relative", display: "inline-block", width: size * WIDE, height: size, lineHeight: 0 }}>
@@ -442,7 +442,7 @@ type Ledge = { el: HTMLElement; kind: string; side: boolean; x0: number; x1: num
 type Spot = { x: number; y: number; wall: Wall; ledge?: Ledge; dir?: 1 | -1; user?: boolean };
 export type MothSignal = { kind: "send" | "reply"; id: number };
 
-const SIZE_BASE = 28; // moth height in px, the same as the icon it flies out of
+const SIZE_BASE = 24; // the beetle's height in px in the assistant, a touch larger than the icon it steps out of
 const SIZE_SCENE = 34; // in a painting section the beetle is a little larger than the assistant's (28)
 /** The moths in one painting section, so they keep out of each other's way and a press goes to the nearer one. */
 type Mate = { pos: { x: number; y: number }; goal: () => { x: number; y: number } | null };

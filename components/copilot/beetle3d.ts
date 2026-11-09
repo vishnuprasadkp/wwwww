@@ -16,8 +16,10 @@ export type BeetlePose = {
 };
 export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; canvas: HTMLCanvasElement; still: () => string };
 
-/** One drawing everywhere (loader, header icon, assistant): the weight of its pen. */
-export const BEETLE_LINE = 1.05;
+/** One drawing everywhere (loader, header icon, assistant): the weight of its pen, for a beetle 64 px tall. A smaller
+ * beetle is drawn with a pen in proportion, so it is the same drawing, only smaller. */
+export const BEETLE_LINE = 2.1;
+const penFor = (size: number) => BEETLE_LINE * (size / 64);
 
 type P2 = [number, number];
 /** Points along a smooth curve through `pts` (Catmull-Rom). */
@@ -43,7 +45,8 @@ const through = (pts: P2[], n = 36): P2[] => {
  * top), so it sits on the same wing.
  */
 function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], size: number) {
-  const W = Math.max(128, Math.round(size * 4.2));
+  // drawn at twice the size the wing shows at in flight, so its pen comes out the same weight as the body's lines
+  const W = Math.max(96, Math.round(size * 3.7));
   const H = Math.round((W * 766) / 1282);
   const c = document.createElement("canvas");
   c.width = W;
@@ -52,7 +55,7 @@ function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], siz
   g.strokeStyle = `rgb(${Math.round(rgb[0] * 255)},${Math.round(rgb[1] * 255)},${Math.round(rgb[2] * 255)})`;
   g.lineCap = "round";
   g.lineJoin = "round";
-  const pen = W / 68; // the pen's full width at the middle of a stroke
+  const pen = 2 * 1.15 * penFor(size); // the pen's full width at the middle of a stroke (2× for the drawing's scale)
   const stroke = (pts: P2[], weight: number, seed: number) => {
     const q = through(pts.map(([u, v]) => [u * W, v * H] as P2));
     for (let i = 0; i < q.length - 1; i++) {
@@ -138,7 +141,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
   camera.lookAt(0, STAND, 0.03);
 
   // drawn with the film's pen: each line swells and tapers, and the drawing is redrawn a little a few times a second, as a sketch
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * BEETLE_LINE }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 0 } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 0 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
@@ -151,10 +154,15 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     1,
     { ink, dust: ink, dots: 0, wingK: 0.24 },
   );
-  // no dust and no bubbles: only the drawing
+  // no dust and no bubbles: only the drawing. And each shell is drawn from outside only: open, its inside would add a
+  // second set of crossing stripes, which reads as a dark patch
   b.root.traverse((o) => {
     if ((o as THREE_NS.Points).isPoints) o.visible = false;
+    const m = (o as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial | undefined;
+    if (m && (m as THREE_NS.ShaderMaterial).isShaderMaterial && m.uniforms?.merid) m.side = THREE.FrontSide;
   });
+  const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
+  const shellWeight = shellMat.uniforms.weight.value as number;
   // it rolls about its own body line, through its middle
   const pivot = new THREE.Group();
   pivot.position.y = STAND;
@@ -184,6 +192,9 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       const s = i === 0 ? 1 : -1;
       c.rotation.set(0.4 * open, s * 0.22 * open, -s * 0.85 * open);
     });
+    // lifted, the cases are seen edge-on and their stripes would bunch into a dark patch: as they open, only their outline stays
+    shellMat.uniforms.stripes.value = 1 - ease(open / 0.6);
+    shellMat.uniforms.weight.value = shellWeight * (1 - 0.5 * ease(open / 0.6)); // and seen edge-on, a lighter outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;
