@@ -855,7 +855,7 @@ void main(){
     const pickTarget = (t: number) => {
       // somewhere in the lower half of the frame, left or right, nearer or further: its body low, so its whole wings beat
       // in plain view above it
-      onFrame(rnd(-0.8, 0.8), rnd(-0.78, -0.2), rnd(5.6, 8.5), fly.target);
+      onFrame(rnd(-0.8, 0.8), rnd(-0.92, -0.5), rnd(5.6, 8.5), fly.target); // low: the body near the foot of the box
       fly.next = t + rnd(6, 9);
     };
     const wp = new THREE.Vector3();
@@ -962,9 +962,8 @@ void main(){
       fs.fromFace = fs.mode === "face";
       fs.mode = "takeoff";
       // up and away into the box, towards its middle
-      const goal = new THREE.Vector3(rnd(-0.8, 0.8), rnd(0.25, 0.55), rnd(-1.2, 0.6));
-      fs.toP.copy(fs.fromP).lerp(goal, 0.45);
-      fs.toP.y = Math.max(fs.toP.y, fs.fromP.y + 0.35);
+      const goal = onFrame(rnd(-0.6, 0.6), rnd(-0.85, -0.5), rnd(5.6, 7.5), new THREE.Vector3()); // out into the lower part of the box
+      fs.toP.copy(fs.fromP).lerp(goal, 0.6);
       const dir = goal.clone().sub(fs.fromP);
       fs.yaw = Math.atan2(dir.x, dir.z);
       fs.toQ.copy(qFromEuler(0.4, fs.yaw, 0));
