@@ -218,10 +218,26 @@ function NivviIntro() {
   const [gone, setGone] = useState(true);
   const [ready, setReady] = useState(false);
 
+  // it waits until the visitor is in: the opening has finished, then a few seconds more with the page
   useEffect(() => {
     setGone(false);
-    const t = setTimeout(() => setReady(true), 1400);
-    return () => clearTimeout(t);
+    const html = document.documentElement;
+    let t = 0;
+    const later = () => (t = window.setTimeout(() => setReady(true), 4500));
+    let mo: MutationObserver | null = null;
+    if (!html.hasAttribute("data-loading")) later();
+    else {
+      mo = new MutationObserver(() => {
+        if (html.hasAttribute("data-loading")) return;
+        mo?.disconnect();
+        later();
+      });
+      mo.observe(html, { attributes: true, attributeFilter: ["data-loading"] });
+    }
+    return () => {
+      mo?.disconnect();
+      clearTimeout(t);
+    };
   }, []);
 
   // Dismissal lives in memory only, so it comes back on the next load but not on every page change.

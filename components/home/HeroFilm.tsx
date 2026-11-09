@@ -83,14 +83,15 @@ function smokeTexture() {
  * The wing, drawn: no fill at all, only its outline and its veins, in fine white ink strokes taken from the beetle's own
  * painted wing.
  */
-export function drawnWing(img: HTMLImageElement, rgb: [number, number, number] = [246, 246, 246]) {
-  const w = img.width;
-  const h = img.height;
+export function drawnWing(img: HTMLImageElement, rgb: [number, number, number] = [246, 246, 246], width = 0, even = false) {
+  // `width`: draw it at this width (a small beetle's wing is drawn small, so its outline keeps a steady, fine weight)
+  const w = width || img.width;
+  const h = width ? Math.round((img.height * width) / img.width) : img.height;
   const c = document.createElement("canvas");
   c.width = w;
   c.height = h;
   const g = c.getContext("2d")!;
-  g.drawImage(img, 0, 0);
+  g.drawImage(img, 0, 0, w, h);
   const d = g.getImageData(0, 0, w, h);
   const p = d.data;
   const a0 = new Float32Array(w * h);
@@ -105,7 +106,7 @@ export function drawnWing(img: HTMLImageElement, rgb: [number, number, number] =
   bc.height = h;
   const bg = bc.getContext("2d")!;
   bg.filter = `blur(${Math.max(3, Math.round(w / 220))}px)`;
-  bg.drawImage(img, 0, 0);
+  bg.drawImage(img, 0, 0, w, h);
   const bd = bg.getImageData(0, 0, w, h).data;
   const out = g.createImageData(w, h);
   const q = out.data;
@@ -122,7 +123,7 @@ export function drawnWing(img: HTMLImageElement, rgb: [number, number, number] =
   };
   const st = Math.max(3, Math.round(w / 260));
   // a pressure that rises and falls along the edge, so the outline reads as a hand-drawn stroke
-  const pressure = (x: number, y: number) => 0.55 + 0.45 * Math.sin(x * 0.011 + Math.sin(y * 0.017) * 2.2) * Math.sin(y * 0.009 + 1.3);
+  const pressure = (x: number, y: number) => (even ? 0.75 : 0.55 + 0.45 * Math.sin(x * 0.011 + Math.sin(y * 0.017) * 2.2) * Math.sin(y * 0.009 + 1.3)); // `even`: one steady line
   for (let y = st; y < h - st; y++) {
     for (let x = st; x < w - st; x++) {
       const o = y * w + x;
@@ -225,7 +226,7 @@ const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
 uniform vec3 ink;
 uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
-uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -244,16 +245,16 @@ void main(){
   float boil = floor(time * 5.0);
   vec2 fc = gl_FragCoord.xy / px;
   // the pressure of the pen rises and falls along each line, so it swells and tapers like the loader's strokes
-  float pressure = 0.45 + 1.0 * noise(fc * 0.04 + boil * 3.1);
+  float pressure = mix(0.45 + 1.0 * noise(fc * 0.04 + boil * 3.1), 1.0, even); // even: one steady width, as the loader lines
   // the outline: where the surface turns away from you
   float ndv = abs(dot(N, V));
   float fw = max(fwidth(ndv), 1e-4);
   float wpx = 1.7 * weight * pressure * px;
   float a = 1.0 - smoothstep(wpx, wpx + 1.0, ndv / fw);
-  a *= 0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0));
+  a *= mix(0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0)), 1.0, even);
   vec3 L = normalize(vec3(-0.45, 0.75, 0.55));
   float n = dot(N, L) * 0.5 + 0.5;
-  float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1;
+  float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1 * (1.0 - even);
   // lines drawn across the form, so it reads round: along the wing cases (and the seam), around the body
   if (merid > 0.0) {
     a = max(a, lineAt(abs(vObj.x) * merid + jit, 1.2 * pressure * px) * smoothstep(0.03, 0.07, abs(vObj.x)) * (0.5 + 0.5 * n));
@@ -277,7 +278,7 @@ void main(){
   gl_FragColor = vec4(ink * a, a);
 }`;
 
-export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 } };
+export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number } };
 type Lines = { merid?: number; rings?: number; hatch?: number; weight?: number };
 const INK = new THREE.Vector3(0.96, 0.96, 0.96); // pure white ink, no warmth: white and grey only
 function sketchMaterial(shared: SketchU, lines: Lines = {}) {
@@ -291,6 +292,7 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
       fogFar: shared.fogFar,
       px: shared.px,
       ink: shared.ink ?? { value: INK },
+      even: shared.even ?? { value: 0 },
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },
@@ -686,7 +688,7 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
     const g = m.geometry as THREE.BufferGeometry;
     if (!g.boundingSphere) g.computeBoundingSphere();
     const size = g.boundingSphere!.radius * Math.max(m.scale.x, m.scale.y, m.scale.z);
-    if (!(g instanceof THREE.SphereGeometry) || size < 0.15) continue;
+    if (!(g instanceof THREE.SphereGeometry) || size < 0.15 || dotsK <= 0) continue;
     const dots = new THREE.Points(surfaceDust(g, Math.round((13000 + 40000 * Math.min(1, size * 2)) * dotsK)), dustBody);
     dots.renderOrder = 23;
     dots.frustumCulled = false;

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MothIcon, MOTH_COLORS, setMothOpen, type MothColors } from "@/components/copilot/Moth";
+import { mountBeetle3D, type Beetle3D } from "@/components/copilot/beetle3d";
 
 // The moth that arrives is darker than the one in the nav; its wing pattern is white, then takes each colour in turn
 const ARRIVING: MothColors = { grey: "#4c3d38", hind: "#8d7168", deep: "#4c3d38", vein: "#f1efee" };
@@ -72,6 +73,30 @@ export default function Loader() {
     let landing = false;
     let ended = false;
 
+    // the same beetle as the films and the assistant, drawn in 3D; the flat drawing shows until it is ready, and takes
+    // over again just as it lands on the header's (drawn) icon
+    let b3: Beetle3D | null = null;
+    let shown3 = 0; // how far the 3D beetle has faded in
+    let last = 0;
+    mountBeetle3D(moth, { size: SIZE, ink: "#393636", line: 0.5 })
+      .then((b) => {
+        if (dead) return b?.dispose();
+        if (!b) return;
+        b3 = b;
+        b.canvas.style.opacity = "0";
+      })
+      .catch(() => {});
+    const draw3 = (s: number, open: number, flying: boolean, keep: number) => {
+      const dt = last ? clamp(s - last, 0, 0.1) : 0;
+      last = s;
+      if (!b3) return;
+      shown3 = Math.min(1, shown3 + dt / 0.3);
+      const k = shown3 * keep;
+      b3.canvas.style.opacity = k.toFixed(3);
+      svg.style.opacity = (1 - k).toFixed(3);
+      b3.pose({ t: s, open, roll: 0, walking: false, flying });
+    };
+
     const place = (x: number, y: number, rot: number, scale: number, opacity: number) => {
       moth.style.opacity = String(opacity);
       moth.style.transform = `translate3d(${(x - W / 2).toFixed(2)}px, ${(y - SIZE / 2).toFixed(2)}px, 0) rotate(${rot.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
@@ -100,6 +125,7 @@ export default function Loader() {
         const hoverWings = 0.1 + 0.68 * wake + flutter;
         const wings = hoverWings + (0.1 - hoverWings) * stand + (0.88 - 0.1) * prep + 0.05 * Math.sin(s * 30) * prep * (1 - prep);
         setMothOpen(svg, clamp(wings, 0, 1));
+        draw3(s, clamp(wings, 0, 1), wake > 0.3 && stand < 0.5, 1);
         place(cx, cy + (1 - arrive) * 22 + bob - 5 * prep, sway, (0.8 + 0.2 * arrive) * (1 + 0.04 * prep), arrive);
       } else {
         if (!to) {
@@ -130,6 +156,8 @@ export default function Loader() {
         const beat = 0.86 + 0.12 * Math.sin(s * 22);
         const fold = ease(clamp((u - 0.72) / 0.28));
         setMothOpen(svg, clamp(beat * (1 - fold) * (1 - 0.35 * ease(clamp((u - 0.5) / 0.3))), 0, 1));
+        // as it folds its wings over the header's icon, the drawn icon takes its place
+        draw3(s, clamp(beat * (1 - fold), 0, 1), u < 0.75, 1 - ease(clamp((u - 0.82) / 0.16)));
         place(x, y, lean * (1 - ease(clamp((u - 0.78) / 0.22))), scale, 1);
 
         // the page is uncovered as it goes
@@ -164,6 +192,7 @@ export default function Loader() {
       dead = true;
       cancelAnimationFrame(raf);
       timers.forEach(clearTimeout);
+      b3?.dispose();
     };
   }, []);
 

@@ -14,7 +14,7 @@ export type BeetlePose = {
   walking: boolean;
   flying: boolean;
 };
-export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void };
+export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; canvas: HTMLCanvasElement };
 
 const clamp = (x: number, a: number, b: number) => Math.min(b, Math.max(a, x));
 const ease = (x: number) => {
@@ -27,7 +27,7 @@ const hexRgb = (h: string): [number, number, number] => {
 };
 
 /** Mounts the beetle as a canvas centred on `box` (the roaming beetle's own element, which turns it to its heading). */
-export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink: string }): Promise<Beetle3D | null> {
+export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink: string; line: number }): Promise<Beetle3D | null> {
   const [THREE, film] = await Promise.all([import("three"), import("@/components/home/HeroFilm")]);
   const { buildBeetle, drawnWing, stippledWing, WING, BODY } = film;
 
@@ -68,19 +68,24 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
   camera.position.set(0, STAND + D * Math.cos(TILT), -D * Math.sin(TILT));
   camera.lookAt(0, STAND, 0.03);
 
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * 0.8 }, ink: { value: new THREE.Vector3(...ink) } };
+  // every line one steady, fine width (as in the loader's drawing), however the surface turns
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * opts.line }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
   const b = buildBeetle(
-    drawnWing(img, [Math.round(ink[0] * 255), Math.round(ink[1] * 255), Math.round(ink[2] * 255)]),
-    stippledWing(img, 4.4, 5000),
+    // the wings as strokes only: their outline and veins, drawn at a size that suits this small beetle
+    drawnWing(img, [Math.round(ink[0] * 255), Math.round(ink[1] * 255), Math.round(ink[2] * 255)], Math.round(opts.size * 7), true),
+    stippledWing(img, 4.4, 1),
     sk,
     proj,
     1,
-    { ink, dust: ink, dots: 0.14, wingK: 0.24 },
+    { ink, dust: ink, dots: 0, wingK: 0.24 },
   );
-  b.dustMat.uniforms.proj.value = proj * b.wingK; // the wings are smaller against the body here: so is their dust
+  // no dust and no bubbles: only the drawing
+  b.root.traverse((o) => {
+    if ((o as THREE_NS.Points).isPoints) o.visible = false;
+  });
   // it rolls about its own body line, through its middle
   const pivot = new THREE.Group();
   pivot.position.y = STAND;
@@ -173,5 +178,5 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     renderer.dispose();
     cv.remove();
   };
-  return { pose, dispose };
+  return { pose, dispose, canvas: cv };
 }

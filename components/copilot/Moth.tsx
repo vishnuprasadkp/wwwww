@@ -957,7 +957,7 @@ export default function MothTrail({
     let b3: Beetle3D | null = null;
     let alive3 = true;
     if (!reduced) {
-      mountBeetle3D(el, { size: SIZE, ink: onDark(colors) ? colors.deep : BLACK })
+      mountBeetle3D(el, { size: SIZE, ink: onDark(colors) ? colors.deep : BLACK, line: 0.45 })
         .then((b) => {
           if (!alive3) return b?.dispose();
           if (!b) return;
