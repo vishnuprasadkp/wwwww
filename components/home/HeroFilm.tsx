@@ -114,9 +114,9 @@ function drawnWing(img: HTMLImageElement) {
   };
   const ink = (o: number, a: number) => {
     a *= root(o % w);
-    q[o * 4] = 250;
+    q[o * 4] = 246;
     q[o * 4 + 1] = 246;
-    q[o * 4 + 2] = 238;
+    q[o * 4 + 2] = 246;
     q[o * 4 + 3] = Math.max(q[o * 4 + 3], Math.round(255 * a));
   };
   const st = Math.max(3, Math.round(w / 260));
@@ -277,7 +277,7 @@ void main(){
 
 type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number } };
 type Lines = { merid?: number; rings?: number; hatch?: number; weight?: number };
-const INK = new THREE.Vector3(0.98, 0.96, 0.92); // white ink, as the drawings on the dark paintings
+const INK = new THREE.Vector3(0.96, 0.96, 0.96); // pure white ink, no warmth: white and grey only
 function sketchMaterial(shared: SketchU, lines: Lines = {}) {
   return new THREE.ShaderMaterial({
     vertexShader: SKETCH_VS,
@@ -316,7 +316,7 @@ const BODY_DUST_VS = `attribute vec3 aN; attribute vec4 aSeed;
     vA = mix(a, 0.55, aSeed.z * smoothstep(0.0, 0.25, life)) * mix(1.0, (1.0 - life) * (1.0 - life), aSeed.z) * (0.75 + 0.25 * sin(time * 2.1 + aSeed.y * 37.0)) * (1.0 - smoothstep(fogNear, fogFar, depth)) * amt;
   }`;
 const BODY_DUST_FS = `varying float vA;
-  void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(1.0, 0.97, 0.92, vA * (1.0 - smoothstep(0.3, 0.5, r))); }`;
+  void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(vec3(0.95), vA * (1.0 - smoothstep(0.3, 0.5, r))); }`;
 function surfaceDust(geo: THREE.BufferGeometry, n: number) {
   const g = geo.index ? geo.toNonIndexed() : geo;
   const pa = g.attributes.position;
@@ -604,7 +604,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
       void main(){
         float r = length(gl_PointCoord - 0.5);
         float a = (1.0 - smoothstep(0.3, 0.5, r)) * vA * open * 0.85;
-        vec3 col = mix(vec3(1.0, 0.97, 0.92), vec3(0.96, 0.84, 0.72), step(0.7, vT));
+        vec3 col = mix(vec3(0.97), vec3(0.74), step(0.7, vT)); // white, with some soft grey among it
         gl_FragColor = vec4(col, a);
       }`,
     uniforms: { time: sk.time, proj: { value: proj }, px: sk.px, WL: { value: WL }, open: { value: 0 }, fogNear: sk.fogNear, fogFar: sk.fogFar },
@@ -789,7 +789,7 @@ void main(){
     sc.far = 20;
     scene.add(key1);
     scene.add(key1.target);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.38, color: lin(0.18, 0.09, 0.05) }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.38, color: lin(0.1, 0.1, 0.1) }));
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     floor.material.depthWrite = false;
@@ -814,7 +814,7 @@ void main(){
     /* ---------------- strokes in the air: short pen marks instead of bubbles ---------------- */
     const strokeMat = new THREE.ShaderMaterial({
       vertexShader: "attribute float alpha; uniform float proj; varying float vA; void main(){ vA = alpha; vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_Position = projectionMatrix * mv; gl_PointSize = max(1.0, 0.022 * proj / -mv.z); }",
-      fragmentShader: "varying float vA; void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(0.98, 0.95, 0.9, vA * (1.0 - smoothstep(0.3, 0.5, r))); }",
+      fragmentShader: "varying float vA; void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(vec3(0.9), vA * (1.0 - smoothstep(0.3, 0.5, r))); }",
       uniforms: { proj: { value: (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)) } },
       transparent: true,
       depthWrite: false,
