@@ -144,8 +144,9 @@ export default function Motion() {
       const about = location.pathname === "/about"; // there the right half (the description beside the title) is simply there
       const opening = (el: HTMLElement) =>
         !el.closest("[data-no-motion]") && !!el.textContent?.trim() && el.getBoundingClientRect().top < innerHeight * 0.9 && !(about && innerWidth >= 768 && el.getBoundingClientRect().left > innerWidth * 0.45);
-      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => el.matches("h1") ? !el.closest("[data-no-motion]") && !!el.textContent?.trim() : opening(el));
-      const blocks = Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => opening(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
+      // on About only the main heading moves; the description (at every width) is simply there, no rise and no blur
+      const heads = uniq(Array.from(main.querySelectorAll<HTMLElement>(HEADINGS))).filter((el) => el.matches("h1") ? !el.closest("[data-no-motion]") && !!el.textContent?.trim() : !about && opening(el));
+      const blocks = about ? [] : Array.from(main.querySelectorAll<HTMLElement>(BLOCKS)).filter((el) => opening(el) && !el.closest(HEADINGS) && !el.querySelector(`${BLOCKS}, ${HEADINGS}, img`));
       [...heads, ...blocks]
         .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left)
         .forEach((el, i) => {

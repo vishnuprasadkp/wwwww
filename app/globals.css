@@ -169,6 +169,10 @@ aside[data-moth-away] .nivvi-mark-star { opacity: 1; transform: translateY(-50%)
 .moth-ant { animation: moth-ant 3.4s ease-in-out infinite; }
 .moth-ant-l { animation-delay: 0.35s; animation-direction: reverse; }
 @media (prefers-reduced-motion: reduce) { .moth-ant { animation: none; } }
+/* the beetle's dust (loader, header, assistant): each mote leaves its outline, drifts off and fades, over and over */
+@keyframes moth-mote { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: .7; } 100% { transform: translate(var(--mx), var(--my)); opacity: 0; } }
+.moth-mote { animation: moth-mote 3.4s cubic-bezier(.25,.6,.4,1) infinite; }
+@media (prefers-reduced-motion: reduce) { .moth-mote { animation: none; opacity: .4; } }
 
 /* The opening (components/layout/Loader.tsx): it covers the page, on the same paper, until the moth has flown to the assistant. */
 .loader { display: none; }
