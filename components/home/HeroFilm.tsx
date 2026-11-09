@@ -846,7 +846,7 @@ void main(){
       return { pos, alpha, geo };
     };
     // drifting in the air all the time: a few short marks, like the quick strokes round a sketch
-    const N = 1600;
+    const N = 0; // no dust hanging over the whole picture: only what the beetle itself gives off
     const air = makeStrokes(N);
     const airSeed = Array.from({ length: N }, () => ({ x: rnd(-6, 6), y: rnd(0, 2.4), z: rnd(-9, 3.5), len: rnd(0.04, 0.12), ang: rnd(-0.6, 0.6), ph: rnd(0, 6.28), a: rnd(0.25, 0.6) }));
 
@@ -876,9 +876,10 @@ void main(){
       const [nx, ny] = e === "L" ? [-1.45, rnd(-0.9, 0.5)] : e === "R" ? [1.45, rnd(-0.9, 0.5)] : e === "T" ? [rnd(-0.8, 0.8), 1.6] : [rnd(-0.8, 0.8), -1.5];
       return onFrame(nx, ny, d, out);
     };
-    let lastEdge: Edge = "L";
+    let lastEdge: Edge = Math.random() < 0.5 ? "L" : "R";
+    let lastPerchSide = 0;
     const newPass = (t: number, fromHere: boolean) => {
-      const edges: Edge[] = ["L", "R", "T", "L", "R", "B"];
+      const edges: Edge[] = ["L", "R", "T", "B"]; // every way out is as likely as any other: up, down, left, right
       const pick = (not: Edge[]) => {
         const c = edges.filter((e) => !not.includes(e));
         return c[Math.floor(Math.random() * c.length)];
@@ -887,13 +888,20 @@ void main(){
       const dIn = near ? rnd(8, 10.5) : rnd(4.6, 6); // far to near, or near to far: it comes towards you, or goes away
       const dOut = near ? rnd(4.6, 6) : rnd(8, 10.5);
       // it comes back the way it went: out past the left, back in from the left (now and then from somewhere else)
-      const inEdge = Math.random() < 0.8 ? lastEdge : pick([lastEdge]);
+      const inEdge = Math.random() < 0.55 ? lastEdge : pick([lastEdge]);
       const outEdge = pick([inEdge]);
       lastEdge = outEdge;
-      fly.perch = !fromHere && (outEdge === "L" || outEdge === "R") && Math.random() < 0.45;
-      const mid = onFrame(rnd(-0.55, 0.55), rnd(-0.85, 0.15), (dIn + dOut) / 2, new THREE.Vector3());
-      const end = fly.perch ? onFrame(outEdge === "L" ? -0.95 : 0.95, rnd(-0.55, 0.3), rnd(4.6, 5.4), new THREE.Vector3()) : edgePoint(outEdge, dOut, new THREE.Vector3());
-      if (fly.perch) fs.perchSide = outEdge === "L" ? -1 : 1;
+      // now and then it settles on the side it is heading for and looks at you: left or right, higher or lower, and if it
+      // looked from that side last time it seldom does again
+      const side = outEdge === "L" ? -1 : 1;
+      fly.perch = !fromHere && (outEdge === "L" || outEdge === "R") && Math.random() < (side === lastPerchSide ? 0.15 : 0.5);
+      // the middle of the crossing anywhere in the box, high or low
+      const mid = onFrame(rnd(-0.6, 0.6), rnd(-0.88, 0.45), (dIn + dOut) / 2, new THREE.Vector3());
+      const end = fly.perch ? onFrame(side * 0.95, rnd(-0.6, 0.4), clamp((dIn + dOut) / 2, 5.6, 7.5), new THREE.Vector3()) : edgePoint(outEdge, dOut, new THREE.Vector3());
+      if (fly.perch) {
+        fs.perchSide = side;
+        lastPerchSide = side;
+      }
       if (!fromHere) {
         edgePoint(inEdge, dIn, fly.p);
         fly.v.copy(mid).sub(fly.p).normalize().multiplyScalar(0.6);
@@ -972,8 +980,8 @@ void main(){
         // the side it has flown to, at about the height it is flying at
         ndcNow.copy(b.root.position).project(camera);
         const nx = fs.perchSide;
-        const ny = clamp(ndcNow.y, -0.55, 0.45);
-        const d = rnd(4.1, 4.8);
+        const ny = clamp(ndcNow.y, -0.6, 0.45);
+        const d = clamp(camera.position.distanceTo(b.root.position), 5.6, 7.5); // where it is: it does not swell towards you as it turns
         const P = onFrame(nx, ny, d, vB);
         const C = onFrame(0, 0, d, vC);
         camera.getWorldDirection(fwd);
