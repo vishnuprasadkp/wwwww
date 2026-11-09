@@ -273,6 +273,7 @@ void main(){
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
+  a *= 0.55; // a light hand: the lines are faint, the dust carries the form
   gl_FragColor = vec4(ink * a, a);
 }`;
 
@@ -376,7 +377,7 @@ function surfaceDust(geo: THREE.BufferGeometry, n: number) {
 const BODY = 0.47;
 const STAND = 0.28 * BODY;
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
-function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number) {
+function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number, size = 5) {
   const root = new THREE.Group();
   const body = new THREE.Group();
   body.position.y = STAND; // standing tall on its feet: they just touch the floor
@@ -638,7 +639,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
 
   // a larger beetle overall, its body a touch smaller against its wings
   // the body smaller, the wings as large as before
-  root.scale.setScalar(5);
+  root.scale.setScalar(size);
   body.scale.setScalar(BODY);
   for (const w of wings) w.scale.setScalar(0.88 / BODY);
   // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
@@ -674,7 +675,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     if (!g.boundingSphere) g.computeBoundingSphere();
     const size = g.boundingSphere!.radius * Math.max(m.scale.x, m.scale.y, m.scale.z);
     if (!(g instanceof THREE.SphereGeometry) || size < 0.15) continue;
-    const dots = new THREE.Points(surfaceDust(g, Math.round(8000 + 26000 * Math.min(1, size * 2))), dustBody);
+    const dots = new THREE.Points(surfaceDust(g, Math.round(13000 + 40000 * Math.min(1, size * 2))), dustBody);
     dots.renderOrder = 23;
     dots.frustumCulled = false;
     m.add(dots);
@@ -1267,7 +1268,7 @@ void main(){
         }
         // in flight, dust pours off the humps of its back and streams out behind it, a long glittering wake
         if ((fs.mode === "fly" && !fly.hidden) || fs.mode === "takeoff" || fs.mode === "land") {
-          backCarry += dt * 520 * fs.air;
+          backCarry += dt * 700 * fs.air;
           trail.copy(fly.v).multiplyScalar(-0.35);
           while (backCarry >= 1) {
             backCarry -= 1;
@@ -1461,7 +1462,10 @@ void main(){
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 4.4, 30000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
+      // the same size on screen in every box: as large as it is in the tall painting at the foot of the page, so in the
+      // shorter box at the top of the home page it is drawn larger to match
+      const footH = Math.min(680, Math.max(420, window.innerWidth * 0.36));
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 4.4, 30000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)), 5 * Math.max(1, footH / PH));
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
