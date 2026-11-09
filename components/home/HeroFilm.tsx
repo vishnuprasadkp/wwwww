@@ -704,8 +704,10 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
     // exactly the same everywhere.
     const VH = Math.max(Math.max(200, host.getBoundingClientRect().height), Math.min(680, Math.max(420, window.innerWidth * 0.36)));
     const SIZE_K = VH / Math.max(200, host.getBoundingClientRect().height);
-    const FLOOR_N = Math.min(-0.12, -0.5 + (SIZE_K - 1) * 0.18); // in the short film it flies low, so its raised wings stay in view
-    const CEIL_N = Math.max(-0.12, 0.45 - (SIZE_K - 1) * 0.6);
+    // where its body (its feet, really) keeps to, as a share of the box: in the short film at the top it flies in the lower
+    // part, so its body and its raised wings above it are in view; the tall film uses the whole height
+    const FLOOR_N = -0.5 - (SIZE_K - 1) * 0.45;
+    const CEIL_N = Math.max(FLOOR_N + 0.3, 0.45 - (SIZE_K - 1) * 1.25);
     const D_K = 1; // the same distances everywhere // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
@@ -935,7 +937,7 @@ void main(){
         if (Math.abs(nx) > 0.45 && headingToSide && Math.random() < 0.85) {
           fly.perch = true;
           fs.perchSide = nx > 0 ? 1 : -1;
-          const end = onFrame(fs.perchSide * 0.95, TOP ? clamp(ny, -0.75, -0.3) : clamp(ny, Math.max(FLOOR_N, -0.35), Math.min(CEIL_N - 0.15, 0.2)), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
+          const end = onFrame(fs.perchSide * 0.95, TOP ? clamp(ny, -0.75, -0.3) : clamp(ny, Math.max(FLOOR_N, Math.min(-0.35, CEIL_N - 0.2)), Math.min(CEIL_N - 0.1, 0.2)), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
           fly.pts = [end];
           fly.idx = 0;
           fly.target.copy(end);
@@ -983,7 +985,7 @@ void main(){
         const sx = clamp(nx + Math.cos(wand.h) * len * 0.6, -0.8, 0.8);
         const ex = clamp(sx + Math.cos(wand.h) * len * 0.6, -0.85, 0.85);
         const low = lift2(onFrame(sx, yLo + 0.05, wand.d, new THREE.Vector3()));
-        const rise = lift2(onFrame(ex, rnd(Math.max(yLo + 0.3, -0.1), yHi), clamp(wand.d + rnd(-2, 2), 6.8 * D_K, 12 * D_K), new THREE.Vector3())); // rising, it may come towards you or draw away
+        const rise = lift2(onFrame(ex, rnd(Math.min(yLo + 0.25, yHi), yHi), clamp(wand.d + rnd(-2, 2), 6.8 * D_K, 12 * D_K), new THREE.Vector3())); // rising, it may come towards you or draw away
         wand.h = Math.atan2(0.4, Math.cos(wand.h));
         fly.pts = [low, rise];
         fly.idx = 0;
@@ -1076,7 +1078,7 @@ void main(){
         // the side it has flown to, at about the height it is flying at
         ndcNow.copy(b.root.position).project(camera);
         const nx = fs.perchSide;
-        const ny = clamp(ndcNow.y, -0.35, 0.2); // along the side, never up in a corner where only its legs would show
+        const ny = clamp(ndcNow.y, Math.max(FLOOR_N, Math.min(-0.35, CEIL_N - 0.2)), Math.min(CEIL_N - 0.1, 0.2)); // along the side, never up in a corner where only its legs would show
         const d = clamp(camera.position.distanceTo(b.root.position), 6.8 * D_K, 8.5 * D_K); // where it is: it does not swell towards you as it turns
         const P = onFrame(nx, ny, d, vB);
         const C = onFrame(0, 0, d, vC);
@@ -1183,7 +1185,8 @@ void main(){
                 introPending = false;
                 wand.lastLook = t - 18; // it will stop to look at you soon after it arrives
                 // it flies in from beyond any side or corner, a different one each time and in each film
-                const ways: [number, number][] = [[-1.45, rnd(-0.3, 0.2)], [1.45, rnd(-0.3, 0.2)], [-1.4, 0.75], [1.4, 0.75], [-1.4, -0.75], [1.4, -0.75]]; // never straight down from the top, where its legs would come first
+                const band = () => rnd(FLOOR_N + 0.05, CEIL_N - 0.05);
+                const ways: [number, number][] = [[-1.45, band()], [1.45, band()], [-1.4, CEIL_N], [1.4, CEIL_N], [-1.4, FLOOR_N], [1.4, FLOOR_N]]; // never straight down from the top, where its legs would come first
                 const [ex, ey] = ways[Math.floor(Math.random() * ways.length)];
                 onFrame(ex, ey, rnd(7.5, 9.5) * D_K, fly.p);
                 fly.p.y = Math.max(fly.p.y, FLOOR + 0.35);
