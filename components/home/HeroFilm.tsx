@@ -865,29 +865,51 @@ void main(){
     const T_FREE = T_LIFT + 2.8;
     // not always the walk-in: half the time the film opens with the beetle already there, peeping in at you
     const skipIntro = true; // the walk-in is set aside for now: it opens already looking at you
-    const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0 };
+    const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0, pts: [] as THREE.Vector3[], idx: 0, gone: 0, hidden: false, perch: false };
     const ndcNow = new THREE.Vector3();
-    let lastFar = true;
-    const pickTarget = (t: number) => {
-      // Corner to corner, and near to far: from wherever it is, it heads for one of the other corners of the box, crossing it
-      // on a diagonal, and if it was far off it comes close (towards you, so you see its face and its wings from the front),
-      // if it was close it goes away into the distance. Now and then it leaves the frame and comes back elsewhere.
-      ndcNow.copy(fly.p).project(camera);
-      const qx = ndcNow.x > 0 ? 1 : -1;
-      const qy = ndcNow.y > -0.45 ? 1 : -1;
-      const corners: [number, number][] = [[-1, -1], [1, -1], [-1, 1], [1, 1]].filter(([cx, cy]) => cx !== qx || cy !== qy) as [number, number][];
-      const [cx, cy] = corners[Math.floor(Math.random() * corners.length)];
-      const out = Math.random() < 0.14;
-      const nx = out ? cx * rnd(1.35, 1.7) : cx * rnd(0.45, 0.85);
-      const ny = cy > 0 ? rnd(0.0, 0.45) : rnd(-0.92, -0.6);
-      lastFar = !lastFar;
-      onFrame(nx, ny, lastFar ? rnd(8, 10.5) : rnd(4.4, 5.6), fly.target);
-      fly.next = t + rnd(5, 8);
+    /* Its flight is a series of passes. It comes in from beyond one edge of the frame (a side, the top or the bottom), crosses
+       the box on a diagonal through some point inside it, nearer or further, and goes out past another edge. Then it is gone
+       for a moment, and comes back in from somewhere else. Now and then a pass ends not out of the frame but at the side it
+       is heading for, where it settles and looks at you. */
+    type Edge = "L" | "R" | "T" | "B";
+    const edgePoint = (e: Edge, d: number, out = new THREE.Vector3()) => {
+      const [nx, ny] = e === "L" ? [-1.45, rnd(-0.9, 0.5)] : e === "R" ? [1.45, rnd(-0.9, 0.5)] : e === "T" ? [rnd(-0.8, 0.8), 1.6] : [rnd(-0.8, 0.8), -1.5];
+      return onFrame(nx, ny, d, out);
+    };
+    let lastEdge: Edge = "L";
+    const newPass = (t: number, fromHere: boolean) => {
+      const edges: Edge[] = ["L", "R", "T", "L", "R", "B"];
+      const pick = (not: Edge[]) => {
+        const c = edges.filter((e) => !not.includes(e));
+        return c[Math.floor(Math.random() * c.length)];
+      };
+      const near = Math.random() < 0.5;
+      const dIn = near ? rnd(8, 10.5) : rnd(4.6, 6); // far to near, or near to far: it comes towards you, or goes away
+      const dOut = near ? rnd(4.6, 6) : rnd(8, 10.5);
+      const inEdge = pick([lastEdge]);
+      const outEdge = pick([inEdge]);
+      lastEdge = outEdge;
+      fly.perch = !fromHere && (outEdge === "L" || outEdge === "R") && Math.random() < 0.22;
+      const mid = onFrame(rnd(-0.55, 0.55), rnd(-0.85, 0.15), (dIn + dOut) / 2, new THREE.Vector3());
+      const end = fly.perch ? onFrame(outEdge === "L" ? -0.95 : 0.95, rnd(-0.55, 0.3), rnd(4.6, 5.4), new THREE.Vector3()) : edgePoint(outEdge, dOut, new THREE.Vector3());
+      if (fly.perch) fs.perchSide = outEdge === "L" ? -1 : 1;
+      if (!fromHere) {
+        edgePoint(inEdge, dIn, fly.p);
+        fly.v.copy(mid).sub(fly.p).normalize().multiplyScalar(0.9);
+        fly.yaw = Math.atan2(fly.v.x, fly.v.z);
+        fly.roll = 0;
+      }
+      fly.pts = [mid, end];
+      fly.idx = 0;
+      fly.target.copy(mid);
+      fly.hidden = false;
     };
     const wp = new THREE.Vector3();
     const emitAt = new THREE.Vector3();
     let emitCarry = 0;
     let bodyCarry = 0;
+    let backCarry = 0;
+    const trail = new THREE.Vector3();
 
     /* after the intro: it flies, and now and then comes down to walk a little on the floor, or lands on the frame itself, on
        the glass between you, at an edge or a corner, and peeps in at you; then it takes off again */
@@ -1025,60 +1047,53 @@ void main(){
           fly.p.copy(b.root.position);
           fly.v.set(0, 0, 0);
           fly.yaw = b.root.rotation.y;
-          pickTarget(t);
+          newPass(t, false);
           fs.until = t + rnd(7, 10);
           fs.after = "perch";
           if (skipIntro) {
-            // it opens flying in from beyond one side of the frame, low, across towards the other
-            const from = Math.random() < 0.5 ? -1 : 1;
-            onFrame(from * 1.5, rnd(-0.85, -0.4), rnd(5.5, 8), fly.p);
-            b.root.position.copy(fly.p);
-            onFrame(-from * rnd(0.2, 0.7), rnd(-0.85, -0.4), rnd(5.5, 8), fly.target);
-            fly.v.copy(fly.target).sub(fly.p).normalize().multiplyScalar(0.5);
-            fly.yaw = Math.atan2(fly.v.x, fly.v.z);
-            fly.next = t + rnd(5, 7);
+            // the box is empty at first; then it comes in from beyond an edge
             fs.mode = "fly";
             fs.air = 1;
-            fs.until = t + rnd(12, 18);
+            fly.hidden = true;
+            fly.gone = t + rnd(0.6, 1.4);
+            edgePoint("L", 9, fly.p);
           }
         }
         if (fs.mode === "fly") {
-          if (!fs.heading && (t > fly.next || fly.p.distanceTo(fly.target) < 0.4)) pickTarget(t);
-          // a slow glide towards where it is going; it only ever eases
-          const want = fly.target.clone().sub(fly.p);
-          const dist = want.length();
-          want.normalize().multiplyScalar(0.62 * clamp(dist / 1.4, 0.35, 1));
-          const ease = skipIntro ? 1 : smooth(T_FREE, T_FREE + 3, t); // it sets off gently
-          fly.v.lerp(want, Math.min(1, dt * 0.7));
-          fly.p.addScaledVector(fly.v, dt * ease);
-          const sp = Math.hypot(fly.v.x, fly.v.z);
-          const yawGoal = sp > 0.05 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;
-          const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 0.8);
-          fly.yaw += dy;
-          // it banks into its turns, and tips up as it climbs and down as it dives: its wings are seen from the side, from
-          // above and from below as it goes
-          fly.roll += (clamp((-dy / Math.max(dt, 1e-3)) * 1.3, -0.75, 0.75) - fly.roll) * Math.min(1, dt * 1.4);
-          const climb = clamp(-fly.v.y * 1.6, -0.5, 0.45);
-          b.root.position.set(fly.p.x, fly.p.y + 0.04 * Math.sin(t * 1.3), fly.p.z);
-          b.root.quaternion.copy(qFromEuler(0.3 + climb + 0.06 * Math.sin(t * 0.6), fly.yaw, fly.roll));
           fs.air = 1;
-          if (t > fs.until) {
-            // only now and then does it come to look at you: then it flies on to the side it is nearest to, low, and settles
-            // there, at the edge, before it turns its face to you
-            if (!fs.heading && Math.random() < 0.3) {
-              ndcNow.copy(fly.p).project(camera);
-              fs.perchSide = ndcNow.x > 0 ? 1 : -1;
-              fs.heading = true;
-              onFrame(fs.perchSide * 0.95, clamp(ndcNow.y, -0.55, 0.4), rnd(4.6, 5.4), fly.target);
-              fly.next = t + 30;
-              fs.until = t + 30;
-            } else if (!fs.heading) fs.until = t + rnd(10, 16);
-          }
-          if (fs.heading) {
+          if (fly.hidden) {
+            // out of sight for a moment; then it comes back in from another edge
+            b.root.position.copy(fly.p);
+            if (t > fly.gone) newPass(t, false);
+          } else {
+            const want = fly.target.clone().sub(fly.p);
+            const dist = want.length();
+            want.normalize().multiplyScalar(0.95 * clamp(dist / 1.2, 0.45, 1));
+            fly.v.lerp(want, Math.min(1, dt * 0.9));
+            fly.p.addScaledVector(fly.v, dt);
+            const sp = Math.hypot(fly.v.x, fly.v.z);
+            const yawGoal = sp > 0.05 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;
+            const dy = Math.atan2(Math.sin(yawGoal - fly.yaw), Math.cos(yawGoal - fly.yaw)) * Math.min(1, dt * 1.1);
+            fly.yaw += dy;
+            // it banks into its turns, and tips up as it climbs and down as it dives: its wings are seen from the side, from
+            // above and from below as it goes
+            fly.roll += (clamp((-dy / Math.max(dt, 1e-3)) * 1.3, -0.75, 0.75) - fly.roll) * Math.min(1, dt * 1.4);
+            const climb = clamp(-fly.v.y * 1.4, -0.5, 0.45);
+            b.root.position.set(fly.p.x, fly.p.y + 0.04 * Math.sin(t * 1.3), fly.p.z);
+            b.root.quaternion.copy(qFromEuler(0.3 + climb + 0.06 * Math.sin(t * 0.6), fly.yaw, fly.roll));
             ndcNow.copy(fly.p).project(camera);
-            if (Math.abs(ndcNow.x) > 0.72 || fly.p.distanceTo(fly.target) < 0.5) {
-              fs.heading = false;
-              planLanding(t, b);
+            const last = fly.idx === fly.pts.length - 1;
+            if (last && fly.perch && Math.abs(ndcNow.x) > 0.72) {
+              planLanding(t, b); // it has reached the side it was heading for: it settles there and looks at you
+            } else if (last && !fly.perch) {
+              // it only vanishes once it is really out of sight (its wings too); if it reaches its mark still in view, it flies on
+              if (Math.abs(ndcNow.x) > 1.3 || ndcNow.y > 1.45 || ndcNow.y < -1.35 || ndcNow.z > 1) {
+                fly.hidden = true;
+                fly.gone = t + rnd(1.2, 3.2);
+              } else if (dist < 0.7) fly.target.addScaledVector(fly.v.clone().normalize(), 3);
+            } else if (!last && dist < 0.7) {
+              fly.idx++;
+              fly.target.copy(fly.pts[fly.idx]);
             }
           }
         } else if (fs.mode === "land" || fs.mode === "takeoff") {
@@ -1101,7 +1116,7 @@ void main(){
               fly.v.copy(fs.toP).sub(fs.fromP).multiplyScalar(0.25);
               fly.yaw = fs.yaw;
               fly.roll = 0;
-              pickTarget(t);
+              newPass(t, true); // from where it took off, across and away out of the frame
               fs.until = t + rnd(14, 22);
               // back somewhere else, to look at you again: the other way from last time, more often than not
               fs.after = "perch"; // back to another place on the frame, to look at you again
@@ -1210,6 +1225,17 @@ void main(){
           b.body.localToWorld(emitAt);
           spawn(emitAt, t, wp);
         }
+        // in flight, dust pours off the humps of its back and streams out behind it, a long glittering wake
+        if ((fs.mode === "fly" && !fly.hidden) || fs.mode === "takeoff" || fs.mode === "land") {
+          backCarry += dt * 520 * fs.air;
+          trail.copy(fly.v).multiplyScalar(-0.35);
+          while (backCarry >= 1) {
+            backCarry -= 1;
+            emitAt.set(rnd(-0.38, 0.38), rnd(0.18, 0.46), rnd(-0.55, 0.15));
+            b.body.localToWorld(emitAt);
+            spawn(emitAt, t, wp, trail);
+          }
+        }
       }
 
       b.root.getWorldPosition(wp);
@@ -1223,7 +1249,7 @@ void main(){
     };
 
     /* ---------------- strokes off the wings ---------------- */
-    const DN = 8000;
+    const DN = 12000;
     const dust = makeStrokes(DN);
     const dustVel = new Float32Array(DN * 3);
     const dustDir = new Float32Array(DN * 3);
@@ -1231,7 +1257,7 @@ void main(){
     const dustLife = new Float32Array(DN).fill(1);
     const dustLen = new Float32Array(DN);
     let dustNext = 0;
-    const spawn = (at: THREE.Vector3, t: number, smokeFrom?: THREE.Vector3) => {
+    const spawn = (at: THREE.Vector3, t: number, smokeFrom?: THREE.Vector3, drift?: THREE.Vector3) => {
       const i = dustNext;
       dustNext = (dustNext + 1) % DN;
       dust.pos[i * 6] = at.x;
@@ -1258,6 +1284,13 @@ void main(){
         dustVel[i * 3 + 2] = (oz / ol) * rnd(0.04, 0.16) + rnd(-0.05, 0.05);
         dustLen[i] = rnd(0.03, 0.09);
         dustLife[i] = rnd(2.2, 4.5);
+        if (drift) {
+          // left behind as it flies on, spreading as it falls back
+          dustVel[i * 3] = drift.x + rnd(-0.08, 0.08);
+          dustVel[i * 3 + 1] = drift.y + rnd(-0.02, 0.1);
+          dustVel[i * 3 + 2] = drift.z + rnd(-0.08, 0.08);
+          dustLife[i] = rnd(1.6, 3.4);
+        }
       }
     };
     const stepDust = (t: number, dt: number) => {
