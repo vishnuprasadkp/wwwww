@@ -250,7 +250,7 @@ const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
 uniform vec3 ink;
 uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
-uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -266,16 +266,18 @@ void main(){
   vec3 N = normalize(vN); vec3 V = normalize(vV);
   if (!gl_FrontFacing) N = -N;
   // the drawing boils a little, as if redrawn a few times a second
-  float boil = floor(time * 5.0);
+  float boil = floor(time * 5.0) * (1.0 - objPress); // objPress: a steady drawing, never redrawn
   vec2 fc = gl_FragCoord.xy / px;
   // the pressure of the pen rises and falls along each line, so it swells and tapers like the loader's strokes
   float pressure = mix(0.45 + 1.0 * noise(fc * 0.04 + boil * 3.1), 1.0, even); // even: one steady width, as the loader lines
+  // objPress: the swell of each line belongs to the beetle, not to the screen, so it holds its shape as it moves
+  pressure = mix(pressure, 0.6 + 0.8 * noise(vObj.xz * 9.0 + vObj.y * 5.0), objPress);
   // the outline: where the surface turns away from you
   float ndv = abs(dot(N, V));
   float fw = max(fwidth(ndv), 1e-4);
   float wpx = 1.7 * weight * pressure * px;
   float a = 1.0 - smoothstep(wpx, wpx + 1.0, ndv / fw);
-  a *= mix(0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0)), 1.0, even);
+  a *= mix(mix(0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0)), 1.0, even), 1.0, objPress);
   vec3 L = normalize(vec3(-0.45, 0.75, 0.55));
   float n = dot(N, L) * 0.5 + 0.5;
   float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * 0.1 * (1.0 - even);
@@ -302,7 +304,7 @@ void main(){
   gl_FragColor = vec4(ink * a, a);
 }`;
 
-export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number } };
+export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number }; objPress?: { value: number }; edge?: { value: THREE.Vector2 } };
 type Lines = { merid?: number; rings?: number; hatch?: number; weight?: number };
 const INK = new THREE.Vector3(0.96, 0.96, 0.96); // pure white ink, no warmth: white and grey only
 function sketchMaterial(shared: SketchU, lines: Lines = {}) {
@@ -318,6 +320,7 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
       ink: shared.ink ?? { value: INK },
       even: shared.even ?? { value: 0 },
       stripes: { value: 1 }, // how much of its drawn stripes or rings show (1: all)
+      objPress: shared.objPress ?? { value: 0 },
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },
@@ -615,14 +618,14 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
   const wingMat = new THREE.ShaderMaterial({
     vertexShader: `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vD;
       void main(){ vUv = uv; vN = normalize(normalMatrix * normal); vec4 mv = modelViewMatrix * vec4(position, 1.0); vV = normalize(-mv.xyz); vD = -mv.z; gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: `uniform sampler2D map; uniform float fogNear; uniform float fogFar; varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vD;
+    fragmentShader: `uniform sampler2D map; uniform float fogNear; uniform float fogFar; uniform vec2 edge; varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vD;
       void main(){
         vec4 c = texture2D(map, vUv);
         float facing = abs(dot(normalize(vN), normalize(vV)));
-        float a = c.a * smoothstep(0.05, 0.28, facing) * smoothstep(2.4, 3.6, vD) * (1.0 - smoothstep(fogNear, fogFar, vD)); // the wing is drawn; the dust lives only round its edge
+        float a = c.a * smoothstep(edge.x, edge.y, facing) * smoothstep(2.4, 3.6, vD) * (1.0 - smoothstep(fogNear, fogFar, vD)); // the wing is drawn; the dust lives only round its edge
         gl_FragColor = vec4(c.rgb, a);
       }`,
-    uniforms: { map: { value: wingTex }, fogNear: sk.fogNear, fogFar: sk.fogFar },
+    uniforms: { map: { value: wingTex }, fogNear: sk.fogNear, fogFar: sk.fogFar, edge: sk.edge ?? { value: new THREE.Vector2(0.05, 0.28) } },
     transparent: true,
     side: THREE.DoubleSide,
     depthWrite: false,

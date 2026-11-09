@@ -11,7 +11,7 @@ const RISE = 700; // …and its wings open slowly
 const STAND_AT = 2200; // it settles and stands still, wings folded
 const PREP_AT = 2600; // then its wing cases begin to lift, slowly, as it gets ready
 const FLY_AT = 3200; // and only then does it leave for the assistant
-const FLY = 1500;
+const FLY = 1700;
 const SIZE = 64;
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -67,10 +67,9 @@ export default function Loader() {
     let landing = false;
     let ended = false;
 
-    // the same beetle as the films and the assistant, drawn in 3D; the flat drawing shows until it is ready, and takes
-    // over again just as it lands on the header's (drawn) icon
+    // the same beetle as the films and the assistant, drawn in 3D; the icon (the same beetle at rest) shows until it is ready
     let b3: Beetle3D | null = null;
-    let shown3 = 0; // how far the 3D beetle has faded in
+    let shown3 = 0; // how far the 3D beetle has faded in over the icon, at the start
     let last = 0;
     mountBeetle3D(moth, { size: SIZE, ink: "#393636" })
       .then((b) => {
@@ -80,15 +79,14 @@ export default function Loader() {
         b.canvas.style.opacity = "0";
       })
       .catch(() => {});
-    const draw3 = (s: number, open: number, flying: boolean, keep: number) => {
+    const draw3 = (s: number, open: number, flying: boolean, settle: number) => {
       const dt = last ? clamp(s - last, 0, 0.1) : 0;
       last = s;
       if (!b3) return;
       shown3 = Math.min(1, shown3 + dt / 0.3);
-      const k = shown3 * keep;
-      b3.canvas.style.opacity = k.toFixed(3);
-      still.style.opacity = (1 - k).toFixed(3);
-      b3.pose({ t: s, open, roll: 0, walking: false, flying });
+      b3.canvas.style.opacity = shown3.toFixed(3);
+      still.style.opacity = (1 - shown3).toFixed(3);
+      b3.pose({ t: s, open, roll: 0, walking: false, flying, settle });
     };
 
     const place = (x: number, y: number, rot: number, scale: number, opacity: number) => {
@@ -118,13 +116,15 @@ export default function Loader() {
         const flutter = (0.1 * Math.sin(s * 11) + 0.05 * Math.sin(s * 4.7)) * wake * (1 - stand);
         const hoverWings = 0.1 + 0.68 * wake + flutter;
         const wings = hoverWings + (0.1 - hoverWings) * stand + (0.88 - 0.1) * prep + 0.05 * Math.sin(s * 30) * prep * (1 - prep);
-        draw3(s, clamp(wings, 0, 1), wake > 0.3 && stand < 0.5, 1);
+        draw3(s, clamp(wings, 0, 1), wake > 0.3 && stand < 0.5, 0);
         place(cx, cy + (1 - arrive) * 22 + bob - 5 * prep, sway, (0.8 + 0.2 * arrive) * (1 + 0.04 * prep), arrive);
       } else {
         if (!to) {
           to = target();
           from = { x: cx, y: cy - 5 };
         }
+        // it keeps aiming at where the icon really is (the header can shift a little as the page is uncovered)
+        to = target() ?? to;
         const dest = to ?? { x: cx, y: cy - 200, h: 24 };
         const u = clamp((t - FLY_AT) / FLY);
         const e = easeIO(u);
@@ -147,10 +147,11 @@ export default function Loader() {
         const scale = 1.04 + (((dest.h || 24) / SIZE) - 1.04) * ease(clamp((u - 0.05) / 0.9));
         // wings beat while it travels, slow as it comes in, and fold as it settles
         const beat = 0.86 + 0.12 * Math.sin(s * 22);
-        const fold = ease(clamp((u - 0.72) / 0.28));
-        // as it folds its wings over the header's icon, the icon (the same beetle at rest) takes its place
-        draw3(s, clamp(beat * (1 - fold), 0, 1), u < 0.75, 1 - ease(clamp((u - 0.82) / 0.16)));
-        place(x, y, lean * (1 - ease(clamp((u - 0.78) / 0.22))), scale, 1);
+        // well before it arrives it folds its wings and settles into the icon's own resting pose, so it glides the last
+        // stretch already looking exactly like the icon it becomes
+        const fold = ease(clamp((u - 0.55) / 0.3));
+        draw3(s, clamp(beat * (1 - fold), 0, 1), u < 0.6, ease(clamp((u - 0.55) / 0.35)));
+        place(x, y, lean * (1 - ease(clamp((u - 0.6) / 0.3))), scale, 1);
 
         // the page is uncovered as it goes
         veil.style.opacity = String(1 - ease(clamp((t - FLY_AT - 300) / 1400)));
@@ -164,6 +165,7 @@ export default function Loader() {
           // the moth is not seen to fade or change; it simply stays where it sat down
           html.setAttribute("data-landed", "");
           cancelAnimationFrame(raf);
+          moth.style.visibility = "hidden"; // in the same frame as the icon is shown: one beetle, never two, never a blink
           finish();
           timers.push(window.setTimeout(() => html.removeAttribute("data-landed"), 400));
         }

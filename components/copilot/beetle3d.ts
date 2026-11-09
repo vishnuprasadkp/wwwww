@@ -13,6 +13,7 @@ export type BeetlePose = {
   roll: number; // -1 … 1: on its side against a wall on the left (-) or right (+); 0 seen from above
   walking: boolean;
   flying: boolean;
+  settle?: number; // 0 … 1: eases every living movement away, into the icon's resting pose (the loader, as it lands)
 };
 export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; canvas: HTMLCanvasElement; still: () => string };
 
@@ -140,8 +141,9 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
   camera.position.set(0, STAND + D * Math.cos(TILT), -D * Math.sin(TILT));
   camera.lookAt(0, STAND, 0.03);
 
-  // drawn with the film's pen: each line swells and tapers, and the drawing is redrawn a little a few times a second, as a sketch
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 0 } };
+  // drawn with the film's pen: each line swells and tapers, as a sketch; the swell belongs to the beetle (objPress), so
+  // as it flies its lines hold their shape instead of shimmering, and the wings stay drawn as they turn (edge)
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 0 }, objPress: { value: 1 }, edge: { value: new THREE.Vector2(0.0, 0.06) } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
@@ -186,7 +188,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     const unfold = ease((open - 0.25) / 0.6);
     pivot.rotation.z = (Math.PI / 2) * clamp(p.roll, -1.1, 1.1);
     // a gentle lean as it flies
-    pivot.rotation.x = -0.18 * air;
+    pivot.rotation.x = -0.18 * air * (1 - clamp(p.settle ?? 0, 0, 1));
 
     b.cases.forEach((c, i) => {
       const s = i === 0 ? 1 : -1;
@@ -210,15 +212,16 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
 
     // the antennae feel the air all the time; swept back in flight
     const k = p.t;
+    const live = 1 - clamp(p.settle ?? 0, 0, 1); // how much of its living movement is left
     b.antennae.forEach((a, i) => {
       const sd = i === 0 ? 1 : -1;
       const w = p.walking ? 2.6 : 1.4;
-      a.rotation.y = sd * (0.35 + 0.15 * Math.sin(k * w + i * 1.3) + 0.25 * air);
-      a.rotation.x = -0.35 + 0.12 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * air;
+      a.rotation.y = sd * (0.35 + (0.15 * Math.sin(k * w + i * 1.3) + 0.25 * air) * live);
+      a.rotation.x = -0.35 + (0.12 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * air) * live;
       (a.userData.joints as THREE_NS.Group[]).forEach((j, n) => {
         const ph = k * w * 1.1 - n * 0.7 + i * 2.1;
-        j.rotation.y = n === 0 ? 0 : sd * (0.12 + 0.12 * Math.sin(ph));
-        j.rotation.x = n === 0 ? 0 : 0.1 + 0.1 * Math.sin(ph * 0.8 + 1.3) - 0.08 * air;
+        j.rotation.y = n === 0 ? 0 : sd * (0.12 + 0.12 * Math.sin(ph) * live);
+        j.rotation.x = n === 0 ? 0 : 0.1 + (0.1 * Math.sin(ph * 0.8 + 1.3) - 0.08 * air) * live;
       });
     });
     // a tripod gait while it walks; in the air the legs hang and paddle softly
@@ -229,10 +232,10 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       const sd = L.side > 0 ? -1 : 1;
       const swing = Math.sin(g) * st;
       const up = Math.max(0, Math.cos(g)) * st;
-      const paddle = Math.sin(k * 1.6 + L.row * 1.1 + (L.side > 0 ? 0 : 0.6)) * air;
+      const paddle = Math.sin(k * 1.6 + L.row * 1.1 + (L.side > 0 ? 0 : 0.6)) * air * live;
       L.root.rotation.y = L.yawBase + sd * (0.45 * swing + 0.18 * paddle);
-      L.hip.rotation.z = 0.35 + 0.42 * up - 0.4 * air + 0.12 * paddle;
-      L.knee.rotation.z = -1.85 - 0.3 * up + 0.35 * air + 0.15 * paddle;
+      L.hip.rotation.z = 0.35 + 0.42 * up + (-0.4 * air + 0.12 * paddle) * live;
+      L.knee.rotation.z = -1.85 - 0.3 * up + (0.35 * air + 0.15 * paddle) * live;
     }
     // its pupils turn to you
     scene.updateMatrixWorld();
