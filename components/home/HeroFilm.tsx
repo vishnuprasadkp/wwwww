@@ -886,16 +886,17 @@ void main(){
       const near = Math.random() < 0.5;
       const dIn = near ? rnd(8, 10.5) : rnd(4.6, 6); // far to near, or near to far: it comes towards you, or goes away
       const dOut = near ? rnd(4.6, 6) : rnd(8, 10.5);
-      const inEdge = pick([lastEdge]);
+      // it comes back the way it went: out past the left, back in from the left (now and then from somewhere else)
+      const inEdge = Math.random() < 0.8 ? lastEdge : pick([lastEdge]);
       const outEdge = pick([inEdge]);
       lastEdge = outEdge;
-      fly.perch = !fromHere && (outEdge === "L" || outEdge === "R") && Math.random() < 0.22;
+      fly.perch = !fromHere && (outEdge === "L" || outEdge === "R") && Math.random() < 0.45;
       const mid = onFrame(rnd(-0.55, 0.55), rnd(-0.85, 0.15), (dIn + dOut) / 2, new THREE.Vector3());
       const end = fly.perch ? onFrame(outEdge === "L" ? -0.95 : 0.95, rnd(-0.55, 0.3), rnd(4.6, 5.4), new THREE.Vector3()) : edgePoint(outEdge, dOut, new THREE.Vector3());
       if (fly.perch) fs.perchSide = outEdge === "L" ? -1 : 1;
       if (!fromHere) {
         edgePoint(inEdge, dIn, fly.p);
-        fly.v.copy(mid).sub(fly.p).normalize().multiplyScalar(0.9);
+        fly.v.copy(mid).sub(fly.p).normalize().multiplyScalar(0.6);
         fly.yaw = Math.atan2(fly.v.x, fly.v.z);
         fly.roll = 0;
       }
@@ -1068,8 +1069,8 @@ void main(){
           } else {
             const want = fly.target.clone().sub(fly.p);
             const dist = want.length();
-            want.normalize().multiplyScalar(0.95 * clamp(dist / 1.2, 0.45, 1));
-            fly.v.lerp(want, Math.min(1, dt * 0.9));
+            want.normalize().multiplyScalar(0.6 * clamp(dist / 1.2, 0.45, 1)); // unhurried
+            fly.v.lerp(want, Math.min(1, dt * 0.7));
             fly.p.addScaledVector(fly.v, dt);
             const sp = Math.hypot(fly.v.x, fly.v.z);
             const yawGoal = sp > 0.05 ? Math.atan2(fly.v.x, fly.v.z) : fly.yaw;

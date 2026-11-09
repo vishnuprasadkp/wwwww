@@ -75,9 +75,13 @@ void main(){
   col += (hash(g) - 0.5) * 0.022 + (noise(g * 0.5) - 0.5) * 0.02;
   // a fine film grain over it all: tiny dark specks that shimmer, never larger than a pixel or two
   if (grainAmt > 0.0) {
-    float fr = floor(time * 12.0);
-    float gn = hash(g + vec2(fr * 37.0, fr * 11.0));
-    col -= grainAmt * ((gn - 0.5) * 0.05 + step(0.93, gn) * 0.05);
+    // a mottled grain, little worm-like flecks a few pixels across, that crawls as it is redrawn a few times a second
+    float fr = floor(time * 8.0);
+    vec2 o = vec2(hash(vec2(fr, 1.7)), hash(vec2(fr, 9.1))) * 200.0;
+    float m1 = noise(g * 0.33 + o);
+    float m2 = noise(g * 0.9 + o * 1.3 + 31.0);
+    float mott = m1 * 0.7 + m2 * 0.3;
+    col += grainAmt * (smoothstep(0.4, 0.64, mott) - 0.5) * 0.11;
   }
   gl_FragColor = vec4(col, 1.0);
 }`;
