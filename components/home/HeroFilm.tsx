@@ -186,8 +186,8 @@ function stippledWing(img: HTMLImageElement, WL: number, N: number) {
     }
     // where it meets the body it is barely there; it thickens outwards
     const root = Math.min(1, (u - WING_BASE[0]) / 0.18);
-    if (!e) continue; // only along the edge: the wing itself is drawn, its rim is dust
-    const dens = 0.85 * root;
+    // thick along the rim, a light sprinkle across the wing itself
+    const dens = (e ? 0.95 : 0.12) * root;
     if (Math.random() > dens) continue;
     const px = (u - WING_BASE[0]) * WL;
     const pz = (WING_BASE[1] - y / H) * HW;
@@ -200,7 +200,7 @@ function stippledWing(img: HTMLImageElement, WL: number, N: number) {
     const oz = pz;
     const ol = Math.hypot(ox, oz) || 1;
     seed.push(0.6 + Math.random() * (e ? 1.3 : 0.9), Math.random(), ox / ol + (Math.random() - 0.5) * 0.6, oz / ol + (Math.random() - 0.5) * 0.6);
-    edge.push(Math.random() < 0.35 ? 0.15 : 0.55 + 0.45 * Math.random()); // some hold the rim, most drift off
+    edge.push(!e ? 0.08 : Math.random() < 0.35 ? 0.15 : 0.55 + 0.45 * Math.random()); // the sprinkle stays; at the rim some hold, most drift off
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
@@ -316,7 +316,7 @@ const BODY_DUST_VS = `attribute vec3 aN; attribute vec4 aSeed;
     vA = mix(a, 0.55, aSeed.z * smoothstep(0.0, 0.25, life)) * mix(1.0, (1.0 - life) * (1.0 - life), aSeed.z) * (0.75 + 0.25 * sin(time * 2.1 + aSeed.y * 37.0)) * (1.0 - smoothstep(fogNear, fogFar, depth)) * amt;
   }`;
 const BODY_DUST_FS = `varying float vA;
-  void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(1.0, 0.97, 0.92, vA * (1.0 - smoothstep(0.18, 0.5, r))); }`;
+  void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(1.0, 0.97, 0.92, vA * (1.0 - smoothstep(0.3, 0.5, r))); }`;
 function surfaceDust(geo: THREE.BufferGeometry, n: number) {
   const g = geo.index ? geo.toNonIndexed() : geo;
   const pa = g.attributes.position;
@@ -603,7 +603,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     fragmentShader: `uniform float open; uniform float fogNear; uniform float fogFar; varying float vA; varying float vT;
       void main(){
         float r = length(gl_PointCoord - 0.5);
-        float a = (1.0 - smoothstep(0.18, 0.5, r)) * vA * open * 0.85;
+        float a = (1.0 - smoothstep(0.3, 0.5, r)) * vA * open * 0.85;
         vec3 col = mix(vec3(1.0, 0.97, 0.92), vec3(0.96, 0.84, 0.72), step(0.7, vT));
         gl_FragColor = vec4(col, a);
       }`,
@@ -631,7 +631,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
 
   // a larger beetle overall, its body a touch smaller against its wings
   // the body smaller, the wings as large as before
-  root.scale.setScalar(1.85);
+  root.scale.setScalar(2.3);
   body.scale.setScalar(BODY);
   for (const w of wings) w.scale.setScalar(0.88 / BODY);
   // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
@@ -667,7 +667,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     if (!g.boundingSphere) g.computeBoundingSphere();
     const size = g.boundingSphere!.radius * Math.max(m.scale.x, m.scale.y, m.scale.z);
     if (!(g instanceof THREE.SphereGeometry) || size < 0.15) continue;
-    const dots = new THREE.Points(surfaceDust(g, Math.round(1800 + 7000 * Math.min(1, size * 2))), dustBody);
+    const dots = new THREE.Points(surfaceDust(g, Math.round(4000 + 14000 * Math.min(1, size * 2))), dustBody);
     dots.renderOrder = 23;
     dots.frustumCulled = false;
     m.add(dots);
@@ -814,7 +814,7 @@ void main(){
     /* ---------------- strokes in the air: short pen marks instead of bubbles ---------------- */
     const strokeMat = new THREE.ShaderMaterial({
       vertexShader: "attribute float alpha; uniform float proj; varying float vA; void main(){ vA = alpha; vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_Position = projectionMatrix * mv; gl_PointSize = max(1.0, 0.022 * proj / -mv.z); }",
-      fragmentShader: "varying float vA; void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(0.98, 0.95, 0.9, vA * (1.0 - smoothstep(0.15, 0.5, r))); }",
+      fragmentShader: "varying float vA; void main(){ float r = length(gl_PointCoord - 0.5); gl_FragColor = vec4(0.98, 0.95, 0.9, vA * (1.0 - smoothstep(0.3, 0.5, r))); }",
       uniforms: { proj: { value: (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)) } },
       transparent: true,
       depthWrite: false,
@@ -832,7 +832,7 @@ void main(){
       return { pos, alpha, geo };
     };
     // drifting in the air all the time: a few short marks, like the quick strokes round a sketch
-    const N = 420;
+    const N = 900;
     const air = makeStrokes(N);
     const airSeed = Array.from({ length: N }, () => ({ x: rnd(-6, 6), y: rnd(0, 2.4), z: rnd(-9, 3.5), len: rnd(0.04, 0.12), ang: rnd(-0.6, 0.6), ph: rnd(0, 6.28), a: rnd(0.25, 0.6) }));
 
@@ -850,11 +850,11 @@ void main(){
     // after the intro it flies freely about the box, slowly, for as long as you look
     const T_FREE = T_LIFT + 2.8;
     // not always the walk-in: half the time the film opens with the beetle already there, peeping in at you
-    const skipIntro = Math.random() < 0.5;
+    const skipIntro = true; // the walk-in is set aside for now: it opens already looking at you
     const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0 };
     const pickTarget = (t: number) => {
       // somewhere in view: nearer or further, left or right, a little higher or lower
-      const z = rnd(-2.6, 0.6);
+      const z = rnd(-3.4, -0.6);
       const d = CAM.z - z;
       const hh = d * Math.tan((12 * Math.PI) / 180);
       fly.target.set(rnd(-0.72, 0.72) * hh * aspect, 0.02 + rnd(0, 0.18) * hh, z); // low in the box and all across it, so its raised wings are always in view
@@ -867,13 +867,14 @@ void main(){
 
     /* after the intro: it flies, and now and then comes down to walk a little on the floor, or lands on the frame itself, on
        the glass between you, at an edge or a corner, and peeps in at you; then it takes off again */
-    type Mode = "fly" | "land" | "walk" | "perch" | "takeoff";
+    type Mode = "fly" | "land" | "face" | "perch" | "takeoff";
     const fs = {
       mode: "fly" as Mode,
       t0: 0,
       dur: 1,
       until: 0,
-      after: "walk" as "walk" | "perch",
+      after: "face" as "face" | "perch",
+      fromFace: false,
       fromP: new THREE.Vector3(),
       toP: new THREE.Vector3(),
       fromQ: new THREE.Quaternion(),
@@ -905,15 +906,15 @@ void main(){
       fs.fromQ.copy(b.root.quaternion);
       fs.t0 = t;
       fs.mode = "land";
-      if (fs.after === "walk") {
-        // down onto the floor, somewhere in view, facing you more or less
-        const z = rnd(-3.2, -1.3); // far enough back that the floor, its feet and its shadow are well inside the frame
+      if (fs.after === "face") {
+        // it comes round to face you, somewhere in the frame, and hangs there on its beating wings, looking at you
+        const z = rnd(-3.4, -1.6); // far enough that its whole wings, raised above it, stay in the frame
         const d = CAM.z - z;
         const hw = d * Math.tan((12 * Math.PI) / 180) * aspect;
-        fs.toP.set(rnd(-0.45, 0.45) * hw, 0, z);
-        fs.yaw = rnd(-1.3, 1.3);
-        fs.toQ.copy(qFromEuler(0, fs.yaw, 0));
-        fs.arc = 0.35;
+        fs.toP.set(rnd(-0.5, 0.5) * hw, rnd(-0.15, 0.1), z);
+        fs.yaw = rnd(-0.3, 0.3);
+        fs.toQ.copy(qFromEuler(0.12, fs.yaw, 0)); // nearly level, so its wings spread out behind it rather than up out of the frame
+        fs.arc = 0;
         fs.dur = 2.8;
       } else {
         // onto the frame: an edge or a corner, on the glass between you, its head turned in towards you
@@ -945,6 +946,7 @@ void main(){
       fs.fromQ.copy(b.root.quaternion);
       fs.t0 = t;
       fs.dur = 2;
+      fs.fromFace = fs.mode === "face";
       fs.mode = "takeoff";
       // up and away into the box, towards its middle
       const goal = new THREE.Vector3(rnd(-0.8, 0.8), rnd(0.25, 0.55), rnd(-1.2, 0.6));
@@ -986,18 +988,18 @@ void main(){
           fly.yaw = b.root.rotation.y;
           pickTarget(t);
           fs.until = t + rnd(7, 10);
-          fs.after = Math.random() < 0.5 ? "walk" : "perch";
+          fs.after = Math.random() < 0.5 ? "face" : "perch";
           if (skipIntro) {
-            // no walk-in this time: it is already there on the frame, its head peeping in, looking at you
-            fs.after = "perch";
+            // it opens already there, looking at you: hanging in the air in front of you, or peeping in from the frame
+            fs.after = Math.random() < 0.55 ? "face" : "perch";
             planLanding(t, b);
             b.root.position.copy(fs.toP);
             b.root.quaternion.copy(fs.toQ);
-            fs.mode = "perch";
-            fs.peek = 1;
-            fs.air = 0;
-            fs.until = t + rnd(4, 5.5);
-            fs.after = "walk";
+            fs.mode = fs.after;
+            fs.peek = fs.after === "perch" ? 1 : 0;
+            fs.air = fs.after === "face" ? 1 : 0;
+            fs.until = t + rnd(4.5, 6);
+            fs.after = fs.after === "face" ? "perch" : "face";
           }
         }
         if (fs.mode === "fly") {
@@ -1026,11 +1028,12 @@ void main(){
           qTmp.slerpQuaternions(fs.fromQ, fs.toQ, smooth(fs.mode === "land" ? 0.15 : 0, fs.mode === "land" ? 0.85 : 0.7, u));
           b.root.quaternion.copy(qTmp);
           // landing: the wings fold as it touches down; taking off: they open before it rises
-          fs.air = fs.mode === "land" ? 1 - smooth(0.7, 1, u) : smooth(0, 0.3, u);
+          // (coming to hang in front of you, or leaving from there, it stays on the wing)
+          fs.air = fs.mode === "land" ? (fs.after === "face" ? 1 : 1 - smooth(0.7, 1, u)) : fs.fromFace ? 1 : smooth(0, 0.3, u);
           if (u >= 1) {
             if (fs.mode === "land") {
               fs.mode = fs.after;
-              fs.until = t + (fs.after === "walk" ? rnd(4, 6) : rnd(4.5, 6.5));
+              fs.until = t + rnd(4.5, 6.5);
             } else {
               fs.mode = "fly";
               fly.p.copy(b.root.position);
@@ -1038,25 +1041,18 @@ void main(){
               fly.yaw = fs.yaw;
               fly.roll = 0;
               pickTarget(t);
-              fs.until = t + rnd(9, 14);
-              fs.after = fs.after === "walk" ? (Math.random() < 0.7 ? "perch" : "walk") : Math.random() < 0.6 ? "walk" : "perch";
+              fs.until = t + rnd(6, 9);
+              // back somewhere else, to look at you again: the other way from last time, more often than not
+              fs.after = Math.random() < 0.7 ? (fs.after === "face" ? "perch" : "face") : fs.after;
             }
           }
-        } else if (fs.mode === "walk") {
-          // a little stroll on the floor: it turns now and then and keeps inside the frame
-          const d = CAM.z - b.root.position.z;
-          const hw = d * Math.tan((12 * Math.PI) / 180) * aspect * 0.5;
-          const p = b.root.position;
-          const out = Math.abs(p.x) > hw || p.z > -0.9 || p.z < -3.8;
-          const goalYaw = out ? Math.atan2(-p.x, -2.3 - p.z) : fs.yaw + Math.sin(t * 0.7) * 0.6 * dt;
-          fs.yaw += Math.atan2(Math.sin(goalYaw - fs.yaw), Math.cos(goalYaw - fs.yaw)) * Math.min(1, dt * (out ? 1.2 : 1));
-          const sp = 0.3 * (1 - smooth(fs.until - 0.6, fs.until, t)); // it slows to a stop before it takes off
-          p.x += Math.sin(fs.yaw) * sp * dt;
-          p.z += Math.cos(fs.yaw) * sp * dt;
-          p.y = 0;
-          b.root.quaternion.copy(qFromEuler(0, fs.yaw, 0));
-          fs.gait += dt * 6.283 * 1.35 * (1 - smooth(fs.until - 0.6, fs.until, t));
-          fs.air = 0;
+        } else if (fs.mode === "face") {
+          // hanging in the air in front of you, wings beating slowly, looking at you; it sways and breathes
+          b.root.position.copy(fs.toP);
+          b.root.position.x += Math.sin(t * 0.7) * 0.06;
+          b.root.position.y += Math.sin(t * 1.1) * 0.05;
+          b.root.quaternion.copy(qFromEuler(0.12 + 0.05 * Math.sin(t * 0.8), fs.yaw + 0.22 * Math.sin(t * 0.45), 0.05 * Math.sin(t * 0.9)));
+          fs.air = 1;
           if (t > fs.until) planTakeoff(t, b);
         } else {
           // on the frame, peeping in at you; it breathes, its antennae feel the air
@@ -1067,7 +1063,7 @@ void main(){
         open = smooth(0, 0.6, fs.air);
         unfold = smooth(0.25, 1, fs.air);
         lift = fs.air;
-        walking = fs.mode === "walk";
+        walking = false;
         walkAmt = walking ? 1 - smooth(fs.until - 0.6, fs.until, t) : 0;
         gait = fs.gait;
         fs.peek += ((fs.mode === "perch" ? 1 : 0) - fs.peek) * Math.min(1, dt * 1.5);
@@ -1158,7 +1154,7 @@ void main(){
     };
 
     /* ---------------- strokes off the wings ---------------- */
-    const DN = 2600;
+    const DN = 4000;
     const dust = makeStrokes(DN);
     const dustVel = new Float32Array(DN * 3);
     const dustDir = new Float32Array(DN * 3);
@@ -1315,7 +1311,7 @@ void main(){
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.6, 6000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.6, 16000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
