@@ -372,7 +372,7 @@ function surfaceDust(geo: THREE.BufferGeometry, n: number) {
 /* ---------------- the beetle ---------------- */
 // how big the body is against its wings, and so how high it stands: its legs reach 0.28 of its own units below its middle,
 // so at this size its feet rest exactly on the floor, each on its own shadow
-const BODY = 0.5;
+const BODY = 0.55;
 const STAND = 0.28 * BODY;
 /** Its own units: about 1 long, head towards +z, back up +y. Painted from above with the top-view watercolour. */
 function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk: SketchU, proj: number) {
@@ -545,7 +545,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   });
 
   // wings: the beetle's own painted wings, folded under the cases until it flies
-  const WL = 3.6; // large: the wings lead
+  const WL = 3.9; // large: the wings lead
   const wg = new THREE.PlaneGeometry(WL, WL * WING_ASPECT, 28, 14);
   wg.translate(-(WING_BASE[0] - 0.5) * WL, -(0.5 - WING_BASE[1]) * WL * WING_ASPECT, 0);
   wg.rotateX(Math.PI / 2); // flat, the front edge forwards (+z)
@@ -631,7 +631,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
 
   // a larger beetle overall, its body a touch smaller against its wings
   // the body smaller, the wings as large as before
-  root.scale.setScalar(2.3);
+  root.scale.setScalar(2.6);
   body.scale.setScalar(BODY);
   for (const w of wings) w.scale.setScalar(0.88 / BODY);
   // The drawing hides its own back lines, but must never blot out the smoke or haze behind it: each part is drawn twice,
@@ -908,7 +908,7 @@ void main(){
       fs.mode = "land";
       if (fs.after === "face") {
         // it comes round to face you, somewhere in the frame, and hangs there on its beating wings, looking at you
-        const z = rnd(-3.4, -1.6); // far enough that its whole wings, raised above it, stay in the frame
+        const z = rnd(-4.2, -2.4); // far enough that its whole wings, raised above it, stay in the frame
         const d = CAM.z - z;
         const hw = d * Math.tan((12 * Math.PI) / 180) * aspect;
         fs.toP.set(rnd(-0.5, 0.5) * hw, rnd(-0.15, 0.1), z);
@@ -935,8 +935,8 @@ void main(){
         const xA = new THREE.Vector3().crossVectors(up, zA).normalize();
         mTmp.makeBasis(xA, up, zA);
         fs.toQ.setFromRotationMatrix(mTmp);
-        // mostly beyond the edge: only its head comes into the frame
-        fs.toP.copy(P).addScaledVector(inward, -0.78);
+        // its body beyond the edge, its whole head and antennae in the frame
+        fs.toP.copy(P).addScaledVector(inward, -0.32);
         fs.arc = 0;
         fs.dur = 3.2;
       }
@@ -1059,6 +1059,10 @@ void main(){
           fs.air = 0;
           if (t > fs.until) planTakeoff(t, b);
         }
+        // a shadow only while it is flying about; looking at you, from the air or the frame, it casts none
+        const shadowGoal = fs.mode === "fly" || fs.mode === "takeoff" || (fs.mode === "land" && fs.after !== "face") ? 0.38 : 0;
+        const fm = floor.material as THREE.ShadowMaterial;
+        fm.opacity += (shadowGoal - fm.opacity) * Math.min(1, dt * 1.5);
         // its wings and cases follow how much it is in the air; legs too
         open = smooth(0, 0.6, fs.air);
         unfold = smooth(0.25, 1, fs.air);
@@ -1311,7 +1315,7 @@ void main(){
       });
     img(WING).then((wingImg) => {
       if (!alive) return;
-      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.6, 16000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
+      beetle = buildBeetle(drawnWing(wingImg), stippledWing(wingImg, 3.9, 18000), sketchU, (PH * pr) / (2 * Math.tan((12 * Math.PI) / 180)));
       beetle.root.visible = false;
       scene.add(beetle.root);
       // first frame: the paper, before anything
