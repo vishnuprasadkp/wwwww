@@ -894,40 +894,66 @@ void main(){
        and out through the bottom), on a gentle downward slant, without turning. Out of sight it turns round and comes back
        across the other way, at another height and distance. Now and then, on its way across, it stops to look at you:
        it hangs in front of you, or it settles at the side it is flying towards; then it carries on the way it was going. */
-    let dirX = Math.random() < 0.5 ? 1 : -1;
+    /* A beetle's wandering flight, one leg at a time. Each leg sets off on a heading turned a little from the one before,
+       in any direction on screen (across, up, down, on a slant), for a stretch, nearer or further: so the path bends and
+       curves like a living thing, never the same twice. When it drifts out of the frame it carries on a little, then turns
+       back in. It only stops to look at you where it already is: at the side or corner it has come to, or right where it
+       is hanging in the middle. */
+    let dirX = 1;
+    const wand = { h: -Math.PI / 2, d: 8.2, lastLook: 0 };
+    const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, FLOOR + 0.35));
     const newPass = (t: number, fromHere: boolean, mayPerch = true) => {
       void fromHere;
-      const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, FLOOR + 0.35));
-      const d = rnd(7.2, 9.5);
+      void dirX;
       ndcNow.copy(fly.p).project(camera);
-      const fromY = clamp(ndcNow.y, -0.6, 0.55);
-      const look = mayPerch && Math.random() < 0.5 ? (Math.random() < 0.5 ? "perch" : "face") : null;
-      fly.perch = look === "perch";
-      fly.face = look === "face";
-      if (fly.face) {
-        // it comes to a stop in front of you, a little ahead of it, lower, and turns to you
-        const spot = onFrame(dirX * rnd(-0.15, 0.35), clamp(fromY - rnd(0.25, 0.5), -0.6, 0.05), rnd(7.6, 8.6), new THREE.Vector3());
-        lift(spot);
-        fly.pts = [spot];
-      } else if (fly.perch) {
-        // it flies on to the side it is heading for and settles there
-        const end = onFrame(dirX * 0.95, clamp(fromY - rnd(0.1, 0.45), -0.6, 0.4), clamp(d, 7, 8.5), new THREE.Vector3());
-        fs.perchSide = dirX;
-        lastPerchSide = dirX;
-        fly.pts = [end];
-      } else {
-        const down = Math.random() < 0.3;
-        const exit = down ? onFrame(dirX * rnd(0.3, 0.85), -1.65, d, new THREE.Vector3()) : onFrame(dirX * 1.5, clamp(fromY - rnd(0.15, 0.6), -0.9, 0.35), d, new THREE.Vector3());
-        // out of sight: round beyond that side, and up to the height it will come back across at
-        const r1 = onFrame(dirX * 1.8, down ? -1.3 : clamp(fromY - 0.5, -1.2, 0.3), d, new THREE.Vector3());
-        const r2 = onFrame(dirX * 1.8, rnd(0.05, 0.5), clamp(d + rnd(-1, 1), 7.2, 9.8), new THREE.Vector3());
-        lift(exit);
-        lift(r1);
-        lift(r2);
-        fly.pts = [exit, r1, r2];
+      const nx = ndcNow.x;
+      const ny = ndcNow.y;
+      const out = Math.abs(nx) > 1.05 || Math.abs(ny) > 1.05;
+      fly.perch = false;
+      fly.face = false;
+      // looking at you: only now and then, and only from where it already is
+      if (mayPerch && !out && t - wand.lastLook > 20) {
+        const headingToSide = Math.cos(wand.h) * Math.sign(nx) > 0.3;
+        if (Math.abs(nx) > 0.62 && headingToSide && Math.random() < 0.55) {
+          fly.perch = true;
+          fs.perchSide = nx > 0 ? 1 : -1;
+          const end = onFrame(fs.perchSide * 0.95, clamp(ny, -0.6, 0.45), clamp(camera.position.distanceTo(fly.p), 7, 8.5), new THREE.Vector3());
+          fly.pts = [end];
+          fly.idx = 0;
+          fly.target.copy(end);
+          wand.lastLook = t;
+          return;
+        }
+        if (Math.abs(nx) < 0.5 && Math.abs(ny) < 0.6 && Math.random() < 0.3) {
+          fly.face = true;
+          const spot = fly.p.clone().addScaledVector(fly.v.clone().normalize(), 0.6);
+          lift(spot);
+          fly.pts = [spot];
+          fly.idx = 0;
+          fly.target.copy(spot);
+          wand.lastLook = t;
+          return;
+        }
       }
+      if (out) {
+        // out of sight: it turns back towards the box, coming in somewhere near where it went out
+        const back = Math.atan2(-ny * 0.8, -nx);
+        wand.h = back + rnd(-0.7, 0.7);
+      } else {
+        // a new heading, turned from the last: mostly a gentle bend, sometimes a sharp swerve
+        wand.h += Math.random() < 0.75 ? rnd(-0.9, 0.9) : rnd(-2, 2);
+        // like a heavy beetle it sinks more than it climbs: high up, it tends to turn down again
+        if (Math.sin(wand.h) > 0.2 && (ny > 0 || Math.random() < 0.4)) wand.h = -wand.h + rnd(-0.3, 0.3);
+      }
+      const len = rnd(0.55, 1.1);
+      wand.d = clamp(wand.d + rnd(-1.2, 1.2), 7, 10);
+      const tx = clamp(nx + Math.cos(wand.h) * len, -1.75, 1.75);
+      const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, -1.6, 1.5);
+      const p = onFrame(tx, ty, wand.d, new THREE.Vector3());
+      lift(p);
+      fly.pts = [p];
       fly.idx = 0;
-      fly.target.copy(fly.pts[0]);
+      fly.target.copy(p);
       fly.hidden = false;
     };
     const wp = new THREE.Vector3();
@@ -1092,10 +1118,12 @@ void main(){
             b.root.position.copy(fly.p);
             if (t > fly.gone) {
               if (introPending) {
-                // it opens sweeping in from beyond a corner, high or low, across and down through the box
+                // it opens coming down from above the frame, flying down into the box: you see it from above, its back
+                // and its spread wings
                 introPending = false;
-                onFrame(-dirX * 1.5, Math.random() < 0.6 ? 1.3 : -0.2, rnd(8.5, 10), fly.p);
-                fly.p.y = Math.max(fly.p.y, FLOOR + 0.35);
+                onFrame(rnd(-0.5, 0.5), 1.6, rnd(8, 9), fly.p);
+                wand.h = -Math.PI / 2 + rnd(-0.35, 0.35);
+                wand.lastLook = t;
               }
               newPass(t, true, false);
               fly.v.copy(fly.target).sub(fly.p).normalize().multiplyScalar(0.6);
@@ -1115,7 +1143,7 @@ void main(){
             // it banks into its turns, and tips up as it climbs and down as it dives: its wings are seen from the side, from
             // above and from below as it goes
             fly.roll += (clamp((-dy / Math.max(dt, 1e-3)) * 1.3, -0.75, 0.75) - fly.roll) * Math.min(1, dt * 1.4);
-            const climb = clamp(-fly.v.y * 1.4, -0.5, 0.45);
+            const climb = clamp(-fly.v.y * 1.8, -0.5, 0.75); // diving, it tips forward and you see its back from above
             b.root.position.set(fly.p.x, fly.p.y + 0.04 * Math.sin(t * 1.3), fly.p.z);
             b.root.quaternion.copy(qFromEuler(0.3 + climb + 0.06 * Math.sin(t * 0.6), fly.yaw, fly.roll));
             ndcNow.copy(fly.p).project(camera);
@@ -1127,11 +1155,8 @@ void main(){
               fs.after = "perch";
               planLanding(t, b); // it has reached the side it was heading for: it settles there and looks at you
             } else if (last && !fly.perch) {
-              // back in the box: on to the next crossing, from right here, so the path never breaks
-              if (dist < 0.9) {
-                dirX = -dirX;
-                newPass(t, true);
-              }
+              // on to the next leg, from right here, so the path never breaks
+              if (dist < 0.9) newPass(t, true);
             } else if (!last && dist < 0.9) {
               fly.idx++;
               fly.target.copy(fly.pts[fly.idx]);
@@ -1157,7 +1182,9 @@ void main(){
               fly.v.copy(fs.toP).sub(fs.fromP).multiplyScalar(0.25);
               fly.yaw = fs.yaw;
               fly.roll = 0;
-              newPass(t, true, false); // from where it took off, across and away out of the frame
+              ndcNow.copy(fly.p).project(camera);
+              wand.h = Math.atan2(rnd(-0.6, 0.3), -Math.sign(ndcNow.x || 1)); // away from the edge it sat on, back into the box
+              newPass(t, true, false);
               fs.until = t + rnd(14, 22);
               // back somewhere else, to look at you again: the other way from last time, more often than not
               fs.after = "perch"; // back to another place on the frame, to look at you again
