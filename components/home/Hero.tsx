@@ -23,7 +23,7 @@ export default function Hero() {
       <div className="relative" style={{ height: "clamp(240px, 21vw, 400px)", background: "#545454" }}>
         {/* the dark grey painting from the foot of the home page; the beetle film is drawn over it */}
         <HeroInk palette={HERO_INK} spread={false} refHeight={900} speed={1.6} grain={1} />
-        <HeroFilm />
+        <HeroFilm place="top" />
       </div>
       <LogoMarquee />
     </section>

@@ -387,7 +387,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   // drawn as the wings are: a clear outline, the lines of its shell like a wing's veins, and the dust over it
   const shell = sketchMaterial(sk, { merid: 6, weight: 1.25 });
   const front = sketchMaterial(sk, { rings: 7, weight: 1.15 });
-  const black = sketchMaterial(sk, { weight: 0.9 }); // the eyes
+  const black = sketchMaterial(sk, { weight: 1.1 }); // the eyes, drawn with the same line as the body
   const cream = sketchMaterial(sk, { weight: 0.8 });
   const legMat = sketchMaterial(sk, { weight: 0.9 });
   const amber = legMat;
@@ -470,7 +470,7 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
     const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 24, 16), black);
     eye.position.set(s * 0.12, 0.02, 0.05);
     // its eyes, drawn like the rest: the eye a ring of ink, the pupil a small ring of ink on it, turning to look at you
-    const pupil = new THREE.Mesh(new THREE.RingGeometry(0.014, 0.024, 28), new THREE.MeshBasicMaterial({ color: lin(0.95, 0.95, 0.95), side: THREE.DoubleSide }));
+    const pupil = new THREE.Mesh(new THREE.RingGeometry(0.0175, 0.0215, 32), new THREE.MeshBasicMaterial({ color: lin(0.95, 0.95, 0.95), side: THREE.DoubleSide, transparent: true, opacity: 0.85 })); // a fine ring, as fine as the body's lines
     pupil.position.set(0, 0, 0.07);
     eye.add(pupil);
     pupils.push(pupil);
@@ -684,13 +684,19 @@ function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeometry, sk:
   return { root, body, cases, wings, legs, antennae, head, WL, dustMat, dustBody, pupils };
 }
 
-export default function HeroFilm({ palette }: { palette?: InkPalette } = {}) {
+/**
+ * `place`: "top" for the short film at the top of the home page, "foot" for the taller ones at the foot of the pages. Each
+ * flies its own way: at the top it keeps low in the box and glides; at the foot it uses the whole height, rising and
+ * falling.
+ */
+export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPalette; place?: "top" | "foot" } = {}) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [key, setKey] = useState(0);
 
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
+    const TOP = place === "top";
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -918,17 +924,17 @@ void main(){
         if (Math.abs(nx) > 0.45 && headingToSide && Math.random() < 0.85) {
           fly.perch = true;
           fs.perchSide = nx > 0 ? 1 : -1;
-          const end = onFrame(fs.perchSide * 0.95, clamp(ny, -0.6, 0.45), clamp(camera.position.distanceTo(fly.p), 7, 8.5), new THREE.Vector3());
+          const end = onFrame(fs.perchSide * 0.95, TOP ? clamp(ny, -0.75, -0.3) : clamp(ny, -0.6, 0.45), clamp(camera.position.distanceTo(fly.p), 7, 8.5), new THREE.Vector3());
           fly.pts = [end];
           fly.idx = 0;
           fly.target.copy(end);
           wand.lastLook = t;
           return;
         }
-        if (Math.abs(nx) < 0.6 && Math.abs(ny) < 0.8 && Math.random() < 0.6) {
+        if (Math.abs(nx) < 0.6 && Math.abs(ny) < 0.85 && Math.random() < 0.6) {
           fly.face = true;
           // a little ahead of where it is, and low enough that its raised wings and its whole head stay in the frame
-          const spot = onFrame(clamp(nx + Math.cos(wand.h) * 0.12, -0.55, 0.55), clamp(ny - 0.1, -0.7, -0.35), clamp(camera.position.distanceTo(fly.p), 7.5, 9), new THREE.Vector3());
+          const spot = onFrame(clamp(nx + Math.cos(wand.h) * 0.12, -0.55, 0.55), TOP ? clamp(ny - 0.1, -0.8, -0.55) : clamp(ny - 0.1, -0.6, 0.1), clamp(camera.position.distanceTo(fly.p), 7.5, 9), new THREE.Vector3());
           lift(spot);
           fly.pts = [spot];
           fly.idx = 0;
@@ -950,13 +956,31 @@ void main(){
       }
       const len = rnd(0.8, 1.3); // long, sweeping legs
       wand.d = clamp(wand.d + rnd(-1.2, 1.2), 7, 10);
-      // it keeps to the lower part of the box, where it is seen whole; if it has drifted up it turns down again
-      if (ny > -0.05 && Math.sin(wand.h) > 0) wand.h = -wand.h;
-      if (ny < -0.75 && Math.sin(wand.h) < 0) wand.h = -wand.h; // near the foot of the box it levels out and rises a little
-      // mostly it stays in view; now and then it wanders out past a side (or below) for a moment and comes back
+      // where in the box it keeps to: at the top of the page, low (the box is short and its wings rise above it); at the
+      // foot, the whole height
+      const yLo = TOP ? -0.95 : -0.85;
+      const yHi = TOP ? -0.2 : 0.5;
+      if (ny > yHi - 0.05 && Math.sin(wand.h) > 0) wand.h = -wand.h;
+      if (ny < yLo + 0.15 && Math.sin(wand.h) < 0) wand.h = -wand.h;
       const roam = Math.random() < 0.18;
+      const lift2 = (v: THREE.Vector3) => (lift(v), v);
+      // now and then a swoop: it dips down low and rises up again, as if gathering itself, a slow sweep that lifts
+      if (!out && !roam && Math.random() < (TOP ? 0.2 : 0.3)) {
+        const sx = clamp(nx + Math.cos(wand.h) * len * 0.6, -0.8, 0.8);
+        const ex = clamp(sx + Math.cos(wand.h) * len * 0.6, -0.85, 0.85);
+        const low = lift2(onFrame(sx, yLo + 0.05, wand.d, new THREE.Vector3()));
+        const rise = lift2(onFrame(ex, TOP ? rnd(-0.5, -0.25) : rnd(0.0, 0.45), clamp(wand.d + rnd(-0.8, 0.8), 7, 10), new THREE.Vector3()));
+        wand.h = Math.atan2(0.4, Math.cos(wand.h));
+        fly.pts = [low, rise];
+        fly.idx = 0;
+        fly.target.copy(low);
+        fly.hidden = false;
+        fly.next = t + 12;
+        return;
+      }
+      // mostly it stays in view; now and then it wanders out past a side (or below) for a moment and comes back
       const tx = clamp(nx + Math.cos(wand.h) * len, roam ? -1.7 : -0.85, roam ? 1.7 : 0.85);
-      const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, roam ? -1.4 : -0.9, 0.05);
+      const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, roam ? -1.4 : yLo, yHi);
       if (Math.abs(tx) >= 0.85 && !roam) wand.h = Math.PI - wand.h + rnd(-0.3, 0.3); // at a side it bends round, back into the box
       const p = onFrame(tx, ty, wand.d, new THREE.Vector3());
       lift(p);
@@ -1309,7 +1333,7 @@ void main(){
       // the same dust rises off its body wherever it goes, like smoke: thick as it comes walking out of the haze, a soft
       // trail after that, walking or flying
       if (b.root.visible) {
-        bodyCarry += dt * (walking0 ? 260 : 180);
+        bodyCarry += dt * (walking0 ? 260 : fs.mode === "fly" ? 420 : 200); // flying, it trails a fuller cloud round its body
         b.root.getWorldPosition(wp);
         while (bodyCarry >= 1) {
           bodyCarry -= 1;
