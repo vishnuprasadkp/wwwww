@@ -1,7 +1,4 @@
 import variants from "@/content/variants.json";
-import masks from "@/content/masks.json";
-import WashOverlay from "./WashOverlay";
-import { schemeForImage, inkPalette } from "@/lib/painting";
 
 type V = { w: number; h: number; avif: number[]; webp: number[] };
 const table = variants as Record<string, V>;
@@ -29,9 +26,7 @@ export default function Pic({ file, sizes, alt = "", priority, eager, sync, fill
   const v = table[file];
   if (!v) throw new Error(`No optimised variants for ${file} — run: node scripts/optimize.mjs`);
   const set = (list: number[], ext: "avif" | "webp") => list.map((w) => `${optPath(file, w, ext)} ${w}w`).join(", ");
-  // a case study image: its painted background moves, like the painting at the foot of its case; the product stays still
-  const sc = file in masks ? schemeForImage(file) : null;
-  const pic = (
+  return (
     <picture className="contents">
       <source type="image/avif" srcSet={set(v.avif, "avif")} sizes={sizes} />
       <img
@@ -44,24 +39,8 @@ export default function Pic({ file, sizes, alt = "", priority, eager, sync, fill
         loading="eager"
         decoding={sync ? "sync" : "async"}
         {...(priority ? { fetchPriority: "high" as const } : {})}
-        className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : sc ? `block ${className}` : className}
+        className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : className}
       />
     </picture>
-  );
-  if (!sc) return pic;
-  const overlay = <WashOverlay mask={`${file.replace(/^\/images\//, "/images/_mask/")}?v=${(masks as unknown as Record<string, { v: string }>)[file].v}`} palette={inkPalette(sc, (masks as unknown as Record<string, { ground: [number, number, number] }>)[file].ground)} fill={fill} />;
-  if (fill) {
-    return (
-      <span data-wash className="absolute inset-0 block">
-        {pic}
-        {overlay}
-      </span>
-    );
-  }
-  return (
-    <span data-wash className="relative block">
-      {pic}
-      {overlay}
-    </span>
   );
 }
