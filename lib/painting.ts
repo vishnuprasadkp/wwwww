@@ -32,7 +32,8 @@ export function scheme(name: string, bg: string, wing: string, dark: string, spr
 
 export const SCHEMES = {
   charcoal: scheme("charcoal", "#545454", "#f8f8f8", "#292a2a", "#a6a6a6"),
-  film: scheme("film", "#474747", "#f8f8f8", "#2f2f2f", "#727272"), // the beetle films: a soft, light grey
+  film: scheme("film", "#474747", "#f8f8f8", "#2f2f2f", "#727272"),
+  filmHero: scheme("filmHero", "#525252", "#f8f8f8", "#383838", "#808080"), // the film at the top of the home page: a little lighter // the beetle films: a soft, light grey
   mist: scheme("mist", "#8ea1a9", "#f7f9fa", "#57676c", "#e0edf3"),
   moss: scheme("moss", "#698369", "#f7faf7", "#3d573d", "#bfd3c1"),
   clay: scheme("clay", "#8c5a40", "#fbf8f6", "#653a20", "#cda38c"),
@@ -56,12 +57,13 @@ export const SCHEME_FOR_CLOSING: Record<string, keyof typeof SCHEMES> = {
  * The moving wash behind a painting, made only from that painting's own colours: its ground in the middle, deepened
  * towards its dark colour and lightened towards its paint colour. A grey ground stays grey, a green one green.
  */
-export function inkPalette(s: Scheme): InkPalette {
+/** `k`: how strong the light and dark in the wash are (1 as designed; more, and its moving shapes show more clearly). */
+export function inkPalette(s: Scheme, k = 1): InkPalette {
   const g = hex(s.bg).map((v) => v / 255) as Rgb;
   const d = hex(s.moth.hind).map((v) => v / 255) as Rgb;
   const l = s.paint.map((v) => v / 255) as Rgb;
   const lerp = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
-  return { pale: lerp(g, l, 0.28), light: lerp(g, l, 0.12), mid: g, deep: lerp(g, d, 0.4), grey: lerp(g, d, 0.18) };
+  return { pale: lerp(g, l, Math.min(0.9, 0.28 * k)), light: lerp(g, l, Math.min(0.6, 0.12 * k)), mid: g, deep: lerp(g, d, Math.min(0.9, 0.4 * k)), grey: lerp(g, d, Math.min(0.6, 0.18 * k)) };
 }
 
 export const schemeForClosing = (closing: string): Scheme => SCHEMES[SCHEME_FOR_CLOSING[closing] ?? "charcoal"];

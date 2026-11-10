@@ -29,13 +29,13 @@ export default function Footer() {
       {/* as tall as the film at the top of the home page */}
       <div className="grid md:grid-cols-2 md:[height:clamp(260px,23vw,480px)]">
         <div className="relative h-[260px] overflow-hidden md:h-auto" style={{ background: "#474747" }}>
-          <HeroInk palette={inkPalette(SCHEMES.film)} spread={false} refHeight={900} speed={1.6} grain={1} />
+          <HeroInk palette={inkPalette(SCHEMES.film, 1.7)} spread={false} refHeight={900} speed={4} grain={1} />
           <HeroFilm from={pathname === "/" ? "top-right" : undefined} />
           <FilmShade />
           {art && <NyrroNote />}
         </div>
         <div className="relative flex min-h-[220px] flex-col justify-between overflow-hidden p-5 font-mono text-[15px] leading-[24px] text-white md:p-8" style={{ background: panel.bg }}>
-          <HeroInk key={panel.name} palette={inkPalette(panel)} spread={false} refHeight={900} speed={1.2} grain={1} />
+          <HeroInk key={panel.name} palette={inkPalette(panel, 1.7)} spread={false} refHeight={900} speed={4} grain={1} /> {/* the colours visibly flow and spread */}
           <p className="relative">
             Lets Connect{" "}
             <a href={site.gmail} target="_blank" rel="noopener noreferrer" className="break-all underline-offset-4 hover:underline">
