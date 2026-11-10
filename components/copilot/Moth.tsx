@@ -756,6 +756,9 @@ export default function MothTrail({
     let squash = 0; // a little squash as it lands
     let headTo: number | null = null; // where it turns its body to as it sits (smoothly, never a snap)
     let settleT = 0; // 1 as it touches down, easing to 0: its body levels out and shifts its footing
+    let lastHead = 0; // for how fast it is turning (its body leans into a turn, in depth)
+    let turnRate = 0;
+    let lastLean = 0;
     let lift = 0; // 0 on the ground … 1 at the top of a hop: drives the shadow
     let clung = false; // on a wall: rest, then crawl, then rest, then leave
     let walkHeading = 0;
@@ -920,9 +923,20 @@ export default function MothTrail({
       const angle = 90 * dirn * frac;
       const deg = Math.abs(angle);
       const st = settleT * settleT * (3 - 2 * settleT); // eased
-      const tilt = -5 * Math.sin(Math.PI * clamp(frac, 0, 1)) + 18 * st; // touching down its head is up a little, then it levels out
+      // how fast it is turning, smoothed: as it turns its body leans into the turn and tips, as a body does in space
+      if (!lastLean) lastHead = heading; // the first frame: no turn yet
+      const pdt = lastLean ? clamp((now - lastLean) / 1000, 0.001, 0.05) : 0.016;
+      lastLean = now;
+      turnRate += (wrap(heading - lastHead) / pdt - turnRate) * Math.min(1, pdt * 9);
+      lastHead = heading;
+      const lean = clamp(turnRate * 7, -24, 24) * (1 - clamp(frac, 0, 1)); // banks into the turn (only while it is seen from above)
+      const dip = Math.min(14, Math.abs(turnRate) * 4); // and its head dips a little
+      // walking, its body rocks from side to side with its steps
+      const rock = mode === "walk" && !perched ? 5 * Math.sin(now / 130) : 0;
+      // rolling over, it tips towards you as it comes over; touching down its head is up a little, then it levels out
+      const tilt = -12 * Math.sin(Math.PI * clamp(frac, 0, 1)) + 18 * st + dip;
       const shift = 4 * st * Math.sin(now / 95); // and it shifts its footing a little as it settles
-      turner.style.transform = `rotateX(${tilt.toFixed(1)}deg) rotateY(${angle.toFixed(1)}deg) rotateZ(${shift.toFixed(1)}deg)`;
+      turner.style.transform = `rotateX(${tilt.toFixed(1)}deg) rotateY(${(angle + lean + rock).toFixed(1)}deg) rotateZ(${shift.toFixed(1)}deg)`;
       sface.style.transform = rollSide === "L" ? "rotateY(-90deg)" : "rotateY(90deg) scaleX(-1)";
       // In a section the swap happens where the top view (cos θ of its width) and the side view (sin θ of its) are equally wide,
       // about 55°, so there is no jump in size, and the blend is short so there is no ghost of the other view.
@@ -1564,7 +1578,7 @@ export default function MothTrail({
         <StarBadge size={STAR} />
       </div>
       <div ref={shadowEl} className="absolute left-0 top-0" style={{ width: BOX_W, height: SIZE }}>
-        <div ref={mothEl} className="absolute inset-0 will-change-transform" style={{ opacity: 0, perspective: 260 }}>
+        <div ref={mothEl} className="absolute inset-0 will-change-transform" style={{ opacity: 0, perspective: 170 }}>
           <div ref={turnEl} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
             <div data-top className="absolute inset-0" style={face}>
               <MothIcon size={SIZE} star={false} colors={colors} />
