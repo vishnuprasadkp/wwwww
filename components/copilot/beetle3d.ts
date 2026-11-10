@@ -73,12 +73,10 @@ function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], siz
       g.stroke();
     }
   };
-  // the outline: the leading edge, then round the tip and back along the trailing edge, each drawn twice in quick, not
-  // quite matching passes, and running a little past where they meet, as a sketch is
+  // the outline: the leading edge, then round the tip and back along the trailing edge, each one stroke, running a
+  // little past where they meet, as a sketch is
   stroke([[0.07, 0.46], [0.3, 0.31], [0.55, 0.245], [0.8, 0.245], [0.95, 0.32], [0.985, 0.44]], 1, 1);
-  stroke([[0.1, 0.43], [0.32, 0.3], [0.56, 0.25], [0.79, 0.255], [0.93, 0.33]], 0.6, 9.7);
   stroke([[0.965, 0.38], [0.93, 0.56], [0.79, 0.68], [0.58, 0.745], [0.38, 0.725], [0.2, 0.61], [0.08, 0.51]], 1, 2.3);
-  stroke([[0.94, 0.5], [0.8, 0.665], [0.6, 0.735], [0.4, 0.715], [0.24, 0.63]], 0.6, 12.1);
   // a few veins, fanning out from the root
   stroke([[0.1, 0.45], [0.35, 0.345], [0.62, 0.295], [0.87, 0.3]], 0.75, 3.1);
   stroke([[0.11, 0.47], [0.4, 0.425], [0.66, 0.435], [0.9, 0.475]], 0.65, 4.7);
@@ -207,7 +205,10 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       c.rotation.set(0.32 * open, s * 0.12 * open, -s * 0.42 * open); // closed tight at rest: no gap down its back
     });
     shellMat.uniforms.weight.value = shellWeight * (1 - 0.15 * ease(open / 0.6));
-    shellMat.uniforms.stripes.value = 1; // the cases keep their lines in every pose: the body is never an empty outline
+    shellMat.uniforms.stripes.value = 1;
+    // one line for each groove: while its cases are lifted in flight, their insides (seen through the open shell) are not
+    // drawn as well, so no line is doubled; at rest and rolled on its side the insides are drawn, so it is never empty
+    sk.backLines.value = 1 - 0.85 * open; // the cases keep their lines in every pose: the body is never an empty outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;
