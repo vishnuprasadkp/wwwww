@@ -316,6 +316,9 @@ export function MothStar({ size = 28 }: { size?: number }) {
  * as it turns, banks and rolls the parts shift against each other like a real body, and each wing case lifts in space on its
  * hinge as it opens. The drawing itself is exactly the icon's.
  */
+/** How far apart the layers of the 3D beetle stand (a multiple of the drawing's units): enough that it always reads as a body. */
+const DEPTH = 5;
+
 export function MothIcon3D({ size = 28, colors = MOTH_COLORS }: { size?: number; colors?: MothColors }) {
   const id = "m3" + useId().replace(/[^a-zA-Z0-9]/g, "");
   const chalk = onDark(colors);
@@ -330,7 +333,7 @@ export function MothIcon3D({ size = 28, colors = MOTH_COLORS }: { size?: number;
       viewBox="0 0 40 40"
       preserveAspectRatio="none"
       aria-hidden="true"
-      style={{ position: "absolute", left: 0, top: 0, overflow: "visible", transform: `translateZ(${(z * K * 2).toFixed(2)}px)`, ...extra }}
+      style={{ position: "absolute", left: 0, top: 0, overflow: "visible", transform: `translateZ(${(z * K * DEPTH).toFixed(2)}px)`, ...extra }}
       {...attrs}
     >
       {children}
@@ -1034,8 +1037,8 @@ export default function MothTrail({
       setMothOpen(topSvg, wingNow);
       // each wing case lifts in space on its hinge as it opens: its outer edge rises towards you
       const liftDeg = 34 * clamp(wingNow, 0, 1);
-      if (caseR) caseR.style.transform = `translateZ(${(2.5 * 2 * SIZE / 40).toFixed(2)}px) rotateY(${(-liftDeg).toFixed(1)}deg)`;
-      if (caseL) caseL.style.transform = `translateZ(${(2.5 * 2 * SIZE / 40).toFixed(2)}px) rotateY(${liftDeg.toFixed(1)}deg)`;
+      if (caseR) caseR.style.transform = `translateZ(${(2.5 * DEPTH * SIZE / 40).toFixed(2)}px) rotateY(${(-liftDeg).toFixed(1)}deg)`;
+      if (caseL) caseL.style.transform = `translateZ(${(2.5 * DEPTH * SIZE / 40).toFixed(2)}px) rotateY(${liftDeg.toFixed(1)}deg)`;
       // the roll turns it about its own body line: its back faces you at 0, its flank faces you at 1
       const dirn = rollSide === "L" ? 1 : -1;
       // …and as it comes over it tilts towards you (rotateX) at the half-way point, like a body rolling, and the two views
@@ -1056,7 +1059,10 @@ export default function MothTrail({
       // walking, its body rocks from side to side with its steps
       const rock = mode === "walk" && !perched ? 5 * Math.sin(now / 130) : 0;
       // rolling over, it tips towards you as it comes over; touching down its head is up a little, then it levels out
-      const tilt = -12 * Math.sin(Math.PI * clamp(frac, 0, 1)) + 18 * st + dip;
+      // it is always seen at an angle, a little from behind (so its layers stand apart and it reads as a body); the angle eases
+      // away as it rolls onto its side, where the side drawing takes over
+      const view = 24 * (1 - clamp(frac, 0, 1));
+      const tilt = view - 12 * Math.sin(Math.PI * clamp(frac, 0, 1)) + 18 * st + dip;
       const shift = 4 * st * Math.sin(now / 95); // and it shifts its footing a little as it settles
       turner.style.transform = `rotateX(${tilt.toFixed(1)}deg) rotateY(${(angle + lean + rock).toFixed(1)}deg) rotateZ(${shift.toFixed(1)}deg)`;
       sface.style.transform = rollSide === "L" ? "rotateY(-90deg)" : "rotateY(90deg) scaleX(-1)";
