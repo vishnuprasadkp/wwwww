@@ -250,7 +250,7 @@ const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
 uniform vec3 ink;
 uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
-uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines; uniform float waver;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -286,6 +286,8 @@ void main(){
   float n = dot(N, L) * 0.5 + 0.5;
   // a hand's line wavers a little (objPress: the waver belongs to the beetle, so it never shimmers as it moves)
   float jit = (noise(vObj.xz * 7.0 + boil) - 0.5) * mix(0.1 * (1.0 - even), 0.16, objPress);
+  // waver: a hand's line, one steady width but never ruler-straight (the waver is on the beetle, so it holds as it moves)
+  jit += (noise(vObj.xz * 4.0 + vObj.y * 3.0 + 5.0) - 0.5) * waver;
   // lines drawn across the form, so it reads round: along the wing cases (and the seam), around the body
   // backLines: how much of the stripes the inside of a shell shows (an open shell's inside, striped too, reads as a dark patch)
   float face = gl_FrontFacing ? 1.0 : backLines;
@@ -297,11 +299,11 @@ void main(){
     // and as the pen lifts near the tail, each groove thins to a point
     float tail = mix(1.0, smoothstep(-0.86, -0.5, vObj.z), meridAng);
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
-    float lit = mix(0.5 + 0.5 * n, 1.0, objPress);
+    float lit = mix(0.5 + 0.5 * n, 1.0, max(objPress, even)); // even: one ink, never shaded
     a = max(a, lineAt(m + jit, 1.2 * pressure * px * tail) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * smoothstep(0.0, 0.25, tail));
     a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px) * stripes * face);
   }
-  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * mix(0.45 + 0.55 * n, 1.0, objPress) * stripes * face * inkFlow);
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
     vec2 q = fc / 3.2;
@@ -319,7 +321,7 @@ void main(){
   gl_FragColor = vec4(ink * a, a);
 }`;
 
-export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number }; objPress?: { value: number }; edge?: { value: THREE.Vector2 }; meridAng?: { value: number }; backLines?: { value: number } };
+export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number }; objPress?: { value: number }; edge?: { value: THREE.Vector2 }; meridAng?: { value: number }; backLines?: { value: number }; waver?: { value: number } };
 type Lines = { merid?: number; rings?: number; hatch?: number; weight?: number };
 const INK = new THREE.Vector3(0.96, 0.96, 0.96); // pure white ink, no warmth: white and grey only
 function sketchMaterial(shared: SketchU, lines: Lines = {}) {
@@ -338,6 +340,7 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
       objPress: shared.objPress ?? { value: 0 },
       meridAng: shared.meridAng ?? { value: 0 },
       backLines: shared.backLines ?? { value: 1 },
+      waver: shared.waver ?? { value: 0 },
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },
@@ -747,7 +750,7 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
  * flies its own way: at the top it keeps low in the box and glides; at the foot it uses the whole height, rising and
  * falling.
  */
-export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPalette; place?: "top" | "foot" } = {}) {
+export default function HeroFilm({ palette, place = "foot", from }: { palette?: InkPalette; place?: "top" | "foot"; from?: "right" | "top-right" } = {}) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [key, setKey] = useState(0);
 
@@ -757,20 +760,28 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
     const TOP = false && place === "top";
     // only the film at the top of the home page opens with the beetle flying in from a side (each time the page is opened);
     // in every other film it is already there, in flight, when you scroll down to it
-    const ENTERS = place === "top";
+    // a film given `from` opens with the beetle flying in: from the right (top of the home page) or from the top right corner
+    // (the foot of the home page, so it reads as the same beetle carrying on); the others have it already in flight
+    const ENTERS = !!from;
     // the beetle is the same size on screen in every film: as in the tall film at the foot of the page, so in a shorter box
     // it is drawn larger; the room it keeps from the box's edges grows with it, so it is always seen whole
     // Every film is drawn as the tall one at the foot of the page: a shorter box (the top of the home page) shows a band
     // across the middle of that same frame. So the beetle, its lines, its dust, its size and its speed on screen are
     // exactly the same everywhere.
-    const VH = Math.max(Math.max(200, host.getBoundingClientRect().height), Math.min(680, Math.max(420, window.innerWidth * 0.36)));
+    // each film now fills half the width (the hero and the footer): the beetle is drawn to the box's own height, so it is in
+    // proportion to its box and has room to roam all of it
+    const VH = Math.max(200, host.getBoundingClientRect().height);
     const SIZE_K = VH / Math.max(200, host.getBoundingClientRect().height);
     // where its body (its feet, really) keeps to, as a share of the box: in the short film at the top it flies in the lower
     // part, so its body and its raised wings above it are in view; the tall film uses the whole height
     const FLOOR_N = -0.5 - (SIZE_K - 1) * 0.45;
     // it keeps to the lower part of the frame (its body and raised wings above it stay in view)
-    const CEIL_N = Math.max(FLOOR_N + 0.3, 0.08 - (SIZE_K - 1) * 1.25);
-    const D_K = 1; // the same distances everywhere // one beetle everywhere: the same beetle, framed and flying as at the foot
+    // it roams the whole box, high and low, with its body and raised wings always in view
+    const CEIL_N = Math.max(FLOOR_N + 0.5, 0.4 - (SIZE_K - 1) * 1.1);
+    // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
+    // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
+    const hb0 = host.getBoundingClientRect();
+    const D_K = 1.45 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.6); // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -883,7 +894,7 @@ void main(){
     };
 
     // the drawing's shared settings: the clock it boils to, and how it fades into the haze far back
-    const sketchU = { time: { value: 0 }, fogNear: { value: 6.5 }, fogFar: { value: 20 }, px: { value: pr } };
+    const sketchU = { time: { value: 0 }, fogNear: { value: 6.5 * D_K }, fogFar: { value: 20 * D_K }, px: { value: pr } };
 
     // one light, only for the beetle's soft shadow on the floor
     const key1 = new THREE.DirectionalLight(0xffffff, 1);
@@ -1031,7 +1042,7 @@ void main(){
           fly.face = true;
           // it comes in to meet you: towards the middle and a little nearer, low enough that its raised wings and its whole
           // head stay in the frame
-          const spot = onFrame(clamp(nx * 0.4 + Math.cos(wand.h) * 0.15, -0.45, 0.45), TOP ? clamp(ny - 0.1, -0.8, -0.55) : clamp(ny - 0.05, FLOOR_N + 0.05, CEIL_N - 0.1), 7.2 * D_K, new THREE.Vector3());
+          const spot = onFrame(clamp(nx * 0.4 + Math.cos(wand.h) * 0.15, -0.45, 0.45), TOP ? clamp(ny - 0.1, -0.8, -0.55) : clamp(ny, -0.2, 0.12), 10.5 * D_K, new THREE.Vector3()); // it hangs before you whole, wings and legs in the box
           lift(spot);
           fly.pts = [spot];
           fly.idx = 0;
@@ -1281,7 +1292,7 @@ void main(){
                 wand.lastLook = t - 18; // it will stop to look at you soon after it arrives
                 // it flies in from beyond any side or corner, a different one each time and in each film
                 const band = () => rnd(FLOOR_N + 0.05, CEIL_N - 0.05);
-                const ways: [number, number][] = [[-1.45, band()], [1.45, band()], [-1.4, CEIL_N], [1.4, CEIL_N], [-1.4, FLOOR_N], [1.4, FLOOR_N]]; // never straight down from the top, where its legs would come first
+                const ways: [number, number][] = from === "top-right" ? [[1.3, CEIL_N + 0.45]] : [[1.45, band()], [1.4, CEIL_N]]; // never straight down from the top, where its legs would come first
                 const [ex, ey] = ways[Math.floor(Math.random() * ways.length)];
                 onFrame(ex, ey, rnd(7.5, 9.5) * D_K, fly.p);
                 fly.p.y = Math.max(fly.p.y, FLOOR + 0.35);

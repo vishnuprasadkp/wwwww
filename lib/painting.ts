@@ -19,7 +19,7 @@ function mix(a: string, b: string, t: number): string {
 }
 
 /** `wing` is the moth's pale colour, `dark` its dark colour, `spray` the paint, all read off the design. */
-function scheme(name: string, bg: string, wing: string, dark: string, spray: string, gain = 0.65): Scheme {
+export function scheme(name: string, bg: string, wing: string, dark: string, spray: string, gain = 0.65): Scheme {
   return {
     name,
     bg,
