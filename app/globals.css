@@ -127,10 +127,17 @@
 
 /* Nyrro copilot */
 /* Nyrro's answers: the locked bundle's HTML (p, strong, em, ul, ol, li, a), styled as the chat has always looked */
-.nyrro-answer > * + * { margin-top: 12px; }
+/* an answer reads in clear blocks: a gap between paragraphs, a larger one before a heading, and each heading kept close to
+   what it names */
+.nyrro-answer.nyrro-answer > * { margin: 0; }
+.nyrro-answer.nyrro-answer > * + * { margin-top: 14px; }
+.nyrro-answer.nyrro-answer > .nyrro-h { margin-top: 24px; }
+.nyrro-answer.nyrro-answer > .nyrro-h:first-child { margin-top: 0; }
+.nyrro-answer.nyrro-answer > .nyrro-h + * { margin-top: 4px; }
 .nyrro-answer ul { list-style: disc; padding-left: 20px; }
 .nyrro-answer ol { list-style: decimal; padding-left: 20px; }
-.nyrro-answer li + li { margin-top: 4px; }
+.nyrro-answer li::marker { color: var(--color-pigment-soft); }
+.nyrro-answer.nyrro-answer li + li { margin-top: 10px; }
 .nyrro-answer em { font-style: italic; }
 .nyrro-answer a { text-decoration: underline; text-underline-offset: 4px; overflow-wrap: anywhere; }
 .nyrro-answer a:hover { color: var(--color-pigment-soft); }

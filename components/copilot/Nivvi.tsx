@@ -40,6 +40,8 @@ const noEmoji = (s: string) =>
     .replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").replace(/ {2,}/g, " ").replace(/ +(<\/p>|<\/li>|\n|$)/g, "$1");
 /** Every email address in an answer is a link that writes to it (a Gmail compose window, as every email link on the site;
  *  the address itself is unchanged), unless it is already inside a link. */
+// a paragraph that is only a bold label ("Design & Research") is a heading: it gets room above it and sits close to its text
+const headings = (html: string) => html.replace(/<p><strong>([^<]*)<\/strong><\/p>/g, '<p class="nyrro-h"><strong>$1</strong></p>');
 const linkEmails = (html: string) => {
   let inLink = false;
   return html
@@ -757,7 +759,7 @@ function NivviPanel() {
       </div>
 
       {/* conversation */}
-      <div ref={scroller} data-lenis-prevent className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-18px),transparent)] [scrollbar-width:thin]">
+      <div ref={scroller} data-lenis-prevent className="relative flex flex-1 flex-col overflow-y-auto px-5 pb-6 pt-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-20px),transparent)] [scrollbar-width:thin]">
         {empty ? (
           <div className="mt-auto">
             <p data-ledge="hero" className="font-serif text-[24px] leading-[32px]">Hey, it&apos;s Nyrro!</p>
@@ -790,7 +792,7 @@ function NivviPanel() {
                     m.html ? (
                       <div
                         className="nyrro-answer"
-                        dangerouslySetInnerHTML={{ __html: linkEmails(noEmoji(m.html)) }}
+                        dangerouslySetInnerHTML={{ __html: headings(linkEmails(noEmoji(m.html))) }}
                         onClick={(e) => {
                           // links to this site change the page beside the panel; other sites open in a new tab (as given)
                           const a = (e.target as HTMLElement).closest("a");
@@ -860,7 +862,7 @@ function NivviPanel() {
           e.preventDefault();
           send(draft);
         }}
-        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-8"}`}
+        className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-1"}`}
       >
         {listening ? (
           <div data-ledge="composer" className="border border-[#bcb6b3] bg-white/45 px-3 pb-3 pt-3">
