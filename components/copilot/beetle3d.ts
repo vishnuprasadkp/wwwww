@@ -19,7 +19,7 @@ export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; can
 
 /** One drawing everywhere (loader, header icon, assistant): the weight of its pen, for a beetle 64 px tall. A smaller
  * beetle is drawn with a pen in proportion, so it is the same drawing, only smaller. */
-export const BEETLE_LINE = 2.1; // a bold black ink line, as in an ink print
+export const BEETLE_LINE = 1.45; // one even ink line everywhere: clear, never bold
 const penFor = (size: number) => BEETLE_LINE * (size / 64);
 
 type P2 = [number, number];
@@ -168,8 +168,11 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // the legs and feelers in solid ink, as in an ink print
     if (m && m.isShaderMaterial && m.uniforms?.solid && (m.uniforms.weight?.value === 0.9 || m.uniforms.weight?.value === 0.8)) m.uniforms.solid.value = 1;
     if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.75; // the outline the same weight as the lines inside it
-    if (m && m.isShaderMaterial && m.uniforms?.rings && (m.uniforms.rings.value === 7 || m.uniforms.rings.value === 3)) m.uniforms.rings.value = 2;
+    if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 3) m.uniforms.rings.value = 2;
+    // the head and the shield: plain, only their outline (a small head and a clean white dome behind it, as in an ink print)
+    if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 7) m.uniforms.rings.value = 0;
   });
+  b.head.scale.multiplyScalar(0.8); // a small head, as in an ink print of a beetle
   const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
   const shellWeight = shellMat.uniforms.weight.value as number;
   // it rolls about its own body line, through its middle
@@ -212,7 +215,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // so from the side too they are a few simple lines, not loops
     void p.roll; // the stripes curve with the shell in every view, as the earlier drawing's did
     // lifted in flight, a case is seen at a slant and its stripes crowd together: it shows fewer, so it stays clear, never a dark mass
-    shellMat.uniforms.merid.value = 6 - 3 * ease(open); // the cases keep their lines in every pose: the body is never an empty outline
+    shellMat.uniforms.merid.value = 6 - 4 * ease(open); // the cases keep their lines in every pose: the body is never an empty outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;

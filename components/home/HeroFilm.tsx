@@ -305,10 +305,10 @@ void main(){
     float tail = mix(1.0, smoothstep(-0.86, -0.5, vObj.z), meridAng);
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, max(objPress, even)); // even: one ink, never shaded
-    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 1.1 * px, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * mix(smoothstep(0.0, 0.25, tail), smoothstep(0.02, 0.06, tail), sketch)); // sketch: a stripe ends crisply, as an ink stroke does, not in a grey fade
-    a = max(a, lineAt(vObj.x + jit * 0.02, mix(1.6, 1.2, sketch) * px) * stripes * face);
+    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 0.95 * px, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * mix(smoothstep(0.0, 0.25, tail), smoothstep(0.02, 0.06, tail), sketch)); // sketch: a stripe ends crisply, as an ink stroke does, not in a grey fade
+    a = max(a, lineAt(vObj.x + jit * 0.02, mix(1.6, 0.95, sketch) * px) * stripes * face);
   }
-  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 1.0, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 0.95, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
     vec2 q = fc / 3.2;
