@@ -80,7 +80,7 @@ const SIDE_LINES_D = [sample([20.6, 15.4], [26, 16.6], [29.2, 22], [28.4, 29.4])
  * (wings half open, hind wings showing) and 1 is in flight (wings spread). Each wing pivots on the shoulder, so
  * every value in between is a real in-between pose, with the same markings throughout.
  */
-export function setMothOpen(svg: SVGSVGElement, p: number) {
+export function setMothOpen(svg: Element, p: number) {
   const a = FOLD * (1 - p);
   for (const g of svg.querySelectorAll<SVGGElement>("[data-fw]")) g.setAttribute("transform", `rotate(${a.toFixed(2)} ${PIVOT})`);
   const hind = clamp((p - 0.1) / 0.25, 0, 1);
@@ -311,6 +311,122 @@ export function MothStar({ size = 28 }: { size?: number }) {
 }
 
 /**
+ * The same beetle, built in depth for the assistant: its drawing split into layers stacked one above the other (legs lowest,
+ * then the hind wings and the abdomen, then the two wing cases, each on its own layer, then the shield and head on top), so
+ * as it turns, banks and rolls the parts shift against each other like a real body, and each wing case lifts in space on its
+ * hinge as it opens. The drawing itself is exactly the icon's.
+ */
+export function MothIcon3D({ size = 28, colors = MOTH_COLORS }: { size?: number; colors?: MothColors }) {
+  const id = "m3" + useId().replace(/[^a-zA-Z0-9]/g, "");
+  const chalk = onDark(colors);
+  const ink = chalk ? colors.deep : BLACK;
+  const paper = chalk ? "none" : PAPER;
+  const w = size * WIDE;
+  const K = size / 40; // px per unit of the drawing
+  const layer = (z: number, children: React.ReactNode, extra: React.CSSProperties = {}, attrs: Record<string, string> = {}) => (
+    <svg
+      width={w}
+      height={size}
+      viewBox="0 0 40 40"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      style={{ position: "absolute", left: 0, top: 0, overflow: "visible", transform: `translateZ(${(z * K * 2).toFixed(2)}px)`, ...extra }}
+      {...attrs}
+    >
+      {children}
+    </svg>
+  );
+  const hind = (
+    <g data-hw>
+      <g transform={`rotate(${-FOLD * 0.5} ${PIVOT})`}>
+        <path d={HW} fill={paper} />
+      </g>
+    </g>
+  );
+  const caseG = (
+    <g data-fw>
+      <g transform={`rotate(${-FOLD} ${PIVOT})`}>
+        <path d={FW} fill={paper} />
+        <path d={STRIPES} fill={ink} />
+        <path d={FW_EDGE} fill={ink} />
+        <path d={SEAM} fill={ink} />
+      </g>
+    </g>
+  );
+  // each case hinges at the seam, at the shoulder
+  const hinge = { transformOrigin: `${(w / 2).toFixed(2)}px ${(13 * K).toFixed(2)}px` };
+  return (
+    <div data-mothroot style={{ position: "relative", width: w, height: size, transformStyle: "preserve-3d" }}>
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <defs>
+          <clipPath id={id}>
+            <rect x="20" y="-10" width="30" height="60" />
+          </clipPath>
+        </defs>
+      </svg>
+      {/* the legs, lowest */}
+      {layer(
+        -5,
+        <>
+          <path d={LEG_INK} fill={ink} />
+          {LEG_ALL.map((l, i) => {
+            const hip = l[0];
+            const foot = l[l.length - 1];
+            const left = i < 3;
+            return (
+              <g key={i}>
+                <ellipse cx={hip[0]} cy={hip[1]} rx=".6" ry=".45" fill={ink} />
+                <ellipse cx={foot[0]} cy={foot[1]} rx=".95" ry=".52" fill={ink} transform={`rotate(${left ? (i === 0 ? -12 : i === 1 ? 4 : 28) : i === 3 ? 12 : i === 4 ? -4 : -28} ${foot[0]} ${foot[1]})`} />
+              </g>
+            );
+          })}
+        </>,
+      )}
+      {/* the hind wings and the abdomen under the cases */}
+      {layer(
+        -2,
+        <>
+          <g clipPath={`url(#${id})`}>{hind}</g>
+          <g transform="translate(40 0) scale(-1 1)" clipPath={`url(#${id})`}>
+            {hind}
+          </g>
+          <path d={ABD_LINES} fill={ink} />
+          <path d={ABD_EDGE} fill={ink} />
+          <path d={ABD_EDGE_L} fill={ink} />
+        </>,
+      )}
+      {/* the wing cases, each on its own layer, so each can lift on its hinge */}
+      {layer(2.5, <g clipPath={`url(#${id})`}>{caseG}</g>, hinge, { "data-case": "r" })}
+      {layer(
+        2.5,
+        <g transform="translate(40 0) scale(-1 1)">
+          <g clipPath={`url(#${id})`}>{caseG}</g>
+        </g>,
+        hinge,
+        { "data-case": "l" },
+      )}
+      {/* the shield and the head, on top */}
+      {layer(
+        4,
+        <>
+          <path className="moth-ant" style={{ transformOrigin: "20px 7px" }} d={HORN_L} fill={ink} />
+          <path className="moth-ant moth-ant-l" style={{ transformOrigin: "20px 7px" }} d={HORN_R} fill={ink} />
+          <ellipse cx={fx(250)} cy={fy(105)} rx=".5" ry=".42" fill={ink} />
+          <ellipse cx={fx(379)} cy={fy(106)} rx=".5" ry=".42" fill={ink} />
+          <path d={SHIELD} fill={paper} />
+          <path d={SHIELD_BOT} fill={ink} />
+          <path d={SHIELD_EDGE} fill={ink} />
+          <path d={HEAD} fill={paper} />
+          <path d={HEAD_EDGE} fill={ink} />
+          <ellipse cx={fx(289)} cy={fy(156)} rx=".5" ry=".58" fill={ink} />
+          <ellipse cx={fx(341)} cy={fy(156)} rx=".5" ry=".58" fill={ink} />
+        </>,
+      )}
+    </div>
+  );
+}
+
+/**
  * The beetle from the side, head up, legs on its left: the rounded wing case domed over its back, cut with its stripes.
  * Clinging to a wall on its left as drawn (mirrored for a wall on the right); turned a quarter, it is standing on
  * a ledge, head along it. Drawn in ink, like the top view.
@@ -523,7 +639,9 @@ export default function MothTrail({
     const el = mothEl.current;
     const turner = turnEl.current;
     const sface = sideFace.current;
-    const topSvg = el?.querySelector<SVGSVGElement>("[data-top] svg");
+    const topSvg = el?.querySelector<HTMLElement>("[data-top] [data-mothroot]");
+    const caseR = el?.querySelector<SVGSVGElement>('[data-top] [data-case="r"]');
+    const caseL = el?.querySelector<SVGSVGElement>('[data-top] [data-case="l"]');
     const topFace = el?.querySelector<HTMLElement>("[data-top]");
     const host = cv?.closest("[data-moth-host]") as HTMLElement | null;
     if (!active || !cv || !sh || !star || !hit || !el || !turner || !sface || !topSvg || !topFace || !host) return;
@@ -914,6 +1032,10 @@ export default function MothTrail({
       const turning = mode === "aim" || mode === "settle" ? Math.min(1, Math.abs(headV) / 2.5) * 0.09 * Math.sin(now / 45) : 0;
       const wingNow = clamp(p + flap + breathe + quiver + turning, 0, 1);
       setMothOpen(topSvg, wingNow);
+      // each wing case lifts in space on its hinge as it opens: its outer edge rises towards you
+      const liftDeg = 34 * clamp(wingNow, 0, 1);
+      if (caseR) caseR.style.transform = `translateZ(${(2.5 * 2 * SIZE / 40).toFixed(2)}px) rotateY(${(-liftDeg).toFixed(1)}deg)`;
+      if (caseL) caseL.style.transform = `translateZ(${(2.5 * 2 * SIZE / 40).toFixed(2)}px) rotateY(${liftDeg.toFixed(1)}deg)`;
       // the roll turns it about its own body line: its back faces you at 0, its flank faces you at 1
       const dirn = rollSide === "L" ? 1 : -1;
       // …and as it comes over it tilts towards you (rotateX) at the half-way point, like a body rolling, and the two views
@@ -1580,8 +1702,8 @@ export default function MothTrail({
       <div ref={shadowEl} className="absolute left-0 top-0" style={{ width: BOX_W, height: SIZE }}>
         <div ref={mothEl} className="absolute inset-0 will-change-transform" style={{ opacity: 0, perspective: 170 }}>
           <div ref={turnEl} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
-            <div data-top className="absolute inset-0" style={face}>
-              <MothIcon size={SIZE} star={false} colors={colors} />
+            <div data-top className="absolute inset-0" style={{ ...face, transformStyle: "preserve-3d" }}>
+              <MothIcon3D size={SIZE} colors={colors} />
             </div>
             <div ref={sideFace} className="absolute inset-0 grid place-items-center" style={face}>
               <MothSideIcon size={SIZE} colors={colors} />
