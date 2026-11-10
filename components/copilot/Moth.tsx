@@ -115,7 +115,7 @@ const lumOf = (h: string) => {
   const n = parseInt(h.slice(1), 16);
   return (0.3 * (n >> 16) + 0.59 * ((n >> 8) & 255) + 0.11 * (n & 255)) / 255;
 };
-const BLACK = "#393636"; // the ink: the brand's dark
+const BLACK = "#83685f"; // the ink: the logo's own colour (the loader, the header icon and the assistant)
 
 /** One brush stroke: a ribbon along `pts`, its width following the pressure, the line itself a little unsteady. */
 const stroke = (pts: Pt[], peak: number, seed: number, amp = 0.16): string => {
@@ -939,11 +939,13 @@ export default function MothTrail({
       hit.style.transform = `translate3d(${pos.x - 24 * K}px, ${pos.y - 24 * K + bob}px, 0)`;
       hit.style.cursor = mode === "grab" ? "grabbing" : "grab";
       sh.style.filter = scene ? lift < 0.01 ? "none" : `drop-shadow(0 ${(lift * 9).toFixed(1)}px ${(lift * 5).toFixed(1)}px rgba(57,54,54,${(0.22 * lift).toFixed(3)}))` : lift > 0.04 ? `drop-shadow(0 ${(lift * 9).toFixed(1)}px ${(lift * 5).toFixed(1)}px rgba(57,54,54,${(0.08 + 0.14 * lift).toFixed(2)}))` : "none";
-      el.style.transform = `rotate(${heading + Math.PI / 2 + sway}rad) scale(${scale * (1 - 0.07 * squash)})`;
+      // touching down it gives a little, smoothly, and comes back (a gentle dip, never a pop)
+      const give = squash > 0 ? 0.045 * Math.sin(Math.PI * (1 - squash)) : 0;
+      el.style.transform = `rotate(${heading + Math.PI / 2 + sway}rad) scale(${scale * (1 - give)})`;
       // The AI star has one fixed place: centred just above the moth's highest point, upright whatever way the moth is
       // turned, so it never swings round behind the moth or catches on an antenna. That highest point is worked out from
       // the moth's real extent (wide in top view, slim on its side), turned by its heading.
-      const k = scale * (1 - 0.07 * squash);
+      const k = scale * (1 - give);
       const theta = heading + Math.PI / 2 + sway;
       const hx = (13.5 + (8.5 - 13.5) * ease(clamp(rollVis, 0, 1))) * k; // half its width, top view → on its side
       const hy = 14 * k; // half its length
@@ -1186,7 +1188,7 @@ export default function MothTrail({
         pv += ((pt - p) * 110 - pv * 13) * hh;
         p += pv * hh;
       }
-      squash = Math.max(0, squash - dt * 4.5);
+      squash = Math.max(0, squash - dt * 2.2); // the give on touching down, over about half a second
       settleT = Math.max(0, settleT - dt * 1.6);
       // sitting down it turns its body round to where it will sit, easing in and out
       if (headTo !== null) {

@@ -797,7 +797,7 @@ export default function HeroFilm({ palette, place = "foot", from }: { palette?: 
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
-    const D_K = 0.78 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
+    const D_K = 0.64 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -1190,7 +1190,7 @@ void main(){
         const S = b.root.scale.x;
         const headAt = new THREE.Vector3();
         const inset = (h: THREE.Vector3) => Math.min(nx !== 0 && Math.abs(nx) === 1 ? 1 - Math.abs(h.x) : 9, Math.abs(ny) === 1 ? 1 - Math.abs(h.y) : 9);
-        const want = Math.abs(ny) === 1 ? 0.34 : 0.04; // only its head comes in past the edge: its body stays outside // the frame is wide and short: a little more room top and bottom
+        const want = Math.abs(ny) === 1 ? 0.34 : 0.13; // its whole head comes in past the edge (never half of it); its body stays outside // the frame is wide and short: a little more room top and bottom
         for (let it = 0; it < 24; it++) {
           headAt.set(0, STAND * S, 0.62 * BODY * S).applyQuaternion(fs.toQ).add(fs.toP).project(camera);
           const err = want - inset(headAt);
