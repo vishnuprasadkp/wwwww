@@ -10,8 +10,8 @@ import { site } from "@/lib/site";
 
 // Home and About: the right half is a lighter grey than the film beside it
 const STONE: Scheme = scheme("stone", "#727272", "#fafafa", "#585858", "#9c9c9c");
-// each case study: the right half is painted in that case's own colour
-const CASE_SCHEME: Record<string, keyof typeof SCHEMES> = { "enterprise-search": "mist", adeo: "moss", "ai-agent": "clay", hdfc: "slate", sony: "sage" };
+// every case study: the right half in the Enterprise Search blue-grey, a little deeper
+const CASE_PANEL: Scheme = scheme("mistDeep", "#7d919a", "#f7f9fa", "#4e5f65", "#c4d3d9");
 
 /**
  * Every page ends on two halves: the beetle film on the left (the grey painting, the beetle flying through it) and a painted
@@ -21,8 +21,7 @@ const CASE_SCHEME: Record<string, keyof typeof SCHEMES> = { "enterprise-search":
  */
 export default function Footer() {
   const pathname = usePathname();
-  const caseKey = CASE_SCHEME[pathname.replace(/^\/work\//, "").replace(/\/$/, "")];
-  const panel = pathname.startsWith("/work/") && caseKey ? SCHEMES[caseKey] : STONE;
+  const panel = pathname.startsWith("/work/") ? CASE_PANEL : STONE;
   const art = pathname === "/" || pathname === "/about";
   return (
     <footer className={art ? "mt-24 md:mt-40 lg:mt-60" : "mt-14 md:mt-[90px] lg:mt-[140px]"}>
