@@ -172,12 +172,12 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // the head and the shield: plain, only their outline (a small head and a clean white dome behind it, as in an ink print)
     if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 7) m.uniforms.rings.value = 0;
   });
-  b.head.scale.multiplyScalar(0.8); // a small head, as in an ink print of a beetle
-  b.head.scale.x *= 0.68; // and narrow
+  b.head.scale.multiplyScalar(0.66); // a small head, as in an ink print of a beetle
+  b.head.scale.x *= 0.85; // and narrow
   // the shield behind the head (drawn with the head's material): narrower too
   const headMat = (b.head.children.find((c) => (c as THREE_NS.Mesh).isMesh && ((c as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial).uniforms?.rings) as THREE_NS.Mesh | undefined)?.material;
   b.body.children.forEach((c) => {
-    if ((c as THREE_NS.Mesh).isMesh && (c as THREE_NS.Mesh).material === headMat) c.scale.x *= 0.7;
+    if ((c as THREE_NS.Mesh).isMesh && (c as THREE_NS.Mesh).material === headMat) c.scale.set(c.scale.x * 0.68, c.scale.y * 0.9, c.scale.z * 0.9);
   });
   const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
   const shellWeight = shellMat.uniforms.weight.value as number;
@@ -210,21 +210,22 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // and the body is never two empty shells
     b.cases.forEach((c, i) => {
       const s = i === 0 ? 1 : -1;
-      c.rotation.set(0.32 * open, s * 0.12 * open, -s * 0.42 * open); // closed tight at rest: no gap down its back
+      // in flight the cases lift only a little, so it is the same drawing flying as standing (its wings come out from under them)
+      c.rotation.set(0.1 * open, s * 0.03 * open, -s * 0.1 * open);
     });
     shellMat.uniforms.weight.value = shellWeight * (1 - 0.15 * ease(open / 0.6));
     // (the stripes are set with the seam below, as the cases open)
     // one line for each groove: while its cases are lifted in flight, their insides (seen through the open shell) are not
     // drawn as well, so no line is doubled; at rest and rolled on its side the insides are drawn, so it is never empty
-    sk.backLines.value = 1 - 0.85 * open;
+    sk.backLines.value = 1;
     // grooves: straight down the wing covers seen from above; as it rolls onto its side they follow the curve of the shell,
     // so from the side too they are a few simple lines, not loops
     void p.roll; // the stripes curve with the shell in every view, as the earlier drawing's did
     // lifted in flight, a case is seen at a slant and its stripes crowd together: it shows fewer, so it stays clear, never a dark mass
-    shellMat.uniforms.merid.value = 6 - 4 * ease(open);
-    // lifted, the two cases' inner edges would cross over its back: that line goes as they open, and the stripes go lighter
-    shellMat.uniforms.seam.value = 1 - ease(open / 0.4);
-    shellMat.uniforms.stripes.value = 1 - 0.45 * ease(open); // the cases keep their lines in every pose: the body is never an empty outline
+    // the same stripes and seam flying as standing
+    shellMat.uniforms.merid.value = 6;
+    shellMat.uniforms.seam.value = 1;
+    shellMat.uniforms.stripes.value = 1; // the cases keep their lines in every pose: the body is never an empty outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;
