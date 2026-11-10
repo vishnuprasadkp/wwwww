@@ -65,7 +65,8 @@ function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], siz
       const t = i / (q.length - 2);
       // pressure: light at the start, full in the middle, lifting off at the end, a little unsteady
       // the pen lifts now and then (a small gap) and presses harder or lighter along the line
-      g.lineWidth = Math.max(0.5, pen * 0.75 * (0.85 + 0.3 * Math.sin(t * 4.1 + seed * 2.1))); // a fine ink line, barely uneven
+      void t;
+      g.lineWidth = Math.max(0.5, pen * 0.6); // the same fine width as every other line
       g.beginPath();
       g.moveTo(q[i][0], q[i][1]);
       g.lineTo(q[i + 1][0], q[i + 1][1]);
@@ -143,7 +144,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
 
   // drawn with the film's pen: each line swells and tapers, as a sketch; the swell belongs to the beetle (objPress), so
   // as it flies its lines hold their shape instead of shimmering, and the wings stay drawn as they turn (edge)
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.2 }, sketch: { value: 1 } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 0 }, backLines: { value: 1 }, waver: { value: 0.1 }, sketch: { value: 1 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
@@ -162,7 +163,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     if ((o as THREE_NS.Points).isPoints) o.visible = false;
     const m = (o as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial | undefined;
     // few, clear lines, as in the logo: four grooves on each case, four rings on the head and shield, four bands on the belly
-    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 2; // a couple of grooves, not stripes
+    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 8; // evenly spaced straight grooves down each wing cover, not stripes
     // one pen for every line: the outline drawn no heavier than the grooves and rings inside it (no bold edges)
     if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.75; // the outline the same weight as the lines inside it
     if (m && m.isShaderMaterial && m.uniforms?.rings && (m.uniforms.rings.value === 7 || m.uniforms.rings.value === 3)) m.uniforms.rings.value = 2;
@@ -204,7 +205,12 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     shellMat.uniforms.stripes.value = 1;
     // one line for each groove: while its cases are lifted in flight, their insides (seen through the open shell) are not
     // drawn as well, so no line is doubled; at rest and rolled on its side the insides are drawn, so it is never empty
-    sk.backLines.value = 1 - 0.85 * open; // the cases keep their lines in every pose: the body is never an empty outline
+    sk.backLines.value = 1 - 0.85 * open;
+    // grooves: straight down the wing covers seen from above; as it rolls onto its side they follow the curve of the shell,
+    // so from the side too they are a few simple lines, not loops
+    const side = clamp(Math.abs(p.roll), 0, 1);
+    sk.meridAng.value = side;
+    shellMat.uniforms.merid.value = 8 - 4 * side; // the cases keep their lines in every pose: the body is never an empty outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;
@@ -230,7 +236,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     b.antennae.forEach((a, i) => {
       const sd = i === 0 ? 1 : -1;
       const w = p.walking ? 2.6 : 1.4;
-      a.rotation.y = sd * (0.35 + (i ? 0.09 : -0.03) + (0.2 * Math.sin(k * w + i * 1.3) + 0.25 * air) * live + 0.22 * twitch * Math.sin(k * 40 + i));
+      a.rotation.y = sd * (0.35 + (0.2 * Math.sin(k * w + i * 1.3) + 0.25 * air) * live + 0.22 * twitch * Math.sin(k * 40 + i));
       a.rotation.x = -0.35 + (0.15 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * air) * live - 0.2 * groom;
       (a.userData.joints as THREE_NS.Group[]).forEach((j, n) => {
         const ph = k * w * 1.1 - n * 0.7 + i * 2.1;
@@ -251,7 +257,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       const front = L.row === 0 ? groom : 0;
       const shift = L.row === 0 ? 0 : still * 0.08 * Math.sin(k * 0.9 + L.row * 2.3 + (L.side > 0 ? 0 : 1.7));
       const rub = front * Math.sin(k * 16 + (L.side > 0 ? 0 : Math.PI));
-      L.root.rotation.y = L.yawBase + 0.07 * Math.sin(L.row * 2.3 + L.side * 1.9) + sd * (0.45 * swing + 0.18 * paddle + 0.6 * front + 0.12 * rub + shift);
+      L.root.rotation.y = L.yawBase + sd * (0.45 * swing + 0.18 * paddle + 0.6 * front + 0.12 * rub + shift);
       L.hip.rotation.z = 0.35 + 0.42 * up + (-0.4 * air + 0.12 * paddle) * live + 0.75 * front;
       L.knee.rotation.z = -1.85 - 0.3 * up + (0.35 * air + 0.15 * paddle) * live + 0.55 * front + 0.15 * rub;
     }

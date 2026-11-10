@@ -275,12 +275,11 @@ void main(){
   pressure = mix(pressure, 0.5 + 0.95 * noise(vObj.xz * 6.0 + vObj.y * 4.0), objPress);
   // sketch: a pen in a hand, the line a little heavier here and lighter there along its length (fixed on the beetle)
   // (the large drawn parts, the shell and body, vary most; the fine legs and feelers stay whole)
-  float bigPart = step(0.5, merid + rings);
-  pressure *= mix(1.0, 0.85 + 0.3 * noise(vObj.xz * 3.0 + vObj.y * 2.0 + 1.7), sketch * bigPart); // a hand's line: barely uneven
   // the outline: where the surface turns away from you
   float ndv = abs(dot(N, V));
   float fw = max(fwidth(ndv), 1e-4);
-  float wpx = 1.7 * weight * pressure * px;
+  // sketch: every line the same fine width, the outline included (one pen for the whole drawing)
+  float wpx = mix(1.7 * weight * pressure * px, 1.45 * px, sketch); // (an edge line reads a little lighter than a line across: drawn a touch wider so they look the same)
   float a = 1.0 - smoothstep(wpx, wpx + 1.0, ndv / fw);
   a *= mix(mix(0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0)), 1.0, even), 1.0, objPress);
   // objPress: the ink is lighter in places, where the pen barely touched (on the beetle itself, so it holds as it moves)
@@ -304,10 +303,10 @@ void main(){
     float tail = mix(1.0, smoothstep(-0.86, -0.5, vObj.z), meridAng);
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, max(objPress, even)); // even: one ink, never shaded
-    a = max(a, lineAt(m + jit, 1.2 * pressure * px * tail) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * smoothstep(0.0, 0.25, tail));
-    a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px * mix(1.0, 0.8, sketch)) * stripes * face);
+    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 0.92 * px, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * smoothstep(0.0, 0.25, tail));
+    a = max(a, lineAt(vObj.x + jit * 0.02, mix(1.6, 0.92, sketch) * px) * stripes * face);
   }
-  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 1.05, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
     vec2 q = fc / 3.2;
