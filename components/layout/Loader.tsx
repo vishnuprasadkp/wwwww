@@ -1,18 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BeetleIcon } from "@/components/copilot/Moth";
-import { mountBeetle3D, type Beetle3D } from "@/components/copilot/beetle3d";
+import { MothIcon, MOTH_COLORS, setMothOpen, type MothColors } from "@/components/copilot/Moth";
 
+// The moth that arrives is darker than the one in the nav; its wing pattern is white, then takes each colour in turn
+const ARRIVING: MothColors = { grey: "#4c3d38", hind: "#8d7168", deep: "#4c3d38", vein: "#f1efee" };
+const VEINS = ["#f1efee", "#8db4d6", "#7da98a", "#c9935a"]; // white, blue, green, orange
 
 // milliseconds
 const MOTH_IN = 300; // the moth comes up out of the paper
 const RISE = 700; // …and its wings open slowly
+const COLOUR_AT = [900, 1400, 1900]; // the pattern turns blue, green, orange
 const STAND_AT = 2200; // it settles and stands still, wings folded
 const PREP_AT = 2600; // then its wing cases begin to lift, slowly, as it gets ready
 const FLY_AT = 3200; // and only then does it leave for the assistant
-const FLY = 1700;
-const SIZE = 52;
+const FLY = 1500;
+const SIZE = 64;
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = (t: number) => t * t * (3 - 2 * t);
@@ -20,15 +23,16 @@ const easeIO = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 /
 const easeOut = (t: number) => 1 - (1 - t) ** 3;
 
 /**
- * The opening: the beetle (the same 3D beetle as the films and the assistant, in the same fine lines) comes up on the
- * bare paper and hovers, settles, lifts its wing cases and flies up to the assistant in the header, comes in beside the
- * word "Nyrro" on its left, folds its wings and becomes the assistant's icon (the same beetle at rest) as the page is
- * uncovered; the word eases a little to the right to make room.
+ * The opening: a moth comes up on the bare paper and hovers while its white wing pattern takes the colours of the site one
+ * after another. Then it flies up to the assistant in the header, comes in beside the word "Nyrro" on its left, folds its
+ * wings and becomes the assistant's icon as the page is uncovered; the word eases a little to the right to make room.
  */
 export default function Loader() {
   const root = useRef<HTMLDivElement>(null);
   const bg = useRef<HTMLDivElement>(null);
   const mothEl = useRef<HTMLDivElement>(null);
+  const [vein, setVein] = useState(0);
+  const [landed, setLanded] = useState(false);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export default function Loader() {
     if (!html.hasAttribute("data-loading")) return; // not playing (reduced motion, or no script ran first)
     const moth = mothEl.current!;
     const veil = bg.current!;
-    const still = moth.querySelector<HTMLElement>("[data-still]")!; // the icon, shown until the 3D beetle is ready
+    const svg = moth.querySelector<SVGSVGElement>("svg")!;
     const timers: number[] = [];
     let raf = 0;
     let dead = false;
@@ -64,30 +68,9 @@ export default function Loader() {
     const t0 = performance.now();
     let from = { x: 0, y: 0 };
     let to: { x: number; y: number; h: number } | null = null;
+    let coloured = false;
     let landing = false;
     let ended = false;
-
-    // the same beetle as the films and the assistant, drawn in 3D; the icon (the same beetle at rest) shows until it is ready
-    let b3: Beetle3D | null = null;
-    let shown3 = 0; // how far the 3D beetle has faded in over the icon, at the start
-    let last = 0;
-    mountBeetle3D(moth, { size: SIZE, ink: "#393636" })
-      .then((b) => {
-        if (dead) return b?.dispose();
-        if (!b) return;
-        b3 = b;
-        b.canvas.style.opacity = "0";
-      })
-      .catch(() => {});
-    const draw3 = (s: number, open: number, flying: boolean, settle: number) => {
-      const dt = last ? clamp(s - last, 0, 0.1) : 0;
-      last = s;
-      if (!b3) return;
-      shown3 = Math.min(1, shown3 + dt / 0.3);
-      b3.canvas.style.opacity = shown3.toFixed(3);
-      still.style.opacity = (1 - shown3).toFixed(3);
-      b3.pose({ t: s, open, roll: 0, walking: false, flying, settle });
-    };
 
     const place = (x: number, y: number, rot: number, scale: number, opacity: number) => {
       moth.style.opacity = String(opacity);
@@ -116,15 +99,13 @@ export default function Loader() {
         const flutter = (0.1 * Math.sin(s * 11) + 0.05 * Math.sin(s * 4.7)) * wake * (1 - stand);
         const hoverWings = 0.1 + 0.68 * wake + flutter;
         const wings = hoverWings + (0.1 - hoverWings) * stand + (0.88 - 0.1) * prep + 0.05 * Math.sin(s * 30) * prep * (1 - prep);
-        draw3(s, clamp(wings, 0, 1), wake > 0.3 && stand < 0.5, 0);
+        setMothOpen(svg, clamp(wings, 0, 1));
         place(cx, cy + (1 - arrive) * 22 + bob - 5 * prep, sway, (0.8 + 0.2 * arrive) * (1 + 0.04 * prep), arrive);
       } else {
         if (!to) {
           to = target();
           from = { x: cx, y: cy - 5 };
         }
-        // it keeps aiming at where the icon really is (the header can shift a little as the page is uncovered)
-        to = target() ?? to;
         const dest = to ?? { x: cx, y: cy - 200, h: 24 };
         const u = clamp((t - FLY_AT) / FLY);
         const e = easeIO(u);
@@ -147,14 +128,16 @@ export default function Loader() {
         const scale = 1.04 + (((dest.h || 24) / SIZE) - 1.04) * ease(clamp((u - 0.05) / 0.9));
         // wings beat while it travels, slow as it comes in, and fold as it settles
         const beat = 0.86 + 0.12 * Math.sin(s * 22);
-        // well before it arrives it folds its wings and settles into the icon's own resting pose, so it glides the last
-        // stretch already looking exactly like the icon it becomes
-        const fold = ease(clamp((u - 0.55) / 0.3));
-        draw3(s, clamp(beat * (1 - fold), 0, 1), u < 0.6, ease(clamp((u - 0.55) / 0.35)));
-        place(x, y, lean * (1 - ease(clamp((u - 0.6) / 0.3))), scale, 1);
+        const fold = ease(clamp((u - 0.72) / 0.28));
+        setMothOpen(svg, clamp(beat * (1 - fold) * (1 - 0.35 * ease(clamp((u - 0.5) / 0.3))), 0, 1));
+        place(x, y, lean * (1 - ease(clamp((u - 0.78) / 0.22))), scale, 1);
 
         // the page is uncovered as it goes
         veil.style.opacity = String(1 - ease(clamp((t - FLY_AT - 300) / 1400)));
+        if (!coloured && u > 0.5) {
+          coloured = true;
+          setLanded(true); // its colours become the assistant's
+        }
         if (!landing && u > 0.7) {
           landing = true;
           html.setAttribute("data-landing", ""); // the word "Nyrro" starts to ease to the right
@@ -165,13 +148,14 @@ export default function Loader() {
           // the moth is not seen to fade or change; it simply stays where it sat down
           html.setAttribute("data-landed", "");
           cancelAnimationFrame(raf);
-          moth.style.visibility = "hidden"; // in the same frame as the icon is shown: one beetle, never two, never a blink
           finish();
           timers.push(window.setTimeout(() => html.removeAttribute("data-landed"), 400));
         }
       }
     };
 
+    // the pattern changes colour while it hovers
+    COLOUR_AT.forEach((at, i) => timers.push(window.setTimeout(() => setVein(i + 1), at)));
     raf = requestAnimationFrame(frame);
     // a page that was opened in a background tab must still get its page back
     timers.push(window.setTimeout(finish, 20000));
@@ -180,19 +164,18 @@ export default function Loader() {
       dead = true;
       cancelAnimationFrame(raf);
       timers.forEach(clearTimeout);
-      b3?.dispose();
     };
   }, []);
 
   if (done) return null;
 
+  const colors: MothColors = landed ? MOTH_COLORS : { ...ARRIVING, vein: VEINS[vein] };
+
   return (
     <div ref={root} className="loader" aria-hidden>
       <div ref={bg} className="loader-bg" />
       <div ref={mothEl} className="loader-moth" style={{ width: SIZE * 1.4, height: SIZE }}>
-        <span data-still style={{ display: "block", lineHeight: 0 }}>
-          <BeetleIcon size={SIZE} star={false} />
-        </span>
+        <MothIcon size={SIZE} star={false} colors={colors} />
       </div>
     </div>
   );
