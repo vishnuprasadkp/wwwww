@@ -320,7 +320,7 @@ void main(){
   }
   // sketch: the pen lifts now and then, so lines stop short and start again; nothing is closed off neatly
   // sketch: solid ink, the line full and dark along its whole length (no breaks, no grey)
-  a = mix(a, smoothstep(0.15, 0.55, a), sketch);
+  a = mix(a, smoothstep(0.05, 0.6, a), sketch); // fine ink, dark where it is drawn
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
@@ -782,10 +782,10 @@ export default function HeroFilm({ palette, place = "foot", from }: { palette?: 
     const SIZE_K = VH / Math.max(200, host.getBoundingClientRect().height);
     // where its body (its feet, really) keeps to, as a share of the box: in the short film at the top it flies in the lower
     // part, so its body and its raised wings above it are in view; the tall film uses the whole height
-    const FLOOR_N = -0.5 - (SIZE_K - 1) * 0.45;
+    const FLOOR_N = -0.62 - (SIZE_K - 1) * 0.45;
     // it keeps to the lower part of the frame (its body and raised wings above it stay in view)
     // it roams the whole box, high and low, with its body and raised wings always in view
-    const CEIL_N = Math.max(FLOOR_N + 0.5, 0.4 - (SIZE_K - 1) * 1.1);
+    const CEIL_N = Math.max(FLOOR_N + 0.45, 0.0 - (SIZE_K - 1) * 1.1); // the lower part of the box
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
@@ -1050,7 +1050,7 @@ void main(){
           fly.face = true;
           // it comes in to meet you: towards the middle and a little nearer, low enough that its raised wings and its whole
           // head stay in the frame
-          const spot = onFrame(clamp(nx * 0.85 + Math.cos(wand.h) * 0.2, -0.6, 0.6), TOP ? clamp(ny - 0.1, -0.8, -0.55) : clamp(ny + rnd(-0.15, 0.15), -0.3, 0.15), 10.5 * D_K, new THREE.Vector3()); // it hangs before you whole, wings and legs in the box
+          const spot = onFrame(Math.sign(nx || 1) * clamp(Math.abs(nx) + rnd(-0.1, 0.25), 0.25, 0.65), TOP ? clamp(ny - 0.1, -0.8, -0.55) : rnd(-0.5, -0.3), 10.5 * D_K, new THREE.Vector3()); // it hangs before you whole, wings and legs in the box
           lift(spot);
           fly.pts = [spot];
           fly.idx = 0;

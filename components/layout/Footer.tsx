@@ -28,7 +28,7 @@ export default function Footer() {
     <footer className={art ? "mt-24 md:mt-40 lg:mt-60" : "mt-14 md:mt-[90px] lg:mt-[140px]"}>
       {/* as tall as the film at the top of the home page */}
       <div className="grid md:grid-cols-2 md:[height:clamp(260px,23vw,480px)]">
-        <div className="relative h-[260px] overflow-hidden md:h-auto" style={{ background: "#6e6e6e" }}>
+        <div className="relative h-[260px] overflow-hidden md:h-auto" style={{ background: "#646464" }}>
           <HeroInk palette={inkPalette(SCHEMES.film)} spread={false} refHeight={900} speed={1.6} grain={1} />
           <HeroFilm from={pathname === "/" ? "top-right" : undefined} />
           <FilmShade />

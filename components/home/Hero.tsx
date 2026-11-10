@@ -31,7 +31,7 @@ export default function Hero() {
         <p className="px-5 pb-8 pt-[56px] text-[17px] leading-[26px] md:px-8 md:text-lg md:leading-[1.5]">
           I design experiences for the complex systems that run real work.
         </p>
-        <div className="relative h-[260px] md:h-auto" style={{ background: "#6e6e6e" }}>
+        <div className="relative h-[260px] md:h-auto" style={{ background: "#646464" }}>
           <div className="hidden md:block" style={{ height: FILM_H }} />
           {/* the grey painting; the beetle film is drawn over it */}
           <HeroInk palette={HERO_INK} spread={false} refHeight={900} speed={1.6} grain={1} />

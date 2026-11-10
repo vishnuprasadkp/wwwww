@@ -19,7 +19,7 @@ export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; can
 
 /** One drawing everywhere (loader, header icon, assistant): the weight of its pen, for a beetle 64 px tall. A smaller
  * beetle is drawn with a pen in proportion, so it is the same drawing, only smaller. */
-export const BEETLE_LINE = 2.1; // a bold ink line, as in a pen drawing
+export const BEETLE_LINE = 0.95; // a fine ink line, as in a naturalist's notebook sketch
 const penFor = (size: number) => BEETLE_LINE * (size / 64);
 
 type P2 = [number, number];
@@ -65,7 +65,7 @@ function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], siz
       const t = i / (q.length - 2);
       // pressure: light at the start, full in the middle, lifting off at the end, a little unsteady
       // the pen lifts now and then (a small gap) and presses harder or lighter along the line
-      g.lineWidth = Math.max(0.6, pen * 0.62 * (0.9 + 0.2 * Math.sin(t * 4.1 + seed * 2.1))); // one even ink line, barely uneven
+      g.lineWidth = Math.max(0.5, pen * 0.75 * (0.85 + 0.3 * Math.sin(t * 4.1 + seed * 2.1))); // a fine ink line, barely uneven
       g.beginPath();
       g.moveTo(q[i][0], q[i][1]);
       g.lineTo(q[i + 1][0], q[i + 1][1]);
@@ -79,11 +79,8 @@ function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], siz
   // a few veins, fanning out from the root
   stroke([[0.1, 0.45], [0.35, 0.345], [0.62, 0.295], [0.87, 0.3]], 0.75, 3.1);
   stroke([[0.11, 0.47], [0.4, 0.425], [0.66, 0.435], [0.9, 0.475]], 0.65, 4.7);
-  stroke([[0.12, 0.49], [0.36, 0.535], [0.6, 0.605], [0.77, 0.665]], 0.6, 5.2);
-  stroke([[0.13, 0.505], [0.27, 0.585], [0.42, 0.69]], 0.55, 6.6);
   // and two short cross-veins
   stroke([[0.63, 0.3], [0.61, 0.43]], 0.45, 7.4);
-  stroke([[0.5, 0.43], [0.47, 0.575]], 0.4, 8.9);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.NoColorSpace;
   t.anisotropy = 4;
@@ -146,7 +143,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
 
   // drawn with the film's pen: each line swells and tapers, as a sketch; the swell belongs to the beetle (objPress), so
   // as it flies its lines hold their shape instead of shimmering, and the wings stay drawn as they turn (edge)
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.14 }, sketch: { value: 1 } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.2 }, sketch: { value: 1 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
@@ -165,10 +162,10 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     if ((o as THREE_NS.Points).isPoints) o.visible = false;
     const m = (o as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial | undefined;
     // few, clear lines, as in the logo: four grooves on each case, four rings on the head and shield, four bands on the belly
-    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 4;
+    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 2; // a couple of grooves, not stripes
     // one pen for every line: the outline drawn no heavier than the grooves and rings inside it (no bold edges)
     if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.75; // the outline the same weight as the lines inside it
-    if (m && m.isShaderMaterial && m.uniforms?.rings && (m.uniforms.rings.value === 7 || m.uniforms.rings.value === 3)) m.uniforms.rings.value = 4;
+    if (m && m.isShaderMaterial && m.uniforms?.rings && (m.uniforms.rings.value === 7 || m.uniforms.rings.value === 3)) m.uniforms.rings.value = 2;
   });
   const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
   const shellWeight = shellMat.uniforms.weight.value as number;
