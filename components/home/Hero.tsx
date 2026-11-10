@@ -18,10 +18,12 @@ const FILM_H = "clamp(220px, 17.5vw, 340px)";
 export default function Hero() {
   return (
     <section className="flex flex-col overflow-x-clip" style={{ minHeight: "calc(100svh - 57px)" }}>
-      <h1 className="px-5 pt-[72px] text-[17px] leading-[26px] md:px-8">I’m Vishnu</h1>
-      <div className="flex-1" style={{ minHeight: 120 }} />
-      <div className="grid gap-y-8 px-5 pb-8 md:grid-cols-2 md:gap-x-8 md:px-8">
-        <p className="max-w-[440px] font-serif text-[1.75rem] leading-[36px] md:text-[2rem] md:leading-[40px]">
+      {/* the name, in the middle of the open space above the line */}
+      <div className="flex flex-1 flex-col justify-center px-5 py-10 md:px-8" style={{ minHeight: 180 }}>
+        <h1 className="text-[17px] leading-[26px]">I’m Vishnu</h1>
+      </div>
+      <div className="grid gap-y-8 border-t border-rule px-5 pb-8 pt-8 md:grid-cols-2 md:gap-x-8 md:px-8">
+        <p className="max-w-[560px] font-serif text-[1.75rem] leading-[38px] md:text-[2rem] md:leading-[44px]">
           I design experiences for the complex systems that run real work.
         </p>
         <div className="relative overflow-hidden" style={{ height: FILM_H, background: "#525252" }}>
