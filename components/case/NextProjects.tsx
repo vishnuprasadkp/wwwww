@@ -5,7 +5,7 @@ import type { CaseMeta } from "@/lib/cases";
 /** The end of a case study: the next projects. (The beetle film is only on the home page and About.) */
 export default function NextProjects({ next }: { closing?: string; next: CaseMeta[] }) {
   return (
-    <section className="mt-16 md:mt-[160px] lg:mt-[292px]">
+    <section className="mt-14 md:mt-[90px] lg:mt-[140px]"> {/* the same space above as below it, down to the footer */}
       <div className="border-b border-rule px-5 pb-[22px] pt-[21px] md:px-8">
         <h2 className="font-serif text-[1.625rem] leading-[34px] md:text-[2rem] md:leading-[42px]">Next project</h2>
       </div>

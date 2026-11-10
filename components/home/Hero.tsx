@@ -35,7 +35,7 @@ export default function Hero() {
         </p>
         <div className="relative overflow-hidden" style={{ height: FILM_H, background: "#3e3e3e" }}>
           {/* the grey painting; the beetle film is drawn over it */}
-          <HeroInk palette={HERO_INK} spread={false} refHeight={520} speed={6} grain={1} /> {/* smaller shapes, flowing faster: the colour is seen to move */}
+          <HeroInk palette={HERO_INK} spread={false} refHeight={520} speed={3} grain={1} /> {/* smaller shapes, flowing gently: the colour is seen to move */}
           {/* the beetle a little softer in the darker film */}
           <div className="absolute inset-0" style={{ opacity: 0.75 }}>
             <HeroFilm place="top" from="right" />

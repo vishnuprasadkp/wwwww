@@ -797,7 +797,7 @@ export default function HeroFilm({ palette, place = "foot", from }: { palette?: 
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
-    const D_K = 0.64 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
+    const D_K = 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -1045,9 +1045,9 @@ void main(){
         wand.gap = rnd(14, 22);
         // it looks at you from anywhere: mostly it stops where it is in the box and turns to face you; now and then, near a side,
         // it peeps in from the edge instead, only its head in the frame
-        if (Math.abs(nx) > 0.5 && Math.random() < 0.25) {
+        if (Math.random() < 0.6) {
           fly.perch = true;
-          fs.perchSide = nx > 0 ? 1 : -1;
+          fs.perchSide = nx !== 0 ? (nx > 0 ? 1 : -1) : 1; // the nearer side: it flies there and peeps in at you, its head over the edge of the frame
           const end = onFrame(fs.perchSide * 0.95, rnd(FLOOR_N + 0.05, FLOOR_N + 0.25), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
           fly.pts = [end];
           fly.idx = 0;
@@ -1102,10 +1102,17 @@ void main(){
       if (out) {
         // back in the way it went: in near where it left, then on across to a far corner
         fly.exit = true;
-        const bx = clamp(nx, -0.72, 0.72);
-        const by = clamp(ny, yLo, yHi);
+        // out of sight it swings round in a wide loop (never a turn on the spot), then comes back into the box a little way
+        // along from where it left, and sweeps on to a far corner
+        const s = nx > 0.2 ? -1 : nx < -0.2 ? 1 : Math.random() < 0.5 ? 1 : -1; // round towards the box
+        const sideOut = Math.abs(nx) > 1;
+        const loop = sideOut
+          ? onFrame(Math.sign(nx) * 1.9, clamp(ny + (ny < (yLo + yHi) / 2 ? 0.45 : -0.45), -0.9, 0.6), wand.d, new THREE.Vector3())
+          : onFrame(clamp(nx + s * 0.55, -1.2, 1.2), Math.sign(ny) * 2.05, wand.d, new THREE.Vector3());
+        const bx = sideOut ? Math.sign(nx) * 0.68 : clamp(nx + s * 0.85, -0.7, 0.7);
+        const by = sideOut ? clamp(ny + (ny < (yLo + yHi) / 2 ? 0.3 : -0.3), yLo, yHi) : ny < 0 ? yLo + 0.06 : yHi - 0.04;
         const back = onFrame(bx, by, wand.d, new THREE.Vector3());
-        fly.pts = [back, ...toCorner(bx, by).slice(1)];
+        fly.pts = [loop, back, ...toCorner(bx, by).slice(1)];
         fly.next = t + 14;
       } else if (Math.random() < 0.4) {
         // out of the frame: down and right out through the foot, up and right out over the top, or out past the nearer side

@@ -104,7 +104,7 @@ export default function ResumeViewer() {
 
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-rule px-5 py-[11px] md:px-8">
+      <div className="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-y border-rule px-5 py-[11px] md:mt-[120px] md:px-8 lg:mt-[189px]">
         <h1 className="font-serif text-[1.625rem] leading-[34px] md:text-4xl md:leading-[46px]">Resume</h1>
         <div className="flex items-center gap-6 md:gap-10">
           <div className="flex items-center">
