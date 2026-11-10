@@ -280,7 +280,7 @@ void main(){
   float fw = max(fwidth(ndv), 1e-4);
   // sketch: every line the same fine width, the outline included (one pen for the whole drawing)
   // sketch: the earlier drawing's brush: each stroke swells and thins along its length (fixed on the beetle, so it holds as it moves)
-  float brush = 0.55 + 0.9 * noise(vObj.xz * 3.4 + vObj.y * 2.6 + 4.1);
+  float brush = 1.0; // one even line: a fine pen, the same width everywhere
   float wpx = mix(1.7 * weight * pressure * px, 1.45 * px * brush, sketch); // (an edge line reads a little lighter than a line across: drawn a touch wider so they look the same)
   float a = 1.0 - smoothstep(wpx, wpx + 1.0, ndv / fw);
   a *= mix(mix(0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0)), 1.0, even), 1.0, objPress);
@@ -305,10 +305,10 @@ void main(){
     float tail = mix(1.0, smoothstep(-0.86, -0.5, vObj.z), meridAng);
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, max(objPress, even)); // even: one ink, never shaded
-    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 1.25 * px * tail * brush, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * smoothstep(0.0, 0.25, tail));
-    a = max(a, lineAt(vObj.x + jit * 0.02, mix(1.6, 1.1 * brush, sketch) * px) * stripes * face);
+    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 0.85 * px, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * smoothstep(0.0, 0.25, tail));
+    a = max(a, lineAt(vObj.x + jit * 0.02, mix(1.6, 0.85, sketch) * px) * stripes * face);
   }
-  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 1.05 * brush, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 0.85, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
     vec2 q = fc / 3.2;
@@ -322,6 +322,8 @@ void main(){
   // sketch: the pen lifts now and then, so lines stop short and start again; nothing is closed off neatly
   // sketch: solid ink, the line full and dark along its whole length (no breaks, no grey)
   a = mix(a, smoothstep(0.05, 0.6, a), sketch); // fine ink, dark where it is drawn
+  // a live pen: the ink runs a little lighter and darker along each line (never thicker or thinner)
+  a *= mix(1.0, 0.72 + 0.28 * noise(vObj.xz * 7.0 + vObj.y * 5.0 + 2.0), sketch);
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
