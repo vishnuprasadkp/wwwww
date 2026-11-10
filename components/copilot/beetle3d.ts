@@ -165,13 +165,14 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // few, clear lines, as in the logo: four grooves on each case, four rings on the head and shield, four bands on the belly
     if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 6; // bold stripes down each wing case, curving with it, white between them
     // one pen for every line: the outline drawn no heavier than the grooves and rings inside it (no bold edges)
-    // the legs and feelers in solid ink, as in an ink print
-    if (m && m.isShaderMaterial && m.uniforms?.solid && m.uniforms.weight?.value === 0.9) m.uniforms.solid.value = 1;
+    // (the legs and feelers in the same line as everything else, not solid)
     if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.75; // the outline the same weight as the lines inside it
     if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 3) m.uniforms.rings.value = 2;
     // the head and the shield: plain, only their outline (a small head and a clean white dome behind it, as in an ink print)
     if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 7) m.uniforms.rings.value = 0;
   });
+  // a small icon (the header, the assistant's title) shows fewer stripes, so its lines stay light and never run together
+  const STRIPES = opts.size < 40 ? 3 : 6;
   b.head.scale.multiplyScalar(0.66); // a small head, as in an ink print of a beetle
   b.head.scale.x *= 0.85; // and narrow
   // the shield behind the head (drawn with the head's material): narrower too
@@ -223,7 +224,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     void p.roll; // the stripes curve with the shell in every view, as the earlier drawing's did
     // lifted in flight, a case is seen at a slant and its stripes crowd together: it shows fewer, so it stays clear, never a dark mass
     // the same stripes and seam flying as standing
-    shellMat.uniforms.merid.value = 6;
+    shellMat.uniforms.merid.value = STRIPES; // the same stripes flying as standing
     shellMat.uniforms.seam.value = 1;
     shellMat.uniforms.stripes.value = 1; // the cases keep their lines in every pose: the body is never an empty outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
