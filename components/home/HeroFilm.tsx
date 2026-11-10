@@ -768,7 +768,8 @@ export default function HeroFilm({ palette, place = "foot" }: { palette?: InkPal
     // where its body (its feet, really) keeps to, as a share of the box: in the short film at the top it flies in the lower
     // part, so its body and its raised wings above it are in view; the tall film uses the whole height
     const FLOOR_N = -0.5 - (SIZE_K - 1) * 0.45;
-    const CEIL_N = Math.max(FLOOR_N + 0.3, 0.45 - (SIZE_K - 1) * 1.25);
+    // it keeps to the lower part of the frame (its body and raised wings above it stay in view)
+    const CEIL_N = Math.max(FLOOR_N + 0.3, 0.08 - (SIZE_K - 1) * 1.25);
     const D_K = 1; // the same distances everywhere // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
@@ -1001,12 +1002,11 @@ void main(){
        curves like a living thing, never the same twice. When it drifts out of the frame it carries on a little, then turns
        back in. It only stops to look at you where it already is: at the side or corner it has come to, or right where it
        is hanging in the middle. */
-    let dirX = 1;
+    let dirX: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
     const wand = { h: -Math.PI / 2, d: 8.2, lastLook: 0 };
     const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, FLOOR + 0.35));
     const newPass = (t: number, fromHere: boolean, mayPerch = true) => {
       void fromHere;
-      void dirX;
       ndcNow.copy(fly.p).project(camera);
       const nx = ndcNow.x;
       const ny = ndcNow.y;
@@ -1014,9 +1014,10 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > 26) {
+      if (mayPerch && !out && t - wand.lastLook > 14) {
         const headingToSide = Math.cos(wand.h) * Math.sign(nx) > -0.2; // near a side and not flying away from it
-        if (Math.abs(nx) > 0.45 && headingToSide && Math.random() < 0.85) {
+        // mostly it comes to meet you face to face; now and then it settles at the side it has reached instead
+        if (Math.abs(nx) > 0.6 && headingToSide && Math.random() < 0.35) {
           fly.perch = true;
           fs.perchSide = nx > 0 ? 1 : -1;
           const end = onFrame(fs.perchSide * 0.95, TOP ? clamp(ny, -0.75, -0.3) : clamp(ny, Math.max(FLOOR_N, Math.min(-0.35, CEIL_N - 0.2)), Math.min(CEIL_N - 0.1, 0.2)), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
@@ -1026,10 +1027,11 @@ void main(){
           wand.lastLook = t;
           return;
         }
-        if (Math.abs(nx) < 0.6 && Math.abs(ny) < 0.85 && Math.random() < 0.6) {
+        if (Math.abs(nx) < 0.85 && Math.abs(ny) < 0.85) {
           fly.face = true;
-          // a little ahead of where it is, and low enough that its raised wings and its whole head stay in the frame
-          const spot = onFrame(clamp(nx + Math.cos(wand.h) * 0.12, -0.55, 0.55), TOP ? clamp(ny - 0.1, -0.8, -0.55) : clamp(ny - 0.1, FLOOR_N, Math.min(0.1, CEIL_N - 0.1)), clamp(camera.position.distanceTo(fly.p), 7.5 * D_K, 9 * D_K), new THREE.Vector3());
+          // it comes in to meet you: towards the middle and a little nearer, low enough that its raised wings and its whole
+          // head stay in the frame
+          const spot = onFrame(clamp(nx * 0.4 + Math.cos(wand.h) * 0.15, -0.45, 0.45), TOP ? clamp(ny - 0.1, -0.8, -0.55) : clamp(ny - 0.05, FLOOR_N + 0.05, CEIL_N - 0.1), 7.2 * D_K, new THREE.Vector3());
           lift(spot);
           fly.pts = [spot];
           fly.idx = 0;
@@ -1039,17 +1041,13 @@ void main(){
           return;
         }
       }
-      if (out) {
-        // out of sight: it turns back towards the box, coming in somewhere near where it went out
-        const back = Math.atan2(-ny * 0.6, -nx);
-        wand.h = back + rnd(-0.7, 0.7);
-      } else {
-        // a new heading, turned from the last: mostly a gentle bend, sometimes a sharp swerve
-        wand.h += rnd(-0.75, 0.75);
-        // like a heavy beetle it sinks more than it climbs: high up, it tends to turn down again
-        if (Math.sin(wand.h) > 0.2 && ny > -0.2) wand.h = -wand.h + rnd(-0.3, 0.3);
-      }
-      const len = rnd(0.8, 1.3); // long, sweeping legs
+      // It travels: from one area of the frame to another, on across in the way it is already going, and only turns round
+      // when it has come to a side (one wide, unhurried turn now and then, never circling on the spot).
+      if (out || Math.abs(nx) > 0.55) dirX = nx > 0 ? -1 : 1;
+      else if (Math.random() < 0.12) dirX = -dirX as 1 | -1; // now and then it changes its mind mid-way
+      const dyPick = rnd(-0.35, 0.35);
+      wand.h = Math.atan2(dyPick, dirX);
+      const len = rnd(0.75, 1.15); // long legs, across the frame
       // now and then it flies far off (smaller and smaller) or comes towards you (larger), not only across
       const depthMove = Math.random();
       // (in a shorter box it keeps a little further off, so even at its nearest it is seen whole)
@@ -1076,10 +1074,9 @@ void main(){
         fly.next = t + 12;
         return;
       }
-      // mostly it stays in view; now and then it wanders out past a side (or below) for a moment and comes back
-      const tx = clamp(nx + Math.cos(wand.h) * len, roam ? -1.7 : -0.85, roam ? 1.7 : 0.85);
-      const ty = clamp(ny + Math.sin(wand.h) * len * 0.75, yLo, yHi);
-      if (Math.abs(tx) >= 0.85 && !roam) wand.h = Math.PI - wand.h + rnd(-0.3, 0.3); // at a side it bends round, back into the box
+      // mostly it stays in view; now and then it wanders out past a side for a moment and comes back
+      const tx = clamp(nx + dirX * len, roam ? -1.7 : -0.8, roam ? 1.7 : 0.8);
+      const ty = clamp(ny + dyPick * len, yLo, yHi);
       const p = onFrame(tx, ty, wand.d, new THREE.Vector3());
       lift(p);
       fly.pts = [p];
@@ -1201,8 +1198,10 @@ void main(){
       fs.dur = 2;
       fs.fromFace = fs.mode === "face";
       fs.mode = "takeoff";
-      // up and away into the box, towards its middle
-      const goal = onFrame(rnd(-0.6, 0.6), rnd(FLOOR_N, Math.max(FLOOR_N + 0.1, CEIL_N - 0.1)), rnd(7.2, 9) * D_K, new THREE.Vector3()); // out into the box, at a height it flies at
+      // up and away into the box, the way it will go on flying (away from an edge it sat by), so it never swings round after
+      ndcNow.copy(fs.fromP).project(camera);
+      if (Math.abs(ndcNow.x) > 0.12) dirX = ndcNow.x > 0 ? -1 : 1; // towards the wider side of the box
+      const goal = onFrame(clamp(ndcNow.x + dirX * rnd(0.5, 0.8), -0.6, 0.6), rnd(FLOOR_N, Math.max(FLOOR_N + 0.1, CEIL_N - 0.1)), rnd(7.2, 9) * D_K, new THREE.Vector3()); // out into the box, at a height it flies at
       fs.toP.copy(fs.fromP).lerp(goal, 0.6);
       const dir = goal.clone().sub(fs.fromP);
       fs.yaw = Math.atan2(dir.x, dir.z);
@@ -1341,8 +1340,9 @@ void main(){
               fs.after = "perch";
               planLanding(t, b); // it has reached the side it was heading for: it settles there and looks at you
             } else if (last && !fly.perch) {
-              // on to the next leg, from right here, so the path never breaks (and never circling a mark it cannot reach)
-              if (dist < 1.4 || t > fly.next) newPass(t, true);
+              // on to the next leg, from right here, so the path never breaks; a mark left behind it at close range would
+              // only have it circling, so it gives that up for a new one ahead
+              if (dist < 1.4 || t > fly.next || (ang > 1.9 && dist < 2.6 && !fly.face)) newPass(t, true);
             } else if (!last && dist < 1.4) {
               fly.idx++;
               fly.target.copy(fly.pts[fly.idx]);
@@ -1379,7 +1379,7 @@ void main(){
               fly.roll = 0;
               fly.climb = 0.1; // its tilt carries on exactly as it was at the end of the take-off
               ndcNow.copy(fly.p).project(camera);
-              wand.h = Math.atan2(rnd(-0.6, 0.3), -Math.sign(ndcNow.x || 1)); // away from the edge it sat on, back into the box
+              wand.h = Math.atan2(rnd(-0.3, 0.2), dirX); // on the way it took off, across the box
               newPass(t, true, false);
               fs.until = t + rnd(14, 22);
               // back somewhere else, to look at you again: the other way from last time, more often than not
