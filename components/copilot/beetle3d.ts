@@ -59,14 +59,14 @@ function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], siz
   const pen = 2 * 1.15 * penFor(size); // the pen's full width at the middle of a stroke (2× for the drawing's scale)
   const stroke = (pts: P2[], weight: number, seed: number) => {
     // a hand's line: never ruler-true, it drifts a hair off its path and back
-    const q = through(pts.map(([u, v]) => [u * W, v * H] as P2)).map(([x, y], i) => [x + Math.sin(i * 0.7 + seed * 3.1) * W * 0.003, y + Math.sin(i * 0.53 + seed * 1.7) * H * 0.005] as P2);
+    const q = through(pts.map(([u, v]) => [u * W, v * H] as P2)).map(([x, y], i) => [x + (Math.sin(i * 0.7 + seed * 3.1) + 0.5 * Math.sin(i * 1.9 + seed)) * W * 0.006, y + (Math.sin(i * 0.53 + seed * 1.7) + 0.5 * Math.sin(i * 1.4 + seed * 2.3)) * H * 0.01] as P2);
     void weight;
     for (let i = 0; i < q.length - 1; i++) {
       const t = i / (q.length - 2);
       // pressure: light at the start, full in the middle, lifting off at the end, a little unsteady
       // the pen lifts now and then (a small gap) and presses harder or lighter along the line
       void t;
-      g.lineWidth = Math.max(0.6, pen * 0.6); // the same ink line as the body's
+      g.lineWidth = Math.max(0.6, pen * 0.6 * (0.8 + 0.4 * (0.5 + 0.5 * Math.sin(i * 0.45 + seed * 2.7)))); // the same pen as the body's, a hand's pressure
       g.beginPath();
       g.moveTo(q[i][0], q[i][1]);
       g.lineTo(q[i + 1][0], q[i + 1][1]);
@@ -144,7 +144,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
 
   // drawn with the film's pen: each line swells and tapers, as a sketch; the swell belongs to the beetle (objPress), so
   // as it flies its lines hold their shape instead of shimmering, and the wings stay drawn as they turn (edge)
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.08 }, sketch: { value: 1 } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.17 }, sketch: { value: 1 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
