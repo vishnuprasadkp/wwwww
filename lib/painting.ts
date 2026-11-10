@@ -32,7 +32,7 @@ export function scheme(name: string, bg: string, wing: string, dark: string, spr
 
 export const SCHEMES = {
   charcoal: scheme("charcoal", "#545454", "#f8f8f8", "#292a2a", "#a6a6a6"),
-  film: scheme("film", "#646464", "#f8f8f8", "#454545", "#9a9a9a"), // the beetle films: a soft, light grey
+  film: scheme("film", "#565656", "#f8f8f8", "#454545", "#9a9a9a"), // the beetle films: a soft, light grey
   mist: scheme("mist", "#8ea1a9", "#f7f9fa", "#57676c", "#e0edf3"),
   moss: scheme("moss", "#698369", "#f7faf7", "#3d573d", "#bfd3c1"),
   clay: scheme("clay", "#8c5a40", "#fbf8f6", "#653a20", "#cda38c"),

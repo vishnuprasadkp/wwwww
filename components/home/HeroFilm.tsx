@@ -282,7 +282,7 @@ void main(){
   // sketch: every line the same fine width, the outline included (one pen for the whole drawing)
   // sketch: the earlier drawing's brush: each stroke swells and thins along its length (fixed on the beetle, so it holds as it moves)
   float brush = mix(1.0, 0.78 + 0.44 * noise(vObj.xz * 5.0 + vObj.y * 4.0 + 7.3), sketch); // a hand's pressure: the same pen, a little heavier and lighter as it goes
-  float wpx = mix(1.7 * weight * pressure * px, 1.45 * px * brush, sketch); // (an edge line reads a little lighter than a line across: drawn a touch wider so they look the same)
+  float wpx = mix(1.7 * weight * pressure * px, 1.1 * px * brush, sketch); // sketch: the outline exactly as wide as every line inside it // (an edge line reads a little lighter than a line across: drawn a touch wider so they look the same)
   float a = 1.0 - smoothstep(wpx, wpx + 1.0, ndv / fw);
   a *= mix(mix(0.7 + 0.3 * smoothstep(0.15, 0.35, noise(fc * 0.025 + boil * 1.3 + 9.0)), 1.0, even), 1.0, objPress);
   // objPress: the ink is lighter in places, where the pen barely touched (on the beetle itself, so it holds as it moves)
@@ -306,10 +306,10 @@ void main(){
     float tail = mix(1.0, smoothstep(-0.86, -0.5, vObj.z), meridAng);
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, max(objPress, even)); // even: one ink, never shaded
-    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 0.95 * px * brush, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * mix(smoothstep(0.0, 0.25, tail), smoothstep(0.02, 0.06, tail), sketch)); // sketch: a stripe ends crisply, as an ink stroke does, not in a grey fade
-    a = max(a, lineAt(vObj.x + jit * 0.06, mix(1.6, 0.95 * brush, sketch) * px) * stripes * face * seam);
+    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 1.1 * px * brush, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * mix(smoothstep(0.0, 0.25, tail), smoothstep(0.02, 0.06, tail), sketch)); // sketch: a stripe ends crisply, as an ink stroke does, not in a grey fade
+    a = max(a, lineAt(vObj.x + jit * 0.06, mix(1.6, 1.1 * brush, sketch) * px) * stripes * face * seam);
   }
-  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 0.95 * brush, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
+  if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 1.1 * brush, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
   if (hatchAmt > 0.0) {
     vec2 q = fc / 3.2;
@@ -1190,7 +1190,7 @@ void main(){
         const S = b.root.scale.x;
         const headAt = new THREE.Vector3();
         const inset = (h: THREE.Vector3) => Math.min(nx !== 0 && Math.abs(nx) === 1 ? 1 - Math.abs(h.x) : 9, Math.abs(ny) === 1 ? 1 - Math.abs(h.y) : 9);
-        const want = Math.abs(ny) === 1 ? 0.34 : 0.16; // its whole face well inside the edge // the frame is wide and short: a little more room top and bottom
+        const want = Math.abs(ny) === 1 ? 0.34 : 0.04; // only its head comes in past the edge: its body stays outside // the frame is wide and short: a little more room top and bottom
         for (let it = 0; it < 24; it++) {
           headAt.set(0, STAND * S, 0.62 * BODY * S).applyQuaternion(fs.toQ).add(fs.toP).project(camera);
           const err = want - inset(headAt);

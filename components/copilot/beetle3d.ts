@@ -173,11 +173,11 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 7) m.uniforms.rings.value = 0;
   });
   b.head.scale.multiplyScalar(0.8); // a small head, as in an ink print of a beetle
-  b.head.scale.x *= 0.8; // and narrow
+  b.head.scale.x *= 0.68; // and narrow
   // the shield behind the head (drawn with the head's material): narrower too
   const headMat = (b.head.children.find((c) => (c as THREE_NS.Mesh).isMesh && ((c as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial).uniforms?.rings) as THREE_NS.Mesh | undefined)?.material;
   b.body.children.forEach((c) => {
-    if ((c as THREE_NS.Mesh).isMesh && (c as THREE_NS.Mesh).material === headMat) c.scale.x *= 0.82;
+    if ((c as THREE_NS.Mesh).isMesh && (c as THREE_NS.Mesh).material === headMat) c.scale.x *= 0.7;
   });
   const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
   const shellWeight = shellMat.uniforms.weight.value as number;
