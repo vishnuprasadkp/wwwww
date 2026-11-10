@@ -784,7 +784,7 @@ export default function HeroFilm({ palette, place = "foot", from }: { palette?: 
     const FLOOR_N = -0.62 - (SIZE_K - 1) * 0.45;
     // it keeps to the lower part of the frame (its body and raised wings above it stay in view)
     // it roams the whole box, high and low, with its body and raised wings always in view
-    const CEIL_N = Math.max(FLOOR_N + 0.45, 0.0 - (SIZE_K - 1) * 1.1); // the lower part of the box
+    const CEIL_N = FLOOR_N + 0.38; // it keeps to the lower part of the box
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
@@ -1032,37 +1032,22 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > 9) {
-        const headingToSide = Math.cos(wand.h) * Math.sign(nx) > -0.2; // near a side and not flying away from it
-        // mostly it comes to meet you face to face; now and then it settles at the side it has reached instead
-        if (Math.abs(nx) > 0.6 && headingToSide && Math.random() < 0) { // (the side peek is set aside: it always comes to face you)
-          fly.perch = true;
-          fs.perchSide = nx > 0 ? 1 : -1;
-          const end = onFrame(fs.perchSide * 0.95, TOP ? clamp(ny, -0.75, -0.3) : clamp(ny, Math.max(FLOOR_N, Math.min(-0.35, CEIL_N - 0.2)), Math.min(CEIL_N - 0.1, 0.2)), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
-          fly.pts = [end];
-          fly.idx = 0;
-          fly.target.copy(end);
-          wand.lastLook = t;
-          return;
-        }
-        if (Math.abs(nx) < 0.85 && Math.abs(ny) < 0.85) {
-          fly.face = true;
-          // it comes in to meet you: towards the middle and a little nearer, low enough that its raised wings and its whole
-          // head stay in the frame
-          const spot = onFrame(Math.sign(nx || 1) * clamp(Math.abs(nx) + rnd(-0.1, 0.25), 0.25, 0.65), TOP ? clamp(ny - 0.1, -0.8, -0.55) : rnd(-0.5, -0.3), 10.5 * D_K, new THREE.Vector3()); // it hangs before you whole, wings and legs in the box
-          lift(spot);
-          fly.pts = [spot];
-          fly.idx = 0;
-          fly.target.copy(spot);
-          fly.next = t + 4;
-          wand.lastLook = t;
-          return;
-        }
+      if (mayPerch && !out && t - wand.lastLook > 10) {
+        // it looks at you only from a side of the frame, low down near a corner: its body stays out beyond the edge and only
+        // its head (and its feelers) lean in to look at you
+        fly.perch = true;
+        fs.perchSide = nx !== 0 ? (nx > 0 ? 1 : -1) : dirX;
+        const end = onFrame(fs.perchSide * 0.95, rnd(FLOOR_N + 0.05, FLOOR_N + 0.25), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
+        fly.pts = [end];
+        fly.idx = 0;
+        fly.target.copy(end);
+        wand.lastLook = t;
+        return;
       }
       // It travels: from one area of the frame to another, on across in the way it is already going, and only turns round
       // when it has come to a side (one wide, unhurried turn now and then, never circling on the spot).
       if (out || Math.abs(nx) > 0.55) dirX = nx > 0 ? -1 : 1;
-      else if (Math.random() < 0.12) dirX = -dirX as 1 | -1; // now and then it changes its mind mid-way
+      else if (Math.random() < 0.3) dirX = -dirX as 1 | -1; // it changes its mind: from one place to another, never settling in the middle
       const dyPick = rnd(-0.35, 0.35);
       wand.h = Math.atan2(dyPick, dirX);
       const len = rnd(0.75, 1.15); // long legs, across the frame
@@ -1076,7 +1061,7 @@ void main(){
       const yHi = CEIL_N - 0.05;
       if (ny > yHi - 0.05 && Math.sin(wand.h) > 0) wand.h = -wand.h;
       if (ny < yLo + 0.15 && Math.sin(wand.h) < 0) wand.h = -wand.h;
-      const roam = Math.random() < 0.1; // only now and then out past a side, never out of the top or bottom
+      const roam = Math.random() < 0.35; // often out past a side for a while (it is not always in sight), never out of the top or bottom
       const lift2 = (v: THREE.Vector3) => (lift(v), v);
       // now and then a swoop: it dips down low and rises up again, as if gathering itself, a slow sweep that lifts
       if (!out && !roam && Math.random() < (TOP ? 0.2 : 0.3)) {
@@ -1175,7 +1160,7 @@ void main(){
         // the side it has flown to, at about the height it is flying at
         ndcNow.copy(b.root.position).project(camera);
         const nx = fs.perchSide;
-        const ny = clamp(ndcNow.y, Math.max(FLOOR_N, Math.min(-0.35, CEIL_N - 0.2)), Math.min(CEIL_N - 0.1, 0.2)); // along the side, never up in a corner where only its legs would show
+        const ny = clamp(ndcNow.y, FLOOR_N + 0.05, Math.min(CEIL_N, 0.2)); // low on the side, near the lower corner (never up in a top corner, where only its legs would show)
         const d = clamp(camera.position.distanceTo(b.root.position), 6.8 * D_K, 8.5 * D_K); // where it is: it does not swell towards you as it turns
         const P = onFrame(nx, ny, d, vB);
         const C = onFrame(0, 0, d, vC);
