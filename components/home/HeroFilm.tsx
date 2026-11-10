@@ -1030,7 +1030,7 @@ void main(){
        back in. It only stops to look at you where it already is: at the side or corner it has come to, or right where it
        is hanging in the middle. */
     let dirX: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
-    const wand = { h: -Math.PI / 2, d: 8.2, lastLook: 0 };
+    const wand = { h: -Math.PI / 2, d: 8.2, lastLook: 0, gap: 16 }; // gap: seconds until it next looks at you (different each time)
     const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, FLOOR + 0.35));
     const newPass = (t: number, fromHere: boolean, mayPerch = true) => {
       void fromHere;
@@ -1041,15 +1041,27 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > 10) {
-        // it looks at you only from a side of the frame, low down near a corner: its body stays out beyond the edge and only
-        // its head (and its feelers) lean in to look at you
-        fly.perch = true;
-        fs.perchSide = nx !== 0 ? (nx > 0 ? 1 : -1) : dirX;
-        const end = onFrame(fs.perchSide * 0.95, rnd(FLOOR_N + 0.05, FLOOR_N + 0.25), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
-        fly.pts = [end];
+      if (mayPerch && !out && t - wand.lastLook > wand.gap) {
+        wand.gap = rnd(14, 22);
+        // it looks at you from anywhere: mostly it stops where it is in the box and turns to face you; now and then, near a side,
+        // it peeps in from the edge instead, only its head in the frame
+        if (Math.abs(nx) > 0.5 && Math.random() < 0.25) {
+          fly.perch = true;
+          fs.perchSide = nx > 0 ? 1 : -1;
+          const end = onFrame(fs.perchSide * 0.95, rnd(FLOOR_N + 0.05, FLOOR_N + 0.25), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
+          fly.pts = [end];
+          fly.idx = 0;
+          fly.target.copy(end);
+          wand.lastLook = t;
+          return;
+        }
+        fly.face = true;
+        const spot = onFrame(clamp(nx + rnd(-0.3, 0.3), -0.6, 0.6), rnd(-0.45, -0.15), 10.5 * D_K, new THREE.Vector3()); // wherever it is, a little way on
+        lift(spot);
+        fly.pts = [spot];
         fly.idx = 0;
-        fly.target.copy(end);
+        fly.target.copy(spot);
+        fly.next = t + 4;
         wand.lastLook = t;
         return;
       }
@@ -1070,7 +1082,7 @@ void main(){
       const yHi = CEIL_N - 0.05;
       if (ny > yHi - 0.05 && Math.sin(wand.h) > 0) wand.h = -wand.h;
       if (ny < yLo + 0.15 && Math.sin(wand.h) < 0) wand.h = -wand.h;
-      const roam = Math.random() < 0.35; // often out past a side for a while (it is not always in sight), never out of the top or bottom
+      const roam = Math.random() < 0.15; // now and then out past a side for a while, never out of the top or bottom
       const lift2 = (v: THREE.Vector3) => (lift(v), v);
       // now and then a swoop: it dips down low and rises up again, as if gathering itself, a slow sweep that lifts
       if (!out && !roam && Math.random() < (TOP ? 0.2 : 0.3)) {
@@ -1087,7 +1099,9 @@ void main(){
         return;
       }
       // mostly it stays in view; now and then it wanders out past a side for a moment and comes back
-      const tx = clamp(nx + dirX * len, roam ? -1.7 : -0.8, roam ? 1.7 : 0.8);
+      // now and then it goes to anywhere at all in the box (so over time it is everywhere, never kept to one side)
+      const anywhere = !roam && Math.random() < 0.4;
+      const tx = anywhere ? rnd(-0.8, 0.8) : clamp(nx + dirX * len, roam ? -1.7 : -0.8, roam ? 1.7 : 0.8);
       const ty = clamp(ny + dyPick * len, yLo, yHi);
       const p = onFrame(tx, ty, wand.d, new THREE.Vector3());
       lift(p);
@@ -1382,7 +1396,7 @@ void main(){
             if (fs.mode === "land") {
               fs.mode = fs.after;
               fs.settle = 0;
-              fs.until = t + rnd(4.5, 6.5); // it stays a while: looking at you, or resting on the frame
+              fs.until = t + rnd(3, 4.5); // a look, then on its way again
             } else {
               fs.mode = "fly";
               fly.p.copy(b.root.position);
