@@ -270,7 +270,15 @@ export function NivviButton({ className = "" }: { className?: string }) {
   return (
     <button
       type="button"
-      onClick={toggle}
+      onClick={() => {
+        window.dispatchEvent(new CustomEvent("nyrro-hint", { detail: false }));
+        toggle();
+      }}
+      // hovering (or tabbing to) the button shows the hello note beneath it
+      onMouseEnter={() => window.dispatchEvent(new CustomEvent("nyrro-hint", { detail: true }))}
+      onMouseLeave={() => window.dispatchEvent(new CustomEvent("nyrro-hint", { detail: false }))}
+      onFocus={() => window.dispatchEvent(new CustomEvent("nyrro-hint", { detail: true }))}
+      onBlur={() => window.dispatchEvent(new CustomEvent("nyrro-hint", { detail: false }))}
       aria-label={open ? "Close Nyrro" : "Ask Nyrro"}
       aria-expanded={open}
       className={`flex items-center gap-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
@@ -326,51 +334,22 @@ function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
 /** Hello that appears under the header trigger on every fresh load, until it is closed or used. */
 function NivviIntro() {
   const { open } = useNivvi();
-  const [gone, setGone] = useState(true);
-  const [ready, setReady] = useState(false);
-
-  // it waits until the visitor is in: the opening has finished, then a few seconds more with the page
+  // shown only while the pointer (or the keyboard) is on the Nyrro button in the header; the button says when
+  const [hint, setHint] = useState(false);
   useEffect(() => {
-    setGone(false);
-    const html = document.documentElement;
-    let t = 0;
-    const later = () => (t = window.setTimeout(() => setReady(true), 4500));
-    let mo: MutationObserver | null = null;
-    if (!html.hasAttribute("data-loading")) later();
-    else {
-      mo = new MutationObserver(() => {
-        if (html.hasAttribute("data-loading")) return;
-        mo?.disconnect();
-        later();
-      });
-      mo.observe(html, { attributes: true, attributeFilter: ["data-loading"] });
-    }
-    return () => {
-      mo?.disconnect();
-      clearTimeout(t);
-    };
+    const on = (e: Event) => setHint(!!(e as CustomEvent<boolean>).detail);
+    window.addEventListener("nyrro-hint", on);
+    return () => window.removeEventListener("nyrro-hint", on);
   }, []);
-
-  // Dismissal lives in memory only, so it comes back on the next load but not on every page change.
-  const dismiss = useCallback(() => setGone(true), []);
-
-  // Opening the copilot any other way counts as having seen it.
-  useEffect(() => {
-    if (open && !gone) dismiss();
-  }, [open, gone, dismiss]);
-
-  if (gone) return null;
+  const shown = hint && !open;
   return (
     <div
-      role="dialog"
-      aria-label="Nyrro says hello"
-      className={`absolute right-5 top-[68px] z-[45] w-[calc(100vw-40px)] max-w-[320px] border border-rule bg-[#efedeb] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:right-8 ${ready ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
+      role="tooltip"
+      aria-hidden={!shown}
+      className={`pointer-events-none absolute right-5 top-[68px] z-[45] w-[calc(100vw-40px)] max-w-[320px] border border-rule bg-[#efedeb] transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:right-8 ${shown ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"}`}
     >
       <span aria-hidden className="absolute -top-[7px] right-[106px] h-3 w-3 rotate-45 border-l border-t border-rule bg-[#efedeb] md:right-[42px]" />
-      <button type="button" onClick={dismiss} aria-label="Close" className="absolute right-3 top-3 text-pigment-soft transition-colors hover:text-[#C44419]">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
-      </button>
-      <p className="py-4 pl-4 pr-10 text-[15px] leading-[24px] text-pigment">
+      <p className="p-4 text-[15px] leading-[24px] text-pigment">
         Meet Nyrro, a small beetle who knows my work a bit too well. Ask away.
       </p>
     </div>
