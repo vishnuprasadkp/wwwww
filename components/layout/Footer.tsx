@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 
 // Home and About: the right half is a lighter grey than the film beside it
-const STONE: Scheme = scheme("stone", "#828282", "#fafafa", "#585858", "#9c9c9c");
+const STONE: Scheme = scheme("stone", "#727272", "#fafafa", "#585858", "#9c9c9c");
 // each case study: the right half is painted in that case's own colour
 const CASE_SCHEME: Record<string, keyof typeof SCHEMES> = { "enterprise-search": "mist", adeo: "moss", "ai-agent": "clay", hdfc: "slate", sony: "sage" };
 
@@ -26,8 +26,9 @@ export default function Footer() {
   const art = pathname === "/" || pathname === "/about";
   return (
     <footer className={art ? "mt-24 md:mt-40 lg:mt-60" : "mt-14 md:mt-[90px] lg:mt-[140px]"}>
-      <div className="grid md:grid-cols-2" style={{ minHeight: "clamp(380px, 28vw, 620px)" }}>
-        <div className="relative h-[300px] overflow-hidden md:h-auto" style={{ background: "#6e6e6e" }}>
+      {/* as tall as the film at the top of the home page */}
+      <div className="grid md:grid-cols-2 md:[height:clamp(260px,23vw,480px)]">
+        <div className="relative h-[260px] overflow-hidden md:h-auto" style={{ background: "#6e6e6e" }}>
           <HeroInk palette={inkPalette(SCHEMES.film)} spread={false} refHeight={900} speed={1.6} grain={1} />
           <HeroFilm from={pathname === "/" ? "top-right" : undefined} />
           <FilmShade />

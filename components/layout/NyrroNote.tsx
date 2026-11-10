@@ -43,7 +43,7 @@ export default function NyrroNote() {
     // there is no gap between them, so the pointer can travel from one to the other
     <div
       ref={box}
-      className="pointer-events-none absolute right-4 top-4 z-10 flex flex-col items-end md:right-8 md:top-7"
+      className="pointer-events-none absolute left-4 top-4 bottom-4 z-10 flex flex-col items-start md:left-6 md:top-6 md:bottom-6"
       onPointerEnter={(e) => mouse(e) && show()}
       onPointerMove={(e) => mouse(e) && !open && show()}
       onPointerLeave={(e) => mouse(e) && hide()}
@@ -60,14 +60,14 @@ export default function NyrroNote() {
         About Nyrro
       </button>
 
-      <div className={`pt-2 ${open ? "pointer-events-auto" : "pointer-events-none"}`}>
+      <div className={`flex min-h-0 flex-1 flex-col pt-2 ${open ? "pointer-events-auto" : "pointer-events-none"}`}>
         <div
           id="nyrro-note"
           data-lenis-prevent
           role="region"
           aria-label="About Nyrro"
           aria-hidden={!open}
-          className={`max-h-[330px] w-[min(calc(100vw-40px),380px)] overflow-y-auto nyrro-paper border border-rule p-5 text-left md:max-h-none md:overflow-visible transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-y-0 opacity-100" : "-translate-y-1.5 opacity-0"}`}
+          className={`max-h-full min-h-0 w-[min(calc(100vw-40px),380px)] overflow-y-auto nyrro-paper border border-rule p-5 text-left transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-y-0 opacity-100" : "-translate-y-1.5 opacity-0"}`}
         >
           <h3 className="font-serif text-[17px] leading-[26px] md:text-[18px] md:leading-[28px] text-pigment">Nyrro &mdash; Nature in Colour</h3>
           <p className="mt-3 text-[15px] leading-6 text-pigment">

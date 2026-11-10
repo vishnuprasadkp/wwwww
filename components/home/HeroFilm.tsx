@@ -276,7 +276,9 @@ void main(){
   // sketch: a pen in a hand, the line a little heavier here and lighter there along its length (fixed on the beetle)
   // (the large drawn parts, the shell and body, vary most; the fine legs and feelers stay whole)
   float bigPart = step(0.5, merid + rings);
-  pressure *= mix(1.0, 0.68 + 0.64 * noise(vObj.xz * 3.2 + vObj.y * 2.3 + 1.7), sketch * (0.35 + 0.65 * bigPart));
+  pressure *= mix(1.0, 0.4 + 1.3 * noise(vObj.xz * 4.5 + vObj.y * 3.1 + 1.7), sketch * (0.45 + 0.55 * bigPart));
+  // and its edge is ragged, as ink on paper
+  pressure *= mix(1.0, 0.8 + 0.4 * noise(vObj.xz * 26.0 + vObj.y * 19.0), sketch);
   // the outline: where the surface turns away from you
   float ndv = abs(dot(N, V));
   float fw = max(fwidth(ndv), 1e-4);
@@ -319,7 +321,7 @@ void main(){
     a = max(a, dotv * step(hash(cell + 3.1), dens) * 0.85);
   }
   // sketch: the pen lifts now and then, so lines stop short and start again; nothing is closed off neatly
-  a *= mix(1.0, smoothstep(0.14, 0.26, noise(vObj.xz * 8.5 + vObj.y * 5.5 + 11.0)), sketch * step(0.5, merid + rings));
+  a *= mix(1.0, smoothstep(0.08, 0.16, noise(vObj.xz * 14.0 + vObj.y * 9.0 + 11.0)), sketch * step(0.5, merid + rings));
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
@@ -788,7 +790,7 @@ export default function HeroFilm({ palette, place = "foot", from }: { palette?: 
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
-    const D_K = 0.95 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
+    const D_K = 0.78 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -1035,7 +1037,7 @@ void main(){
       if (mayPerch && !out && t - wand.lastLook > 9) {
         const headingToSide = Math.cos(wand.h) * Math.sign(nx) > -0.2; // near a side and not flying away from it
         // mostly it comes to meet you face to face; now and then it settles at the side it has reached instead
-        if (Math.abs(nx) > 0.6 && headingToSide && Math.random() < 0.35) {
+        if (Math.abs(nx) > 0.6 && headingToSide && Math.random() < 0) { // (the side peek is set aside: it always comes to face you)
           fly.perch = true;
           fs.perchSide = nx > 0 ? 1 : -1;
           const end = onFrame(fs.perchSide * 0.95, TOP ? clamp(ny, -0.75, -0.3) : clamp(ny, Math.max(FLOOR_N, Math.min(-0.35, CEIL_N - 0.2)), Math.min(CEIL_N - 0.1, 0.2)), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
@@ -1049,7 +1051,7 @@ void main(){
           fly.face = true;
           // it comes in to meet you: towards the middle and a little nearer, low enough that its raised wings and its whole
           // head stay in the frame
-          const spot = onFrame(clamp(nx * 0.4 + Math.cos(wand.h) * 0.15, -0.45, 0.45), TOP ? clamp(ny - 0.1, -0.8, -0.55) : clamp(ny, -0.2, 0.12), 10.5 * D_K, new THREE.Vector3()); // it hangs before you whole, wings and legs in the box
+          const spot = onFrame(clamp(nx * 0.85 + Math.cos(wand.h) * 0.2, -0.6, 0.6), TOP ? clamp(ny - 0.1, -0.8, -0.55) : clamp(ny + rnd(-0.15, 0.15), -0.3, 0.15), 10.5 * D_K, new THREE.Vector3()); // it hangs before you whole, wings and legs in the box
           lift(spot);
           fly.pts = [spot];
           fly.idx = 0;
