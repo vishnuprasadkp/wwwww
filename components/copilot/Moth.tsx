@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useLayoutEffect } from "react";
 import { mountBeetle3D, beetleCanvas, type Beetle3D } from "./beetle3d";
+import { inkBeetleMarkup } from "./inkBeetle";
 
 export const INK = "#e4572e"; // the brand orange: only the AI star
 const PAPER = "#eae7e6"; // its fill: the page background, so it is drawn like the logo, as a line
@@ -367,10 +368,14 @@ export function MothIcon({ size = 28, open = 0, star = true, colors = MOTH_COLOR
  * beetle steps out of one.
  */
 export function BeetleIcon({ size = 24, star = true, className = "", live = false }: { size?: number; star?: boolean; className?: string; live?: boolean }) {
-  const file = size <= 20 ? 20 : 64;
   const C = beetleCanvas(size);
   const boxRef = useRef<HTMLSpanElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLSpanElement>(null);
+  // the drawing is put in by the browser (the server's and the browser's sums differ in the last decimal, which React would
+  // report as a mismatch); it is there before the first paint
+  useLayoutEffect(() => {
+    if (imgRef.current) imgRef.current.innerHTML = inkBeetleMarkup(size, BLACK);
+  }, [size]);
   // `live`: once the page has opened, the icon becomes the 3D beetle itself, alive where it sits: its feelers move and
   // twitch, it grooms with its front legs, its legs shift. It starts in exactly the icon's pose (so the opening lands on
   // the same beetle) and eases into life. Drawn only while it is on screen and the tab is in view, at 30 frames a second.
@@ -430,16 +435,11 @@ export function BeetleIcon({ size = 24, star = true, className = "", live = fals
   }, [live, size]);
   return (
     <span ref={boxRef} className={className} style={{ position: "relative", display: "inline-block", width: size * WIDE, height: size, lineHeight: 0 }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      {/* the ink beetle itself, drawn at once (the same drawing the loader and the assistant animate) */}
+      <span
         ref={imgRef}
-        src={`/images/site/nyrro-${file}.png`}
-        alt=""
         aria-hidden="true"
-        draggable={false}
-        width={C}
-        height={C}
-        style={{ position: "absolute", left: "50%", top: "50%", width: C, height: C, margin: `${-C / 2}px 0 0 ${-C / 2}px`, maxWidth: "none", pointerEvents: "none" }}
+        style={{ position: "absolute", left: 0, top: 0, width: size * WIDE, height: size, lineHeight: 0, pointerEvents: "none" }}
       />
       {star && <MothStar size={size} />}
     </span>

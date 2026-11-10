@@ -15,7 +15,7 @@ export type BeetlePose = {
   flying: boolean;
   settle?: number; // 0 … 1: eases every living movement away, into the icon's resting pose (the loader, as it lands)
 };
-export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; canvas: HTMLCanvasElement; still: () => string };
+export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; canvas: HTMLElement; still: () => string };
 
 /** One drawing everywhere (loader, header icon, assistant): the weight of its pen, for a beetle 64 px tall. A smaller
  * beetle is drawn with a pen in proportion, so it is the same drawing, only smaller. */
@@ -100,8 +100,17 @@ const hexRgb = (h: string): [number, number, number] => {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 };
 
-/** Mounts the beetle as a canvas centred on `box` (the roaming beetle's own element, which turns it to its heading). */
+/**
+ * Mounts Nyrro centred on `box` (the roaming beetle's own element, which turns it to its heading): the hand-drawn ink beetle
+ * (inkBeetle.ts), with its wings and its turns in depth. The earlier 3D model is kept below as mountBeetleModel.
+ */
 export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink: string; pr?: number }): Promise<Beetle3D | null> {
+  const { mountInkBeetle } = await import("./inkBeetle");
+  return mountInkBeetle(box, { size: opts.size, ink: opts.ink, frame: beetleCanvas(opts.size) });
+}
+
+/** The earlier 3D model of the beetle (not in use). */
+export async function mountBeetleModel(box: HTMLElement, opts: { size: number; ink: string; pr?: number }): Promise<Beetle3D | null> {
   const [THREE, film] = await Promise.all([import("three"), import("@/components/home/HeroFilm")]);
   const { buildBeetle, stippledWing, WING, BODY } = film;
 
