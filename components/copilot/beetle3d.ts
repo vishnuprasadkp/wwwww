@@ -19,7 +19,7 @@ export type Beetle3D = { pose: (p: BeetlePose) => void; dispose: () => void; can
 
 /** One drawing everywhere (loader, header icon, assistant): the weight of its pen, for a beetle 64 px tall. A smaller
  * beetle is drawn with a pen in proportion, so it is the same drawing, only smaller. */
-export const BEETLE_LINE = 1.05; // a fine pen line, the same everywhere
+export const BEETLE_LINE = 2.1; // a bold black ink line, as in an ink print
 const penFor = (size: number) => BEETLE_LINE * (size / 64);
 
 type P2 = [number, number];
@@ -66,7 +66,7 @@ function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], siz
       // pressure: light at the start, full in the middle, lifting off at the end, a little unsteady
       // the pen lifts now and then (a small gap) and presses harder or lighter along the line
       void t;
-      g.lineWidth = Math.max(0.5, pen * 0.55); // one fine pen line, the same width as the body's
+      g.lineWidth = Math.max(0.6, pen * 0.6); // the same ink line as the body's
       g.beginPath();
       g.moveTo(q[i][0], q[i][1]);
       g.lineTo(q[i + 1][0], q[i + 1][1]);
@@ -144,7 +144,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
 
   // drawn with the film's pen: each line swells and tapers, as a sketch; the swell belongs to the beetle (objPress), so
   // as it flies its lines hold their shape instead of shimmering, and the wings stay drawn as they turn (edge)
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.2 }, sketch: { value: 1 } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.08 }, sketch: { value: 1 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
@@ -163,7 +163,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     if ((o as THREE_NS.Points).isPoints) o.visible = false;
     const m = (o as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial | undefined;
     // few, clear lines, as in the logo: four grooves on each case, four rings on the head and shield, four bands on the belly
-    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 2; // a single simple line down each wing case, beside the seam
+    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 7; // many bold stripes down each wing case, curving with it
     // one pen for every line: the outline drawn no heavier than the grooves and rings inside it (no bold edges)
     if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.75; // the outline the same weight as the lines inside it
     if (m && m.isShaderMaterial && m.uniforms?.rings && (m.uniforms.rings.value === 7 || m.uniforms.rings.value === 3)) m.uniforms.rings.value = 2;
