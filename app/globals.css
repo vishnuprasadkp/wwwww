@@ -6,7 +6,7 @@
   --color-sand-light: #f2f0ee;
   --color-pigment: #393636;
   --color-pigment-soft: #83685f;
-  --color-rule: #868482; /* the lines across the site, as in the design */
+  --color-rule: #cfcfcf;
 
   /* one neo-grotesque for every role: Neue Montreal (its files go in public/fonts; until they are there the browser uses Inter): the "serif" (headings) is Inter Tight, the "sans" (text) and the "mono" (labels, navigation) are Inter */
   --font-serif: "Neue Montreal", var(--font-inter-tight), "Helvetica Neue", Helvetica, Arial, sans-serif;

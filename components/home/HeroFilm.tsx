@@ -250,7 +250,7 @@ const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
 uniform vec3 ink;
 uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
-uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines; uniform float waver;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines; uniform float waver; uniform float sketch;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -273,6 +273,10 @@ void main(){
   // objPress: the swell of each line belongs to the beetle, not to the screen, so it holds its shape as it moves
   // a hand's pressure: each line swells and thins as it goes, as a pen does in a sketch
   pressure = mix(pressure, 0.5 + 0.95 * noise(vObj.xz * 6.0 + vObj.y * 4.0), objPress);
+  // sketch: a pen in a hand, the line a little heavier here and lighter there along its length (fixed on the beetle)
+  // (the large drawn parts, the shell and body, vary most; the fine legs and feelers stay whole)
+  float bigPart = step(0.5, merid + rings);
+  pressure *= mix(1.0, 0.68 + 0.64 * noise(vObj.xz * 3.2 + vObj.y * 2.3 + 1.7), sketch * (0.35 + 0.65 * bigPart));
   // the outline: where the surface turns away from you
   float ndv = abs(dot(N, V));
   float fw = max(fwidth(ndv), 1e-4);
@@ -314,6 +318,8 @@ void main(){
     float dens = smoothstep(0.5, 0.95, n) * 0.6 * hatchAmt;
     a = max(a, dotv * step(hash(cell + 3.1), dens) * 0.85);
   }
+  // sketch: the pen lifts now and then, so lines stop short and start again; nothing is closed off neatly
+  a *= mix(1.0, smoothstep(0.14, 0.26, noise(vObj.xz * 8.5 + vObj.y * 5.5 + 11.0)), sketch * step(0.5, merid + rings));
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
@@ -321,7 +327,7 @@ void main(){
   gl_FragColor = vec4(ink * a, a);
 }`;
 
-export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number }; objPress?: { value: number }; edge?: { value: THREE.Vector2 }; meridAng?: { value: number }; backLines?: { value: number }; waver?: { value: number } };
+export type SketchU = { time: { value: number }; fogNear: { value: number }; fogFar: { value: number }; px: { value: number }; ink?: { value: THREE.Vector3 }; even?: { value: number }; objPress?: { value: number }; edge?: { value: THREE.Vector2 }; meridAng?: { value: number }; backLines?: { value: number }; waver?: { value: number }; sketch?: { value: number } };
 type Lines = { merid?: number; rings?: number; hatch?: number; weight?: number };
 const INK = new THREE.Vector3(0.96, 0.96, 0.96); // pure white ink, no warmth: white and grey only
 function sketchMaterial(shared: SketchU, lines: Lines = {}) {
@@ -341,6 +347,7 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
       meridAng: shared.meridAng ?? { value: 0 },
       backLines: shared.backLines ?? { value: 1 },
       waver: shared.waver ?? { value: 0 },
+      sketch: shared.sketch ?? { value: 0 },
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },
@@ -781,7 +788,7 @@ export default function HeroFilm({ palette, place = "foot", from }: { palette?: 
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
-    const D_K = 1.45 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.6); // one beetle everywhere: the same beetle, framed and flying as at the foot
+    const D_K = 0.95 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -1025,7 +1032,7 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > 14) {
+      if (mayPerch && !out && t - wand.lastLook > 9) {
         const headingToSide = Math.cos(wand.h) * Math.sign(nx) > -0.2; // near a side and not flying away from it
         // mostly it comes to meet you face to face; now and then it settles at the side it has reached instead
         if (Math.abs(nx) > 0.6 && headingToSide && Math.random() < 0.35) {
@@ -1289,7 +1296,7 @@ void main(){
                 // it opens flying in from beyond the left or the right, at about the middle height, its whole body
                 // coming into view at once, on a heading into the box that is different every time
                 introPending = false;
-                wand.lastLook = t - 18; // it will stop to look at you soon after it arrives
+                wand.lastLook = t - 4; // it flies about a little first, then stops to look at you
                 // it flies in from beyond any side or corner, a different one each time and in each film
                 const band = () => rnd(FLOOR_N + 0.05, CEIL_N - 0.05);
                 const ways: [number, number][] = from === "top-right" ? [[1.3, CEIL_N + 0.45]] : [[1.45, band()], [1.4, CEIL_N]]; // never straight down from the top, where its legs would come first
@@ -1381,7 +1388,7 @@ void main(){
             if (fs.mode === "land") {
               fs.mode = fs.after;
               fs.settle = 0;
-              fs.until = t + rnd(3.5, 5);
+              fs.until = t + rnd(4.5, 6.5); // it stays a while: looking at you, or resting on the frame
             } else {
               fs.mode = "fly";
               fly.p.copy(b.root.position);

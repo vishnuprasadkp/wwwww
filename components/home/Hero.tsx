@@ -6,7 +6,7 @@ import type { InkPalette } from "./HeroInk";
 import LogoMarquee from "./LogoMarquee";
 
 // the same grey painting as at the foot of the home page
-const HERO_INK: InkPalette = inkPalette(SCHEMES.charcoal);
+const HERO_INK: InkPalette = inkPalette(SCHEMES.film);
 // the film's height: on wide screens it fills the right half of its row
 const FILM_H = "clamp(260px, 23vw, 480px)";
 
@@ -19,8 +19,8 @@ export default function Hero() {
   return (
     <section className="overflow-x-clip">
       <div
-        className="flex flex-col justify-between px-5 pt-16 md:grid md:grid-cols-2 md:px-0"
-        style={{ minHeight: `max(240px, calc(100svh - 57px - ${FILM_H} - 100px))`, paddingBottom: 40 }}
+        className="flex flex-col justify-between px-5 pt-[72px] md:grid md:grid-cols-2 md:px-0"
+        style={{ minHeight: `max(240px, calc(100svh - 57px - ${FILM_H} - 100px))`, paddingBottom: 72 }}
       >
         <h1 className="font-serif text-[1.875rem] leading-[40px] md:px-8 md:text-[2.5rem] md:leading-[1.35]">I’m Vishnu</h1>
         <p className="mt-10 max-w-[35rem] text-[17px] leading-[26px] md:col-start-2 md:mt-0 md:self-end md:pr-8 md:text-lg md:leading-[1.5]">
@@ -28,10 +28,10 @@ export default function Hero() {
         </p>
       </div>
       <div className="grid border-t border-rule md:grid-cols-2">
-        <p className="px-5 pb-8 pt-6 text-[17px] leading-[26px] md:px-8 md:pt-[42px] md:text-lg md:leading-[1.5]">
+        <p className="px-5 pb-8 pt-[72px] text-[17px] leading-[26px] md:px-8 md:text-lg md:leading-[1.5]">
           I design experiences for the complex systems that run real work.
         </p>
-        <div className="relative h-[260px] md:h-auto" style={{ background: "#545454" }}>
+        <div className="relative h-[260px] md:h-auto" style={{ background: "#6e6e6e" }}>
           <div className="hidden md:block" style={{ height: FILM_H }} />
           {/* the grey painting; the beetle film is drawn over it */}
           <HeroInk palette={HERO_INK} spread={false} refHeight={900} speed={1.6} grain={1} />

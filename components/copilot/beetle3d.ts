@@ -64,17 +64,21 @@ function sketchedWing(THREE: typeof THREE_NS, rgb: [number, number, number], siz
     for (let i = 0; i < q.length - 1; i++) {
       const t = i / (q.length - 2);
       // pressure: light at the start, full in the middle, lifting off at the end, a little unsteady
-      void t;
-      g.lineWidth = Math.max(0.6, pen * 0.62); // one steady pen for every line, as the body's
+      // the pen lifts now and then (a small gap) and presses harder or lighter along the line
+      if (Math.sin(i * 0.9 + seed * 4.3) > 0.93 && t > 0.1 && t < 0.9) continue;
+      g.lineWidth = Math.max(0.6, pen * 0.62 * (0.65 + 0.7 * (0.5 + 0.5 * Math.sin(t * 5.3 + seed * 2.1))));
       g.beginPath();
       g.moveTo(q[i][0], q[i][1]);
       g.lineTo(q[i + 1][0], q[i + 1][1]);
       g.stroke();
     }
   };
-  // the outline: the leading edge, then round the tip and back along the trailing edge
-  stroke([[0.08, 0.45], [0.3, 0.31], [0.55, 0.245], [0.8, 0.245], [0.95, 0.32], [0.975, 0.42]], 1, 1);
-  stroke([[0.975, 0.4], [0.93, 0.56], [0.79, 0.68], [0.58, 0.745], [0.38, 0.725], [0.2, 0.61], [0.09, 0.5]], 1, 2.3);
+  // the outline: the leading edge, then round the tip and back along the trailing edge, each drawn twice in quick, not
+  // quite matching passes, and running a little past where they meet, as a sketch is
+  stroke([[0.07, 0.46], [0.3, 0.31], [0.55, 0.245], [0.8, 0.245], [0.95, 0.32], [0.985, 0.44]], 1, 1);
+  stroke([[0.1, 0.43], [0.32, 0.3], [0.56, 0.25], [0.79, 0.255], [0.93, 0.33]], 0.6, 9.7);
+  stroke([[0.965, 0.38], [0.93, 0.56], [0.79, 0.68], [0.58, 0.745], [0.38, 0.725], [0.2, 0.61], [0.08, 0.51]], 1, 2.3);
+  stroke([[0.94, 0.5], [0.8, 0.665], [0.6, 0.735], [0.4, 0.715], [0.24, 0.63]], 0.6, 12.1);
   // a few veins, fanning out from the root
   stroke([[0.1, 0.45], [0.35, 0.345], [0.62, 0.295], [0.87, 0.3]], 0.75, 3.1);
   stroke([[0.11, 0.47], [0.4, 0.425], [0.66, 0.435], [0.9, 0.475]], 0.65, 4.7);
@@ -145,7 +149,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
 
   // drawn with the film's pen: each line swells and tapers, as a sketch; the swell belongs to the beetle (objPress), so
   // as it flies its lines hold their shape instead of shimmering, and the wings stay drawn as they turn (edge)
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.12 } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.22 }, sketch: { value: 1 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
@@ -166,7 +170,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // few, clear lines, as in the logo: four grooves on each case, four rings on the head and shield, four bands on the belly
     if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 4;
     // one pen for every line: the outline drawn no heavier than the grooves and rings inside it (no bold edges)
-    if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.72;
+    if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.8;
     if (m && m.isShaderMaterial && m.uniforms?.rings && (m.uniforms.rings.value === 7 || m.uniforms.rings.value === 3)) m.uniforms.rings.value = 4;
   });
   const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
@@ -200,7 +204,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // and the body is never two empty shells
     b.cases.forEach((c, i) => {
       const s = i === 0 ? 1 : -1;
-      c.rotation.set(0.32 * open, s * 0.12 * open, -s * 0.42 * open);
+      c.rotation.set(0.32 * open + (i ? 0.03 : 0), s * 0.12 * open + (i ? 0.02 : -0.015), -s * 0.42 * open + (i ? 0.025 : 0));
     });
     shellMat.uniforms.weight.value = shellWeight * (1 - 0.15 * ease(open / 0.6));
     shellMat.uniforms.stripes.value = 1; // the cases keep their lines in every pose: the body is never an empty outline
@@ -229,7 +233,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     b.antennae.forEach((a, i) => {
       const sd = i === 0 ? 1 : -1;
       const w = p.walking ? 2.6 : 1.4;
-      a.rotation.y = sd * (0.35 + (0.2 * Math.sin(k * w + i * 1.3) + 0.25 * air) * live + 0.22 * twitch * Math.sin(k * 40 + i));
+      a.rotation.y = sd * (0.35 + (i ? 0.09 : -0.03) + (0.2 * Math.sin(k * w + i * 1.3) + 0.25 * air) * live + 0.22 * twitch * Math.sin(k * 40 + i));
       a.rotation.x = -0.35 + (0.15 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * air) * live - 0.2 * groom;
       (a.userData.joints as THREE_NS.Group[]).forEach((j, n) => {
         const ph = k * w * 1.1 - n * 0.7 + i * 2.1;
@@ -250,7 +254,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       const front = L.row === 0 ? groom : 0;
       const shift = L.row === 0 ? 0 : still * 0.08 * Math.sin(k * 0.9 + L.row * 2.3 + (L.side > 0 ? 0 : 1.7));
       const rub = front * Math.sin(k * 16 + (L.side > 0 ? 0 : Math.PI));
-      L.root.rotation.y = L.yawBase + sd * (0.45 * swing + 0.18 * paddle + 0.6 * front + 0.12 * rub + shift);
+      L.root.rotation.y = L.yawBase + 0.07 * Math.sin(L.row * 2.3 + L.side * 1.9) + sd * (0.45 * swing + 0.18 * paddle + 0.6 * front + 0.12 * rub + shift);
       L.hip.rotation.z = 0.35 + 0.42 * up + (-0.4 * air + 0.12 * paddle) * live + 0.75 * front;
       L.knee.rotation.z = -1.85 - 0.3 * up + (0.35 * air + 0.15 * paddle) * live + 0.55 * front + 0.15 * rub;
     }
