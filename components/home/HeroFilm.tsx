@@ -276,9 +276,7 @@ void main(){
   // sketch: a pen in a hand, the line a little heavier here and lighter there along its length (fixed on the beetle)
   // (the large drawn parts, the shell and body, vary most; the fine legs and feelers stay whole)
   float bigPart = step(0.5, merid + rings);
-  pressure *= mix(1.0, 0.4 + 1.3 * noise(vObj.xz * 4.5 + vObj.y * 3.1 + 1.7), sketch * (0.45 + 0.55 * bigPart));
-  // and its edge is ragged, as ink on paper
-  pressure *= mix(1.0, 0.8 + 0.4 * noise(vObj.xz * 26.0 + vObj.y * 19.0), sketch);
+  pressure *= mix(1.0, 0.85 + 0.3 * noise(vObj.xz * 3.0 + vObj.y * 2.0 + 1.7), sketch * bigPart); // a hand's line: barely uneven
   // the outline: where the surface turns away from you
   float ndv = abs(dot(N, V));
   float fw = max(fwidth(ndv), 1e-4);
@@ -307,7 +305,7 @@ void main(){
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, max(objPress, even)); // even: one ink, never shaded
     a = max(a, lineAt(m + jit, 1.2 * pressure * px * tail) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * smoothstep(0.0, 0.25, tail));
-    a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px) * stripes * face);
+    a = max(a, lineAt(vObj.x + jit * 0.02, 1.6 * px * mix(1.0, 0.8, sketch)) * stripes * face);
   }
   if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, 1.1 * pressure * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
@@ -321,7 +319,8 @@ void main(){
     a = max(a, dotv * step(hash(cell + 3.1), dens) * 0.85);
   }
   // sketch: the pen lifts now and then, so lines stop short and start again; nothing is closed off neatly
-  a *= mix(1.0, smoothstep(0.08, 0.16, noise(vObj.xz * 14.0 + vObj.y * 9.0 + 11.0)), sketch * step(0.5, merid + rings));
+  // sketch: solid ink, the line full and dark along its whole length (no breaks, no grey)
+  a = mix(a, smoothstep(0.15, 0.55, a), sketch);
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
