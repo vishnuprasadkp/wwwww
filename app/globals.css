@@ -184,6 +184,28 @@ aside[data-moth-away] .nivvi-mark-star { opacity: 1; transform: translateY(-50%)
 .moth-ant { animation: moth-ant 3.4s ease-in-out infinite; }
 .moth-ant-l { animation-delay: 0.35s; animation-direction: reverse; }
 @media (prefers-reduced-motion: reduce) { .moth-ant { animation: none; } }
+/* Nyrro's legs (each turns at its hip). At rest it is alive: every few seconds it grooms, lifting its front pair to its head
+   and combing its feelers, and its other legs shift their footing. Walking, it steps in a tripod gait. Landing, its legs
+   spread to take its weight, then draw in. Nothing moves with its wings out. */
+.moth-leg { transform-box: view-box; }
+@keyframes moth-groom-l { 0%, 62%, 100% { transform: rotate(0); } 68% { transform: rotate(38deg); } 72% { transform: rotate(27deg); } 76% { transform: rotate(38deg); } 80% { transform: rotate(27deg); } 84% { transform: rotate(38deg); } 91% { transform: rotate(0); } }
+@keyframes moth-groom-r { 0%, 62%, 100% { transform: rotate(0); } 68% { transform: rotate(-38deg); } 72% { transform: rotate(-27deg); } 76% { transform: rotate(-38deg); } 80% { transform: rotate(-27deg); } 84% { transform: rotate(-38deg); } 91% { transform: rotate(0); } }
+@keyframes moth-shift { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(5deg); } }
+.moth-leg-0 { animation: moth-groom-l 6.5s ease-in-out infinite; }
+.moth-leg-3 { animation: moth-groom-r 6.5s ease-in-out infinite; }
+.moth-leg-1, .moth-leg-4 { animation: moth-shift 4.2s ease-in-out infinite; }
+.moth-leg-2, .moth-leg-5 { animation: moth-shift 5.1s ease-in-out infinite reverse; }
+.moth-leg-4 { animation-delay: -1.3s; }
+.moth-leg-5 { animation-delay: -2.2s; }
+.moth-open .moth-leg { animation: none; }
+@keyframes moth-step { 0%, 100% { transform: rotate(-11deg); } 50% { transform: rotate(11deg); } }
+.moth-walking .moth-leg { animation: moth-step 0.42s ease-in-out infinite; }
+.moth-walking .moth-leg-1, .moth-walking .moth-leg-3, .moth-walking .moth-leg-5 { animation-delay: -0.21s; }
+@keyframes moth-brace-l { 0% { transform: rotate(-16deg); } 100% { transform: rotate(0); } }
+@keyframes moth-brace-r { 0% { transform: rotate(16deg); } 100% { transform: rotate(0); } }
+.moth-landing .moth-leg-0, .moth-landing .moth-leg-1, .moth-landing .moth-leg-2 { animation: moth-brace-l 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+.moth-landing .moth-leg-3, .moth-landing .moth-leg-4, .moth-landing .moth-leg-5 { animation: moth-brace-r 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) { .moth-leg { animation: none !important; } }
 /* the beetle's dust (loader, header, assistant): each mote leaves its outline, drifts off and fades, over and over */
 @keyframes moth-mote { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: .7; } 100% { transform: translate(var(--mx), var(--my)); opacity: 0; } }
 .moth-mote { animation: moth-mote 3.4s cubic-bezier(.25,.6,.4,1) infinite; }
