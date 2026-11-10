@@ -250,7 +250,7 @@ const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
 uniform vec3 ink;
 uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
-uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines; uniform float waver; uniform float sketch;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines; uniform float waver; uniform float sketch; uniform float solid;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -305,7 +305,7 @@ void main(){
     float tail = mix(1.0, smoothstep(-0.86, -0.5, vObj.z), meridAng);
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, max(objPress, even)); // even: one ink, never shaded
-    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 1.3 * px, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * mix(smoothstep(0.0, 0.25, tail), smoothstep(0.02, 0.06, tail), sketch)); // sketch: a stripe ends crisply, as an ink stroke does, not in a grey fade
+    a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 1.1 * px, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * mix(smoothstep(0.0, 0.25, tail), smoothstep(0.02, 0.06, tail), sketch)); // sketch: a stripe ends crisply, as an ink stroke does, not in a grey fade
     a = max(a, lineAt(vObj.x + jit * 0.02, mix(1.6, 1.2, sketch) * px) * stripes * face);
   }
   if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 1.0, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
@@ -324,6 +324,8 @@ void main(){
   a = mix(a, smoothstep(0.05, 0.6, a), sketch); // fine ink, dark where it is drawn
   // a live pen: the ink runs a little lighter and darker along each line (never thicker or thinner)
   // (solid black ink: no lighter patches)
+  // solid: the part is drawn in solid ink (the legs and feelers of the ink beetle)
+  a = max(a, solid);
   // far back in the haze the drawing fades
   a *= 1.0 - smoothstep(fogNear, fogFar, vDepth);
   // nothing is filled: only the ink shows; the paper is left as it is
@@ -352,6 +354,7 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
       backLines: shared.backLines ?? { value: 1 },
       waver: shared.waver ?? { value: 0 },
       sketch: shared.sketch ?? { value: 0 },
+      solid: { value: 0 },
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },

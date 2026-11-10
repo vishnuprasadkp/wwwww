@@ -163,8 +163,10 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     if ((o as THREE_NS.Points).isPoints) o.visible = false;
     const m = (o as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial | undefined;
     // few, clear lines, as in the logo: four grooves on each case, four rings on the head and shield, four bands on the belly
-    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 7; // many bold stripes down each wing case, curving with it
+    if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 6; // bold stripes down each wing case, curving with it, white between them
     // one pen for every line: the outline drawn no heavier than the grooves and rings inside it (no bold edges)
+    // the legs and feelers in solid ink, as in an ink print
+    if (m && m.isShaderMaterial && m.uniforms?.solid && (m.uniforms.weight?.value === 0.9 || m.uniforms.weight?.value === 0.8)) m.uniforms.solid.value = 1;
     if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.75; // the outline the same weight as the lines inside it
     if (m && m.isShaderMaterial && m.uniforms?.rings && (m.uniforms.rings.value === 7 || m.uniforms.rings.value === 3)) m.uniforms.rings.value = 2;
   });
@@ -208,7 +210,9 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     sk.backLines.value = 1 - 0.85 * open;
     // grooves: straight down the wing covers seen from above; as it rolls onto its side they follow the curve of the shell,
     // so from the side too they are a few simple lines, not loops
-    void p.roll; // the stripes curve with the shell in every view, as the earlier drawing's did // the cases keep their lines in every pose: the body is never an empty outline
+    void p.roll; // the stripes curve with the shell in every view, as the earlier drawing's did
+    // lifted in flight, a case is seen at a slant and its stripes crowd together: it shows fewer, so it stays clear, never a dark mass
+    shellMat.uniforms.merid.value = 6 - 3 * ease(open); // the cases keep their lines in every pose: the body is never an empty outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;
