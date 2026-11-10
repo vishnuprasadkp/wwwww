@@ -144,7 +144,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
 
   // drawn with the film's pen: each line swells and tapers, as a sketch; the swell belongs to the beetle (objPress), so
   // as it flies its lines hold their shape instead of shimmering, and the wings stay drawn as they turn (edge)
-  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.17 }, sketch: { value: 1 } };
+  const sk = { time: { value: 0 }, fogNear: { value: 60 }, fogFar: { value: 90 }, px: { value: pr * penFor(opts.size) }, ink: { value: new THREE.Vector3(...ink) }, even: { value: 1 }, objPress: { value: 0 }, edge: { value: new THREE.Vector2(0.0, 0.06) }, meridAng: { value: 1 }, backLines: { value: 1 }, waver: { value: 0.32 }, sketch: { value: 1 } };
   // the film's dust is sized for a beetle five times this one (its model drawn at scale 5): scaled to match, so each mote is
   // as fine against its body as in the film
   const proj = (C * pr) / (2 * Math.tan(((FOV / 2) * Math.PI) / 180)) / 5;
@@ -166,13 +166,19 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     if (m && m.isShaderMaterial && m.uniforms?.merid?.value === 6) m.uniforms.merid.value = 6; // bold stripes down each wing case, curving with it, white between them
     // one pen for every line: the outline drawn no heavier than the grooves and rings inside it (no bold edges)
     // the legs and feelers in solid ink, as in an ink print
-    if (m && m.isShaderMaterial && m.uniforms?.solid && (m.uniforms.weight?.value === 0.9 || m.uniforms.weight?.value === 0.8)) m.uniforms.solid.value = 1;
+    if (m && m.isShaderMaterial && m.uniforms?.solid && m.uniforms.weight?.value === 0.9) m.uniforms.solid.value = 1;
     if (m && m.isShaderMaterial && m.uniforms?.weight) m.uniforms.weight.value = 0.75; // the outline the same weight as the lines inside it
     if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 3) m.uniforms.rings.value = 2;
     // the head and the shield: plain, only their outline (a small head and a clean white dome behind it, as in an ink print)
     if (m && m.isShaderMaterial && m.uniforms?.rings && m.uniforms.rings.value === 7) m.uniforms.rings.value = 0;
   });
   b.head.scale.multiplyScalar(0.8); // a small head, as in an ink print of a beetle
+  b.head.scale.x *= 0.8; // and narrow
+  // the shield behind the head (drawn with the head's material): narrower too
+  const headMat = (b.head.children.find((c) => (c as THREE_NS.Mesh).isMesh && ((c as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial).uniforms?.rings) as THREE_NS.Mesh | undefined)?.material;
+  b.body.children.forEach((c) => {
+    if ((c as THREE_NS.Mesh).isMesh && (c as THREE_NS.Mesh).material === headMat) c.scale.x *= 0.82;
+  });
   const shellMat = ((b.cases[0].children[0] as THREE_NS.Mesh).material as THREE_NS.ShaderMaterial);
   const shellWeight = shellMat.uniforms.weight.value as number;
   // it rolls about its own body line, through its middle
@@ -207,7 +213,7 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
       c.rotation.set(0.32 * open, s * 0.12 * open, -s * 0.42 * open); // closed tight at rest: no gap down its back
     });
     shellMat.uniforms.weight.value = shellWeight * (1 - 0.15 * ease(open / 0.6));
-    shellMat.uniforms.stripes.value = 1;
+    // (the stripes are set with the seam below, as the cases open)
     // one line for each groove: while its cases are lifted in flight, their insides (seen through the open shell) are not
     // drawn as well, so no line is doubled; at rest and rolled on its side the insides are drawn, so it is never empty
     sk.backLines.value = 1 - 0.85 * open;
@@ -215,7 +221,10 @@ export async function mountBeetle3D(box: HTMLElement, opts: { size: number; ink:
     // so from the side too they are a few simple lines, not loops
     void p.roll; // the stripes curve with the shell in every view, as the earlier drawing's did
     // lifted in flight, a case is seen at a slant and its stripes crowd together: it shows fewer, so it stays clear, never a dark mass
-    shellMat.uniforms.merid.value = 6 - 4 * ease(open); // the cases keep their lines in every pose: the body is never an empty outline
+    shellMat.uniforms.merid.value = 6 - 4 * ease(open);
+    // lifted, the two cases' inner edges would cross over its back: that line goes as they open, and the stripes go lighter
+    shellMat.uniforms.seam.value = 1 - ease(open / 0.4);
+    shellMat.uniforms.stripes.value = 1 - 0.45 * ease(open); // the cases keep their lines in every pose: the body is never an empty outline
     wingPhase += dt * Math.PI * 2 * 3.2 * unfold; // a small beetle beats its wings quicker than the film's slow, close one
     const beat = Math.sin(wingPhase) * unfold;
     b.dustMat.uniforms.open.value = unfold;

@@ -251,7 +251,7 @@ const SKETCH_FS = `
 varying vec3 vN; varying vec3 vV; varying vec3 vObj; varying float vDepth;
 uniform vec3 ink;
 uniform float fogNear; uniform float fogFar; uniform float time; uniform float px;
-uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines; uniform float waver; uniform float sketch; uniform float solid;
+uniform float merid; uniform float rings; uniform float hatchAmt; uniform float weight; uniform float even; uniform float stripes; uniform float objPress; uniform float meridAng; uniform float backLines; uniform float waver; uniform float sketch; uniform float solid; uniform float seam;
 float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float noise(vec2 p){
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -307,7 +307,7 @@ void main(){
     // objPress: a clean line, not shaded by the light (shading turns a bunch of lines into a grey patch)
     float lit = mix(0.5 + 0.5 * n, 1.0, max(objPress, even)); // even: one ink, never shaded
     a = max(a, lineAt(m + jit, mix(1.2 * pressure * px * tail, 0.95 * px * brush, sketch)) * smoothstep(0.03, 0.07, abs(vObj.x)) * lit * stripes * face * inkFlow * mix(smoothstep(0.0, 0.25, tail), smoothstep(0.02, 0.06, tail), sketch)); // sketch: a stripe ends crisply, as an ink stroke does, not in a grey fade
-    a = max(a, lineAt(vObj.x + jit * 0.06, mix(1.6, 0.95 * brush, sketch) * px) * stripes * face);
+    a = max(a, lineAt(vObj.x + jit * 0.06, mix(1.6, 0.95 * brush, sketch) * px) * stripes * face * seam);
   }
   if (rings > 0.0) a = max(a, lineAt(vObj.z * rings + jit, mix(1.1 * pressure, 0.95 * brush, sketch) * px) * mix(0.45 + 0.55 * n, 1.0, max(objPress, even)) * stripes * face * inkFlow);
   // stippled light: fine dots of ink where the light falls, thicker where it is brightest, as in a stipple drawing
@@ -356,6 +356,7 @@ function sketchMaterial(shared: SketchU, lines: Lines = {}) {
       waver: shared.waver ?? { value: 0 },
       sketch: shared.sketch ?? { value: 0 },
       solid: { value: 0 },
+      seam: { value: 1 }, // the line along the inner edge of a wing case
       merid: { value: lines.merid ?? 0 },
       rings: { value: lines.rings ?? 0 },
       hatchAmt: { value: lines.hatch ?? 0 },
