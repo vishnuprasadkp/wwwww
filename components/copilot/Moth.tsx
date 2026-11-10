@@ -924,7 +924,7 @@ export default function MothTrail({
       const angle = 90 * dirn * frac;
       const deg = Math.abs(angle);
       const st = settleT * settleT * (3 - 2 * settleT); // eased
-      const tilt = -5 * Math.sin(Math.PI * clamp(frac, 0, 1)) + 18 * st; // touching down its head is up a little, then it levels out
+      const tilt = -5 * Math.sin(Math.PI * clamp(frac, 0, 1)) + 9 * st; // touching down its head is up a little, then it levels out
       const shift = 4 * st * Math.sin(now / 95); // and it shifts its footing a little as it settles
       turner.style.transform = `rotateX(${tilt.toFixed(1)}deg) rotateY(${angle.toFixed(1)}deg) rotateZ(${shift.toFixed(1)}deg)`;
       sface.style.transform = rollSide === "L" ? "rotateY(-90deg)" : "rotateY(90deg) scaleX(-1)";
@@ -1346,7 +1346,7 @@ export default function MothTrail({
         }
         jump.t = Math.min(1, jump.t + dt / jump.dur);
         const t = jump.t;
-        const u = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2; // gathers, leaps, settles
+        const u = t < 0.4 ? 0.4 * (t / 0.4) ** 3 * 1.0 : 0.4 + 0.6 * (1 - (1 - (t - 0.4) / 0.6) ** 3.4); // gathers, flies, and slows right down as it comes in to land
         const a = (1 - u) ** 2;
         const b = 2 * (1 - u) * u;
         const c = u * u;
@@ -1373,10 +1373,11 @@ export default function MothTrail({
           // onto a wall: the hop lands in the open, wings clear of the edge, and the moth slides in against the wall as it rolls
           if (jump.to.ledge?.side && rollVis > 0.02) pos.y += (ledgeYFor(jump.to.ledge, rollVis) - pos.y) * ease(clamp(rollVis / 0.35, 0, 1));
           if (jump.to.wall && rollVis > 0.02) pos.x += (wallXFor(jump.to.wall, rollVis) - pos.x) * (scene ? ease(clamp(rollVis / 0.35, 0, 1)) : 1); // in a section it slides in gradually
-          if (t > 0.4) pt = jump.to.ledge && !jump.to.ledge.side ? 0.55 : 0; // over plain text it keeps its wings half open to walk
+          const sideOn = jump.to.wall || jump.to.ledge?.side;
+          if (t > (sideOn ? 0.55 : 0.97)) pt = jump.to.ledge && !jump.to.ledge.side ? 0.55 : 0; // its wings beat until it touches down (onto a wall or box edge they fold just before it rolls); over plain text it keeps them half open to walk
         } else {
           heading = tangent;
-          if (t > 0.8) pt = 0;
+          if (t > 0.97) pt = 0; // wings beating until its feet touch, then they fold
         }
         if (t >= 1) {
           scale = 1;
