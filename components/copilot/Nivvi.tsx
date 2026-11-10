@@ -865,7 +865,7 @@ function NivviPanel() {
         className={`relative shrink-0 px-5 pb-5 ${empty ? "pt-6" : "pt-1"}`}
       >
         {listening ? (
-          <div data-ledge="composer" className="border border-[#bcb6b3] bg-white/45 px-3 pb-3 pt-3">
+          <div data-ledge="composer" className="border border-rule bg-white/45 px-3 pb-3 pt-3">
             <p className="min-h-[24px] px-1 text-[15px] leading-[24px] text-pigment">
               {draft || <span className="text-pigment-soft/80">Listening…</span>}
             </p>
@@ -894,7 +894,7 @@ function NivviPanel() {
             </div>
           </div>
         ) : (
-        <div data-ledge="composer" className="flex items-end border border-rule bg-white/45 py-2 pl-2 pr-1 transition-colors focus-within:border-[#b8b2af]">
+        <div data-ledge="composer" className="flex items-end border border-rule bg-white/45 py-2 pl-2 pr-1 transition-colors focus-within:border-[#a3a3a3]">
           <textarea
             ref={input}
             value={draft}

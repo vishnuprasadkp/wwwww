@@ -69,7 +69,7 @@ export default function ResumeViewer() {
         canvas.height = Math.floor(vp.height);
         canvas.style.width = `${cssW}px`;
         canvas.style.height = `${(cssW / base.width) * base.height}px`;
-        canvas.className = "block bg-white shadow-[0_0_0_1px_#cfcfcf]";
+        canvas.className = "block bg-white shadow-[0_0_0_1px_#bcbcbc]";
         if (!canvas.parentElement) host.appendChild(canvas);
         const ctx = canvas.getContext("2d");
         if (ctx) await page.render({ canvasContext: ctx, viewport: vp, canvas }).promise;
