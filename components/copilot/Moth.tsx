@@ -754,6 +754,8 @@ export default function MothTrail({
     let starSeen = false;
     let lastPlace = performance.now();
     let squash = 0; // a little squash as it lands
+    let headTo: number | null = null; // where it turns its body to as it sits (smoothly, never a snap)
+    let settleT = 0; // 1 as it touches down, easing to 0: its body levels out and shifts its footing
     let lift = 0; // 0 on the ground … 1 at the top of a hop: drives the shadow
     let clung = false; // on a wall: rest, then crawl, then rest, then leave
     let walkHeading = 0;
@@ -917,7 +919,10 @@ export default function MothTrail({
       const frac = rv >= 0 && rv <= 1 ? ease(rv) : rv;
       const angle = 90 * dirn * frac;
       const deg = Math.abs(angle);
-      turner.style.transform = `rotateX(${(-5 * Math.sin(Math.PI * clamp(frac, 0, 1))).toFixed(1)}deg) rotateY(${angle.toFixed(1)}deg)`;
+      const st = settleT * settleT * (3 - 2 * settleT); // eased
+      const tilt = -5 * Math.sin(Math.PI * clamp(frac, 0, 1)) + 18 * st; // touching down its head is up a little, then it levels out
+      const shift = 4 * st * Math.sin(now / 95); // and it shifts its footing a little as it settles
+      turner.style.transform = `rotateX(${tilt.toFixed(1)}deg) rotateY(${angle.toFixed(1)}deg) rotateZ(${shift.toFixed(1)}deg)`;
       sface.style.transform = rollSide === "L" ? "rotateY(-90deg)" : "rotateY(90deg) scaleX(-1)";
       // In a section the swap happens where the top view (cos θ of its width) and the side view (sin θ of its) are equally wide,
       // about 55°, so there is no jump in size, and the blend is short so there is no ghost of the other view.
@@ -1168,7 +1173,7 @@ export default function MothTrail({
       // the drawn roll follows the logical roll on a lightly under-damped spring (sub-stepped)
       for (let rem = dt; rem > 0; rem -= 0.016) {
         const hh = Math.min(rem, 0.016);
-        rollW += ((roll - rollVis) * 140 - rollW * 23.7) * hh; // critically damped: it settles without a wobble
+        rollW += ((roll - rollVis) * 60 - rollW * 15.5) * hh; // critically damped and unhurried: it rolls over smoothly, without a wobble
         rollVis += rollW * hh;
       }
       // wings follow a lightly under-damped spring to their next pose (sub-stepped so a slow frame cannot upset it)
@@ -1178,6 +1183,19 @@ export default function MothTrail({
         p += pv * hh;
       }
       squash = Math.max(0, squash - dt * 4.5);
+      settleT = Math.max(0, settleT - dt * 1.6);
+      // sitting down it turns its body round to where it will sit, easing in and out
+      if (headTo !== null) {
+        if (mode !== "rest" && mode !== "settle") headTo = null;
+        else {
+          const d = wrap(headTo - heading);
+          heading += d * Math.min(1, dt * 5.5);
+          if (Math.abs(d) < 0.003) {
+            heading = headTo;
+            headTo = null;
+          }
+        }
+      }
       // the side it will land on is taken up in the air once it is flat (top view): never while any of it shows
       if (mode === "fly" && rollVis < 0.02) rollSide = sideNext;
       shiverAt -= dt;
@@ -1367,15 +1385,16 @@ export default function MothTrail({
           const placed = !!jump.to.user; // put there by the user: it lands exactly there, then gets straight on with painting
           jump = null;
           pt = ledge && !ledge.side ? 0.55 : 0;
+          settleT = 1;
           if (wall) {
             roll = 1;
-            heading = -Math.PI / 2;
+            headTo = -Math.PI / 2; // it turns its body up the wall as it sits, smoothly
             clung = false;
             mode = "rest";
             timer = placed ? rand(0.5, 0.9) : rand(1, 1.6);
           } else if (ledge) {
             roll = ledge.side ? 1 : 0;
-            heading = landHeading;
+            headTo = landHeading;
             clung = false;
             mode = "rest";
             timer = placed ? rand(0.4, 0.7) : rand(0.8, 1.4);
@@ -1545,7 +1564,7 @@ export default function MothTrail({
         <StarBadge size={STAR} />
       </div>
       <div ref={shadowEl} className="absolute left-0 top-0" style={{ width: BOX_W, height: SIZE }}>
-        <div ref={mothEl} className="absolute inset-0 will-change-transform" style={{ opacity: 0, perspective: 200 }}>
+        <div ref={mothEl} className="absolute inset-0 will-change-transform" style={{ opacity: 0, perspective: 260 }}>
           <div ref={turnEl} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
             <div data-top className="absolute inset-0" style={face}>
               <MothIcon size={SIZE} star={false} colors={colors} />
