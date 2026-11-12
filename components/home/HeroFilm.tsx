@@ -1023,7 +1023,7 @@ void main(){
     let lastPerchSide = 0;
     let introPending = false;
     let firstPass = true; // the first pass of a film given `from` comes in from that side
-    let passesToLook = 2; // passes before it next comes to look at you (two or three each time)
+    let passesToLook = 4; // legs of its path before it next comes to look at you
     /* Straight across, one side to the other: it flies across the box from where it is to beyond the far side (or down
        and out through the bottom), on a gentle downward slant, without turning. Out of sight it turns round and comes back
        across the other way, at another height and distance. Now and then, on its way across, it stops to look at you:
@@ -1045,99 +1045,65 @@ void main(){
       fly.perch = false;
       fly.face = false;
       // looking at you: only now and then, and only from where it already is
-      if (mayPerch && !out && t - wand.lastLook > wand.gap) {
-        wand.gap = rnd(14, 22);
-        // it looks at you from anywhere: mostly it stops where it is in the box and turns to face you; now and then, near a side,
-        // it peeps in from the edge instead, only its head in the frame
-        {
-          fly.perch = true;
-          fs.perchSide = nx !== 0 ? (nx > 0 ? 1 : -1) : 1; // the nearer side: it flies there and peeps in at you, its head over the edge of the frame
-          const end = onFrame(fs.perchSide * 0.95, rnd(FLOOR_N + 0.05, FLOOR_N + 0.25), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
-          fly.pts = [end];
-          fly.idx = 0;
-          fly.target.copy(end);
-          wand.lastLook = t;
-          return;
-        }
-      }
-      // Its flight is a series of passes, each a straight, unhurried line through the frame: top to bottom, bottom to top, or
-      // across on a diagonal, left to right or right to left. It flies out, is gone for a moment, and the next pass begins
-      // beyond another edge (it is moved there while out of sight, so it never turns round in view). Every so often, instead
-      // of a pass, it flies in from beyond a side and peeps in at you over the edge of the frame.
-      fly.exit = true; // a pass crosses the whole frame: no soft floor or ceiling
-      fly.entered = false; // (set once it is inside the frame)
-      fly.leaving = true; // and ends only once it is out of the frame
-      const yLo = FLOOR_N + 0.02;
+      void mayPerch; // (its looks are planned with its path, below)
+      // Its flight is one continuous, smooth path. Each next point is chosen at random, but well ahead and within a cone
+      // round the way it is already flying (never behind it), so it wanders the whole frame in easy curves and never turns
+      // round on the spot. Past an edge it may fly out of the frame; out there the cone bends back towards the box, so it
+      // comes round in a wide arc out of sight and returns. Every few legs, when it is heading for a side anyway, it flies
+      // on to that edge and peeps in at you.
+      fly.exit = true; // the path itself keeps it about the box; no soft floor or ceiling to fight it
+      fly.leaving = false;
+      fly.hidden = false;
+      const yLo = FLOOR_N;
       const yHi = CEIL_N;
-      if (out && !fly.hidden) {
-        // out of the frame: gone for a moment
-        fly.hidden = true;
-        fly.gone = t + rnd(1.5, 4.5);
-        return;
-      }
-      if (fly.hidden) {
-        fly.hidden = false;
-        if (passesToLook <= 0 && !firstPass) {
-          passesToLook = 2 + (Math.random() < 0.5 ? 1 : 0);
-          // a look: in from beyond a side, low down, straight in to the edge, where it peeps in at you
-          wand.gap = rnd(14, 22);
-          wand.lastLook = t;
-          const side = Math.random() < 0.5 ? -1 : 1;
-          const y = rnd(FLOOR_N + 0.06, FLOOR_N + 0.24);
-          wand.d = 7.8 * D_K;
-          onFrame(side * 1.4, y, wand.d, fly.p);
-          const end = onFrame(side * 0.95, y, wand.d, new THREE.Vector3());
-          fly.perch = true;
-          fs.perchSide = side;
-          fly.exit = false;
-          fly.leaving = false;
-          fly.pts = [end];
-          fly.idx = 0;
-          fly.target.copy(end);
-          fly.next = t + 12;
-          return;
-        }
-        // a pass: from beyond one edge to beyond the opposite one
-        passesToLook--;
-        const kinds = ["TB", "BT", "LR", "RL", "LR", "RL"] as const;
-        const kind = firstPass && from === "right" ? "RL" : kinds[Math.floor(Math.random() * kinds.length)];
-        firstPass = false;
-        wand.d = rnd(7.6, 10.5) * D_K;
-        let a: [number, number];
-        let z: [number, number];
-        if (kind === "TB" || kind === "BT") {
-          const x0 = rnd(-0.7, 0.7);
-          const x1 = clamp(x0 + rnd(-0.7, 0.7), -0.85, 0.85);
-          a = kind === "TB" ? [x0, 1.55] : [x0, -1.55];
-          z = kind === "TB" ? [x1, -1.6] : [x1, 1.6];
-        } else {
-          const y0 = rnd(yLo, yHi);
-          const y1 = clamp(y0 + rnd(-0.45, 0.45), yLo - 0.15, yHi + 0.15); // a diagonal, rising or falling
-          a = kind === "LR" ? [-1.4, y0] : [1.4, y0];
-          z = kind === "LR" ? [1.45, y1] : [-1.45, y1];
-        }
-        onFrame(a[0], a[1], wand.d, fly.p);
-        const endP = onFrame(z[0], z[1], wand.d, new THREE.Vector3());
-        fly.pts = [endP];
-        fly.idx = 0;
-        fly.target.copy(endP);
-        fly.next = t + 24;
-        return;
-      }
-      // in the frame (leaving the edge where it looked at you, or a pass that ran long): straight on the way it is going,
-      // and out
-      const ahead = fly.p.clone().addScaledVector(fly.v.lengthSq() > 1e-6 ? fly.v.clone().normalize() : new THREE.Vector3(1, 0, 0), 1).project(camera);
+      const cy = (yLo + yHi) / 2;
+      const ahead = fly.p.clone().addScaledVector(fly.v.lengthSq() > 1e-6 ? fly.v.clone().normalize() : new THREE.Vector3(-1, 0, 0), 1).project(camera);
       let hx = ahead.x - nx;
       let hy = ahead.y - ny;
       const hl = Math.hypot(hx, hy) || 1;
       hx /= hl;
       hy /= hl;
-      const k = 1.6 / Math.max(Math.abs(hx), Math.abs(hy), 0.3);
-      const outP = onFrame(clamp(nx + hx * k, -1.6, 1.6), clamp(ny + hy * k, -1.65, 1.65), wand.d, new THREE.Vector3());
-      fly.pts = [outP];
+      const heading = Math.atan2(hy, hx);
+      const wrapA = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
+      // a look: when it is due and the beetle is already making for a side, it goes on to that side and peeps in
+      passesToLook--;
+      if (passesToLook <= 0 && t - wand.lastLook > wand.gap && !out && Math.abs(hx) > 0.55 && Math.abs(nx) < 0.75) {
+        passesToLook = 6 + Math.floor(Math.random() * 4);
+        wand.gap = rnd(24, 34); // half a minute or so between looks
+        const side = hx > 0 ? 1 : -1;
+        const y = clamp(ny + hy * 0.3, yLo + 0.06, Math.min(yHi, yLo + 0.4));
+        const end = onFrame(side * 0.95, y, clamp(camera.position.distanceTo(fly.p), 7.4 * D_K, 9 * D_K), new THREE.Vector3());
+        fly.perch = true;
+        fs.perchSide = side;
+        fly.exit = false;
+        fly.pts = [end];
+        fly.idx = 0;
+        fly.target.copy(end);
+        fly.next = t + 14;
+        wand.lastLook = t;
+        return;
+      }
+      // where the next point lies: well ahead, within the cone; once it is out past an edge the cone leans back towards the box
+      const outside = Math.abs(nx) > 0.95 || ny < yLo - 0.15 || ny > yHi + 0.15;
+      const toBox = Math.atan2(cy - ny, -nx);
+      const lean = outside ? clamp(wrapA(toBox - heading), -1.0, 1.0) : 0; // turn back in, but only so far each leg (a wide arc)
+      let ang = heading + lean + rnd(-0.95, 0.95) * (outside ? 0.4 : 1);
+      // inside, it now and then heads out past an edge (that is fine); mostly it keeps to the frame
+      const len = rnd(0.75, 1.25);
+      let tx = nx + Math.cos(ang) * len;
+      let ty = ny + Math.sin(ang) * len * 0.6;
+      if (!outside && Math.random() < 0.85 && (Math.abs(tx) > 1.05 || ty < yLo - 0.3 || ty > yHi + 0.25)) {
+        // most of the time, rather than leave, it bends along the edge it is nearing (still within the cone)
+        ang = heading + clamp(wrapA(toBox - heading), -0.95, 0.95);
+        tx = nx + Math.cos(ang) * len;
+        ty = ny + Math.sin(ang) * len * 0.6;
+      }
+      wand.d = clamp(wand.d + rnd(-0.8, 0.8), 7.6 * D_K, 10.5 * D_K); // nearer and further, gently
+      const next = onFrame(clamp(tx, -1.7, 1.7), clamp(ty, yLo - 0.7, yHi + 0.6), wand.d, new THREE.Vector3());
+      fly.pts = [next];
       fly.idx = 0;
-      fly.target.copy(outP);
-      fly.next = t + 20;
+      fly.target.copy(next);
+      fly.next = t + 9;
     };
     const wp = new THREE.Vector3();
     const eyeTmp = new THREE.Vector3();
