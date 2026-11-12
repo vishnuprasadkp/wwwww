@@ -67,3 +67,13 @@ export function inkPalette(s: Scheme, k = 1): InkPalette {
 }
 
 export const schemeForClosing = (closing: string): Scheme => SCHEMES[SCHEME_FOR_CLOSING[closing] ?? "charcoal"];
+
+// a deep charcoal wash with real movement in it: warm light grey and cool blue-grey shapes drifting through it, and deep
+// shadow between them, so you feel the colour moving
+export const HERO_INK: InkPalette = {
+  pale: [0.43, 0.415, 0.395], // warm light grey
+  light: [0.325, 0.335, 0.35], // cool blue-grey
+  mid: [0.243, 0.243, 0.247], // the ground
+  deep: [0.135, 0.135, 0.142], // shadow
+  grey: [0.31, 0.295, 0.28], // a warm grey that drifts through
+};

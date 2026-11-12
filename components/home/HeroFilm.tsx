@@ -766,7 +766,7 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
  * flies its own way: at the top it keeps low in the box and glides; at the foot it uses the whole height, rising and
  * falling.
  */
-export default function HeroFilm({ palette, place = "foot", from }: { palette?: InkPalette; place?: "top" | "foot"; from?: "right" | "top-right" } = {}) {
+export default function HeroFilm({ palette, place = "foot", from, full = false }: { palette?: InkPalette; place?: "top" | "foot"; from?: "right" | "top-right"; full?: boolean } = {}) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [key, setKey] = useState(0);
 
@@ -793,7 +793,8 @@ export default function HeroFilm({ palette, place = "foot", from }: { palette?: 
     const FLOOR_N = -0.62 - (SIZE_K - 1) * 0.45;
     // it keeps to the lower part of the frame (its body and raised wings above it stay in view)
     // it roams the whole box, high and low, with its body and raised wings always in view
-    const CEIL_N = FLOOR_N + 0.38; // it keeps to the lower part of the box
+    // it keeps to the lower part of the box; filling the whole screen (`full`) it flies through all of it
+    const CEIL_N = full ? 0.55 : FLOOR_N + 0.38;
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
@@ -1056,7 +1057,7 @@ void main(){
           return;
         }
         fly.face = true;
-        const spot = onFrame(clamp(nx + rnd(-0.3, 0.3), -0.6, 0.6), rnd(-0.45, -0.15), 10.5 * D_K, new THREE.Vector3()); // wherever it is, a little way on
+        const spot = onFrame(clamp(nx + rnd(-0.3, 0.3), -0.6, 0.6), full ? rnd(-0.35, 0.3) : rnd(-0.45, -0.15), 10.5 * D_K, new THREE.Vector3()); // wherever it is, a little way on
         lift(spot);
         fly.pts = [spot];
         fly.idx = 0;
