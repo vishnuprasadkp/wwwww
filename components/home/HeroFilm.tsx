@@ -1036,27 +1036,127 @@ void main(){
     let dirX: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
     const wand = { h: -Math.PI / 2, d: 8.2, lastLook: 0, gap: 16 }; // gap: seconds until it next looks at you (different each time)
     const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, FLOOR + 0.35));
-    const newPass = (t: number, fromHere: boolean, mayPerch = true) => {
-      void fromHere;
-      ndcNow.copy(fly.p).project(camera);
-      const nx = ndcNow.x;
-      const ny = ndcNow.y;
-      const out = Math.abs(nx) > 1.05 || Math.abs(ny) > 1.05;
-      fly.perch = false;
-      fly.face = false;
-      // looking at you: only now and then, and only from where it already is
-      void mayPerch; // (its looks are planned with its path, below)
-      // Its flight is one continuous, smooth path. Each next point is chosen at random, but well ahead and within a cone
-      // round the way it is already flying (never behind it), so it wanders the whole frame in easy curves and never turns
-      // round on the spot. Past an edge it may fly out of the frame; out there the cone bends back towards the box, so it
-      // comes round in a wide arc out of sight and returns. Every few legs, when it is heading for a side anyway, it flies
-      // on to that edge and peeps in at you.
-      fly.exit = true; // the path itself keeps it about the box; no soft floor or ceiling to fight it
-      fly.leaving = false;
-      fly.hidden = false;
+    /* Its route, four parts that follow one another for as long as you look:
+       in    it flies in from beyond a side (the left, the right or the foot), setting off wholly out of sight
+       roam  it wanders the box on one smooth, unbroken path: each next point is random, but always ahead of it
+       out   after a while (or when the edge it is making for comes up) it flies on out, until it is wholly out of sight
+       away  it is gone for two or three seconds, then comes in again from a side picked at random
+       Only now and then (every half minute to a minute) does a coming in end at that edge, where it settles with its body
+       outside the frame and peeps in at you; then it flies off into the box. */
+    type Side = "L" | "R" | "B";
+    const route = { phase: "in" as "in" | "roam" | "out" | "away", until: 0, exit: "R" as Side, nextLook: 0, bend: 1 };
+    const REACH = 0.62; // how far its outline (wings spread) reaches from its centre, in its own units
+    const exRight = new THREE.Vector3();
+    const exUp = new THREE.Vector3();
+    const exP = new THREE.Vector3();
+    // where it is on screen (-1..1) and how far its outline reaches from there, across and up
+    const reach = (p: THREE.Vector3) => {
+      const R = (beetle ? beetle.root.scale.x : 1) * REACH;
+      exRight.setFromMatrixColumn(camera.matrixWorld, 0);
+      exUp.setFromMatrixColumn(camera.matrixWorld, 1);
+      exP.copy(p).project(camera);
+      const x = exP.x;
+      const y = exP.y;
+      exP.copy(p).addScaledVector(exRight, R).project(camera);
+      const rx = Math.abs(exP.x - x);
+      exP.copy(p).addScaledVector(exUp, R).project(camera);
+      const ry = Math.abs(exP.y - y) * 0.7; // it is less tall than it is wide (its raised wings, its legs below)
+      return { x, y, rx, ry };
+    };
+    const outOfSight = (p: THREE.Vector3) => {
+      const r = reach(p);
+      return Math.abs(r.x) > 1 + r.rx || r.y > 1 + r.ry || r.y < -1 - r.ry;
+    };
+    const wrapA = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
+    // it comes in from beyond a side, wholly out of sight as it sets off, flying straight in
+    const comeIn = (t: number, first = false) => {
+      const look = !first && t > route.nextLook;
+      let side: Side = "R";
+      if (!first) {
+        const opts: Side[] = look ? ["L", "R"] : ["L", "R", "B"];
+        const w = opts.map((s) => (s === "B" ? 0.6 : 1)); // any side at all: the one it left by, the other, or the foot
+        let pick = Math.random() * w.reduce((a, b) => a + b, 0);
+        side = opts[opts.length - 1];
+        for (let i = 0; i < opts.length; i++) {
+          pick -= w[i];
+          if (pick <= 0) {
+            side = opts[i];
+            break;
+          }
+        }
+      }
       const yLo = FLOOR_N;
       const yHi = CEIL_N;
-      const cy = (yLo + yHi) / 2;
+      const d = rnd(7.8, 9.8) * D_K;
+      wand.d = d;
+      const s = side === "R" ? 1 : side === "L" ? -1 : 0;
+      let sx: number;
+      let sy: number;
+      let gx: number;
+      let gy: number;
+      if (side === "B") {
+        sx = rnd(-0.7, 0.7);
+        sy = -1;
+        gx = clamp(sx + (Math.random() < 0.5 ? -1 : 1) * rnd(0.35, 0.7), -0.65, 0.65); // up on a slant
+        gy = rnd(yLo + 0.08, yHi);
+      } else {
+        sx = s;
+        sy = rnd(yLo, yHi);
+        gx = s * rnd(-0.45, 0.45); // a long way in, or only a little
+        gy = clamp(sy + rnd(-0.3, 0.3), yLo, yHi);
+      }
+      camera.updateMatrixWorld();
+      // out past that edge until none of it can be seen, and a little further
+      for (let i = 0; i < 60; i++) {
+        onFrame(sx, sy, d, fly.p);
+        if (outOfSight(fly.p)) break;
+        if (side === "B") sy -= 0.04;
+        else sx += s * 0.04;
+      }
+      if (side === "B") sy -= 0.05;
+      else sx += s * 0.05;
+      onFrame(sx, sy, d, fly.p);
+      const goal = onFrame(gx, gy, d, new THREE.Vector3());
+      fly.perch = false;
+      fly.face = false;
+      fly.exit = true;
+      fly.hidden = false;
+      fly.entered = false;
+      if (look) {
+        // this time it comes to the edge and peeps in at you
+        route.nextLook = t + rnd(35, 60);
+        fly.perch = true;
+        fs.perchSide = s;
+        goal.copy(onFrame(s * 0.6, clamp(sy, yLo + 0.05, Math.min(yHi, yLo + 0.4)), d, new THREE.Vector3()));
+      }
+      route.phase = "in";
+      fly.pts = [goal];
+      fly.idx = 0;
+      fly.target.copy(goal);
+      fly.next = t + 14;
+      fly.v.copy(goal).sub(fly.p).normalize().multiplyScalar(SPEED);
+      const sp = Math.hypot(fly.v.x, fly.v.z);
+      fly.yaw = sp > 0.15 ? Math.atan2(fly.v.x, fly.v.z) : Math.atan2(gx - sx, 0.3); // facing the way it flies
+      fly.roll = 0;
+      fly.climb = clamp(-fly.v.y * 1.8, -0.4, 0.6);
+    };
+    const newPass = (t: number, fromHere: boolean, mayPerch = true) => {
+      void fromHere;
+      void mayPerch;
+      fly.perch = false;
+      fly.face = false;
+      fly.exit = true; // its route keeps it about the box; no soft floor or ceiling to fight it
+      fly.leaving = false;
+      fly.hidden = false;
+      if (route.phase === "in" || route.phase === "away") {
+        route.phase = "roam";
+        route.until = t + rnd(3, 9); // how long it wanders before it heads out again
+      }
+      const yLo = FLOOR_N;
+      const yHi = CEIL_N;
+      const r = reach(fly.p);
+      const nx = r.x;
+      const ny = r.y;
       const ahead = fly.p.clone().addScaledVector(fly.v.lengthSq() > 1e-6 ? fly.v.clone().normalize() : new THREE.Vector3(-1, 0, 0), 1).project(camera);
       let hx = ahead.x - nx;
       let hy = ahead.y - ny;
@@ -1064,46 +1164,51 @@ void main(){
       hx /= hl;
       hy /= hl;
       const heading = Math.atan2(hy, hx);
-      const wrapA = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
-      // a look: when it is due and the beetle is already making for a side, it goes on to that side and peeps in
-      passesToLook--;
-      if (passesToLook <= 0 && t - wand.lastLook > wand.gap && !out && Math.abs(hx) > 0.55 && Math.abs(nx) < 0.75) {
-        passesToLook = 6 + Math.floor(Math.random() * 4);
-        wand.gap = rnd(24, 34); // half a minute or so between looks
-        const side = hx > 0 ? 1 : -1;
-        const y = clamp(ny + hy * 0.3, yLo + 0.06, Math.min(yHi, yLo + 0.4));
-        const end = onFrame(side * 0.95, y, clamp(camera.position.distanceTo(fly.p), 7.4 * D_K, 9 * D_K), new THREE.Vector3());
-        fly.perch = true;
-        fs.perchSide = side;
-        fly.exit = false;
-        fly.pts = [end];
-        fly.idx = 0;
-        fly.target.copy(end);
-        fly.next = t + 14;
-        wand.lastLook = t;
-        return;
+      wand.d = clamp(wand.d + rnd(-0.4, 0.4), 7.8 * D_K, 10 * D_K); // nearer and further, gently
+      if (route.phase === "roam") {
+        // the next point: random, but ahead of it (within a cone round the way it flies), and inside the box
+        // it curves one way for a while, then the other, so the path swings in long loops rather than running straight
+        if (Math.random() < 0.3) route.bend = -route.bend;
+        let found = false;
+        let tx = 0;
+        let ty = 0;
+        for (let i = 0; i < 12 && !found; i++) {
+          const ang = heading + route.bend * rnd(0.1, 0.7) + rnd(-0.45, 0.45) * (i < 6 ? 1 : 2);
+          const len = rnd(0.55, 1.05);
+          tx = nx + Math.cos(ang) * len;
+          ty = ny + Math.sin(ang) * len * 0.6;
+          found = Math.abs(tx) < 0.8 && ty > yLo - 0.04 && ty < yHi + 0.04;
+        }
+        if (!found && t < route.until - 3) {
+          // it is making for an edge too soon: it bends away from it, as far as its cone allows
+          const ang = heading + clamp(wrapA(Math.atan2((yLo + yHi) / 2 - ny, -nx) - heading), -0.9, 0.9);
+          tx = nx + Math.cos(ang) * 0.8;
+          ty = ny + Math.sin(ang) * 0.8 * 0.6;
+          found = Math.abs(tx) < 1.0 && ty > yLo - 0.3 && ty < yHi + 0.3;
+        }
+        if (found && t < route.until) {
+          const next = onFrame(tx, ty, wand.d, new THREE.Vector3());
+          fly.pts = [next];
+          fly.idx = 0;
+          fly.target.copy(next);
+          fly.next = t + 9;
+          return;
+        }
+        route.phase = "out"; // its time is up, or the edge it is making for has come up: it flies on out
       }
-      // where the next point lies: well ahead, within the cone; once it is out past an edge the cone leans back towards the box
-      const outside = Math.abs(nx) > 0.95 || ny < yLo - 0.15 || ny > yHi + 0.15;
-      const toBox = Math.atan2(cy - ny, -nx);
-      const lean = outside ? clamp(wrapA(toBox - heading), -1.0, 1.0) : 0; // turn back in, but only so far each leg (a wide arc)
-      let ang = heading + lean + rnd(-0.95, 0.95) * (outside ? 0.4 : 1);
-      // inside, it now and then heads out past an edge (that is fine); mostly it keeps to the frame
-      const len = rnd(0.75, 1.25);
-      let tx = nx + Math.cos(ang) * len;
-      let ty = ny + Math.sin(ang) * len * 0.6;
-      if (!outside && Math.random() < 0.85 && (Math.abs(tx) > 1.05 || ty < yLo - 0.3 || ty > yHi + 0.25)) {
-        // most of the time, rather than leave, it bends along the edge it is nearing (still within the cone)
-        ang = heading + clamp(wrapA(toBox - heading), -0.95, 0.95);
-        tx = nx + Math.cos(ang) * len;
-        ty = ny + Math.sin(ang) * len * 0.6;
-      }
-      wand.d = clamp(wand.d + rnd(-0.8, 0.8), 7.6 * D_K, 10.5 * D_K); // nearer and further, gently
-      const next = onFrame(clamp(tx, -1.7, 1.7), clamp(ty, yLo - 0.7, yHi + 0.6), wand.d, new THREE.Vector3());
-      fly.pts = [next];
+      // out: on the way it is going (only flattened, so it never climbs out over the top), past the edge, out of sight;
+      // or, now and then, it curves down and dives out through the foot
+      hy = Math.min(hy, 0.25);
+      if (hy < 0.2 && Math.random() < 0.35) hy = -1.2;
+      const hl2 = Math.hypot(hx, hy) || 1;
+      hx /= hl2;
+      hy /= hl2;
+      route.exit = hy < -0.6 ? "B" : hx > 0 ? "R" : "L";
+      const far = onFrame(nx + hx * 2.2, ny + hy * 1.3, wand.d, new THREE.Vector3());
+      fly.pts = [far];
       fly.idx = 0;
-      fly.target.copy(next);
-      fly.next = t + 9;
+      fly.target.copy(far);
+      fly.next = t + 12;
     };
     const wp = new THREE.Vector3();
     const eyeTmp = new THREE.Vector3();
@@ -1261,30 +1366,26 @@ void main(){
           fly.p.copy(b.root.position);
           fly.v.set(0, 0, 0);
           fly.yaw = b.root.rotation.y;
-          newPass(t, false);
           fs.until = t + rnd(7, 10);
           fs.after = "perch";
-          if (skipIntro && !ENTERS) {
+          fs.mode = "fly";
+          fs.air = 1;
+          route.nextLook = t + rnd(22, 34); // the first look comes after it has flown about a while
+          if (!ENTERS) {
             // the films lower down the page: it is already there, flying somewhere in the box, when you come to it
-            fs.mode = "fly";
-            fs.air = 1;
-            fly.hidden = false;
-            wand.h = rnd(-Math.PI, Math.PI);
-            wand.lastLook = t - rnd(0, 14);
             camera.updateMatrixWorld(); // this runs before the first frame is drawn: bring the camera's matrices up to date
             onFrame(rnd(-0.55, 0.55), rnd(FLOOR_N + 0.1, Math.max(FLOOR_N + 0.15, CEIL_N - 0.15)), rnd(7.8, 9.5) * D_K, fly.p);
-            fly.p.y = Math.max(fly.p.y, FLOOR + 0.35);
+            fly.v.set(Math.random() < 0.5 ? -1 : 1, 0, 0).multiplyScalar(SPEED);
+            fly.hidden = false;
+            route.phase = "away";
             newPass(t, true, false);
             fly.v.copy(fly.target).sub(fly.p).normalize().multiplyScalar(SPEED);
             fly.yaw = Math.atan2(fly.v.x, fly.v.z);
             b.root.position.copy(fly.p);
-          } else if (skipIntro) {
-            // the opening: the box is empty for a moment, then it sweeps in from beyond a corner, any corner, on a long
-            // diagonal, curving down through the lower part of the box
-            fs.mode = "fly";
-            fs.air = 1;
+          } else {
+            // the opening: the box is empty for a moment, then it flies in from beyond the side
             fly.hidden = true;
-            fly.gone = t + rnd(0.2, 0.5);
+            fly.gone = Math.max(t, T_WALK0) + rnd(0.2, 0.5); // (it can be seen only from then on)
             introPending = true;
           }
         }
@@ -1294,23 +1395,9 @@ void main(){
             // out of sight for a moment; then it comes in
             b.root.position.copy(fly.p);
             if (t > fly.gone) {
-              if (introPending) {
-                // it opens flying in from beyond the left or the right, at about the middle height, its whole body
-                // coming into view at once, on a heading into the box that is different every time
-                introPending = false;
-                wand.lastLook = t - 4; // it flies about a little first, then stops to look at you
-                // it flies in from beyond any side or corner, a different one each time and in each film
-                const band = () => rnd(FLOOR_N + 0.05, CEIL_N - 0.05);
-                const ways: [number, number][] = from === "top-right" ? [[1.3, CEIL_N + 0.45]] : [[1.45, band()], [1.4, CEIL_N]]; // never straight down from the top, where its legs would come first
-                const [ex, ey] = ways[Math.floor(Math.random() * ways.length)];
-                onFrame(ex, ey, rnd(7.5, 9.5) * D_K, fly.p);
-                fly.p.y = Math.max(fly.p.y, FLOOR + 0.35);
-                // heading in towards the middle of the box, a little to one side
-                wand.h = Math.atan2(-ey * 0.8, -ex) + rnd(-0.35, 0.35);
-              }
-              newPass(t, true, false);
-              fly.v.copy(fly.target).sub(fly.p).normalize().multiplyScalar(0.6);
-              fly.yaw = Math.atan2(fly.v.x, fly.v.z);
+              // it comes in again, from beyond a side, flying straight in
+              comeIn(t, introPending);
+              introPending = false;
               b.root.position.copy(fly.p);
             }
           } else {
@@ -1357,14 +1444,18 @@ void main(){
             if (last && fly.face && (dist < 1.6 || t > fly.next)) {
               fs.after = "face";
               planLanding(t, b); // in front of you now: it turns to face you and hangs there
-            } else if (last && fly.perch && fly.entered && Math.abs(ndcNow.x) > 0.72) {
+            } else if (last && fly.perch && Math.abs(ndcNow.x) < 1 + reach(fly.p).rx * 0.85) {
               fs.after = "perch";
               planLanding(t, b); // it has reached the side it was heading for: it settles there and looks at you
             } else if (last && !fly.perch) {
               // on to the next leg, from right here, so the path never breaks; a mark left behind it at close range would
               // only have it circling, so it gives that up for a new one ahead
-              const gone = Math.abs(ndcNow.x) > 1.12 || Math.abs(ndcNow.y) > 1.12;
-              if (fly.leaving ? (fly.entered && gone) || t > fly.next : dist < 1.4 || t > fly.next || (ang > 1.9 && dist < 2.6 && !fly.face)) newPass(t, true);
+              if (route.phase === "out" && outOfSight(fly.p)) {
+                // wholly out of sight: it is away for two or three seconds
+                route.phase = "away";
+                fly.hidden = true;
+                fly.gone = t + rnd(2, 3.2);
+              } else if (dist < 1.4 || t > fly.next || (ang > 1.9 && dist < 2.6)) newPass(t, true);
             } else if (!last && dist < 1.4) {
               fly.idx++;
               fly.target.copy(fly.pts[fly.idx]);
@@ -1450,7 +1541,7 @@ void main(){
         fs.peek += ((fs.mode === "perch" ? 1 : 0) - fs.peek) * Math.min(1, dt * 1.5);
         lookIn = fs.peek;
       }
-      b.root.visible = k > T_WALK0 - 0.1;
+      b.root.visible = k > T_WALK0 - 0.1 && !(fly.on && fs.mode === "fly" && fly.hidden);
 
       // body sway with each step
       b.body.position.y = STAND + (walking ? 0.004 * Math.sin(gait * 2) * walkAmt : 0);
