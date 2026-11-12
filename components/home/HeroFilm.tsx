@@ -790,11 +790,12 @@ export default function HeroFilm({ palette, place = "foot", from, full = false }
     const SIZE_K = VH / Math.max(200, host.getBoundingClientRect().height);
     // where its body (its feet, really) keeps to, as a share of the box: in the short film at the top it flies in the lower
     // part, so its body and its raised wings above it are in view; the tall film uses the whole height
-    const FLOOR_N = -0.62 - (SIZE_K - 1) * 0.45;
+    // it keeps low in the box (its raised wings are above its body), and may dip partly below the foot
+    const FLOOR_N = (full ? -0.82 : -0.86) - (SIZE_K - 1) * 0.45;
     // it keeps to the lower part of the frame (its body and raised wings above it stay in view)
     // it roams the whole box, high and low, with its body and raised wings always in view
     // it keeps to the lower part of the box; filling the whole screen (`full`) it flies through all of it
-    const CEIL_N = full ? 0.55 : FLOOR_N + 0.38;
+    const CEIL_N = full ? 0.1 : FLOOR_N + 0.44;
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
@@ -1116,7 +1117,7 @@ void main(){
         fly.leaving = true;
         // out through the edge it is heading for: down through the foot, up over the top, or out past that side
         const vertical = Math.random() < 0.55; // about half the time right down through the foot or up over the top
-        const down = hy < -0.4 * hl ? true : hy > 0.4 * hl ? false : Math.random() < 0.5;
+        const down = hy > 0.6 * hl ? Math.random() < 0.3 : Math.random() < 0.8; // mostly down and out through the foot
         const [ex, ey] = vertical ? [clamp(nx + hx / hl * 0.4, -0.75, 0.75), down ? -1.75 : 1.75] : [hx >= 0 ? 1.65 : -1.65, clamp(ny + hy / hl * 0.3, yLo, yHi)];
         const mid = onFrame((nx + ex) / 2 + rnd(-0.15, 0.15), clamp((ny + ey) / 2, yLo - 0.2, yHi + 0.2), wand.d, new THREE.Vector3());
         fly.pts = [mid, onFrame(ex, ey, wand.d, new THREE.Vector3())];
