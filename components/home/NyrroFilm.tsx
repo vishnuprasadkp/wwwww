@@ -36,7 +36,8 @@ export default function NyrroFilm() {
         Back
       </Link>
 
-      <section aria-label="About Nyrro" className="absolute right-5 top-16 z-10 max-w-[420px] text-white md:right-8 md:top-8">
+      {/* the story: in the right half, its left edge on the centre line (as the hero film is), in the lower part of the screen */}
+      <section aria-label="About Nyrro" className="absolute bottom-[8%] left-5 right-5 z-10 text-white md:bottom-[14%] md:left-1/2 md:right-8">
         <h1 className="font-serif text-[22px] leading-[30px] md:text-[26px] md:leading-[34px]">Nyrro: Nature in Colour</h1>
         <p className="mt-4 text-[15px] leading-6 text-white/85">
           I&rsquo;d never really paid much attention to beetles before. But while working on this portfolio, one caught my eye and made me curious to explore their little world. The more I looked into them, the more I discovered some fascinating things about their natural defence mechanisms, from the oily droplets of oil beetles to the chemical spray of bombardier beetles, which can leave traces of their own.
