@@ -1007,7 +1007,7 @@ void main(){
     const T_FREE = T_LIFT + 2.8;
     // not always the walk-in: half the time the film opens with the beetle already there, peeping in at you
     const skipIntro = true; // the walk-in is set aside for now: it opens already looking at you
-    const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0, pts: [] as THREE.Vector3[], idx: 0, gone: 0, hidden: false, perch: false, face: false, climb: 0, exit: false, leaving: false };
+    const fly = { on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), target: new THREE.Vector3(), next: 0, yaw: 0, roll: 0, pts: [] as THREE.Vector3[], idx: 0, gone: 0, hidden: false, perch: false, face: false, climb: 0, exit: false, leaving: false, entered: false };
     const ndcNow = new THREE.Vector3();
     /* Its flight is a series of passes. It comes in from beyond one edge of the frame (a side, the top or the bottom), crosses
        the box on a diagonal through some point inside it, nearer or further, and goes out past another edge. Then it is gone
@@ -1022,6 +1022,8 @@ void main(){
     let lastEdge: Edge = Math.random() < 0.5 ? "L" : "R";
     let lastPerchSide = 0;
     let introPending = false;
+    let firstPass = true; // the first pass of a film given `from` comes in from that side
+    let passesToLook = 2; // passes before it next comes to look at you (two or three each time)
     /* Straight across, one side to the other: it flies across the box from where it is to beyond the far side (or down
        and out through the bottom), on a gentle downward slant, without turning. Out of sight it turns round and comes back
        across the other way, at another height and distance. Now and then, on its way across, it stops to look at you:
@@ -1058,77 +1060,84 @@ void main(){
           return;
         }
       }
-      // Its paths: long, deliberate flights, never wandering on the spot. Mostly it flies from where it is to a far corner of the
-      // box on a wide arc; now and then it flies right out of the frame (off the bottom, over the top, or past a side) and, a
-      // moment later, comes back in the way it went, and on to a corner across the box.
-      fly.exit = false;
-      fly.leaving = false;
-      // the way it is heading on the screen, so each leg flows on from the last instead of turning back
-      const ahead = fly.p.clone().addScaledVector(fly.v.lengthSq() > 1e-6 ? fly.v.clone().normalize() : new THREE.Vector3(1, 0, 0), 1).project(camera);
-      const hx = ahead.x - nx;
-      const hy = ahead.y - ny;
-      const hl = Math.hypot(hx, hy) || 1;
-      wand.d = clamp(wand.d + rnd(-1.2, 1.2), 7.4 * D_K, 11 * D_K);
+      // Its flight is a series of passes, each a straight, unhurried line through the frame: top to bottom, bottom to top, or
+      // across on a diagonal, left to right or right to left. It flies out, is gone for a moment, and the next pass begins
+      // beyond another edge (it is moved there while out of sight, so it never turns round in view). Every so often, instead
+      // of a pass, it flies in from beyond a side and peeps in at you over the edge of the frame.
+      fly.exit = true; // a pass crosses the whole frame: no soft floor or ceiling
+      fly.entered = false; // (set once it is inside the frame)
+      fly.leaving = true; // and ends only once it is out of the frame
       const yLo = FLOOR_N + 0.02;
       const yHi = CEIL_N;
-      // where it flies to: the far side of the box, at any height (low, middle or high), so over time it crosses everywhere
-      const ys = [yLo, yLo + (yHi - yLo) * 0.33, yLo + (yHi - yLo) * 0.66, yHi, rnd(yLo, yHi)];
-      const corners: [number, number][] = [...ys.map((y) => [-0.74, y] as [number, number]), ...ys.map((y) => [0.74, y] as [number, number])];
-      // the corner furthest across from here (one of the two far ones, by chance), reached on a wide arc
-      const toCorner = (fx: number, fy: number) => {
-        // of the corners well away from here, the one most nearly ahead of it: little turning, a long sweep
-        // the other side of the box, and a different height from here
-        const away = corners.filter((c) => Math.sign(c[0]) !== Math.sign(fx || 1) && Math.abs(c[1] - fy) > 0.12);
-        const pool = away.length ? away : corners;
-        const turnTo = (c: [number, number]) => {
-          const dx = c[0] - fx;
-          const dy = c[1] - fy;
-          return -((dx * hx + dy * hy) / ((Math.hypot(dx, dy) || 1) * hl)); // smaller when it is straight ahead
-        };
-        const ranked = [...pool].sort((a, b) => turnTo(a) - turnTo(b));
-        const [cx, cy] = ranked[Math.random() < 0.5 || ranked.length < 2 ? 0 : 1]; // one of the two most nearly ahead, by chance
-        const mx = (fx + cx) / 2;
-        const my = (fy + cy) / 2;
-        const bow = rnd(0.18, 0.32) * (Math.random() < 0.5 ? 1 : -1); // the arc bows to one side of the straight line
-        const len = Math.hypot(cx - fx, cy - fy) || 1;
-        const ax = clamp(mx + (-(cy - fy) / len) * bow, -0.8, 0.8);
-        const ay = clamp(my + ((cx - fx) / len) * bow * 0.5, yLo, yHi);
-        return [lift2(onFrame(ax, ay, wand.d, new THREE.Vector3())), lift2(onFrame(cx, cy, wand.d, new THREE.Vector3()))];
-      };
-      const lift2 = (v: THREE.Vector3) => (lift(v), v);
-      if (out) {
-        // back in the way it went: in near where it left, then on across to a far corner
-        fly.exit = true;
-        // out of sight it swings round in a wide loop (never a turn on the spot), then comes back into the box a little way
-        // along from where it left, and sweeps on to a far corner
-        const s = nx > 0.2 ? -1 : nx < -0.2 ? 1 : Math.random() < 0.5 ? 1 : -1; // round towards the box
-        const sideOut = Math.abs(nx) > 1;
-        const loop = sideOut
-          ? onFrame(Math.sign(nx) * 1.9, clamp(ny + (ny < (yLo + yHi) / 2 ? 0.45 : -0.45), -0.9, 0.6), wand.d, new THREE.Vector3())
-          : onFrame(clamp(nx + s * 0.55, -1.2, 1.2), Math.sign(ny) * 2.05, wand.d, new THREE.Vector3());
-        const bx = sideOut ? Math.sign(nx) * 0.68 : clamp(nx + s * 0.85, -0.7, 0.7);
-        const by = sideOut ? clamp(ny + (ny < (yLo + yHi) / 2 ? 0.3 : -0.3), yLo, yHi) : ny < 0 ? yLo + 0.06 : yHi - 0.04;
-        const back = onFrame(bx, by, wand.d, new THREE.Vector3());
-        fly.pts = [loop, back, ...toCorner(bx, by).slice(1)];
-        fly.next = t + 14;
-      } else if (Math.random() < 0.22) {
-        // out of the frame: down and right out through the foot, up and right out over the top, or out past the nearer side
-        fly.exit = true;
-        fly.leaving = true;
-        // out through the edge it is heading for: down through the foot, up over the top, or out past that side
-        const vertical = Math.random() < 0.55; // about half the time right down through the foot or up over the top
-        const down = hy > 0.6 * hl ? Math.random() < 0.3 : Math.random() < 0.8; // mostly down and out through the foot
-        const [ex, ey] = vertical ? [clamp(nx + hx / hl * 0.4, -0.75, 0.75), down ? -1.75 : 1.75] : [hx >= 0 ? 1.65 : -1.65, clamp(ny + hy / hl * 0.3, yLo, yHi)];
-        const mid = onFrame((nx + ex) / 2 + rnd(-0.15, 0.15), clamp((ny + ey) / 2, yLo - 0.2, yHi + 0.2), wand.d, new THREE.Vector3());
-        fly.pts = [mid, onFrame(ex, ey, wand.d, new THREE.Vector3())];
-        fly.next = t + 12;
-      } else {
-        fly.pts = toCorner(nx, ny);
-        fly.next = t + 14;
+      if (out && !fly.hidden) {
+        // out of the frame: gone for a moment
+        fly.hidden = true;
+        fly.gone = t + rnd(1.5, 4.5);
+        return;
       }
+      if (fly.hidden) {
+        fly.hidden = false;
+        if (passesToLook <= 0 && !firstPass) {
+          passesToLook = 2 + (Math.random() < 0.5 ? 1 : 0);
+          // a look: in from beyond a side, low down, straight in to the edge, where it peeps in at you
+          wand.gap = rnd(14, 22);
+          wand.lastLook = t;
+          const side = Math.random() < 0.5 ? -1 : 1;
+          const y = rnd(FLOOR_N + 0.06, FLOOR_N + 0.24);
+          wand.d = 7.8 * D_K;
+          onFrame(side * 1.4, y, wand.d, fly.p);
+          const end = onFrame(side * 0.95, y, wand.d, new THREE.Vector3());
+          fly.perch = true;
+          fs.perchSide = side;
+          fly.exit = false;
+          fly.leaving = false;
+          fly.pts = [end];
+          fly.idx = 0;
+          fly.target.copy(end);
+          fly.next = t + 12;
+          return;
+        }
+        // a pass: from beyond one edge to beyond the opposite one
+        passesToLook--;
+        const kinds = ["TB", "BT", "LR", "RL", "LR", "RL"] as const;
+        const kind = firstPass && from === "right" ? "RL" : kinds[Math.floor(Math.random() * kinds.length)];
+        firstPass = false;
+        wand.d = rnd(7.6, 10.5) * D_K;
+        let a: [number, number];
+        let z: [number, number];
+        if (kind === "TB" || kind === "BT") {
+          const x0 = rnd(-0.7, 0.7);
+          const x1 = clamp(x0 + rnd(-0.7, 0.7), -0.85, 0.85);
+          a = kind === "TB" ? [x0, 1.55] : [x0, -1.55];
+          z = kind === "TB" ? [x1, -1.6] : [x1, 1.6];
+        } else {
+          const y0 = rnd(yLo, yHi);
+          const y1 = clamp(y0 + rnd(-0.45, 0.45), yLo - 0.15, yHi + 0.15); // a diagonal, rising or falling
+          a = kind === "LR" ? [-1.4, y0] : [1.4, y0];
+          z = kind === "LR" ? [1.45, y1] : [-1.45, y1];
+        }
+        onFrame(a[0], a[1], wand.d, fly.p);
+        const endP = onFrame(z[0], z[1], wand.d, new THREE.Vector3());
+        fly.pts = [endP];
+        fly.idx = 0;
+        fly.target.copy(endP);
+        fly.next = t + 24;
+        return;
+      }
+      // in the frame (leaving the edge where it looked at you, or a pass that ran long): straight on the way it is going,
+      // and out
+      const ahead = fly.p.clone().addScaledVector(fly.v.lengthSq() > 1e-6 ? fly.v.clone().normalize() : new THREE.Vector3(1, 0, 0), 1).project(camera);
+      let hx = ahead.x - nx;
+      let hy = ahead.y - ny;
+      const hl = Math.hypot(hx, hy) || 1;
+      hx /= hl;
+      hy /= hl;
+      const k = 1.6 / Math.max(Math.abs(hx), Math.abs(hy), 0.3);
+      const outP = onFrame(clamp(nx + hx * k, -1.6, 1.6), clamp(ny + hy * k, -1.65, 1.65), wand.d, new THREE.Vector3());
+      fly.pts = [outP];
       fly.idx = 0;
-      fly.target.copy(fly.pts[0]);
-      fly.hidden = false;
+      fly.target.copy(outP);
+      fly.next = t + 20;
     };
     const wp = new THREE.Vector3();
     const eyeTmp = new THREE.Vector3();
@@ -1357,6 +1366,7 @@ void main(){
             // a soft floor and ceiling inside the box: nearing the foot (or the top) it eases its climb or dive and turns
             // back, so its legs and body never slip out of view below, nor its wings above
             ndcNow.copy(fly.p).project(camera);
+            if (Math.abs(ndcNow.x) < 0.98 && Math.abs(ndcNow.y) < 0.98) fly.entered = true;
             if (Math.abs(ndcNow.x) < 1.1 && !fly.exit) {
               if (ndcNow.y < FLOOR_N) fly.v.y += Math.min(1, (FLOOR_N - ndcNow.y) * 6) * 0.6 * dt * 4;
               if (ndcNow.y > CEIL_N) fly.v.y -= Math.min(1, (ndcNow.y - CEIL_N) * 6) * 0.6 * dt * 4;
@@ -1381,14 +1391,14 @@ void main(){
             if (last && fly.face && (dist < 1.6 || t > fly.next)) {
               fs.after = "face";
               planLanding(t, b); // in front of you now: it turns to face you and hangs there
-            } else if (last && fly.perch && Math.abs(ndcNow.x) > 0.72) {
+            } else if (last && fly.perch && fly.entered && Math.abs(ndcNow.x) > 0.72) {
               fs.after = "perch";
               planLanding(t, b); // it has reached the side it was heading for: it settles there and looks at you
             } else if (last && !fly.perch) {
               // on to the next leg, from right here, so the path never breaks; a mark left behind it at close range would
               // only have it circling, so it gives that up for a new one ahead
               const gone = Math.abs(ndcNow.x) > 1.12 || Math.abs(ndcNow.y) > 1.12;
-              if (fly.leaving ? gone || t > fly.next : dist < 1.4 || t > fly.next || (ang > 1.9 && dist < 2.6 && !fly.face)) newPass(t, true);
+              if (fly.leaving ? (fly.entered && gone) || t > fly.next : dist < 1.4 || t > fly.next || (ang > 1.9 && dist < 2.6 && !fly.face)) newPass(t, true);
             } else if (!last && dist < 1.4) {
               fly.idx++;
               fly.target.copy(fly.pts[fly.idx]);
