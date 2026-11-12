@@ -37,12 +37,12 @@ export default function NyrroFilm() {
       </Link>
 
       <section aria-label="About Nyrro" className="absolute right-5 top-16 z-10 max-w-[420px] text-white md:right-8 md:top-8">
-        <h1 className="font-serif text-[22px] leading-[30px] md:text-[26px] md:leading-[34px]">Nyrro &mdash; Nature in Colour</h1>
+        <h1 className="font-serif text-[22px] leading-[30px] md:text-[26px] md:leading-[34px]">Nyrro: Nature in Colour</h1>
         <p className="mt-4 text-[15px] leading-6 text-white/85">
-          I&rsquo;d never really paid much attention to beetles before. But while working on this portfolio, one caught my eye and made me curious to explore their little world. The more I looked into them, the more I discovered some fascinating things about their natural defence mechanisms &mdash; from the oily droplets of oil beetles to the chemical spray of bombardier beetles, which can leave traces of their own.
+          I&rsquo;d never really paid much attention to beetles before. But while working on this portfolio, one caught my eye and made me curious to explore their little world. The more I looked into them, the more I discovered some fascinating things about their natural defence mechanisms, from the oily droplets of oil beetles to the chemical spray of bombardier beetles, which can leave traces of their own.
         </p>
         <p className="mt-3 text-[15px] leading-6 text-white/85">
-          That sparked an idea: what if a tiny creature left its own trail wherever it wandered, like a paintbrush moving across a canvas? That&rsquo;s how Nyrro came to life &mdash; part observation, part imagination, and a little expression of my love for nature, painting, and creative exploration.
+          That sparked an idea: what if a tiny creature left its own trail wherever it wandered, like a paintbrush moving across a canvas? That&rsquo;s how Nyrro came to life: part observation, part imagination, and a little expression of my love for nature, painting, and creative exploration.
         </p>
       </section>
     </div>

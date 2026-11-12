@@ -798,7 +798,7 @@ export default function HeroFilm({ palette, place = "foot", from, full = false }
     // further off than in the old full-width strip, so in a half-width box it is seen whole with room round it; and further
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
-    const D_K = 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
+    const D_K = (full ? 1.45 : 1) * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -1046,7 +1046,7 @@ void main(){
         wand.gap = rnd(14, 22);
         // it looks at you from anywhere: mostly it stops where it is in the box and turns to face you; now and then, near a side,
         // it peeps in from the edge instead, only its head in the frame
-        if (Math.random() < 0.6) {
+        {
           fly.perch = true;
           fs.perchSide = nx !== 0 ? (nx > 0 ? 1 : -1) : 1; // the nearer side: it flies there and peeps in at you, its head over the edge of the frame
           const end = onFrame(fs.perchSide * 0.95, rnd(FLOOR_N + 0.05, FLOOR_N + 0.25), clamp(camera.position.distanceTo(fly.p), 7 * D_K, 8.5 * D_K), new THREE.Vector3());
@@ -1056,15 +1056,6 @@ void main(){
           wand.lastLook = t;
           return;
         }
-        fly.face = true;
-        const spot = onFrame(clamp(nx + rnd(-0.3, 0.3), -0.6, 0.6), full ? rnd(-0.35, 0.3) : rnd(-0.45, -0.15), 10.5 * D_K, new THREE.Vector3()); // wherever it is, a little way on
-        lift(spot);
-        fly.pts = [spot];
-        fly.idx = 0;
-        fly.target.copy(spot);
-        fly.next = t + 4;
-        wand.lastLook = t;
-        return;
       }
       // Its paths: long, deliberate flights, never wandering on the spot. Mostly it flies from where it is to a far corner of the
       // box on a wide arc; now and then it flies right out of the frame (off the bottom, over the top, or past a side) and, a
@@ -1079,18 +1070,22 @@ void main(){
       wand.d = clamp(wand.d + rnd(-1.2, 1.2), 7.4 * D_K, 11 * D_K);
       const yLo = FLOOR_N + 0.02;
       const yHi = CEIL_N;
-      const corners: [number, number][] = [[-0.72, yLo], [0.72, yLo], [-0.72, yHi], [0.72, yHi]];
+      // where it flies to: the far side of the box, at any height (low, middle or high), so over time it crosses everywhere
+      const ys = [yLo, yLo + (yHi - yLo) * 0.33, yLo + (yHi - yLo) * 0.66, yHi, rnd(yLo, yHi)];
+      const corners: [number, number][] = [...ys.map((y) => [-0.74, y] as [number, number]), ...ys.map((y) => [0.74, y] as [number, number])];
       // the corner furthest across from here (one of the two far ones, by chance), reached on a wide arc
       const toCorner = (fx: number, fy: number) => {
         // of the corners well away from here, the one most nearly ahead of it: little turning, a long sweep
-        const away = corners.filter((c) => Math.hypot(c[0] - fx, (c[1] - fy) * 1.6) > 0.7);
+        // the other side of the box, and a different height from here
+        const away = corners.filter((c) => Math.sign(c[0]) !== Math.sign(fx || 1) && Math.abs(c[1] - fy) > 0.12);
         const pool = away.length ? away : corners;
         const turnTo = (c: [number, number]) => {
           const dx = c[0] - fx;
           const dy = c[1] - fy;
           return -((dx * hx + dy * hy) / ((Math.hypot(dx, dy) || 1) * hl)); // smaller when it is straight ahead
         };
-        const [cx, cy] = [...pool].sort((a, b) => turnTo(a) - turnTo(b))[0];
+        const ranked = [...pool].sort((a, b) => turnTo(a) - turnTo(b));
+        const [cx, cy] = ranked[Math.random() < 0.5 || ranked.length < 2 ? 0 : 1]; // one of the two most nearly ahead, by chance
         const mx = (fx + cx) / 2;
         const my = (fy + cy) / 2;
         const bow = rnd(0.18, 0.32) * (Math.random() < 0.5 ? 1 : -1); // the arc bows to one side of the straight line
@@ -1115,7 +1110,7 @@ void main(){
         const back = onFrame(bx, by, wand.d, new THREE.Vector3());
         fly.pts = [loop, back, ...toCorner(bx, by).slice(1)];
         fly.next = t + 14;
-      } else if (Math.random() < 0.4) {
+      } else if (Math.random() < 0.22) {
         // out of the frame: down and right out through the foot, up and right out over the top, or out past the nearer side
         fly.exit = true;
         fly.leaving = true;

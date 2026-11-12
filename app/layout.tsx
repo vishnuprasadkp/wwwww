@@ -21,7 +21,7 @@ const text = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swa
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: site.name, template: `%s — ${site.name}` },
+  title: { default: site.name, template: `%s · ${site.name}` },
   description: site.description,
   openGraph: { title: site.name, description: site.description, type: "website", images: [getAsset("og-default").file] },
   twitter: { card: "summary_large_image", title: site.name, description: site.description },

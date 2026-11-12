@@ -8,7 +8,7 @@ import { ArrowLink } from "@/components/ui/ArrowLink";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Product designer, planner, and painter — finding structure in everything.",
+  description: "Product designer, planner, and painter, finding structure in everything.",
 };
 
 export default async function About() {
