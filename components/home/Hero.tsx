@@ -1,8 +1,4 @@
-import Link from "next/link";
-import HeroFilm from "./HeroFilm";
-import HeroInk from "./HeroInk";
-import FilmShade from "./FilmShade";
-import { HERO_INK } from "@/lib/painting";
+import HeroFilmPanel from "./HeroFilmPanel";
 import LogoMarquee from "./LogoMarquee";
 
 // the same grey painting as at the foot of the home page
@@ -26,16 +22,8 @@ export default function Hero() {
         <p className="max-w-[560px] font-serif text-[1.75rem] leading-[38px] md:text-[2rem] md:leading-[44px]">
           I design experiences for the complex systems that run real work.
         </p>
-        {/* the film opens on its own page, filling the screen */}
-        <Link href="/nyrro" aria-label="Open the Nyrro film" data-cursor="view" className="relative block overflow-hidden" style={{ height: FILM_H, background: "#3e3e3e" }}>
-          {/* the grey painting; the beetle film is drawn over it */}
-          <HeroInk palette={HERO_INK} spread={false} refHeight={520} speed={3} grain={1} /> {/* smaller shapes, flowing gently: the colour is seen to move */}
-          {/* the beetle a little softer in the darker film */}
-          <div className="absolute inset-0" style={{ opacity: 0.75 }}>
-            <HeroFilm place="top" from="right" />
-          </div>
-          <FilmShade />
-        </Link>
+        {/* the film: click it and it opens out to fill the screen, with Nyrro's story */}
+        <HeroFilmPanel height={FILM_H} />
       </div>
       <LogoMarquee />
     </section>

@@ -766,8 +766,11 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
  * flies its own way: at the top it keeps low in the box and glides; at the foot it uses the whole height, rising and
  * falling.
  */
-export default function HeroFilm({ palette, place = "foot", from, full = false }: { palette?: InkPalette; place?: "top" | "foot"; from?: "right" | "top-right"; full?: boolean } = {}) {
+export default function HeroFilm({ palette, place = "foot", from, full = false, wide = false }: { palette?: InkPalette; place?: "top" | "foot"; from?: "right" | "top-right"; full?: boolean; wide?: boolean } = {}) {
   const hostRef = useRef<HTMLDivElement>(null);
+  // `wide`: the frame has opened out to fill the screen (read live, so the film never restarts for it)
+  const wideRef = useRef(wide);
+  wideRef.current = wide;
   const [key, setKey] = useState(0);
 
   useEffect(() => {
@@ -834,19 +837,19 @@ export default function HeroFilm({ palette, place = "foot", from, full = false }
       const w = Math.max(300, Math.round(r.width));
       const h = Math.max(200, Math.round(r.height));
       if (w === fitW && h === fitH) return;
-      if (h > VH * 1.15) {
-        setKey((k) => k + 1);
-        return;
-      }
       fitW = w;
       fitH = h;
       const full = Math.max(VH, h);
       renderer.setSize(w, h);
+      // taller than the frame it was made for (the film opening out to fill the screen): the view widens with it, and the
+      // beetle grows a little with the frame (not as much), flying on, never restarting
+      const k = h > VH ? Math.sqrt(h / VH) : 1;
+      camera.fov = (2 * Math.atan(Math.tan((12 * Math.PI) / 180) * k) * 180) / Math.PI;
       camera.aspect = w / full;
       if (full > h + 1) camera.setViewOffset(w, full, 0, (full - h) / 2, w, h);
       else camera.clearViewOffset();
       camera.updateProjectionMatrix();
-      glaze.scale.x = w / h / aspect; // the faint paint far behind keeps filling the frame
+      glaze.scale.set((k * (w / h)) / aspect, k, 1); // the faint paint far behind keeps filling the frame
       if (!raf || !visible) renderer.render(scene, camera); // never a stretched frame while it is paused
     });
     ro.observe(host);
@@ -1036,17 +1039,19 @@ void main(){
     let dirX: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
     const wand = { h: -Math.PI / 2, d: 8.2, lastLook: 0, gap: 16 }; // gap: seconds until it next looks at you (different each time)
     const lift = (v: THREE.Vector3) => (v.y = Math.max(v.y, FLOOR + 0.35));
-    /* Its flight is one unbroken path. It flies at an even pace, its heading turning smoothly all the time in a slow,
-       random weave (a few long swings, out of step with one another), so the path never repeats and never breaks: no
-       jumps, no vanishing and reappearing. When it strays past an edge the box draws it gently back round; and every so
-       often it is let go right out of the frame, turns round out there, and comes back in a few seconds later. It never
-       shows you its back: flying across it is seen from the side, and it turns round through facing you. Now and then it
-       glides to a stop in the air, turns to you and looks at you, then flies on.
-       The home page and the Nyrro page each fly their own way: on the home page it keeps low in the box, weaving tightly;
-       on the Nyrro page it sweeps the whole screen in long, slow loops, nearer and further. */
-    const PATH = full
-      ? { squash: 0.62, wiggle: 0.38, maxW: 0.75, dK: 0.14, xBox: 0.78, yLo: FLOOR_N + 0.05, yHi: CEIL_N, every: [18, 30], look: [30, 50] }
-      : { squash: 0.42, wiggle: 0.5, maxW: 0.9, dK: 0.07, xBox: 0.82, yLo: FLOOR_N + 0.03, yHi: CEIL_N, every: [14, 24], look: [35, 55] };
+    /* Its flight is one unbroken path. It flies at an even pace, its heading always turning, smoothly, in a random weave:
+       slow swings out of step with one another, and on top of them a turn this way or that, held for a few seconds and then
+       changed, at random. So it goes everywhere in the box, high and low, across and on a slant, and never the same way
+       twice; no jumps, no vanishing and reappearing. When it strays past an edge the box draws it gently back round, and
+       every so often it is let go right out of the frame, turns round out there, and is back in a few seconds. It never
+       shows you its back: flying across it is seen from the side, and it turns round through facing you.
+       Looking at you: now and then, out past a side, it does not fly back in but comes to that edge and peeps in at you, only
+       its head in the frame, its body outside; then it flies off into the box. The film opens that way too.
+       The frame can grow (the home film opening out to fill the screen): the beetle flies on through it, and once the frame
+       is the whole screen it ranges over all of it. */
+    const PATH_BOX = { squash: 0.62, wiggle: 0.42, maxW: 0.9, dK: 0.1, xBox: 0.8, yLo: FLOOR_N + 0.03, yHi: -0.22, every: [12, 22], look: [26, 42] };
+    const PATH_FULL = { squash: 0.62, wiggle: 0.42, maxW: 0.9, dK: 0.1, xBox: 0.8, yLo: -0.78, yHi: 0.35, every: [14, 24], look: [26, 42] };
+    let PATH = full ? PATH_FULL : PATH_BOX;
     const TAU = Math.PI * 2;
     const path = {
       sx: 0,
@@ -1056,9 +1061,9 @@ void main(){
       th: Math.PI,
       w: 0,
       sign: 1,
-      spd: 0.55,
-      intro: true,
-      // the weave: slow swings of its heading, each its own length and start, so no two films (and no two minutes) are alike
+      bias: 0,
+      biasGoal: 0,
+      biasAt: 0,
       ph: [rnd(0, TAU), rnd(0, TAU), rnd(0, TAU), rnd(0, TAU)],
       fq: [rnd(0.05, 0.075), rnd(0.11, 0.16), rnd(0.2, 0.28), rnd(0.035, 0.06)],
       trip: "in" as "in" | "go" | "out", // in: about the box; go: heading out of it; out: out of sight, turning back
@@ -1066,6 +1071,7 @@ void main(){
       outUntil: 0,
       exitTh: 0,
       nextLook: 0,
+      peek: false, // on its way back in, it stops at the edge to look at you
     };
     const wrapA = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
     const REACH = 0.56; // how far its outline (wings spread) reaches from its centre, in its own units
@@ -1121,32 +1127,34 @@ void main(){
       path.d0 = path.d / depthK(t);
       path.th = th;
       path.w = 0;
+      path.trip = "in";
+      path.tripAt = t + rnd(PATH.every[0], PATH.every[1]);
     };
-    // it glides on a little, slowing smoothly to a stop in the air, and turns to look at you
-    const lookAtYou = (t: number, b: NonNullable<typeof beetle>) => {
-      path.intro = false;
+    // to the edge it is beyond, to peep in at you
+    const peepIn = (t: number, b: NonNullable<typeof beetle>, side: number) => {
+      path.peek = false;
       path.nextLook = t + rnd(PATH.look[0], PATH.look[1]);
-      fs.after = "face";
-      fs.mode = "land";
-      fs.t0 = t;
-      fs.fromP.copy(b.root.position);
-      fs.fromQ.copy(b.root.quaternion);
-      fs.v0.copy(fly.v);
-      fs.v1.set(0, 0, 0);
-      fs.dur = 2.6;
-      fs.toP.copy(fs.fromP).addScaledVector(fly.v, fs.dur * 0.4); // just so far that it never overshoots and drifts back
-      fs.yaw = Math.atan2(camera.position.x - fs.toP.x, camera.position.z - fs.toP.z);
-      fs.toQ.copy(qFromEuler(0.12, fs.yaw, 0));
-      fs.arc = 0;
+      fs.after = "perch";
+      fs.perchSide = side;
+      planLanding(t, b);
     };
+    let lastWide = wideRef.current;
     const stepPath = (t: number, dt: number, b: NonNullable<typeof beetle>) => {
       const P = path;
+      const want = full || wideRef.current ? PATH_FULL : PATH_BOX; // the frame has opened out to fill the screen, or closed again
+      if (PATH !== want) PATH = want;
       const cy = (PATH.yLo + PATH.yHi) / 2;
       const { kx, ky } = screenScale(fly.p);
       const dx = Math.max(0, Math.abs(P.sx) - PATH.xBox);
       const dy = Math.max(0, PATH.yLo - P.sy, P.sy - PATH.yHi);
       const inside = dx === 0 && dy === 0;
-      const weave = (PATH.wiggle * (Math.sin(P.fq[0] * TAU * t + P.ph[0]) + 0.7 * Math.sin(P.fq[1] * TAU * t + P.ph[1]) + 0.35 * Math.sin(P.fq[2] * TAU * t + P.ph[2]))) / 1.4;
+      // its random turning: slow swings, and a turn one way or the other held a while, then changed
+      if (t > P.biasAt) {
+        P.biasGoal = Math.random() < 0.2 ? 0 : rnd(-0.75, 0.75);
+        P.biasAt = t + rnd(1.5, 4.5);
+      }
+      P.bias += (P.biasGoal - P.bias) * Math.min(1, dt * 0.8);
+      const weave = (PATH.wiggle * (Math.sin(P.fq[0] * TAU * t + P.ph[0]) + 0.7 * Math.sin(P.fq[1] * TAU * t + P.ph[1]) + 0.35 * Math.sin(P.fq[2] * TAU * t + P.ph[2]))) / 1.4 + P.bias;
       // a direction on screen, as a heading (across and up move at different rates)
       const thTo = (gx: number, gy: number) => Math.atan2(gy / (PATH.squash * ky), gx / kx);
       const turnTo = (goal: number) => {
@@ -1154,14 +1162,19 @@ void main(){
         if (Math.abs(diff) < 2.6) P.sign = diff >= 0 ? 1 : -1; // turning right round, it keeps on the way it began
         return clamp((Math.abs(diff) < 2.6 ? diff : P.sign * Math.abs(diff)) * 0.9, -PATH.maxW, PATH.maxW);
       };
-      let wGoal = P.intro ? 0 : weave;
+      // back towards somewhere in the box (not always its middle)
+      const home = () => turnTo(thTo(-P.sx * 0.6, cy + (cy - P.sy) * 0.2 - P.sy));
+      let wGoal = weave;
       if (P.trip === "in") {
         const s = smooth(0, 0.35, Math.hypot(dx, dy * 2));
-        if (s > 0) wGoal = wGoal * (1 - s) + turnTo(thTo(-P.sx * 0.6, cy - P.sy)) * s; // strayed out: drawn back round
-        if (!P.intro && inside && t > P.tripAt) {
-          // let go: out of the frame the way it is going, or down through the foot
+        if (s > 0) wGoal = wGoal * (1 - s) + home() * s; // strayed out: drawn back round
+        if (inside && t > P.tripAt) {
+          // let go: out of the frame the way it is going (to a side, when it is to come back and look at you), or down
+          // through the foot
           P.trip = "go";
-          P.exitTh = Math.random() < 0.3 ? -Math.PI / 2 : Math.cos(P.th) >= 0 ? rnd(-0.3, 0.2) : Math.PI + rnd(-0.2, 0.3);
+          if (t > P.nextLook) P.peek = true;
+          const across = Math.cos(P.th) >= 0 ? rnd(-0.3, 0.2) : Math.PI + rnd(-0.2, 0.3);
+          P.exitTh = !P.peek && Math.random() < 0.3 ? -Math.PI / 2 : across;
         }
       } else if (P.trip === "go") {
         wGoal = turnTo(P.exitTh) * 0.7 + weave * 0.3;
@@ -1170,22 +1183,17 @@ void main(){
           P.outUntil = t + rnd(0, 0.3);
         }
       } else {
-        wGoal = weave * 0.3;
-        if (t > P.outUntil) {
-          P.trip = "in";
-          P.tripAt = t + rnd(PATH.every[0], PATH.every[1]);
-        }
+        wGoal = home() * 1.6;
+        if (t > P.outUntil) P.trip = "in";
       }
       // its turning eases in and out: no sudden swerves. Out of sight it may turn round quicker, so it is not gone long.
       const hid = P.trip === "out" || (P.trip === "in" && outOfSight(fly.p));
-      if (hid && P.trip === "in") wGoal = clamp(wGoal * 2.2, -2, 2);
-      if (P.trip === "out") wGoal = turnTo(thTo(-P.sx * 0.6, cy - P.sy)) * 2.2;
-      const acc = hid ? 3 : 0.9;
-      P.w += clamp(clamp(wGoal, -2, 2) - P.w, -acc * dt, acc * dt);
+      if (hid && P.trip === "in") wGoal = wGoal * 1.6;
+      const acc = hid ? 2.4 : 0.9;
+      P.w += clamp(clamp(wGoal, -1.35, 1.35) - P.w, -acc * dt, acc * dt);
       P.th += P.w * dt;
-      P.spd += ((P.intro ? (full ? 1.35 : 2.3) : 1) * SPEED - P.spd) * Math.min(1, dt * 0.8);
-      P.sx += Math.cos(P.th) * P.spd * kx * dt;
-      P.sy += Math.sin(P.th) * P.spd * PATH.squash * ky * dt;
+      P.sx += Math.cos(P.th) * SPEED * kx * dt;
+      P.sy += Math.sin(P.th) * SPEED * PATH.squash * ky * dt;
       P.d = P.d0 * depthK(t);
       onFrame(P.sx, P.sy, P.d, pB);
       if (dt > 0) fly.v.copy(pB).sub(fly.p).divideScalar(dt);
@@ -1197,8 +1205,8 @@ void main(){
       fly.climb += (climbFor(P.th) - fly.climb) * Math.min(1, dt * 1.5);
       b.root.position.copy(fly.p);
       b.root.quaternion.copy(qFromEuler(0.3 + fly.climb + 0.04 * Math.sin(t * 0.5), fly.yaw, fly.roll));
-      if (P.trip === "in" && t > P.nextLook && (P.intro ? Math.abs(P.sx) < 0.75 : Math.abs(P.sx) < 0.55 && P.sy > PATH.yLo && P.sy < PATH.yHi + 0.05)) lookAtYou(t, b);
-      else if (P.intro && inside && Math.abs(P.sx) < 0.5 && t < P.nextLook) P.intro = false; // in, and on its way
+      // out past a side and turned back in towards it: it comes to the edge and peeps in at you
+      if (P.peek && hid && Math.abs(P.sx) > 1 && Math.cos(P.th) * Math.sign(P.sx) < -0.3) peepIn(t, b, Math.sign(P.sx));
     };
     const wp = new THREE.Vector3();
     const eyeTmp = new THREE.Vector3();
@@ -1272,7 +1280,7 @@ void main(){
         // the side it has flown to, at about the height it is flying at
         ndcNow.copy(b.root.position).project(camera);
         const nx = fs.perchSide;
-        const ny = clamp(ndcNow.y, FLOOR_N + 0.05, Math.min(CEIL_N, 0.2)); // low on the side, near the lower corner (never up in a top corner, where only its legs would show)
+        const ny = clamp(ndcNow.y, PATH.yLo + 0.16, Math.min(PATH.yHi, 0.2)); // low on the side, near the lower corner (never up in a top corner, where only its legs would show)
         const d = clamp(camera.position.distanceTo(b.root.position), 6.8 * D_K, 8.5 * D_K); // where it is: it does not swell towards you as it turns
         const P = onFrame(nx, ny, d, vB);
         const C = onFrame(0, 0, d, vC);
@@ -1317,7 +1325,7 @@ void main(){
       ndcNow.copy(fs.fromP).project(camera);
       const dir = Math.abs(ndcNow.x) > 0.15 ? (ndcNow.x > 0 ? -1 : 1) : Math.random() < 0.5 ? -1 : 1;
       const th0 = (dir > 0 ? 0 : Math.PI) + rnd(-0.35, 0.35);
-      fs.dur = 2.4;
+      fs.dur = 3;
       fs.v0.set(0, 0, 0);
       velFor(th0, fs.v1);
       fs.toP.copy(fs.fromP).addScaledVector(fs.v1, fs.dur * 0.5); // an even gathering of speed
@@ -1355,36 +1363,27 @@ void main(){
           fly.on = true;
           fs.mode = "fly";
           fs.air = 1;
-          fs.after = "face";
           fly.hidden = false;
           camera.updateMatrixWorld(); // this can run before the first frame is drawn
-          path.trip = "in";
-          path.tripAt = t + rnd(PATH.every[0], PATH.every[1]);
-          path.intro = true;
+          // it opens out of sight beyond a side (either), flying in towards it, and comes straight to the edge to peep in at you
+          const side = Math.random() < 0.5 ? -1 : 1;
           const d = 8.8 * D_K;
-          let sx: number;
-          let sy: number;
-          if (!full) {
-            // the home page: it flies in from beyond the right, comes into the box, stops and looks at you, then flies on
-            path.nextLook = t;
-            sx = 1;
-            sy = rnd(PATH.yLo + 0.06, PATH.yHi - 0.06);
-            for (let i = 0; i < 100; i++, sx += 0.03) if (outOfSight(onFrame(sx, sy, d, fly.p))) break;
-            joinPath(t, fly.p, Math.PI + rnd(-0.12, 0.12));
-          } else {
-            // the Nyrro page: it rises in from beyond the lower left on a long diagonal and flies about; it looks at you later
-            path.nextLook = t + rnd(18, 28);
-            sx = -0.5;
-            sy = -1;
-            for (let i = 0; i < 100; i++, sy -= 0.03, sx -= 0.015) if (outOfSight(onFrame(sx, sy, d, fly.p))) break;
-            joinPath(t, fly.p, rnd(0.8, 1.05));
-          }
-          path.spd = SPEED * (full ? 1.35 : 2.3);
-          fly.v.set(0, 0, 0);
+          let sx = side;
+          const sy = rnd(PATH.yLo + 0.1, Math.min(PATH.yHi, PATH.yLo + 0.5));
+          for (let i = 0; i < 100; i++, sx += side * 0.03) if (outOfSight(onFrame(sx, sy, d, fly.p))) break;
+          joinPath(t, fly.p, side > 0 ? Math.PI : 0);
+          path.peek = true;
+          fly.v.copy(velFor(path.th, new THREE.Vector3()));
           fly.yaw = yawFor(path.th, fly.p);
           fly.climb = climbFor(path.th);
           fly.roll = 0;
           b.root.position.copy(fly.p);
+          b.root.quaternion.copy(qFromEuler(0.3 + fly.climb, fly.yaw, 0));
+        }
+        // the frame opened out or closed while it was peeping in at an edge: that edge has moved, so it flies off
+        if (wideRef.current !== lastWide) {
+          lastWide = wideRef.current;
+          if (fs.mode === "perch" || (fs.mode === "land" && fs.after === "perch")) planTakeoff(t, b);
         }
         if (fs.mode === "fly") {
           fs.air = 1;
@@ -1417,7 +1416,6 @@ void main(){
               fly.p.copy(b.root.position);
               fly.v.copy(fs.v1); // carrying on at just the speed and heading it took off with
               joinPath(t, fly.p, fs.yaw);
-              path.spd = SPEED;
               fly.yaw = yawFor(fs.yaw, fly.p);
             }
           }

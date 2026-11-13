@@ -62,10 +62,10 @@ export default function Motion() {
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
-    // not while the opening plays, nor while the full-screen assistant has the page
+    // not while the opening plays, nor while the full-screen assistant or the opened-out hero film has the page
     const sync = () => {
       const h = html();
-      if (h.hasAttribute("data-loading") || h.classList.contains("nivvi-full")) lenis.stop();
+      if (h.hasAttribute("data-loading") || h.classList.contains("nivvi-full") || h.classList.contains("film-full")) lenis.stop();
       else lenis.start();
     };
     sync();
