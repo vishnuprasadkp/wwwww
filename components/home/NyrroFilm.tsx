@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import HeroFilm from "./HeroFilm";
 import HeroInk from "./HeroInk";
-import { HERO_INK } from "@/lib/painting";
+import { NYRRO_INK } from "@/lib/painting";
 
 /**
  * The beetle film on its own: it fills the screen, whatever its size, with the moving colour of the hero's film and the one
@@ -23,8 +23,8 @@ export default function NyrroFilm() {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[60] overflow-hidden" style={{ background: "#3e3e3e" }}>
-      <HeroInk palette={HERO_INK} spread={false} refHeight={700} speed={3} grain={1} />
+    <div className="fixed inset-0 z-[60] overflow-hidden" style={{ background: "#2b3531" }}>
+      <HeroInk palette={NYRRO_INK} spread={false} refHeight={700} speed={3} grain={1} />
       <div className="absolute inset-0" style={{ opacity: 0.8 }}>
         <HeroFilm place="top" from="right" full />
       </div>

@@ -77,3 +77,13 @@ export const HERO_INK: InkPalette = {
   deep: [0.135, 0.135, 0.142], // shadow
   grey: [0.31, 0.295, 0.28], // a warm grey that drifts through
 };
+
+// the Nyrro page's own film: "Nature in Colour", a deep green wash, moss and teal shapes drifting through it with a warm
+// ochre light now and then, so it is a different picture from the grey one on the home page
+export const NYRRO_INK: InkPalette = {
+  pale: [0.4, 0.42, 0.3], // warm moss light
+  light: [0.24, 0.36, 0.36], // teal
+  mid: [0.17, 0.215, 0.195], // the ground: deep green
+  deep: [0.07, 0.095, 0.09], // shadow
+  grey: [0.36, 0.31, 0.2], // ochre that drifts through
+};
