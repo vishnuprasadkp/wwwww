@@ -107,7 +107,9 @@ export const TERRACOTTA: InkPalette = {
  * `refHeight`: draw the shapes at the size they have in a box this many pixels tall, so a shorter box shows the same
  * painting (the home hero shows the AI agent case study's 900px painting, at its size).
  */
-export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight, speed = 1, grain = 0 }: { palette?: InkPalette; spread?: boolean; refHeight?: number; speed?: number; grain?: number }) {
+/** `fixedScale`: draw the shapes at this size whatever the box's size (the hero's wash, laid over the whole screen but seen
+ * through its box, keeps the size it has in the box, also as the box opens out). */
+export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight, speed = 1, grain = 0, fixedScale }: { palette?: InkPalette; spread?: boolean; refHeight?: number; speed?: number; grain?: number; fixedScale?: number }) {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const [key, setKey] = useState(0);
 
@@ -157,7 +159,7 @@ export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight
     gl.uniform1f(u("aspect"), W / H);
     gl.uniform1f(u("speed"), speed);
     gl.uniform1f(u("grainAmt"), grain);
-    gl.uniform1f(u("scale"), refHeight ? Math.min(1, Math.max(0.2, H / refHeight)) : 1);
+    gl.uniform1f(u("scale"), fixedScale ?? (refHeight ? Math.min(1, Math.max(0.2, H / refHeight)) : 1));
     gl.uniform2f(u("seed"), Math.random() * 50, Math.random() * 50);
     gl.uniform3f(u("uPale"), ...palette.pale);
     gl.uniform3f(u("uLight"), ...palette.light);
@@ -182,7 +184,7 @@ export default function HeroInk({ palette = TERRACOTTA, spread = true, refHeight
       cv.height = Math.round(hh * ps);
       gl.viewport(0, 0, cv.width, cv.height);
       gl.uniform1f(uAspect, w / hh);
-      gl.uniform1f(uScale, refHeight ? Math.min(1, Math.max(0.2, hh / refHeight)) : 1);
+      gl.uniform1f(uScale, fixedScale ?? (refHeight ? Math.min(1, Math.max(0.2, hh / refHeight)) : 1));
       draw(clock); // setting the size clears the canvas: draw straight away
     });
     ro.observe(host);
