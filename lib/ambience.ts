@@ -1,33 +1,65 @@
 "use client";
 
 /*
- * The sound of Nyrro's film: a calm, quiet place in nature, made live in the browser (nothing to download). Only a breath
- * of air and the faintest stir of leaves; crickets softly, far off; a bird now and then, further still. And beetles: the
- * film's beetle humming where it flies (left or right, nearer as it comes into view, softer once it is gone), small
- * beetles buzzing by from one side to the other, and now and then a beetle's tiny chirr close by in the leaves. All of it
- * in a little space of its own (a soft reverb), so it sounds like somewhere, not a recording.
+ * The sound of Nyrro's film: soft, calm music with little beetles in it, made live in the browser (nothing to download).
  *
- * It starts as the film opens (the click that opens it lets the browser play sound) and fades away as it closes. The
- * sound button turns it off and on; off is remembered.
+ * No drones and no wind: only gentle, slow sounds. Warm chords that breathe in and out, a few soft notes now and then
+ * (all from one five-note scale, so nothing ever clashes), and the beetles: the light flutter of small wings as one
+ * flits past, and their tiny chirps. When the film's beetle flies into view you hear its wings flutter, from where it is.
+ *
+ * It comes in several moods (see MOODS). It starts as the film opens (the click that opens it lets the browser play
+ * sound) and fades away as it closes. The sound button turns it off and on; off is remembered.
  */
 
+export const MOODS = {
+  garden: { name: "Morning garden", note: "Warm chords, soft kalimba notes, a far-off bird, beetles fluttering by" },
+  musicbox: { name: "Music box", note: "A slow, gentle music box, a whisper of chords, beetles chirping softly" },
+  night: { name: "Night meadow", note: "Deep, slow chords, a soft bell now and then, crickets far away, beetles' wings" },
+  air: { name: "Just air", note: "Only warm, breathing chords and the beetles: no melody at all" },
+} as const;
+export type Mood = keyof typeof MOODS;
+export const DEFAULT_MOOD: Mood = "garden";
+
 const KEY = "nyrro-sound";
-const LEVEL = 0.75;
+const LEVEL = 1.6;
 
 type Listener = (on: boolean) => void;
 
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
+const pick = <T,>(a: readonly T[]) => a[Math.floor(Math.random() * a.length)];
+const hz = (semis: number, base = 293.66) => base * Math.pow(2, semis / 12); // from D
+
+// D major pentatonic (D E F# A B): any two of these sound well together
+const PENTA = [0, 2, 4, 7, 9];
+const scale = (from: number, to: number) => {
+  const out: number[] = [];
+  for (let o = -24; o <= 24; o += 12) for (const s of PENTA) if (o + s >= from && o + s <= to) out.push(o + s);
+  return out;
+};
+// slow chords under it all: Dmaj9, Bm7, Gmaj7, A(sus2), in semitones from D4
+const CHORDS = [
+  [-12, -5, 4, 9],
+  [-15, -8, -3, 2],
+  [-19, -12, -5, 2],
+  [-17, -10, -5, 4],
+];
 
 class Ambience {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
-  private wet: GainNode | null = null;
-  private hum: { gain: GainNode; pan: StereoPannerNode; osc: OscillatorNode[] } | null = null;
+  private bus: GainNode | null = null; // everything, into the master
+  private wet: GainNode | null = null; // into the reverb
+  private noise: AudioBuffer | null = null;
   private timers: number[] = [];
   private stopT = 0;
   private playing = false;
   private listeners = new Set<Listener>();
+  private pad: { stop: (at: number) => void }[] = [];
+  private chordIx = 0;
+  private lastSeen = false;
+  private lastFlutter = 0;
   muted = false;
+  mood: Mood = DEFAULT_MOOD;
 
   constructor() {
     if (typeof window === "undefined") return;
@@ -69,18 +101,30 @@ class Ambience {
       this.playing = true;
       this.schedule();
     }
-    this.fade(this.muted ? 0 : LEVEL, 1.6);
+    this.fade(this.muted ? 0 : LEVEL, 2.5);
   }
 
   /** Fades away and goes quiet. */
   stop() {
     if (!this.ctx || !this.playing) return;
     this.playing = false;
-    this.fade(0, 0.7);
-    this.timers.forEach((id) => window.clearTimeout(id));
-    this.timers = [];
+    this.fade(0, 0.9);
+    this.clearTimers();
     window.clearTimeout(this.stopT);
-    this.stopT = window.setTimeout(() => void this.ctx?.suspend().catch(() => {}), 1400);
+    this.stopT = window.setTimeout(() => {
+      this.endPad(0);
+      void this.ctx?.suspend().catch(() => {});
+    }, 1600);
+  }
+
+  /** Another mood, at once (crossfading). */
+  setMood(m: Mood) {
+    if (m === this.mood) return;
+    this.mood = m;
+    if (!this.ctx || !this.playing) return;
+    this.clearTimers();
+    this.endPad(1.5);
+    this.schedule();
   }
 
   /** If the browser held it back (no click yet), the next touch or key lets it play. */
@@ -107,16 +151,22 @@ class Ambience {
       /* not remembered */
     }
     if (on && this.playing) void this.ctx?.resume().catch(() => {});
-    if (this.playing) this.fade(on ? LEVEL : 0, on ? 1 : 0.4);
+    if (this.playing) this.fade(on ? LEVEL : 0, on ? 1.2 : 0.5);
     this.listeners.forEach((fn) => fn(this.on));
   }
 
-  /** Where the beetle is: across the frame (-1 left .. 1 right), and whether you can see it. */
+  /** Where the film's beetle is: across the frame (-1 left .. 1 right), and whether you can see it. As it comes into
+   *  view you hear its wings, from that side. */
   beetle(x: number, seen: boolean) {
-    if (!this.ctx || !this.hum || !this.playing) return;
-    const t = this.ctx.currentTime;
-    this.hum.pan.pan.setTargetAtTime(Math.max(-0.85, Math.min(0.85, x * 0.7)), t, 0.25);
-    this.hum.gain.gain.setTargetAtTime(seen ? 0.075 : 0.018, t, seen ? 0.6 : 1);
+    if (!this.ctx || !this.playing) return;
+    const now = this.ctx.currentTime;
+    if (seen && !this.lastSeen && now - this.lastFlutter > 3) this.flutter(Math.max(-0.8, Math.min(0.8, x * 0.6)), 1);
+    this.lastSeen = seen;
+  }
+
+  private clearTimers() {
+    this.timers.forEach((id) => window.clearTimeout(id));
+    this.timers = [];
   }
 
   private fade(to: number, secs: number) {
@@ -128,231 +178,53 @@ class Ambience {
     g.linearRampToValueAtTime(to, t + secs);
   }
 
+  private later(fn: () => void, secs: number) {
+    const id = window.setTimeout(() => {
+      this.timers = this.timers.filter((x) => x !== id);
+      if (this.playing) fn();
+    }, secs * 1000);
+    this.timers.push(id);
+  }
+
   private build() {
     const ctx = this.ctx!;
     const master = ctx.createGain();
     master.gain.value = 0;
     const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -18;
-    comp.ratio.value = 3;
+    comp.threshold.value = -20;
+    comp.ratio.value = 2.5;
+    comp.attack.value = 0.05;
     master.connect(comp).connect(ctx.destination);
     this.master = master;
+    const bus = ctx.createGain();
+    bus.connect(master);
+    this.bus = bus;
 
-    // the space it is all in: a soft, short reverb
+    // a soft room: a warm reverb, its brightness taken off
     const verb = ctx.createConvolver();
-    const len = Math.floor(ctx.sampleRate * 2.6);
+    const len = Math.floor(ctx.sampleRate * 3.2);
     const ir = ctx.createBuffer(2, len, ctx.sampleRate);
     for (let c = 0; c < 2; c++) {
       const d = ir.getChannelData(c);
-      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
     }
     verb.buffer = ir;
+    const dark = ctx.createBiquadFilter();
+    dark.type = "lowpass";
+    dark.frequency.value = 3200;
     const wet = ctx.createGain();
-    wet.gain.value = 0.45;
-    wet.connect(verb).connect(master);
+    wet.gain.value = 0.35;
+    wet.connect(verb).connect(dark).connect(master);
     this.wet = wet;
 
-    // noise, the stuff of wind and leaves: brown (deep) and white
-    const nlen = ctx.sampleRate * 4;
-    const brown = ctx.createBuffer(2, nlen, ctx.sampleRate);
-    const white = ctx.createBuffer(2, nlen, ctx.sampleRate);
-    for (let c = 0; c < 2; c++) {
-      const b = brown.getChannelData(c);
-      const w = white.getChannelData(c);
-      let last = 0;
-      for (let i = 0; i < nlen; i++) {
-        const r = Math.random() * 2 - 1;
-        w[i] = r;
-        last = (last + 0.02 * r) / 1.02;
-        b[i] = last * 3.5;
-      }
-    }
-    const loop = (buf: AudioBuffer) => {
-      const s = ctx.createBufferSource();
-      s.buffer = buf;
-      s.loop = true;
-      s.loopStart = 0;
-      s.start(0, Math.random() * 3);
-      return s;
-    };
-    const lfo = (freq: number, depth: number, target: AudioParam) => {
-      const o = ctx.createOscillator();
-      o.frequency.value = freq;
-      const g = ctx.createGain();
-      g.gain.value = depth;
-      o.connect(g).connect(target);
-      o.start();
-    };
-
-    // wind: deep and slow, swelling and easing
-    {
-      const lp = ctx.createBiquadFilter();
-      lp.type = "lowpass";
-      lp.frequency.value = 240;
-      const g = ctx.createGain();
-      g.gain.value = 0.03; // only a breath of air, far off
-      loop(brown).connect(lp).connect(g);
-      g.connect(master);
-      g.connect(wet);
-      lfo(0.035, 0.012, g.gain);
-      lfo(0.05, 50, lp.frequency);
-    }
-    // the leaves: a high, airy rustle that comes and goes in gusts
-    {
-      const bp = ctx.createBiquadFilter();
-      bp.type = "bandpass";
-      bp.frequency.value = 2400;
-      bp.Q.value = 0.8;
-      const hp = ctx.createBiquadFilter();
-      hp.type = "highpass";
-      hp.frequency.value = 1000;
-      const g = ctx.createGain();
-      g.gain.value = 0.002;
-      loop(white).connect(bp).connect(hp).connect(g);
-      g.connect(master);
-      g.connect(wet);
-      const gust = () => {
-        if (!this.playing) return;
-        const t = ctx.currentTime;
-        g.gain.setTargetAtTime(rnd(0.0008, 0.004), t, rnd(1.5, 3));
-        bp.frequency.setTargetAtTime(rnd(1800, 2800), t, 2);
-        this.later(gust, rnd(3, 6));
-      };
-      this.gusts = gust;
-    }
-    // the beetle's wings: a low, warm hum, two voices a breath apart, with the flutter of its wingbeat
-    {
-      const lp = ctx.createBiquadFilter();
-      lp.type = "lowpass";
-      lp.frequency.value = 1500;
-      lp.Q.value = 0.6;
-      const flutter = ctx.createGain();
-      flutter.gain.value = 0.7;
-      lfo(28, 0.3, flutter.gain);
-      const gain = ctx.createGain();
-      gain.gain.value = 0;
-      const pan = ctx.createStereoPanner();
-      const osc = [196, 197.6, 393].map((f, i) => {
-        const o = ctx.createOscillator();
-        o.type = i === 2 ? "triangle" : "sawtooth";
-        o.frequency.value = f;
-        const og = ctx.createGain();
-        og.gain.value = i === 2 ? 0.35 : 0.5;
-        o.connect(og).connect(lp);
-        lfo(0.23 + i * 0.07, 4, o.frequency); // its pitch wanders a little as it flies
-        o.start();
-        return o;
-      });
-      lp.connect(flutter).connect(gain).connect(pan);
-      pan.connect(master);
-      pan.connect(wet);
-      this.hum = { gain, pan, osc };
-    }
+    const n = ctx.sampleRate * 2;
+    this.noise = ctx.createBuffer(1, n, ctx.sampleRate);
+    const d = this.noise.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
   }
 
-  private gusts: (() => void) | null = null;
-
-  private later(fn: () => void, secs: number) {
-    const id = window.setTimeout(() => {
-      this.timers = this.timers.filter((x) => x !== id);
-      fn();
-    }, secs * 1000);
-    this.timers.push(id);
-  }
-
-  // what comes and goes: the leaves' gusts, crickets' chirps, a bird now and then
-  private schedule() {
-    this.gusts?.();
-    this.cricket(-0.6, 4650);
-    this.cricket(0.55, 4980);
-    this.later(() => this.bird(), rnd(4, 8));
-    this.later(() => this.flyBy(), rnd(1.5, 3));
-    this.later(() => this.chirr(), rnd(3, 6));
-  }
-
-  // a small beetle flying by: its buzz swells as it comes near and passes from one side to the other, dropping a little
-  // in pitch as it goes, then fades away
-  private flyBy() {
-    if (!this.playing) return;
-    const ctx = this.ctx!;
-    const from = Math.random() < 0.5 ? -1 : 1;
-    const dur = rnd(2.4, 4);
-    const t0 = ctx.currentTime + 0.05;
-    const f = rnd(220, 320);
-    const bp = ctx.createBiquadFilter();
-    bp.type = "bandpass";
-    bp.frequency.value = f * 3;
-    bp.Q.value = 0.9;
-    const flutter = ctx.createGain();
-    flutter.gain.value = 0.65;
-    const beat = ctx.createOscillator();
-    beat.frequency.value = rnd(30, 42);
-    const bd = ctx.createGain();
-    bd.gain.value = 0.35;
-    beat.connect(bd).connect(flutter.gain);
-    const env = ctx.createGain();
-    const peak = rnd(0.03, 0.05);
-    env.gain.setValueAtTime(0, t0);
-    env.gain.linearRampToValueAtTime(peak * 0.25, t0 + dur * 0.25);
-    env.gain.linearRampToValueAtTime(peak, t0 + dur * 0.5);
-    env.gain.linearRampToValueAtTime(peak * 0.2, t0 + dur * 0.8);
-    env.gain.linearRampToValueAtTime(0, t0 + dur);
-    const pan = ctx.createStereoPanner();
-    pan.pan.setValueAtTime(from * 0.85, t0);
-    pan.pan.linearRampToValueAtTime(-from * 0.85, t0 + dur);
-    const oscs = [0, 1.3].map((d, i) => {
-      const o = ctx.createOscillator();
-      o.type = i ? "triangle" : "sawtooth";
-      o.frequency.setValueAtTime(f * 1.04 + d, t0);
-      o.frequency.linearRampToValueAtTime(f + d, t0 + dur * 0.5);
-      o.frequency.linearRampToValueAtTime(f * 0.95 + d, t0 + dur);
-      o.connect(bp);
-      o.start(t0);
-      o.stop(t0 + dur + 0.1);
-      return o;
-    });
-    bp.connect(flutter).connect(env).connect(pan);
-    const dry = ctx.createGain();
-    dry.gain.value = 0.7;
-    pan.connect(dry).connect(this.master!);
-    const w = ctx.createGain();
-    w.gain.value = 0.35;
-    pan.connect(w).connect(this.wet!);
-    beat.start(t0);
-    beat.stop(t0 + dur + 0.1);
-    void oscs;
-    this.later(() => this.flyBy(), rnd(5, 11));
-  }
-
-  // a beetle's little voice: a soft, quick chirr of tiny ticks, close by in the leaves
-  private chirr() {
-    if (!this.playing) return;
-    const ctx = this.ctx!;
-    const out = this.voice(rnd(-0.6, 0.6), 0.45, rnd(0.01, 0.018));
-    const t0 = ctx.currentTime + 0.05;
-    const n = 6 + Math.floor(Math.random() * 10);
-    const gap = rnd(0.03, 0.05);
-    const f = rnd(2600, 3600);
-    for (let i = 0; i < n; i++) {
-      const t = t0 + i * gap * rnd(0.9, 1.1);
-      const o = ctx.createOscillator();
-      o.type = "triangle";
-      o.frequency.setValueAtTime(f * rnd(0.97, 1.03), t);
-      o.frequency.exponentialRampToValueAtTime(f * 0.8, t + 0.018);
-      const g = ctx.createGain();
-      const a = Math.sin((Math.PI * (i + 0.5)) / n); // swells and fades over the chirr
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(a, t + 0.003);
-      g.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
-      o.connect(g).connect(out);
-      o.start(t);
-      o.stop(t + 0.03);
-    }
-    // sometimes it answers itself
-    this.later(() => this.chirr(), Math.random() < 0.3 ? rnd(0.5, 1) : rnd(4, 9));
-  }
-
-  private voice(pan: number, wetMix: number, level: number) {
+  // a sound's way out: some of it straight, some into the room, from one side or the other
+  private out(pan: number, wetMix: number, level: number) {
     const ctx = this.ctx!;
     const g = ctx.createGain();
     g.gain.value = level;
@@ -360,64 +232,252 @@ class Ambience {
     p.pan.value = pan;
     g.connect(p);
     const dry = ctx.createGain();
-    dry.gain.value = 1 - wetMix;
-    p.connect(dry).connect(this.master!);
+    dry.gain.value = 1 - wetMix * 0.5;
+    p.connect(dry).connect(this.bus!);
     const w = ctx.createGain();
     w.gain.value = wetMix;
     p.connect(w).connect(this.wet!);
     return g;
   }
 
-  // a cricket: little trills of three or four pulses, over and over, with a rest now and then
-  private cricket(pan: number, freq: number) {
-    const ctx = this.ctx!;
-    const out = this.voice(pan, 0.5, 0.006);
-    const chirp = () => {
-      if (!this.playing) return;
-      const t0 = ctx.currentTime + 0.05;
-      const n = Math.random() < 0.7 ? 3 : 4;
-      const o = ctx.createOscillator();
-      o.frequency.value = freq + rnd(-40, 40);
-      const g = ctx.createGain();
-      g.gain.value = 0;
-      for (let i = 0; i < n; i++) {
-        const t = t0 + i * 0.034;
-        g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(1, t + 0.006);
-        g.gain.exponentialRampToValueAtTime(0.001, t + 0.024);
-      }
-      o.connect(g).connect(out);
-      o.start(t0);
-      o.stop(t0 + n * 0.034 + 0.05);
-      this.later(chirp, Math.random() < 0.25 ? rnd(3, 8) : rnd(0.7, 1.1));
+  private schedule() {
+    const m = this.mood;
+    this.lastSeen = false;
+    // the chords
+    const padLevel = m === "air" ? 0.05 : m === "night" ? 0.045 : m === "musicbox" ? 0.018 : 0.034;
+    const padOct = m === "night" ? -12 : 0;
+    const chord = () => {
+      this.playChord(CHORDS[this.chordIx % CHORDS.length].map((s) => s + padOct), padLevel, m === "night" ? 700 : 1100);
+      this.chordIx++;
+      this.later(chord, m === "air" ? rnd(9, 12) : rnd(7.5, 10));
     };
-    this.later(chirp, rnd(0.3, 1.5));
+    chord();
+    // the notes
+    if (m === "garden") this.later(() => this.melody("kalimba", scale(0, 16), [1.6, 4.2], 0.06), 2);
+    if (m === "musicbox") this.later(() => this.melody("box", scale(7, 26), [0.9, 2.2], 0.045), 1.2);
+    if (m === "night") this.later(() => this.melody("bell", scale(-5, 9), [5, 11], 0.04), 4);
+    // the beetles
+    this.later(() => this.beetles(), rnd(2, 4));
+    // far-off life
+    if (m === "garden") this.later(() => this.bird(), rnd(6, 10));
+    if (m === "night") this.later(() => this.crickets(), 1);
   }
 
-  // a bird, further off: a short phrase of two to five rising or falling notes
-  private bird() {
-    if (!this.playing) return;
+  private endPad(secs: number) {
+    if (!this.ctx) return;
+    const at = this.ctx.currentTime + secs;
+    this.pad.forEach((v) => v.stop(at));
+    this.pad = [];
+  }
+
+  // a chord that swells in slowly, holds, and gives way to the next
+  private playChord(semis: number[], level: number, bright: number) {
     const ctx = this.ctx!;
-    const out = this.voice(rnd(-0.8, 0.8), 0.7, rnd(0.008, 0.015));
-    const base = rnd(2300, 3600);
-    const n = 2 + Math.floor(Math.random() * 4);
+    const t = ctx.currentTime;
+    this.endPad(4);
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = bright;
+    lp.Q.value = 0.3;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(level, t + 3.5);
+    lp.connect(g);
+    g.connect(this.out(0, 0.5, 1));
+    const oscs: OscillatorNode[] = [];
+    semis.forEach((s, i) => {
+      const f = hz(s);
+      for (const det of [-3, 3]) {
+        const o = ctx.createOscillator();
+        o.type = i === 0 ? "sine" : "triangle";
+        o.frequency.value = f;
+        o.detune.value = det + rnd(-1.5, 1.5);
+        const og = ctx.createGain();
+        og.gain.value = (i === 0 ? 0.9 : 0.45) / semis.length;
+        o.connect(og).connect(lp);
+        o.start(t);
+        oscs.push(o);
+      }
+    });
+    this.pad.push({
+      stop: (at: number) => {
+        const now = ctx.currentTime;
+        g.gain.cancelScheduledValues(now);
+        g.gain.setValueAtTime(g.gain.value, now);
+        g.gain.linearRampToValueAtTime(0, Math.max(at, now + 0.05));
+        oscs.forEach((o) => o.stop(Math.max(at, now + 0.05) + 0.1));
+      },
+    });
+  }
+
+  // one soft note: a kalimba's round pluck, a music box's tine, or a far bell
+  private note(kind: "kalimba" | "box" | "bell", semis: number, level: number, pan: number, when = 0) {
+    const ctx = this.ctx!;
+    const t = ctx.currentTime + 0.03 + when;
+    const f = hz(semis);
+    const partials: [number, number, number][] =
+      kind === "kalimba"
+        ? [
+            [1, 1, 2.6],
+            [2.01, 0.12, 0.7],
+            [5.4, 0.03, 0.25],
+          ]
+        : kind === "box"
+          ? [
+              [1, 1, 2.2],
+              [4, 0.14, 0.6],
+              [6.95, 0.04, 0.3],
+            ]
+          : [
+              [1, 1, 5.5],
+              [2.76, 0.18, 2.2],
+              [5.4, 0.05, 1],
+            ];
+    const o2 = this.out(pan, kind === "bell" ? 0.75 : 0.55, level);
+    for (const [mul, amp, dec] of partials) {
+      const o = ctx.createOscillator();
+      o.frequency.value = f * mul;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(amp, t + (kind === "bell" ? 0.02 : 0.008));
+      g.gain.exponentialRampToValueAtTime(0.0005, t + dec);
+      o.connect(g).connect(o2);
+      o.start(t);
+      o.stop(t + dec + 0.05);
+    }
+  }
+
+  // notes now and then, wandering gently through the scale: a single note, or a little phrase of two to four
+  private melody(kind: "kalimba" | "box" | "bell", notes: number[], gap: [number, number], level: number) {
+    let i = Math.floor(notes.length / 2);
+    const step = () => {
+      const phrase = kind === "bell" ? 1 : Math.random() < 0.55 ? 1 : 2 + Math.floor(Math.random() * 3);
+      let when = 0;
+      for (let k = 0; k < phrase; k++) {
+        i = Math.max(0, Math.min(notes.length - 1, i + pick([-2, -1, -1, 1, 1, 2])));
+        this.note(kind, notes[i], level * rnd(0.7, 1), rnd(-0.45, 0.45), when);
+        when += kind === "box" ? rnd(0.35, 0.55) : rnd(0.25, 0.45);
+      }
+      this.later(step, when + rnd(gap[0], gap[1]));
+    };
+    step();
+  }
+
+  // the beetles: now a flutter of wings going by, now a few tiny chirps
+  private beetles() {
+    if (Math.random() < 0.6) this.flutter(rnd(-0.8, 0.8), rnd(0.6, 1));
+    else this.chirps(rnd(-0.7, 0.7));
+    this.later(() => this.beetles(), rnd(3.5, 8));
+  }
+
+  // a small beetle's wings: a soft, quick whirr that comes and goes as it flits past
+  private flutter(pan: number, size: number) {
+    const ctx = this.ctx!;
+    const t = ctx.currentTime + 0.03;
+    this.lastFlutter = t;
+    const dur = rnd(0.5, 1.1) * (0.7 + 0.5 * size);
+    const src = ctx.createBufferSource();
+    src.buffer = this.noise;
+    src.loop = true;
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = rnd(1700, 2600);
+    bp.Q.value = 1.4;
+    // the wingbeat: the sound pulsing quickly, as wings do
+    const beat = ctx.createGain();
+    beat.gain.value = 0.5;
+    const lfo = ctx.createOscillator();
+    lfo.frequency.value = rnd(55, 85);
+    const depth = ctx.createGain();
+    depth.gain.value = 0.5;
+    lfo.connect(depth).connect(beat.gain);
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0, t);
+    env.gain.linearRampToValueAtTime(1, t + dur * 0.35);
+    env.gain.linearRampToValueAtTime(0, t + dur);
+    const p = ctx.createStereoPanner();
+    p.pan.setValueAtTime(pan, t);
+    p.pan.linearRampToValueAtTime(Math.max(-1, Math.min(1, pan + rnd(-0.4, 0.4))), t + dur);
+    src.connect(bp).connect(beat).connect(env).connect(p).connect(this.out(0, 0.3, 0.09 * size));
+    src.start(t, Math.random());
+    src.stop(t + dur + 0.05);
+    lfo.start(t);
+    lfo.stop(t + dur + 0.05);
+  }
+
+  // a beetle's little voice: two to four tiny, high, soft chirps
+  private chirps(pan: number) {
+    const ctx = this.ctx!;
+    const n = 2 + Math.floor(Math.random() * 3);
+    const f = rnd(3800, 5200);
+    const o2 = this.out(pan, 0.45, 0.02);
+    for (let i = 0; i < n; i++) {
+      const t = ctx.currentTime + 0.03 + i * rnd(0.09, 0.13);
+      const o = ctx.createOscillator();
+      o.frequency.setValueAtTime(f, t);
+      o.frequency.linearRampToValueAtTime(f * 1.06, t + 0.035);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(1, t + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+      o.connect(g).connect(o2);
+      o.start(t);
+      o.stop(t + 0.06);
+    }
+  }
+
+  // a bird far off: a short, soft call, now and then
+  private bird() {
+    const ctx = this.ctx!;
+    const o2 = this.out(rnd(-0.8, 0.8), 0.7, rnd(0.006, 0.01));
+    const base = rnd(2400, 3400);
+    const n = 2 + Math.floor(Math.random() * 3);
     let t = ctx.currentTime + 0.05;
     for (let i = 0; i < n; i++) {
       const o = ctx.createOscillator();
       const g = ctx.createGain();
-      const d = rnd(0.07, 0.16);
-      const f0 = base * rnd(0.85, 1.2);
+      const d = rnd(0.08, 0.15);
+      const f0 = base * rnd(0.9, 1.15);
       o.frequency.setValueAtTime(f0, t);
-      o.frequency.exponentialRampToValueAtTime(f0 * (Math.random() < 0.5 ? rnd(1.15, 1.5) : rnd(0.7, 0.88)), t + d);
+      o.frequency.exponentialRampToValueAtTime(f0 * (Math.random() < 0.5 ? 1.2 : 0.85), t + d);
       g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(1, t + 0.015);
+      g.gain.linearRampToValueAtTime(1, t + 0.02);
       g.gain.exponentialRampToValueAtTime(0.001, t + d);
-      o.connect(g).connect(out);
+      o.connect(g).connect(o2);
       o.start(t);
       o.stop(t + d + 0.02);
-      t += d + rnd(0.04, 0.12);
+      t += d + rnd(0.05, 0.12);
     }
-    this.later(() => this.bird(), rnd(9, 20));
+    this.later(() => this.bird(), rnd(12, 24));
+  }
+
+  // crickets far away in the night, softly, one each side
+  private crickets() {
+    const ctx = this.ctx!;
+    for (const [pan, freq] of [
+      [-0.6, 4500],
+      [0.6, 4800],
+    ]) {
+      const o2 = this.out(pan, 0.6, 0.004);
+      const chirp = () => {
+        const t0 = ctx.currentTime + 0.05;
+        const o = ctx.createOscillator();
+        o.frequency.value = freq + rnd(-30, 30);
+        const g = ctx.createGain();
+        g.gain.value = 0;
+        for (let i = 0; i < 3; i++) {
+          const t = t0 + i * 0.04;
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(1, t + 0.008);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+        }
+        o.connect(g).connect(o2);
+        o.start(t0);
+        o.stop(t0 + 0.2);
+        this.later(chirp, Math.random() < 0.3 ? rnd(3, 7) : rnd(0.9, 1.4));
+      };
+      this.later(chirp, rnd(0.2, 1.5));
+    }
   }
 }
 
