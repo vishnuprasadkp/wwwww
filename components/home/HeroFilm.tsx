@@ -766,7 +766,7 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
  * flies its own way: at the top it keeps low in the box and glides; at the foot it uses the whole height, rising and
  * falling.
  */
-export type FilmFrame = { x0: number; x1: number; y0: number; y1: number };
+export type FilmFrame = { x0: number; x1: number; y0: number; y1: number; hh0?: number }; // hh0: half the box's height, closed
 /**
  * `frameRef`: the film covers the whole screen but is seen only through a window in it (the hero's box), given here on the
  * canvas (-1..1) and read live, so the window can open out to the whole screen while the beetle flies on. `box`: that
@@ -1057,8 +1057,10 @@ void main(){
        in the frame, its body outside; then it flies off across. The film opens that way too.
        All of this is reckoned against the frame you see it through (the hero's box, or the whole screen), so the frame can
        open out around it while it flies, and it carries on exactly where it is. */
-    const PATH_BOX = { squash: 0.62, slope: 0.5, dK: 0.08, yLo: FLOOR_N + 0.05, yHi: -0.12, look: [26, 42] };
-    const PATH_FULL = { squash: 0.62, slope: 0.5, dK: 0.08, yLo: -0.75, yHi: 0.45, look: [26, 42] };
+    // the heights it ranges over (the whole frame, high and low) and how steep its slant may be (steep enough to go from
+    // the foot to the top on a diagonal, never so steep that it would have to turn its body round)
+    const PATH_BOX = { squash: 0.85, slope: 1.0, dK: 0.08, yLo: FLOOR_N + 0.05, yHi: 0.8, look: [26, 42] };
+    const PATH_FULL = { squash: 0.85, slope: 1.0, dK: 0.08, yLo: -0.8, yHi: 0.75, look: [26, 42] };
     let PATH = full ? PATH_FULL : PATH_BOX;
     const TAU = Math.PI * 2;
     // the frame it is seen through, on the canvas (-1..1): the hero's box within the whole screen, or all of it
@@ -1077,7 +1079,7 @@ void main(){
       dir: -1 as 1 | -1, // the way it is crossing: 1 to the right, -1 to the left
       tv: 0, // the height it is making for, in the frame (-1..1)
       tvAt: 0,
-      dive: false, // this time it goes out down through the foot
+      vert: 0 as 0 | 1 | -1, // this time it goes out through the top (1) or the foot (-1), not a side
       trip: "cross" as "cross" | "away" | "turn", // crossing; gone, flying on out there; turning round to come back
       awayUntil: 0,
       ph: [rnd(0, TAU), rnd(0, TAU), rnd(0, TAU), rnd(0, TAU)],
@@ -1101,12 +1103,15 @@ void main(){
       pB.copy(p).addScaledVector(camR, R).project(camera);
       const rx = Math.abs(pB.x - pA.x) / F.hw;
       pB.copy(p).addScaledVector(camU, R).project(camera);
-      const ry = (Math.abs(pB.y - pA.y) * 0.7) / F.hh; // it is less tall than it is wide
-      return { x: (pA.x - F.cx) / F.hw, y: (pA.y - F.cy) / F.hh, rx, ry };
+      const rv = Math.abs(pB.y - pA.y) / F.hh;
+      // its raised wings reach well above its body, its legs only a little below it
+      return { x: (pA.x - F.cx) / F.hw, y: (pA.y - F.cy) / F.hh, rx, ry: rv * 0.7, up: rv * 1.05, down: rv * 0.6 };
     };
+    // wholly out of the frame: past a side, above the top by more than its legs reach down, or below the foot by more than
+    // its wings reach up
     const outOfSight = (p: THREE.Vector3) => {
       const r = reach(p);
-      return Math.abs(r.x) > 1 + r.rx || r.y > 1 + r.ry || r.y < -1 - r.ry;
+      return Math.abs(r.x) > 1 + r.rx || r.y > 1 + r.down || r.y < -1 - r.up;
     };
     // a point in the frame (-1..1), on the canvas
     const inFrame = (u: number, v: number, d: number, out: THREE.Vector3) => {
@@ -1134,10 +1139,22 @@ void main(){
       camU.setFromMatrixColumn(camera.matrixWorld, 1);
       return out.copy(camR).multiplyScalar(Math.cos(th) * SPEED).addScaledVector(camU, Math.sin(th) * SPEED * PATH.squash);
     };
+    // as the hero's window opens out to the whole screen the beetle grows, just where it is, step by step with it, until it
+    // is the large beetle of the full-screen film (and smaller again as it closes): the size it is drawn at, divided by this
+    const D_FULL = 1.45 * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4);
+    const zoomNow = () => {
+      const f = frameRef?.current;
+      if (!f || f.hh0 === undefined) return 1;
+      const p = clamp(((f.y1 - f.y0) / 2 - f.hh0) / Math.max(1e-3, 1 - f.hh0), 0, 1); // how far the window has opened
+      return 1 + (D_FULL / D_K - 1) * p * p * (3 - 2 * p);
+    };
     const depthK = (t: number) => 1 + PATH.dK * Math.sin(path.fq[3] * TAU * t + path.ph[3]);
-    const newHeight = (t: number) => {
-      path.tv = rnd(PATH.yLo, PATH.yHi);
-      path.tvAt = t + rnd(2.5, 5.5);
+    const newHeight = (t: number, from?: number) => {
+      // somewhere well above or below where it is, mostly, so it goes on long diagonals over the whole frame
+      let tv = rnd(PATH.yLo, PATH.yHi);
+      for (let k = 0; k < 6 && from !== undefined && Math.abs(tv - from) < 0.45 * (PATH.yHi - PATH.yLo); k++) tv = rnd(PATH.yLo, PATH.yHi);
+      path.tv = tv;
+      path.tvAt = t + rnd(1.8, 4);
     };
     // the path picks up from wherever it is (the start, or the end of a take-off)
     const joinPath = (t: number, p: THREE.Vector3, th: number) => {
@@ -1151,7 +1168,7 @@ void main(){
       path.w = 0;
       path.dir = Math.cos(th) >= 0 ? 1 : -1;
       path.trip = "cross";
-      path.dive = false;
+      path.vert = 0;
       newHeight(t);
     };
     // to the edge it is beyond, to peep in at you
@@ -1175,7 +1192,7 @@ void main(){
       const r = reach(fly.p);
       const u = r.x;
       const v = r.y;
-      const hid = Math.abs(u) > 1 + r.rx || v > 1 + r.ry || v < -1 - r.ry;
+      const hid = Math.abs(u) > 1 + r.rx || v > 1 + r.down || v < -1 - r.up;
       // a heading towards a point in the frame (across and up move at different rates on screen)
       const thTo = (tu: number, tv: number) => Math.atan2(((tv - v) * F.hh) / (PATH.squash * ky), ((tu - u) * F.hw) / kx);
       const base = P.dir > 0 ? 0 : Math.PI;
@@ -1184,32 +1201,36 @@ void main(){
       let acc = 0.7;
       if (P.trip === "cross") {
         if (t > P.tvAt) {
-          newHeight(t);
-          // now and then, on its way across, it dives on out through the foot instead
-          if (!P.dive && Math.random() < 0.12 && Math.abs(u) < 0.6) {
-            P.dive = true;
-            P.tv = -3;
+          newHeight(t, v);
+          // now and then, on its way across, it goes on out through the top or the foot instead
+          if (!P.vert && Math.random() < 0.3 && Math.abs(u) < 0.6) {
+            P.vert = Math.random() < 0.5 ? 1 : -1;
+            P.tv = P.vert * 3;
             P.tvAt = t + 30;
           }
         }
-        // on across, towards the height it is making for, on a slant (never steeper, so it never turns round in view)
-        const slope = P.dive ? 0.62 : v < -1 ? 0.95 : PATH.slope; // (still below the frame, it climbs back up more steeply)
-        goal = base + clamp(wrapA(thTo(u + P.dir * 0.9, P.tv) - base), -slope, slope);
-        // out past the far side (or the foot): gone
-        if (hid && (u * P.dir > 1 || v < -1)) {
+        // on across, towards the height it is making for, on a slant (never steeper, so it never turns round in view);
+        // still beyond the top or the foot as it comes back in, it may come in a little more steeply
+        const slope = Math.abs(v) > 1 ? 1.05 : PATH.slope;
+        goal = base + clamp(wrapA(thTo(u + P.dir * 0.5, P.tv) - base), -slope, slope);
+        // out past the far side, the top or the foot, and still going outwards (not on its way back in): gone
+        const sn = Math.sin(P.th);
+        if (hid && ((Math.abs(u) > 1 && Math.cos(P.th) * u > 0) || (v > 1 && sn > 0) || (v < -1 && sn < 0))) {
           P.trip = "away";
-          P.awayUntil = t + (Math.random() < 0.3 ? rnd(1, 2.5) : rnd(0, 0.4)); // it flies on a while out there, or turns at once
+          P.awayUntil = t + (Math.random() < 0.2 ? rnd(1, 2.5) : 0); // it flies on a while out there, or turns at once
         }
       } else if (P.trip === "away") {
         goal = P.th;
-        if (t > P.awayUntil) {
-          // turn round, out of sight, to come back in: from the side it left by, or (from below) from either side
+        // it turns round only once it is well clear of the frame, so not even a wing tip is seen as it turns
+        const clear = Math.abs(u) > 1 + r.rx + 0.15 || v > 1 + r.down + 0.35 || v < -1 - r.up - 0.35;
+        if (t > P.awayUntil && clear) {
+          // turn round, out of sight, to come back in: by the side it left by, or (from above or below) going either way
           P.trip = "turn";
           if (t > P.nextLook) P.peek = true;
-          if (P.dive && !(Math.abs(u) > 1)) P.dir = Math.random() < 0.5 ? 1 : -1;
+          if (Math.abs(u) <= 1) P.dir = Math.random() < 0.5 ? 1 : -1;
           else P.dir = u > 0 ? -1 : 1;
-          P.dive = false;
-          newHeight(t);
+          P.vert = 0;
+          newHeight(t, v);
           P.tvAt = t + 30;
         }
       } else {
@@ -1217,7 +1238,7 @@ void main(){
         maxW = 1.4;
         acc = 2.4;
         const nb = P.dir > 0 ? 0 : Math.PI;
-        const sl = v < -1 ? 0.95 : PATH.slope;
+        const sl = Math.abs(v) > 1 ? 1.05 : PATH.slope;
         goal = nb + clamp(wrapA(thTo(u + P.dir * 0.9, P.tv) - nb), -sl, sl);
         if (Math.abs(wrapA(goal - P.th)) < 0.2) {
           P.trip = "cross";
@@ -1374,10 +1395,23 @@ void main(){
       fs.toQ.copy(qFromEuler(0.3 + fly.climb + 0.04 * Math.sin((t + fs.dur) * 0.5), yawFor(th0, fs.toP), 0));
     };
 
+    let baseScale = 0;
+    let baseProj = [0, 0, 0];
     const pose = (t: number, dt: number) => {
       if (!beetle) return;
       const b = beetle;
       const k = t;
+      // its size: larger as the hero's window opens out (see zoomNow)
+      if (!baseScale) {
+        baseScale = b.root.scale.x;
+        baseProj = [b.dustMat.uniforms.proj.value, b.dustBody.uniforms.proj.value, strokeMat.uniforms.proj.value];
+      }
+      const grow = 1 / zoomNow();
+      b.root.scale.setScalar(baseScale * grow);
+      // and its dust with it, mote for mote, as if it had come nearer
+      b.dustMat.uniforms.proj.value = baseProj[0] * grow;
+      b.dustBody.uniforms.proj.value = baseProj[1] * grow;
+      strokeMat.uniforms.proj.value = baseProj[2] * grow;
       // walking towards you
       const walkT = clamp(k - T_WALK0, 0, T_STOP - T_WALK0);
       const walking0 = k > T_WALK0 && k < T_STOP;

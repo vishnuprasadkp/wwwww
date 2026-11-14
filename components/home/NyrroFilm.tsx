@@ -12,8 +12,8 @@ import { HERO_INK } from "@/lib/painting";
  * beetle flying through all of it. Nyrro's story sits at the top right. The page does not scroll.
  */
 export default function NyrroFilm() {
-  // the very beetle of the hero's film, at its size: drawn as large as in the hero's box on this screen (its height and
-  // width as the hero lays them out), with the wash's shapes at the size they have there
+  // the hero's film, opened out: the wash's shapes at the size they have in the hero's box on this screen, and the
+  // beetle at the size it comes to there once the film fills the screen
   const [hero, setHero] = useState<{ w: number; h: number; ink: number } | null>(null);
   useEffect(() => {
     const W = document.documentElement.clientWidth;
@@ -39,7 +39,7 @@ export default function NyrroFilm() {
         <>
           <HeroInk palette={HERO_INK} spread={false} speed={3} grain={1} fixedScale={hero.ink} />
           <div className="absolute inset-0" style={{ opacity: 0.75 }}>
-            <HeroFilm place="top" from="right" full box={{ w: hero.w, h: hero.h }} />
+            <HeroFilm place="top" from="right" full />
           </div>
         </>
       )}

@@ -70,7 +70,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
     const bottom = (H - box.top - box.height) * (1 - p);
     const round = Math.sin(Math.PI * p) * 18; // its corners soften as it opens, and square up again at the edges of the screen
     st.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px round ${round}px)`;
-    frameRef.current = { x0: (left / W) * 2 - 1, x1: 1 - (right / W) * 2, y1: 1 - (top / H) * 2, y0: (bottom / H) * 2 - 1 };
+    frameRef.current = { x0: (left / W) * 2 - 1, x1: 1 - (right / W) * 2, y1: 1 - (top / H) * 2, y0: (bottom / H) * 2 - 1, hh0: box.height / H };
     if (dim.current) dim.current.style.opacity = String(p);
   }, []);
 
