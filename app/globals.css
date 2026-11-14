@@ -254,3 +254,12 @@ html[data-motion] main :where(img) { opacity: 0; }
 /* the lines of a heading each come up out of their own mask: room for the tails of letters so they are not cut */
 .split-line-mask { padding-bottom: 0.16em; margin-bottom: -0.16em; }
 
+
+/* the site's own pointer (the dot, the eye) is the only one: never the system's arrow or hand, wherever it is */
+@media (hover: hover) and (pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}

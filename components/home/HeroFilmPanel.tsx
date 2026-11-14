@@ -185,7 +185,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
           open();
         }
       }}
-      className="relative cursor-pointer"
+      className="relative"
       style={{ height, background: "#3e3e3e" }}
     >
       {/* the page darkens to the film's colour behind it as it opens */}
