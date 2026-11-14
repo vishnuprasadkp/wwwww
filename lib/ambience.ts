@@ -1,17 +1,18 @@
 "use client";
 
 /*
- * The sound of Nyrro's film: a quiet place in nature, made live in the browser (nothing to download). A soft wind in the
- * leaves, their rustle rising and falling; crickets close by, one each side; now and then a bird, further off; and the
- * beetle's wings, a low, warm hum that comes from where the beetle is (left or right, nearer as it comes into view, softer
- * once it is gone). All of it in a little space of its own (a soft reverb), so it sounds like somewhere, not a recording.
+ * The sound of Nyrro's film: a calm, quiet place in nature, made live in the browser (nothing to download). Only a breath
+ * of air and the faintest stir of leaves; crickets softly, far off; a bird now and then, further still. And beetles: the
+ * film's beetle humming where it flies (left or right, nearer as it comes into view, softer once it is gone), small
+ * beetles buzzing by from one side to the other, and now and then a beetle's tiny chirr close by in the leaves. All of it
+ * in a little space of its own (a soft reverb), so it sounds like somewhere, not a recording.
  *
  * It starts as the film opens (the click that opens it lets the browser play sound) and fades away as it closes. The
  * sound button turns it off and on; off is remembered.
  */
 
 const KEY = "nyrro-sound";
-const LEVEL = 0.9;
+const LEVEL = 0.75;
 
 type Listener = (on: boolean) => void;
 
@@ -115,7 +116,7 @@ class Ambience {
     if (!this.ctx || !this.hum || !this.playing) return;
     const t = this.ctx.currentTime;
     this.hum.pan.pan.setTargetAtTime(Math.max(-0.85, Math.min(0.85, x * 0.7)), t, 0.25);
-    this.hum.gain.gain.setTargetAtTime(seen ? 0.05 : 0.014, t, seen ? 0.5 : 0.9);
+    this.hum.gain.gain.setTargetAtTime(seen ? 0.075 : 0.018, t, seen ? 0.6 : 1);
   }
 
   private fade(to: number, secs: number) {
@@ -147,7 +148,7 @@ class Ambience {
     }
     verb.buffer = ir;
     const wet = ctx.createGain();
-    wet.gain.value = 0.55;
+    wet.gain.value = 0.45;
     wet.connect(verb).connect(master);
     this.wet = wet;
 
@@ -187,35 +188,35 @@ class Ambience {
     {
       const lp = ctx.createBiquadFilter();
       lp.type = "lowpass";
-      lp.frequency.value = 420;
+      lp.frequency.value = 240;
       const g = ctx.createGain();
-      g.gain.value = 0.22;
+      g.gain.value = 0.03; // only a breath of air, far off
       loop(brown).connect(lp).connect(g);
       g.connect(master);
       g.connect(wet);
-      lfo(0.045, 0.1, g.gain);
-      lfo(0.07, 140, lp.frequency);
+      lfo(0.035, 0.012, g.gain);
+      lfo(0.05, 50, lp.frequency);
     }
     // the leaves: a high, airy rustle that comes and goes in gusts
     {
       const bp = ctx.createBiquadFilter();
       bp.type = "bandpass";
-      bp.frequency.value = 3200;
-      bp.Q.value = 0.6;
+      bp.frequency.value = 2400;
+      bp.Q.value = 0.8;
       const hp = ctx.createBiquadFilter();
       hp.type = "highpass";
-      hp.frequency.value = 1400;
+      hp.frequency.value = 1000;
       const g = ctx.createGain();
-      g.gain.value = 0.012;
+      g.gain.value = 0.002;
       loop(white).connect(bp).connect(hp).connect(g);
       g.connect(master);
       g.connect(wet);
       const gust = () => {
         if (!this.playing) return;
         const t = ctx.currentTime;
-        g.gain.setTargetAtTime(rnd(0.004, 0.03), t, rnd(0.8, 2));
-        bp.frequency.setTargetAtTime(rnd(2400, 4200), t, 1.5);
-        this.later(gust, rnd(1.8, 4.5));
+        g.gain.setTargetAtTime(rnd(0.0008, 0.004), t, rnd(1.5, 3));
+        bp.frequency.setTargetAtTime(rnd(1800, 2800), t, 2);
+        this.later(gust, rnd(3, 6));
       };
       this.gusts = gust;
     }
@@ -223,22 +224,22 @@ class Ambience {
     {
       const lp = ctx.createBiquadFilter();
       lp.type = "lowpass";
-      lp.frequency.value = 700;
-      lp.Q.value = 0.7;
+      lp.frequency.value = 1500;
+      lp.Q.value = 0.6;
       const flutter = ctx.createGain();
       flutter.gain.value = 0.7;
       lfo(28, 0.3, flutter.gain);
       const gain = ctx.createGain();
       gain.gain.value = 0;
       const pan = ctx.createStereoPanner();
-      const osc = [118, 119.6, 236.5].map((f, i) => {
+      const osc = [196, 197.6, 393].map((f, i) => {
         const o = ctx.createOscillator();
         o.type = i === 2 ? "triangle" : "sawtooth";
         o.frequency.value = f;
         const og = ctx.createGain();
         og.gain.value = i === 2 ? 0.35 : 0.5;
         o.connect(og).connect(lp);
-        lfo(0.23 + i * 0.07, 2.5, o.frequency); // its pitch wanders a little as it flies
+        lfo(0.23 + i * 0.07, 4, o.frequency); // its pitch wanders a little as it flies
         o.start();
         return o;
       });
@@ -264,7 +265,91 @@ class Ambience {
     this.gusts?.();
     this.cricket(-0.6, 4650);
     this.cricket(0.55, 4980);
-    this.later(() => this.bird(), rnd(2, 5));
+    this.later(() => this.bird(), rnd(4, 8));
+    this.later(() => this.flyBy(), rnd(1.5, 3));
+    this.later(() => this.chirr(), rnd(3, 6));
+  }
+
+  // a small beetle flying by: its buzz swells as it comes near and passes from one side to the other, dropping a little
+  // in pitch as it goes, then fades away
+  private flyBy() {
+    if (!this.playing) return;
+    const ctx = this.ctx!;
+    const from = Math.random() < 0.5 ? -1 : 1;
+    const dur = rnd(2.4, 4);
+    const t0 = ctx.currentTime + 0.05;
+    const f = rnd(220, 320);
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = f * 3;
+    bp.Q.value = 0.9;
+    const flutter = ctx.createGain();
+    flutter.gain.value = 0.65;
+    const beat = ctx.createOscillator();
+    beat.frequency.value = rnd(30, 42);
+    const bd = ctx.createGain();
+    bd.gain.value = 0.35;
+    beat.connect(bd).connect(flutter.gain);
+    const env = ctx.createGain();
+    const peak = rnd(0.03, 0.05);
+    env.gain.setValueAtTime(0, t0);
+    env.gain.linearRampToValueAtTime(peak * 0.25, t0 + dur * 0.25);
+    env.gain.linearRampToValueAtTime(peak, t0 + dur * 0.5);
+    env.gain.linearRampToValueAtTime(peak * 0.2, t0 + dur * 0.8);
+    env.gain.linearRampToValueAtTime(0, t0 + dur);
+    const pan = ctx.createStereoPanner();
+    pan.pan.setValueAtTime(from * 0.85, t0);
+    pan.pan.linearRampToValueAtTime(-from * 0.85, t0 + dur);
+    const oscs = [0, 1.3].map((d, i) => {
+      const o = ctx.createOscillator();
+      o.type = i ? "triangle" : "sawtooth";
+      o.frequency.setValueAtTime(f * 1.04 + d, t0);
+      o.frequency.linearRampToValueAtTime(f + d, t0 + dur * 0.5);
+      o.frequency.linearRampToValueAtTime(f * 0.95 + d, t0 + dur);
+      o.connect(bp);
+      o.start(t0);
+      o.stop(t0 + dur + 0.1);
+      return o;
+    });
+    bp.connect(flutter).connect(env).connect(pan);
+    const dry = ctx.createGain();
+    dry.gain.value = 0.7;
+    pan.connect(dry).connect(this.master!);
+    const w = ctx.createGain();
+    w.gain.value = 0.35;
+    pan.connect(w).connect(this.wet!);
+    beat.start(t0);
+    beat.stop(t0 + dur + 0.1);
+    void oscs;
+    this.later(() => this.flyBy(), rnd(5, 11));
+  }
+
+  // a beetle's little voice: a soft, quick chirr of tiny ticks, close by in the leaves
+  private chirr() {
+    if (!this.playing) return;
+    const ctx = this.ctx!;
+    const out = this.voice(rnd(-0.6, 0.6), 0.45, rnd(0.01, 0.018));
+    const t0 = ctx.currentTime + 0.05;
+    const n = 6 + Math.floor(Math.random() * 10);
+    const gap = rnd(0.03, 0.05);
+    const f = rnd(2600, 3600);
+    for (let i = 0; i < n; i++) {
+      const t = t0 + i * gap * rnd(0.9, 1.1);
+      const o = ctx.createOscillator();
+      o.type = "triangle";
+      o.frequency.setValueAtTime(f * rnd(0.97, 1.03), t);
+      o.frequency.exponentialRampToValueAtTime(f * 0.8, t + 0.018);
+      const g = ctx.createGain();
+      const a = Math.sin((Math.PI * (i + 0.5)) / n); // swells and fades over the chirr
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(a, t + 0.003);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
+      o.connect(g).connect(out);
+      o.start(t);
+      o.stop(t + 0.03);
+    }
+    // sometimes it answers itself
+    this.later(() => this.chirr(), Math.random() < 0.3 ? rnd(0.5, 1) : rnd(4, 9));
   }
 
   private voice(pan: number, wetMix: number, level: number) {
@@ -286,7 +371,7 @@ class Ambience {
   // a cricket: little trills of three or four pulses, over and over, with a rest now and then
   private cricket(pan: number, freq: number) {
     const ctx = this.ctx!;
-    const out = this.voice(pan, 0.35, 0.018);
+    const out = this.voice(pan, 0.5, 0.006);
     const chirp = () => {
       if (!this.playing) return;
       const t0 = ctx.currentTime + 0.05;
@@ -304,7 +389,7 @@ class Ambience {
       o.connect(g).connect(out);
       o.start(t0);
       o.stop(t0 + n * 0.034 + 0.05);
-      this.later(chirp, Math.random() < 0.12 ? rnd(2.5, 6) : rnd(0.55, 0.9));
+      this.later(chirp, Math.random() < 0.25 ? rnd(3, 8) : rnd(0.7, 1.1));
     };
     this.later(chirp, rnd(0.3, 1.5));
   }
@@ -313,7 +398,7 @@ class Ambience {
   private bird() {
     if (!this.playing) return;
     const ctx = this.ctx!;
-    const out = this.voice(rnd(-0.8, 0.8), 0.6, rnd(0.025, 0.045));
+    const out = this.voice(rnd(-0.8, 0.8), 0.7, rnd(0.008, 0.015));
     const base = rnd(2300, 3600);
     const n = 2 + Math.floor(Math.random() * 4);
     let t = ctx.currentTime + 0.05;
@@ -332,7 +417,7 @@ class Ambience {
       o.stop(t + d + 0.02);
       t += d + rnd(0.04, 0.12);
     }
-    this.later(() => this.bird(), rnd(5, 13));
+    this.later(() => this.bird(), rnd(9, 20));
   }
 }
 

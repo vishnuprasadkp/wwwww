@@ -1084,6 +1084,7 @@ void main(){
       bend: 0, // how much the line bows, to one side or the other
       mode: "back" as "pass" | "out" | "turn" | "back", // on its pass; gone, flying on out there; out of sight, swinging round (and round the frame) onto its next heading; on its way back in
       goalTh: 0, // the heading of its next pass
+      aim: null as number[] | null,
       bow0: 0,
       outUntil: 0,
       ph: [rnd(0, TAU), rnd(0, TAU), rnd(0, TAU), rnd(0, TAU)],
@@ -1197,6 +1198,7 @@ void main(){
         path.via = [];
         // out of sight it swings round to face the side, then comes in to the edge
         path.goalTh = side > 0 ? Math.PI : 0;
+        path.aim = null;
         path.bow0 = 0;
         path.mode = "turn";
         return;
@@ -1233,11 +1235,13 @@ void main(){
           QX = CX + sx * W;
           QY = CY + cy * H;
         }
+        // mostly right through the middle of the frame, where you see all of it; now and then off to one side
+        const mid = Math.random() < 0.8;
         let best: number[] | null = null;
         let err = Infinity;
         for (let i = 0; i < 80; i++) {
-          const tx = CX + W * rnd(-0.75, 0.75);
-          const ty = CY + H * rnd(Math.max(-0.75, PATH.yLo + 0.1), 0.7);
+          const tx = CX + W * (mid ? rnd(-0.2, 0.2) : rnd(-0.6, 0.6));
+          const ty = CY + H * (mid ? rnd(Math.max(-0.2, PATH.yLo + 0.1), 0.2) : rnd(Math.max(-0.6, PATH.yLo + 0.1), 0.6));
           const dx = tx - QX;
           const dy = ty - QY;
           const l = Math.hypot(dx, dy);
@@ -1249,7 +1253,8 @@ void main(){
           }
         }
         if (best) {
-          const [, , dx, dy] = best;
+          const [tx, ty, dx, dy] = best;
+          path.aim = [tx, ty]; // the point in the frame it makes for
           const steep = Math.atan2(Math.abs(dy), Math.abs(dx)) > 50 * deg;
           // out of sight it swings round onto this heading (going round the frame first, if it must), and only then sets
           // off, straight in along it
@@ -1350,6 +1355,8 @@ void main(){
       const ax = P.x0 + P.lx * sa - P.ly * bow;
       const ay = P.y0 + P.ly * sa + P.lx * bow;
       let goal = Math.atan2(ay - Y, ax - X);
+      // swinging round, it keeps its eye on the point it is making for, so its line goes right through it
+      if (P.mode === "turn" && !P.via.length && P.aim) P.goalTh = Math.atan2(P.aim[1] - Y, P.aim[0] - X);
       if (P.mode === "turn") goal = P.via.length ? goal : P.goalTh;
       if ((P.mode === "back" || P.mode === "turn") && P.via.length) {
         // round the frame, out of sight, to where its line begins
@@ -1365,11 +1372,11 @@ void main(){
       P.w += clamp(wGoal - P.w, -acc * dt, acc * dt);
       P.th += P.w * dt;
       // how far clear of the frame it is (its whole outline): out there it speeds up, and slows to its own pace as it
-      // nears the frame again
+      // nears the frame again; through the middle it slows a little more, so you can see the whole of it
       const clear = Math.max(Math.abs(r.x) - 1 - r.rx, r.y - 1 - r.down, -1 - r.up - r.y);
       // (swinging round out there it all but hovers, turning on the spot, so it never swings back into view as it turns)
       const turning = P.mode === "turn" && !P.via.length;
-      P.boost += ((turning ? 0.15 : 1 + 3 * clamp(clear / 0.45, 0, 1)) - P.boost) * Math.min(1, dt * (turning ? 7 : 3));
+      P.boost += ((turning ? 0.15 : clear > 0 ? 1 + 3 * clamp(clear / 0.45, 0, 1) : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 7 : 3));
       P.sx += Math.cos(P.th) * SPEED * P.boost * kx * dt;
       P.sy += Math.sin(P.th) * SPEED * P.boost * ky * dt;
       P.d = P.d0 * depthK(t);
@@ -1534,9 +1541,13 @@ void main(){
       fs.mode = "takeoff";
       // off across the box, towards its wider side (either way from the middle), a little up or down; it sets off from
       // rest and leaves at just the speed and heading its path carries on with, so the hand-over is seamless
-      const ux = reach(fs.fromP).x;
+      const rp = reach(fs.fromP);
+      const ux = rp.x;
       const dir = Math.abs(ux) > 0.15 ? (ux > 0 ? -1 : 1) : Math.random() < 0.5 ? -1 : 1;
-      const th0 = (dir > 0 ? 0 : Math.PI) + rnd(-0.35, 0.35);
+      // (towards the middle of the frame, so you see all of it as it goes)
+      const Fv = view();
+      const slope = Math.atan2(-rp.y * Fv.hh, Math.max(0.05, Math.abs(ux) * Fv.hw * camera.aspect));
+      const th0 = dir > 0 ? clamp(slope, -0.45, 0.45) + rnd(-0.08, 0.08) : Math.PI - clamp(slope, -0.45, 0.45) + rnd(-0.08, 0.08);
       fs.dur = 3;
       fs.v0.set(0, 0, 0);
       velFor(th0, fs.v1);
