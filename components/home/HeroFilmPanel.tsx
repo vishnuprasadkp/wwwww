@@ -4,9 +4,11 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import HeroFilm, { type FilmFrame } from "./HeroFilm";
 import HeroInk from "./HeroInk";
 import NyrroStory from "./NyrroStory";
+import SoundToggle from "./SoundToggle";
+import { ambience } from "@/lib/ambience";
 import { HERO_INK } from "@/lib/painting";
 
-const OPEN_MS = 1400;
+const OPEN_MS = 820;
 // slow away, sweeping through the middle, slow to settle
 const ease = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 
@@ -118,6 +120,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
 
   const open = () => {
     if (stateRef.current !== "closed") return;
+    ambience().start(); // the click lets it sound: the place in nature the film is set in, fading in as it opens
     const go = () => {
       lock(true);
       window.history.pushState(window.history.state, "", "#nyrro");
@@ -137,6 +140,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
     if (stateRef.current !== "open" && stateRef.current !== "opening") return;
     const wasOpen = stateRef.current === "open";
     stateRef.current = "closing";
+    ambience().stop();
     setState("closing");
     // the story sinks away first, then the window closes down onto the box
     window.setTimeout(
@@ -146,7 +150,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
           setState("closed");
           lock(false);
         }),
-      wasOpen ? 420 : 0,
+      wasOpen ? 260 : 0,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -164,7 +168,10 @@ export default function HeroFilmPanel({ height }: { height: string }) {
       window.removeEventListener("popstate", onPop);
       window.removeEventListener("keydown", onKey);
       cancelAnimationFrame(anim.current);
-      if (stateRef.current !== "closed") lock(false);
+      if (stateRef.current !== "closed") {
+        lock(false);
+        ambience().stop();
+      }
     };
   }, [close]);
 
@@ -217,6 +224,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
           </svg>
           Back
         </button>
+        <SoundToggle shown={state === "open"} />
         <NyrroStory shown={state === "open"} heading="h2" />
       </div>
     </div>

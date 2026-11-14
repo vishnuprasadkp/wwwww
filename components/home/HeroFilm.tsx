@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { SCHEMES, inkPalette } from "@/lib/painting";
+import { ambience } from "@/lib/ambience";
 import type { InkPalette } from "./HeroInk";
 
 /** The AI agent case study's terracotta: its closing painting's wash. */
@@ -1056,8 +1057,8 @@ void main(){
        its body outside; then it flies off on a pass. The film opens that way too.
        Its passes are planned against the frame you see it through (the hero's box, or the whole screen), and each pass,
        once begun, is a line on the screen itself, so the frame can open out around it while it flies. */
-    const PATH_BOX = { yLo: FLOOR_N + 0.05, yHi: 0.75, look: [26, 42] };
-    const PATH_FULL = { yLo: -0.8, yHi: 0.75, look: [26, 42] };
+    const PATH_BOX = { yLo: FLOOR_N + 0.05, yHi: 0.75, look: [40, 65] };
+    const PATH_FULL = { yLo: -0.8, yHi: 0.75, look: [40, 65] };
     let PATH = full ? PATH_FULL : PATH_BOX;
     const TAU = Math.PI * 2;
     // the frame it is seen through, on the canvas (-1..1): the hero's box within the whole screen, or all of it
@@ -1081,12 +1082,17 @@ void main(){
       len: 1, // how far along the line the frame ends
       stage: 0, // how far back along the line (out of sight) it joins it, so it is on its line before any of it shows
       bend: 0, // how much the line bows, to one side or the other
-      mode: "back" as "pass" | "out" | "back", // on its pass; gone, flying on out there; out of sight, on its way back in
+      mode: "back" as "pass" | "out" | "turn" | "back", // on its pass; gone, flying on out there; out of sight, swinging round (and round the frame) onto its next heading; on its way back in
+      goalTh: 0, // the heading of its next pass
+      bow0: 0,
       outUntil: 0,
       ph: [rnd(0, TAU), rnd(0, TAU), rnd(0, TAU), rnd(0, TAU)],
       fq: [rnd(0.05, 0.075), rnd(0.11, 0.16), rnd(0.2, 0.28), rnd(0.035, 0.06)],
       nextLook: 0,
       peek: false,
+      via: [] as number[][], // out of sight, on its way round the frame to where its next line begins
+      boost: 1, // out of sight it flies faster, so it is never gone for long
+      since: 0,
     };
     const wrapA = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
     const REACH = 0.56; // how far its outline (wings spread) reaches from its centre, in its own units
@@ -1185,14 +1191,74 @@ void main(){
       const vert = Math.abs(v) > 1 ? Math.sign(v) : 0;
       const yLo = Math.max(-0.85, PATH.yLo);
       const yHi = Math.min(0.85, PATH.yHi);
-      if (t > path.nextLook && side) {
+      if (t > path.nextLook && Math.abs(u) > 1 + r.rx && v < 1 + r.down && v > -1 - r.up) {
         // to the side it is beyond, to peep in at you: a line in towards it, across, at about its height
         path.peek = true;
-        const k = clamp(v + rnd(-0.3, 0.3), yLo + 0.1, Math.min(yHi, 0.2));
-        const [a0, a1] = toScreen(side * 1.6, k);
-        const [b0, b1] = toScreen(0, k);
-        setLine(a0, a1, b0, b1, 0);
+        path.via = [];
+        // out of sight it swings round to face the side, then comes in to the edge
+        path.goalTh = side > 0 ? Math.PI : 0;
+        path.bow0 = 0;
+        path.mode = "turn";
         return;
+      }
+      /* a line from where it is (out of sight) through a point in the frame picked at random, and on out of the far side:
+         at a slope picked at random too, steeply up or down most often, else on a slant, sometimes nearly level. Gone out
+         of the foot it comes back up; gone out of a side it comes back on a slant, up or down, and leaves by the top or the
+         foot; so its path weaves every way over the frame, never the same twice. Being on its line already where it is,
+         it never has to swing round in view to join it */
+      {
+        const A = camera.aspect;
+        const W = F.hw * A;
+        const H = F.hh;
+        const CX = F.cx * A;
+        const CY = F.cy;
+        let QX = path.sx * A;
+        let QY = path.sy;
+        const deg = Math.PI / 180;
+        const k = Math.random();
+        // (when it is time to come and look at you, nearly level, so it goes out by a side, where it can peep back in)
+        const want = (t > path.nextLook ? rnd(4, 14) : k < 0.4 ? rnd(62, 85) : k < 0.8 ? rnd(28, 55) : rnd(5, 16)) * deg;
+        path.via = [];
+        if (want > 50 * deg && side && !vert) {
+          // to come down (or up) through the frame from beside it: out of sight it goes round the corner, above the frame
+          // (or below it), and sets off from there
+          const vs = Math.random() < 0.55 ? 1 : -1;
+          const cy = vs * (1 + (vs > 0 ? r.down : r.up) + 0.4);
+          const cx = side * (1 + r.rx + 0.3);
+          const sx = side * rnd(0.1, 0.8);
+          path.via = [
+            [CX + cx * W, CY + cy * H],
+            [CX + sx * W, CY + cy * H],
+          ];
+          QX = CX + sx * W;
+          QY = CY + cy * H;
+        }
+        let best: number[] | null = null;
+        let err = Infinity;
+        for (let i = 0; i < 80; i++) {
+          const tx = CX + W * rnd(-0.75, 0.75);
+          const ty = CY + H * rnd(Math.max(-0.75, PATH.yLo + 0.1), 0.7);
+          const dx = tx - QX;
+          const dy = ty - QY;
+          const l = Math.hypot(dx, dy);
+          if (l < 1e-3) continue;
+          const e = Math.abs(Math.atan2(Math.abs(dy), Math.abs(dx)) - want);
+          if (e < err) {
+            err = e;
+            best = [tx, ty, dx / l, dy / l, l];
+          }
+        }
+        if (best) {
+          const [, , dx, dy] = best;
+          const steep = Math.atan2(Math.abs(dy), Math.abs(dx)) > 50 * deg;
+          // out of sight it swings round onto this heading (going round the frame first, if it must), and only then sets
+          // off, straight in along it
+          path.goalTh = Math.atan2(dy, dx);
+          path.bow0 = steep ? 0 : rnd(-0.05, 0.05);
+          path.mode = "turn";
+          path.peek = false;
+          return;
+        }
       }
       const roll = Math.random();
       let from: [number, number];
@@ -1238,6 +1304,8 @@ void main(){
       path.len = 4;
       path.mode = outOfSight(p) ? "back" : "pass";
       path.peek = false;
+      path.via = [];
+      path.since = t;
     };
     // to the edge it is beyond, to peep in at you
     const peepIn = (t: number, b: NonNullable<typeof beetle>, side: number) => {
@@ -1248,6 +1316,21 @@ void main(){
       planLanding(t, b);
     };
     let lastWide = wideRef.current;
+    // its line from here on: the way it is heading now, straight on through the frame and out of the far side
+    const straightOn = (bend: number) => {
+      const F = view();
+      const A = camera.aspect;
+      const W = F.hw * A;
+      const X2 = path.sx * A;
+      const dx = Math.cos(path.th);
+      const dy = Math.sin(path.th);
+      const fx = dx > 1e-4 ? (F.cx * A + W - X2) / dx : dx < -1e-4 ? (F.cx * A - W - X2) / dx : Infinity;
+      const fy = dy > 1e-4 ? (F.cy + F.hh - path.sy) / dy : dy < -1e-4 ? (F.cy - F.hh - path.sy) / dy : Infinity;
+      const len = Math.max(0.5 * F.hh, Math.min(fx, fy));
+      setLine(X2, path.sy, X2 + dx * len, path.sy + dy * len, Math.abs(dy) > 0.75 ? 0 : bend);
+      path.stage = 0;
+    };
+    let humTick = 0;
     const stepPath = (t: number, dt: number, b: NonNullable<typeof beetle>) => {
       const P = path;
       PATH = full || wideRef.current ? PATH_FULL : PATH_BOX; // the frame has opened out to fill the screen, or closed again
@@ -1260,22 +1343,35 @@ void main(){
       const X = P.sx * camera.aspect;
       const Y = P.sy;
       const s = (X - P.x0) * P.lx + (Y - P.y0) * P.ly;
-      const look = Math.max(0.12, 0.7 * F.hh);
+      const look = hid ? Math.max(0.08, 0.3 * F.hh) : Math.max(0.12, 0.7 * F.hh); // out of sight it keeps close to its line
       // out of sight on its way in, it makes first for its line well back from the frame, then on along it
       const sa = P.mode === "back" ? Math.max(s, P.stage) + look : s + look;
       const bow = P.bend * F.hh * Math.sin(Math.PI * clamp(sa / Math.max(0.01, P.len), 0, 1)) * 2;
       const ax = P.x0 + P.lx * sa - P.ly * bow;
       const ay = P.y0 + P.ly * sa + P.lx * bow;
       let goal = Math.atan2(ay - Y, ax - X);
+      if (P.mode === "turn") goal = P.via.length ? goal : P.goalTh;
+      if ((P.mode === "back" || P.mode === "turn") && P.via.length) {
+        // round the frame, out of sight, to where its line begins
+        const [vx, vy] = P.via[0];
+        goal = Math.atan2(vy - Y, vx - X);
+        if (Math.hypot(vx - X, vy - Y) < 0.45 * F.hh) P.via.shift();
+      }
       if (P.mode === "out") goal = P.th; // flying straight on out there for a while
       // in sight it turns only gently; out of sight it may swing round quicker, so it is never gone for long
-      const maxW = hid ? 1.8 : 0.5;
-      const acc = hid ? 3 : 0.8;
-      const wGoal = clamp(wrapA(goal - P.th) * 1.2, -maxW, maxW);
+      const maxW = hid ? 6 : 0.5;
+      const acc = hid ? 16 : 0.8;
+      const wGoal = clamp(wrapA(goal - P.th) * (hid ? 3 : 1.2), -maxW, maxW);
       P.w += clamp(wGoal - P.w, -acc * dt, acc * dt);
       P.th += P.w * dt;
-      P.sx += Math.cos(P.th) * SPEED * kx * dt;
-      P.sy += Math.sin(P.th) * SPEED * ky * dt;
+      // how far clear of the frame it is (its whole outline): out there it speeds up, and slows to its own pace as it
+      // nears the frame again
+      const clear = Math.max(Math.abs(r.x) - 1 - r.rx, r.y - 1 - r.down, -1 - r.up - r.y);
+      // (swinging round out there it all but hovers, turning on the spot, so it never swings back into view as it turns)
+      const turning = P.mode === "turn" && !P.via.length;
+      P.boost += ((turning ? 0.15 : 1 + 3 * clamp(clear / 0.45, 0, 1)) - P.boost) * Math.min(1, dt * (turning ? 7 : 3));
+      P.sx += Math.cos(P.th) * SPEED * P.boost * kx * dt;
+      P.sy += Math.sin(P.th) * SPEED * P.boost * ky * dt;
       P.d = P.d0 * depthK(t);
       onFrame(P.sx, P.sy, P.d, pB);
       if (dt > 0) fly.v.copy(pB).sub(fly.p).divideScalar(dt);
@@ -1284,15 +1380,36 @@ void main(){
       const r2 = reach(fly.p);
       const hid2 = Math.abs(r2.x) > 1 + r2.rx || r2.y > 1 + r2.down || r2.y < -1 - r2.up;
       const outward = (P.sx - F.cx) * camera.aspect * Math.cos(P.th) + (P.sy - F.cy) * Math.sin(P.th) > 0;
-      if (P.mode === "pass" && hid2 && outward && s > 0.2) {
+      if (P.mode === "turn" && (!hid2 || (!P.via.length && Math.abs(wrapA(P.goalTh - P.th)) < 0.04 && Math.abs(P.w) < 0.25))) {
+        // round onto its heading: from here, straight in through the frame along it
+        straightOn(P.bow0);
+        P.mode = hid2 ? "back" : "pass";
+        if (!hid2 && P.peek) {
+          P.peek = false;
+          P.nextLook = t + rnd(8, 16);
+        }
+      } else if ((P.mode === "back" || P.mode === "turn") && hid2 && t - P.since > 7) {
+        // out of sight too long (it lost its way out there): a new pass from where it is
+        P.since = t;
+        planPass(t);
+      } else if (P.mode === "pass" && hid2 && outward && s > 0.2) {
         // through the frame and out past the far edge: gone; it flies on a while out there, or swings round at once
         P.mode = "out";
-        P.outUntil = t + (Math.random() < 0.25 ? rnd(0.8, 2.2) : rnd(0, 0.25));
-      } else if (P.mode === "out" && t > P.outUntil && (Math.abs(r2.x) > 1 + r2.rx + 0.3 || r2.y > 1 + r2.down + 0.5 || r2.y < -1 - r2.up - 0.5)) {
+        P.outUntil = t + rnd(0, 0.2);
+      } else if (P.mode === "out" && t > P.outUntil && (Math.abs(r2.x) > 1 + r2.rx + 0.2 || r2.y > 1 + r2.down + 0.3 || r2.y < -1 - r2.up - 0.3)) {
         // well clear of the frame (so not even a wing tip shows as it swings round): its next pass
         P.mode = "back";
+        P.since = t;
         planPass(t);
-      } else if (P.mode === "back" && !hid2) P.mode = "pass"; // back in sight, on its pass
+      } else if (P.mode === "back" && !hid2) {
+        P.mode = "pass"; // back in sight, on its pass
+        if (!P.peek) straightOn(P.bend); // so it never corrects its course where you can see it
+        if (P.peek) {
+          // it came into sight before it could come to the side and look: it carries on across, and looks another time
+          P.peek = false;
+          P.nextLook = t + rnd(8, 16);
+        }
+      }
       // its body: the way it is going; banking a little into its curves, tipping as it climbs or dives
       fly.yaw = yawFor(P.th, fly.p);
       const rollGoal = clamp(-P.w * 0.4 * (Math.cos(P.th) >= 0 ? 1 : -1), -0.25, 0.25);
@@ -1301,7 +1418,7 @@ void main(){
       b.root.position.copy(fly.p);
       b.root.quaternion.copy(qFromEuler(0.3 + fly.climb + 0.04 * Math.sin(t * 0.5), fly.yaw, fly.roll));
       // on its way in to a side, lined up and still out of sight: it comes to the edge and peeps in at you
-      if (P.peek && P.mode === "back" && hid2 && Math.abs(r2.x) > 1 && Math.abs(wrapA(goal - P.th)) < 0.3 && Math.cos(P.th) * Math.sign(r2.x) < -0.5) peepIn(t, b, Math.sign(r2.x));
+      if (P.peek && P.mode === "back" && hid2 && Math.abs(r2.x) > 1 && Math.abs(wrapA(goal - P.th)) < 0.5 && Math.cos(P.th) * Math.sign(r2.x) < -0.4) peepIn(t, b, Math.sign(r2.x));
     };
     const wp = new THREE.Vector3();
     const eyeTmp = new THREE.Vector3();
@@ -1491,6 +1608,11 @@ void main(){
           b.root.quaternion.copy(qFromEuler(0.3 + fly.climb, fly.yaw, 0));
         }
         // the frame opened out or closed while it was peeping in at an edge: that edge has moved, so it flies off
+        // its wings' hum comes from where it is, when the film is open
+        if ((full || wideRef.current) && (++humTick & 3) === 0) {
+          const r = reach(b.root.position);
+          ambience().beetle(clamp(r.x, -1.5, 1.5), !(Math.abs(r.x) > 1 + r.rx || r.y > 1 + r.down || r.y < -1 - r.up));
+        }
         if (wideRef.current !== lastWide) {
           lastWide = wideRef.current;
           if (fs.mode === "perch" || (fs.mode === "land" && fs.after === "perch")) planTakeoff(t, b);

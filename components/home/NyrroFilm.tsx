@@ -5,6 +5,8 @@ import Link from "next/link";
 import HeroFilm from "./HeroFilm";
 import HeroInk from "./HeroInk";
 import NyrroStory from "./NyrroStory";
+import SoundToggle from "./SoundToggle";
+import { ambience } from "@/lib/ambience";
 import { HERO_INK } from "@/lib/painting";
 
 /**
@@ -27,7 +29,13 @@ export default function NyrroFilm() {
     const before = html.style.overflow;
     html.style.overflow = "hidden";
     window.__lenis?.stop();
+    // its sound: at once if you came here by a click, otherwise from your first touch or key
+    const a = ambience();
+    a.start();
+    const off = a.resumeOnGesture();
     return () => {
+      off();
+      a.stop();
       html.style.overflow = before;
       window.__lenis?.start();
     };
@@ -51,6 +59,7 @@ export default function NyrroFilm() {
         Back
       </Link>
 
+      <SoundToggle />
       <NyrroStory />
     </div>
   );

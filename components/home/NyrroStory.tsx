@@ -19,7 +19,7 @@ export default function NyrroStory({ shown = true, heading: H = "h1" }: { shown?
     transform: on ? "translateY(0)" : "translateY(22px)",
     filter: on ? "blur(0)" : "blur(6px)",
     transition: on
-      ? `opacity 0.9s ease ${0.12 * i}s, transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) ${0.12 * i}s, filter 0.9s ease ${0.12 * i}s`
+      ? `opacity 0.7s ease ${0.1 * i}s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) ${0.1 * i}s, filter 0.7s ease ${0.1 * i}s`
       : "opacity 0.35s ease, transform 0.45s ease, filter 0.35s ease",
   });
   return (
