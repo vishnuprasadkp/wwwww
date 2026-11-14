@@ -23,7 +23,7 @@ const block = (e: Event) => {
  * The beetle film in the hero. The film is really as large as the screen, laid over the top of the page, and you see it
  * through a window: the box in the hero. Click it and that window opens out until it is the whole screen. Nothing in the
  * film moves or restarts as it does: the colour and the beetle stay exactly where they are on your screen, and more and
- * more of the film comes into view around them (the beetle comes a little nearer, and its dust begins to glow). Then
+ * more of the film comes into view around them. Then
  * Nyrro's story rises in at the foot. Back (the button, the browser's back, or Escape): the story sinks away and the
  * window closes down onto the box again.
  */
@@ -195,7 +195,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
           <>
             {/* the grey painting; the beetle film is drawn over it */}
             <HeroInk palette={HERO_INK} spread={false} speed={3} grain={1} fixedScale={inkScale} />
-            <div className="absolute inset-0" style={{ opacity: wide ? 0.82 : 0.75, transition: "opacity 1.2s ease" }}>
+            <div className="absolute inset-0" style={{ opacity: 0.75 }}>
               <HeroFilm place="top" from="right" wide={wide} frameRef={frameRef} box={{ w: size.w, h: size.h }} />
             </div>
           </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import HeroFilm from "./HeroFilm";
 import HeroInk from "./HeroInk";
@@ -12,6 +12,16 @@ import { HERO_INK } from "@/lib/painting";
  * beetle flying through all of it. Nyrro's story sits at the top right. The page does not scroll.
  */
 export default function NyrroFilm() {
+  // the very beetle of the hero's film, at its size: drawn as large as in the hero's box on this screen (its height and
+  // width as the hero lays them out), with the wash's shapes at the size they have there
+  const [hero, setHero] = useState<{ w: number; h: number; ink: number } | null>(null);
+  useEffect(() => {
+    const W = document.documentElement.clientWidth;
+    const H = window.innerHeight;
+    const h = Math.min(340, Math.max(220, W * 0.175));
+    const w = W >= 768 ? (W - 64 - 32) / 2 : W - 40;
+    setHero({ w, h, ink: Math.min(1, Math.max(0.2, h / 520)) * (H / h) });
+  }, []);
   useEffect(() => {
     const html = document.documentElement;
     const before = html.style.overflow;
@@ -25,10 +35,14 @@ export default function NyrroFilm() {
 
   return (
     <div className="fixed inset-0 z-[60] overflow-hidden" style={{ background: "#3e3e3e" }}>
-      <HeroInk palette={HERO_INK} spread={false} refHeight={700} speed={3} grain={1} />
-      <div className="absolute inset-0" style={{ opacity: 0.8 }}>
-        <HeroFilm place="top" from="right" full />
-      </div>
+      {hero && (
+        <>
+          <HeroInk palette={HERO_INK} spread={false} speed={3} grain={1} fixedScale={hero.ink} />
+          <div className="absolute inset-0" style={{ opacity: 0.75 }}>
+            <HeroFilm place="top" from="right" full box={{ w: hero.w, h: hero.h }} />
+          </div>
+        </>
+      )}
 
       <Link href="/" className="absolute left-5 top-5 z-10 flex items-center gap-2 font-mono text-[15px] leading-[19px] text-white/80 transition-colors hover:text-white md:left-8 md:top-8">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
