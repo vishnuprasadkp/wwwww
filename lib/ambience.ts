@@ -250,7 +250,7 @@ class Ambience {
     dark.type = "lowpass";
     dark.frequency.value = 3200;
     const wet = ctx.createGain();
-    wet.gain.value = 0.35;
+    wet.gain.value = 0.28;
     wet.connect(verb).connect(dark).connect(master);
     this.wet = wet;
 
@@ -276,7 +276,7 @@ class Ambience {
   private schedule() {
     const m = this.mood;
     // the chords
-    const padLevel = m === "air" ? 0.05 : m === "night" ? 0.045 : m === "musicbox" ? 0.018 : 0.034;
+    const padLevel = m === "air" ? 0.022 : m === "night" ? 0.02 : m === "musicbox" ? 0.008 : 0.014; // only just there
     const padOct = m === "night" ? -12 : 0;
     const chord = () => {
       this.playChord(CHORDS[this.chordIx % CHORDS.length].map((s) => s + padOct), padLevel, m === "night" ? 700 : 1100);
@@ -285,9 +285,9 @@ class Ambience {
     };
     chord();
     // the notes
-    if (m === "garden") this.later(() => this.melody("kalimba", scale(0, 16), [1.6, 4.2], 0.06), 2);
-    if (m === "musicbox") this.later(() => this.melody("box", scale(7, 26), [0.9, 2.2], 0.045), 1.2);
-    if (m === "night") this.later(() => this.melody("bell", scale(-5, 9), [5, 11], 0.04), 4);
+    if (m === "garden") this.later(() => this.melody("kalimba", scale(0, 16), [2, 5], 0.038), 2);
+    if (m === "musicbox") this.later(() => this.melody("box", scale(7, 26), [1.2, 2.8], 0.03), 1.2);
+    if (m === "night") this.later(() => this.melody("bell", scale(-5, 9), [6, 12], 0.026), 4);
     // the beetles
     this.later(() => this.beetles(), rnd(2, 4));
     // far-off life

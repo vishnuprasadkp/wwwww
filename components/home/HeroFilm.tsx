@@ -1224,7 +1224,7 @@ void main(){
         if (want > 50 * deg && side && !vert) {
           // to come down (or up) through the frame from beside it: out of sight it goes round the corner, above the frame
           // (or below it), and sets off from there
-          const vs = Math.random() < 0.55 ? 1 : -1;
+          const vs = Math.random() < 0.4 ? 1 : -1; // (more often from below)
           const cy = vs * (1 + (vs > 0 ? r.down : r.up) + 0.4);
           const cx = side * (1 + r.rx + 0.3);
           const sx = side * rnd(0.1, 0.8);
@@ -1237,11 +1237,14 @@ void main(){
         }
         // often right through the middle of the frame, where you see all of it; as often anywhere else in it
         const mid = Math.random() < 0.45;
+        const band = Math.random(); // how high in the frame it goes this time
         let best: number[] | null = null;
         let err = Infinity;
         for (let i = 0; i < 80; i++) {
           const tx = CX + W * (mid ? rnd(-0.25, 0.25) : rnd(-0.75, 0.75));
-          const ty = CY + H * (mid ? rnd(Math.max(-0.25, PATH.yLo + 0.1), 0.25) : rnd(Math.max(-0.75, PATH.yLo + 0.1), 0.72));
+          // low down as often as not (its raised wings carry its outline well above the point it flies through, so a
+          // line through the middle already looks high), else across the middle, sometimes high
+          const ty = CY + H * Math.max(PATH.yLo + 0.08, mid ? rnd(-0.35, 0.1) : band < 0.5 ? rnd(-0.88, -0.35) : band < 0.8 ? rnd(-0.35, 0.2) : rnd(0.2, 0.6));
           const dx = tx - QX;
           const dy = ty - QY;
           const l = Math.hypot(dx, dy);
