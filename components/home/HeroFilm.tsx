@@ -759,7 +759,7 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
     dots.frustumCulled = false;
     m.add(dots);
   }
-  return { root, body, cases, wings, legs, antennae, head, WL, dustMat, dustBody, pupils, wingK };
+  return { root, body, cases, wings, legs, antennae, head, mouth, WL, dustMat, dustBody, pupils, wingK };
 }
 
 /**
@@ -1235,13 +1235,13 @@ void main(){
           QX = CX + sx * W;
           QY = CY + cy * H;
         }
-        // mostly right through the middle of the frame, where you see all of it; now and then off to one side
-        const mid = Math.random() < 0.8;
+        // often right through the middle of the frame, where you see all of it; as often anywhere else in it
+        const mid = Math.random() < 0.45;
         let best: number[] | null = null;
         let err = Infinity;
         for (let i = 0; i < 80; i++) {
-          const tx = CX + W * (mid ? rnd(-0.2, 0.2) : rnd(-0.6, 0.6));
-          const ty = CY + H * (mid ? rnd(Math.max(-0.2, PATH.yLo + 0.1), 0.2) : rnd(Math.max(-0.6, PATH.yLo + 0.1), 0.6));
+          const tx = CX + W * (mid ? rnd(-0.25, 0.25) : rnd(-0.75, 0.75));
+          const ty = CY + H * (mid ? rnd(Math.max(-0.25, PATH.yLo + 0.1), 0.25) : rnd(Math.max(-0.75, PATH.yLo + 0.1), 0.72));
           const dx = tx - QX;
           const dy = ty - QY;
           const l = Math.hypot(dx, dy);
@@ -1336,6 +1336,17 @@ void main(){
       path.stage = 0;
     };
     let humTick = 0;
+    // its little voice: when each syllable it sings starts and how long it lasts
+    const talk = { syl: [] as [number, number][], t0: -1, len: 0, last: -99, queued: -1, seen: false, perched: false };
+    // how open its mouth is now (0 shut .. 1), and how much it is speaking at all (eases in and out around a phrase)
+    const talkNow = (t: number) => {
+      if (talk.t0 < 0) return { mouth: 0, on: 0 };
+      const u = t - talk.t0;
+      let m = 0;
+      for (const [a, d] of talk.syl) if (u >= a && u <= a + d) m = Math.max(m, Math.sin((Math.PI * (u - a)) / d));
+      const on = smooth(-0.35, 0, u) * (1 - smooth(talk.len, talk.len + 0.6, u));
+      return { mouth: m, on };
+    };
     const stepPath = (t: number, dt: number, b: NonNullable<typeof beetle>) => {
       const P = path;
       PATH = full || wideRef.current ? PATH_FULL : PATH_BOX; // the frame has opened out to fill the screen, or closed again
@@ -1619,10 +1630,33 @@ void main(){
           b.root.quaternion.copy(qFromEuler(0.3 + fly.climb, fly.yaw, 0));
         }
         // the frame opened out or closed while it was peeping in at an edge: that edge has moved, so it flies off
-        // its wings' hum comes from where it is, when the film is open
+        // with the film open (and its sound on) it speaks: as it comes into view, when it peeps in at you, and now and then
+        // as it flies across; its mouth and antennae move with each little sung syllable
         if ((full || wideRef.current) && (++humTick & 3) === 0) {
           const r = reach(b.root.position);
-          ambience().beetle(clamp(r.x, -1.5, 1.5), !(Math.abs(r.x) > 1 + r.rx || r.y > 1 + r.down || r.y < -1 - r.up));
+          const seen = b.root.visible && !(Math.abs(r.x) > 1 + r.rx || r.y > 1 + r.down || r.y < -1 - r.up);
+          const perched = fs.mode === "perch";
+          const due = t - talk.last > 4 && (talk.t0 < 0 || t > talk.t0 + talk.len + 0.4);
+          const say = (delay: number) => {
+            talk.queued = t + delay;
+          };
+          if (due && talk.queued < 0) {
+            if (seen && !talk.seen) say(rnd(0.5, 1.2));
+            else if (perched && !talk.perched) say(rnd(0.6, 1));
+            else if (seen && t - talk.last > rnd(12, 20)) say(0);
+          }
+          if (talk.queued >= 0 && t >= talk.queued) {
+            talk.queued = -1;
+            const syl = seen || perched ? ambience().speak(clamp(r.x, -1.5, 1.5)) : [];
+            if (syl.length) {
+              talk.syl = syl;
+              talk.t0 = t;
+              talk.len = syl[syl.length - 1][0] + syl[syl.length - 1][1];
+              talk.last = t;
+            }
+          }
+          talk.seen = seen;
+          talk.perched = perched;
         }
         if (wideRef.current !== lastWide) {
           lastWide = wideRef.current;
@@ -1712,13 +1746,21 @@ void main(){
       b.head.rotation.y = (0.12 + 0.1 * fs.peek) * Math.sin(k * 0.7) * (1 - open);
       // it looks up at you; on the frame it turns its head right round to you
       b.head.rotation.x = (-0.1 * (1 - fs.peek) + 0.55 * fs.peek) * (k < T_FREE ? lookIn : 1) * (1 - open);
+      // speaking: its mouth opens and closes with each syllable, its head lifts a little to you and nods with the words
+      const tk = talkNow(k);
+      b.mouth.scale.set(0.07 * (1 + 0.25 * tk.mouth), 0.04 * (1 + 1.6 * tk.mouth), 0.05);
+      b.mouth.position.y = -0.06 - 0.018 * tk.mouth;
+      b.head.rotation.x += -0.12 * tk.on + 0.06 * tk.mouth;
+      b.head.rotation.y += 0.05 * tk.on * Math.sin(k * 9);
       // the antennae feel the air all the time: a slow searching sway, quicker while it walks, swept back in flight
       const airborne = lift;
       b.antennae.forEach((a, i) => {
         const sd = i === 0 ? 1 : -1;
         const w = walking ? 2.6 : 1.4;
         a.rotation.y = sd * (0.35 + 0.15 * Math.sin(k * w + i * 1.3) + 0.25 * airborne);
-        a.rotation.x = -0.35 + 0.12 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * airborne;
+        // (speaking, they lift and quiver with each syllable)
+        a.rotation.x = -0.35 + 0.12 * Math.sin(k * w * 0.8 + i * 2) + 0.35 * airborne - (0.35 * tk.on + 0.12 * tk.mouth) * (1 - 0.5 * airborne);
+        a.rotation.y += sd * 0.1 * tk.mouth;
         // a wave runs along each antenna, joint by joint, so it curls and uncurls as it feels the air
         (a.userData.joints as THREE.Group[]).forEach((j, n) => {
           const ph = k * w * 1.1 - n * 0.7 + i * 2.1;

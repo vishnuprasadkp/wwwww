@@ -4,17 +4,17 @@
  * The sound of Nyrro's film: soft, calm music with little beetles in it, made live in the browser (nothing to download).
  *
  * No drones and no wind: only gentle, slow sounds. Warm chords that breathe in and out, a few soft notes now and then
- * (all from one five-note scale, so nothing ever clashes), and the beetles: the light flutter of small wings as one
- * flits past, and their tiny chirps. When the film's beetle flies into view you hear its wings flutter, from where it is.
+ * (all from one five-note scale, so nothing ever clashes), and the beetles: small beetles' tiny chirps about the place,
+ * and the film's beetle itself, which sings a little phrase, in tune, as it comes into view or peeps in at you.
  *
  * It comes in several moods (see MOODS). It starts as the film opens (the click that opens it lets the browser play
  * sound) and fades away as it closes. The sound button turns it off and on; off is remembered.
  */
 
 export const MOODS = {
-  garden: { name: "Morning garden", note: "Warm chords, soft kalimba notes, a far-off bird, beetles fluttering by" },
+  garden: { name: "Morning garden", note: "Warm chords, soft kalimba notes, a far-off bird, beetles chirping" },
   musicbox: { name: "Music box", note: "A slow, gentle music box, a whisper of chords, beetles chirping softly" },
-  night: { name: "Night meadow", note: "Deep, slow chords, a soft bell now and then, crickets far away, beetles' wings" },
+  night: { name: "Night meadow", note: "Deep, slow chords, a soft bell now and then, crickets far away, beetles chirping" },
   air: { name: "Just air", note: "Only warm, breathing chords and the beetles: no melody at all" },
 } as const;
 export type Mood = keyof typeof MOODS;
@@ -49,15 +49,12 @@ class Ambience {
   private master: GainNode | null = null;
   private bus: GainNode | null = null; // everything, into the master
   private wet: GainNode | null = null; // into the reverb
-  private noise: AudioBuffer | null = null;
   private timers: number[] = [];
   private stopT = 0;
   private playing = false;
   private listeners = new Set<Listener>();
   private pad: { stop: (at: number) => void }[] = [];
   private chordIx = 0;
-  private lastSeen = false;
-  private lastFlutter = 0;
   muted = false;
   mood: Mood = DEFAULT_MOOD;
 
@@ -155,13 +152,53 @@ class Ambience {
     this.listeners.forEach((fn) => fn(this.on));
   }
 
-  /** Where the film's beetle is: across the frame (-1 left .. 1 right), and whether you can see it. As it comes into
-   *  view you hear its wings, from that side. */
-  beetle(x: number, seen: boolean) {
-    if (!this.ctx || !this.playing) return;
-    const now = this.ctx.currentTime;
-    if (seen && !this.lastSeen && now - this.lastFlutter > 3) this.flutter(Math.max(-0.8, Math.min(0.8, x * 0.6)), 1);
-    this.lastSeen = seen;
+  /** The film's beetle speaks: a little sung phrase of two to five tiny syllables, in tune with the music, from where it
+   *  is (-1 left .. 1 right). Returns when each syllable starts and how long it lasts (seconds from now), so the beetle
+   *  can move its mouth and antennae with it; nothing (and no sound) while the sound is off. */
+  speak(x: number): [number, number][] {
+    if (!this.ctx || !this.playing || this.muted || this.ctx.state !== "running") return [];
+    const ctx = this.ctx;
+    const pan = Math.max(-0.75, Math.min(0.75, x * 0.6));
+    const o2 = this.out(pan, 0.35, 0.05);
+    const notes = scale(19, 31); // high in the same scale as the music (about 880 to 1760 Hz)
+    const n = 2 + Math.floor(Math.random() * 4);
+    let i = Math.floor(Math.random() * notes.length);
+    let at = 0.04;
+    const syl: [number, number][] = [];
+    // a phrase rises or falls a little, like a question or an answer
+    const dir = Math.random() < 0.5 ? 1 : -1;
+    for (let k = 0; k < n; k++) {
+      const d = k === n - 1 ? rnd(0.12, 0.2) : rnd(0.06, 0.11);
+      const f = hz(notes[i]);
+      const t = ctx.currentTime + at;
+      const o = ctx.createOscillator();
+      o.type = "sine";
+      // each syllable slides into its note, with a tiny lilt
+      o.frequency.setValueAtTime(f * (dir > 0 ? 0.92 : 1.08), t);
+      o.frequency.exponentialRampToValueAtTime(f, t + d * 0.45);
+      o.frequency.setTargetAtTime(f * (k === n - 1 ? (dir > 0 ? 1.06 : 0.94) : 1), t + d * 0.6, d * 0.3);
+      const o3 = ctx.createOscillator(); // a soft second voice an octave up, for a little sparkle
+      o3.type = "sine";
+      o3.frequency.setValueAtTime(f * 2, t);
+      const g3 = ctx.createGain();
+      g3.gain.value = 0.12;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(1, t + 0.018);
+      g.gain.setTargetAtTime(0.6, t + 0.02, d * 0.4);
+      g.gain.linearRampToValueAtTime(0, t + d);
+      o.connect(g);
+      o3.connect(g3).connect(g);
+      g.connect(o2);
+      o.start(t);
+      o3.start(t);
+      o.stop(t + d + 0.03);
+      o3.stop(t + d + 0.03);
+      syl.push([at, d]);
+      at += d + rnd(0.035, 0.08);
+      i = Math.max(0, Math.min(notes.length - 1, i + dir * pick([0, 1, 1, 2]) * (Math.random() < 0.25 ? -1 : 1)));
+    }
+    return syl;
   }
 
   private clearTimers() {
@@ -217,10 +254,6 @@ class Ambience {
     wet.connect(verb).connect(dark).connect(master);
     this.wet = wet;
 
-    const n = ctx.sampleRate * 2;
-    this.noise = ctx.createBuffer(1, n, ctx.sampleRate);
-    const d = this.noise.getChannelData(0);
-    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
   }
 
   // a sound's way out: some of it straight, some into the room, from one side or the other
@@ -242,7 +275,6 @@ class Ambience {
 
   private schedule() {
     const m = this.mood;
-    this.lastSeen = false;
     // the chords
     const padLevel = m === "air" ? 0.05 : m === "night" ? 0.045 : m === "musicbox" ? 0.018 : 0.034;
     const padOct = m === "night" ? -12 : 0;
@@ -363,46 +395,10 @@ class Ambience {
     step();
   }
 
-  // the beetles: now a flutter of wings going by, now a few tiny chirps
+  // small beetles about the place: now and then a few tiny chirps, near or far
   private beetles() {
-    if (Math.random() < 0.6) this.flutter(rnd(-0.8, 0.8), rnd(0.6, 1));
-    else this.chirps(rnd(-0.7, 0.7));
-    this.later(() => this.beetles(), rnd(3.5, 8));
-  }
-
-  // a small beetle's wings: a soft, quick whirr that comes and goes as it flits past
-  private flutter(pan: number, size: number) {
-    const ctx = this.ctx!;
-    const t = ctx.currentTime + 0.03;
-    this.lastFlutter = t;
-    const dur = rnd(0.5, 1.1) * (0.7 + 0.5 * size);
-    const src = ctx.createBufferSource();
-    src.buffer = this.noise;
-    src.loop = true;
-    const bp = ctx.createBiquadFilter();
-    bp.type = "bandpass";
-    bp.frequency.value = rnd(1700, 2600);
-    bp.Q.value = 1.4;
-    // the wingbeat: the sound pulsing quickly, as wings do
-    const beat = ctx.createGain();
-    beat.gain.value = 0.5;
-    const lfo = ctx.createOscillator();
-    lfo.frequency.value = rnd(55, 85);
-    const depth = ctx.createGain();
-    depth.gain.value = 0.5;
-    lfo.connect(depth).connect(beat.gain);
-    const env = ctx.createGain();
-    env.gain.setValueAtTime(0, t);
-    env.gain.linearRampToValueAtTime(1, t + dur * 0.35);
-    env.gain.linearRampToValueAtTime(0, t + dur);
-    const p = ctx.createStereoPanner();
-    p.pan.setValueAtTime(pan, t);
-    p.pan.linearRampToValueAtTime(Math.max(-1, Math.min(1, pan + rnd(-0.4, 0.4))), t + dur);
-    src.connect(bp).connect(beat).connect(env).connect(p).connect(this.out(0, 0.3, 0.09 * size));
-    src.start(t, Math.random());
-    src.stop(t + dur + 0.05);
-    lfo.start(t);
-    lfo.stop(t + dur + 0.05);
+    this.chirps(rnd(-0.7, 0.7));
+    this.later(() => this.beetles(), rnd(4, 9));
   }
 
   // a beetle's little voice: two to four tiny, high, soft chirps
