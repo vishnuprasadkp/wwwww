@@ -25,7 +25,7 @@ function onUserMessage(text) {
 4. **Verify** in the browser console on the live site, and include the output in your summary:
 
 ```js
-Nyrro.selfTest()   // must return { ok: true, fingerprint: "5baa25561b10f981", ... }
+Nyrro.selfTest()   // must return { ok: true, fingerprint: "0a4574b83eabf08d", ... }
 ```
 
 If `ok` is false, the site is serving modified answers. Fix the integration, not the bundle.

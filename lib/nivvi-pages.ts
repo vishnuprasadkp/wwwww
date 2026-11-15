@@ -25,7 +25,7 @@ const CASES: Record<string, PageInfo> = {
     prompts: [
       "What problem did Enterprise Search solve?",
       "Who were the users of Enterprise Search?",
-      "What were the outcomes of Enterprise Search?",
+      "What shipped in Enterprise Search?",
       "What were the key design decisions on Enterprise Search?",
       "What did he learn from Enterprise Search?",
     ],
@@ -49,7 +49,7 @@ const CASES: Record<string, PageInfo> = {
     prompts: [
       "What problem did the Agent Workforce Platform solve?",
       "Who were the users of the Agent Workforce Platform?",
-      "What were the outcomes of the Agent Workforce Platform?",
+      "What shipped in the Agent Workforce Platform?",
       "What were the key design decisions on the Agent Workforce Platform?",
       "What did he learn from the Agent Workforce Platform?",
     ],
@@ -97,7 +97,7 @@ const RESUME: PageInfo = {
   prompts: [
     "What is his career history?",
     "What are his core skills?",
-    "What has he achieved at UnifyApps?",
+    "What has he achieved at ICD?",
     "What did he study?",
   ],
 };

@@ -8,7 +8,7 @@ const T=[
 ["give an example of a tough design decision","tradeoffs"],["how does he deal with complexity","simplicity"],["how does he align different teams","stakeholders"],
 ["has he built genai products","ai-experience"],["how does he make ai explainable","ai-trust"],["who stays in control of the ai","human-in-loop"],
 ["multi agent orchestration experience","agentic"],["how does he handle compliance","ai-governance"],["conversational ai experience","copilots"],
-["has he led a team","leadership"],["does he coach juniors","mentoring"],["how is his handoff to engineering","engineers"],["component library experience","item-component-libraries"],
+["has he led a team","leadership"],["does he coach juniors","mentoring"],["how is his handoff to engineering","engineers"],["component library experience","design-system"],
 ["is his work accessible","accessibility"],["how does he handle deadlines","multitasking"],["show me what he has built","projects-list"],
 ["what sectors has he designed for","industries"],["what's his best work","proudest"],["hardest project he did","most-complex"],
 ["fintech experience","domain-banking"],["govtech experience","domain-government"],["experience with hospitals","domain-healthcare"],["has he designed crm tools","domain-sales"],

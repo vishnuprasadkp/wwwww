@@ -1,6 +1,6 @@
 # Nyrro v5 — Question & Answer Catalogue
 
-Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.** Every answer opens by answering the question directly.
+Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.** Every answer opens by answering the question directly.
 
 ## Rules Nyrro follows
 
@@ -9,7 +9,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 - **General questions open with how Vishnu approaches the topic** (from his resume, About page and own words), then examples from the case studies.
 - **The 5 case studies come first.** Other client work appears only when a visitor names the client, asks for "other projects", or asks about a field the case studies don't cover.
 - **No repeated answers.** Suggestions never point to something already answered.
-- **Honest when it doesn't know:** _"I don't know about that, sorry. 🪲 You can get in touch with Vishnu directly at vishnuprasadkp98@gmail.com, and he'll be happy to help."_
+- **Honest when it doesn't know:** _"I don't know about that, sorry. You can get in touch with Vishnu directly at vishnuprasadkp98@gmail.com, and he'll be happy to help."_
 
 ---
 
@@ -24,7 +24,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Hi! I'm **Nyrro**, Vishnu's guide on this site. 🪲
+> Hi! I'm **Nyrro**, Vishnu's guide on this site. 
 >
 > Ask me about his projects, his skills, how he designs, or how to reach him.
 
@@ -44,7 +44,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**. 🪲
+> Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**. 
 
 ### About Vishnu
 
@@ -55,9 +55,11 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> **Vishnu Prasad K P** is a **Senior Product Designer at ICD (Itu Chaudhuri Design)**, working with UnifyApps. He's a product designer with 5+ years of experience in enterprise SaaS, AI and data-heavy platforms, and takes complex, high-stakes systems from discovery to launch.
+> **Vishnu Prasad K P** is a **Senior Product Designer at ICD (Itu Chaudhuri Design)**. UnifyApps is ICD's major client, and Vishnu leads design on his projects there.
 >
-> He has worked on **100+ use cases** across ICD, UnifyApps, Brane Enterprises and Kocha, focusing on **agentic systems, search, automation and decision-making tools**.
+> He has five years of designing enterprise and AI products for clients like **HDFC Bank**, **Sony Pictures Networks India** and **Abu Dhabi's Department of Government Enablement**. He tries to understand the system behind a product before he designs its screens, something he picked up studying architecture at NIT Bhopal.
+>
+> His work covers **agentic products**, **search**, **consent and governance**, and the **design system** used across 60+ deployments.
 
 #### Describe vishnu in one line?  `summary-oneline`
 **Also asked as:** _give me a quick summary_ · _sum him up in a sentence_
@@ -75,11 +77,11 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> **5+ years.**
+> **5 years.**
 >
-> - **ICD (Itu Chaudhuri Design), working with UnifyApps:** Oct 2024 – Present
-> - **Brane Enterprises:** Oct 2023 – Sep 2024
-> - **Kocha Technologies:** Nov 2021 – Oct 2023
+> - **ICD (Itu Chaudhuri Design):** Oct 2024 to Present, design lead for UnifyApps
+> - **Brane Enterprises:** Oct 2023 to Sep 2024
+> - **Kocha Technologies:** Nov 2021 to Oct 2023
 
 #### What is his title?  `title-seniority`
 **Also asked as:** _is he a lead designer_ · _what level is he_ · _why do case studies say lead_ · _is he senior or lead_ · _what's his designation_
@@ -88,7 +90,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> **Senior Product Designer** at ICD (Itu Chaudhuri Design), working with UnifyApps. In his case studies his project role is listed as Lead Product Designer.
+> **Senior Product Designer** at ICD (Itu Chaudhuri Design). UnifyApps is ICD's major client. On his projects he is the **design lead for the engagement**, owning design from the first brief to developer handoff.
 
 #### Where has he worked before?  `career-history`
 **Also asked as:** _what is his career history_ · _walk me through his career_ · _which companies has he worked for_
@@ -97,12 +99,12 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> 1. **Senior Product Designer, ICD (working with UnifyApps)**, Oct 2024 – Present
->    Led product design across 60+ enterprise deployments for clients including HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority and DGE Abu Dhabi.
-> 2. **Senior UI/UX Designer, Brane Enterprises**, Oct 2023 – Sep 2024
->    Led UX for 20+ client projects across e-commerce, finance, healthcare and education on Brane's low-code platform.
-> 3. **Senior UI/UX Designer, Kocha Technologies**, Nov 2021 – Oct 2023
->    Designed Nextdecentrum, an NFT marketplace, end to end: onboarding, discovery, bidding and wallet integration.
+> 1. **Senior Product Designer, ICD (Itu Chaudhuri Design)**, Oct 2024 to Present
+>   Design lead for UnifyApps, ICD's major client, and its customers across India, the UAE and the US. Projects include HDFC Bank's consent platform, Sony Pictures Networks India, DGE Abu Dhabi, an AI search platform and an agent builder.
+> 2. **Senior UI/UX Designer, Brane Enterprises**, Oct 2023 to Sep 2024
+>   Led UX for 20+ client products in finance, healthcare, e-commerce and education, built on Brane's low-code platform.
+> 3. **Senior UI/UX Designer, Kocha Technologies**, Nov 2021 to Oct 2023
+>   Designed an NFT marketplace end to end, from onboarding to bidding and wallet.
 
 #### Where did he study?  `education`
 **Also asked as:** _what is his degree_ · _what is his educational background_ · _did he go to design school_
@@ -111,7 +113,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> **Bachelor of Planning & Architecture**, NIT Bhopal, Madhya Pradesh, India (Aug 2017 – May 2021)
+> **Bachelor of Planning & Architecture**, NIT Bhopal, Madhya Pradesh, India (2017 to 2021)
 
 #### How does architecture help his design?  `architecture-link`
 **Also asked as:** _why did he move from architecture to product design_ · _what does design like a building mean_
@@ -182,7 +184,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Coding isn't listed on his resume. He works closely with engineering: he **established design-to-engineering handoff and review workflows** that reduced rework and implementation inconsistencies.
+> Coding isn't listed on his resume. He works closely with engineering: he **established design-to-engineering handoff and review workflows** that reduced rework and implementation inconsistencies. He also builds what he designs. He put together this site himself and ships it with GitHub and Vercel.
 
 #### What are his skills?  `skills`
 **Also asked as:** _what is his expertise_ · _what are his core skills_ · _list his skills_ · _what skills does vishnu have_ · _what can he do_ · _what does he know_
@@ -191,32 +193,30 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> His skills cover design and research, product strategy and systems, and AI, built over 5+ years of designing enterprise SaaS, AI and data-heavy platforms.
+> From his resume:
 >
-> Here are the skills from his resume:
+> **Product design**
+> End to end product design, interaction design, information architecture, design systems, data visualization, accessibility (WCAG 2.1)
 >
-> **Design & Research**
-> Product Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems, Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS
+> **AI products**
+> Agentic UX, AI trust and explainability patterns, human in the loop workflows, prompt design, AI assisted prototyping
 >
-> **Strategy & Systems**
-> Product Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design Leadership, DesignOps, Data Visualization
->
-> **AI & Tools**
-> Claude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping
+> **Research and leadership**
+> Discovery, user research, usability testing, stakeholder management, design critique, mentoring, DesignOps
 >
 > **Tools**
-> Claude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects)
+> Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, GitHub, Vercel
 
 #### What tools does he use?  `tools`
 **Also asked as:** _does he use figma_ · _what is his design stack_ · _does he use ai tools_ · _what software does he know_ · _how does he use claude_
 
-**Keywords:** tools, software, stack, toolkit, design tools, ai tools, prototyping tool, tool, tools he uses, favourite tool, favorite tool, which software, apps he uses, adobe tools
+**Keywords:** tools, software, stack, toolkit, design tools, ai tools, prototyping tool, tool, tools he uses, favourite tool, favorite tool, figma ai, which software, apps he uses, adobe tools
 
 **Answer:**
 
 > The tools on his resume:
 >
-> Claude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects)
+> Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, GitHub, Vercel
 
 #### Has he designed mobile apps?  `platforms`
 **Also asked as:** _does he do tablet design_ · _web or mobile_
@@ -232,32 +232,32 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 #### What are his design skills?  `skills-design`
 **Also asked as:** _is he a ux designer or ui designer_ · _does he do ui as well as ux_
 
-**Keywords:** design skills, ux skills, ui skills, ui ux skills, ux design skills, ui design, visual design, is he a ux designer, ux designer, ui designer, ux or ui, product design skills, craft, ia skills, does he do visual design, ui visual
+**Keywords:** design skills, ux skills, ui skills, ui ux skills, ux design skills, user flows, ui design, visual design, is he a ux designer, ux designer, ui designer, ux or ui, ui or ux, ui as well as ux, product design skills, craft, enterprise saas, saas, b2b saas, ia skills, does he do visual design, ui visual
 
 **Answer:**
 
 > Vishnu owned and scaled the UnifyApps design system, reused across 60+ deployments.
 >
-> His design skills, from his resume:
+> From his resume:
 >
-> **Design & Research**
-> Product Design, UX Design, Interaction Design, Information Architecture, User Flows, Design Systems, Component Libraries, Usability Testing, Journey Mapping, Accessibility (WCAG), Enterprise SaaS
+> **Product design**
+> End to end product design, interaction design, information architecture, design systems, data visualization, accessibility (WCAG 2.1)
 
 #### What are his research skills?  `skills-research`
 **Also asked as:** _does he do usability testing_
 
-**Keywords:** research skills, ux research skills, usability, research and testing, testing skills, test his designs, test designs, testing, how does he test
+**Keywords:** research skills, ux research skills, usability, journey mapping, research and testing, testing skills, test his designs, test designs, testing, how does he test
 
 **Answer:**
 
 > Research comes before screens in Vishnu's process.
 >
-> From his resume: **User Research, Product Discovery, Usability Testing, Journey Mapping.**
+> From his resume: **discovery, user research and usability testing.**
 
 #### What are his strategy skills?  `skills-strategy`
 **Also asked as:** _does he have product thinking_ · _is he strategic_
 
-**Keywords:** strategy skills, strategic, business skills, product thinking, product sense, strategy and systems, data visualization skills, understand business, business goals, business sense, business acumen, business
+**Keywords:** strategy skills, product strategy, systems thinking, strategic, business skills, product thinking, product sense, strategy and systems, data visualization skills, understand business, business goals, business sense, business acumen, business
 
 **Answer:**
 
@@ -265,8 +265,8 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 >
 > From his resume:
 >
-> **Strategy & Systems**
-> Product Strategy, Product Discovery, Systems Thinking, User Research, Stakeholder Management, Design Leadership, DesignOps, Data Visualization
+> **Research and leadership**
+> Discovery, user research, usability testing, stakeholder management, design critique, mentoring, DesignOps
 
 #### What are his ai skills?  `skills-ai`
 **Also asked as:** _is he familiar with prompt engineering_ · _does he know agentic ux_
@@ -277,10 +277,10 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > At ICD, Vishnu leads design on AI products for UnifyApps: AI search, AI agents and AI decision tools.
 >
-> His AI skills, from his resume:
+> From his resume:
 >
-> **AI & Tools**
-> Claude, AI Product Design, Prompt Engineering, Agentic UX, Generative Prototyping
+> **AI products**
+> Agentic UX, AI trust and explainability patterns, human in the loop workflows, prompt design, AI assisted prototyping
 
 #### What are his soft skills?  `skills-soft`
 **Also asked as:** _how are his communication skills_ · _is he a team player_
@@ -318,16 +318,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Yes. **Product Design** is under **Design & Research** on his resume.
-
-#### Does he know ux design?  `item-ux-design`
-**Also asked as:** _is he good at ux design_ · _does he use ux design_
-
-**Keywords:** know ux design, use ux design, uses ux design, good at ux design, good in ux design, experience in ux design, experience with ux design, familiar with ux design, knows ux design, work in ux design, skilled in ux design, expert in ux design, proficient in ux design, ux design skills, know ux, use ux, uses ux, good at ux, good in ux, experience in ux, experience with ux, familiar with ux, knows ux, work in ux, skilled in ux, expert in ux, proficient in ux, ux skills
-
-**Answer:**
-
-> Yes. **UX Design** is under **Design & Research** on his resume.
+> Yes. **Product Design** is under **Product design** on his resume.
 
 #### Does he know interaction design?  `item-interaction-design`
 **Also asked as:** _is he good at interaction design_ · _does he use interaction design_
@@ -336,7 +327,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Yes. **Interaction Design** is under **Design & Research** on his resume.
+> Yes. **Interaction Design** is under **Product design** on his resume.
 
 #### Does he know information architecture?  `item-information-architecture`
 **Also asked as:** _is he good at information architecture_ · _does he use information architecture_
@@ -345,16 +336,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Yes. **Information Architecture** is under **Design & Research** on his resume.
-
-#### Does he know user flows?  `item-user-flows`
-**Also asked as:** _is he good at user flows_ · _does he use user flows_
-
-**Keywords:** know user flows, use user flows, uses user flows, good at user flows, good in user flows, experience in user flows, experience with user flows, familiar with user flows, knows user flows, work in user flows, skilled in user flows, expert in user flows, proficient in user flows, user flows skills
-
-**Answer:**
-
-> Yes. **User Flows** is under **Design & Research** on his resume.
+> Yes. **Information Architecture** is under **Product design** on his resume.
 
 #### Does he know design systems?  `item-design-systems`
 **Also asked as:** _is he good at design systems_ · _does he use design systems_
@@ -363,115 +345,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Yes. **Design Systems** is under **Design & Research** on his resume.
-
-#### Does he know component libraries?  `item-component-libraries`
-**Also asked as:** _is he good at component libraries_ · _does he use component libraries_
-
-**Keywords:** know component libraries, use component libraries, uses component libraries, good at component libraries, good in component libraries, experience in component libraries, experience with component libraries, familiar with component libraries, knows component libraries, work in component libraries, skilled in component libraries, expert in component libraries, proficient in component libraries, component libraries skills
-
-**Answer:**
-
-> Yes. **Component Libraries** is under **Design & Research** on his resume.
-
-#### Does he know usability testing?  `item-usability-testing`
-**Also asked as:** _is he good at usability testing_ · _does he use usability testing_
-
-**Keywords:** know usability testing, use usability testing, uses usability testing, good at usability testing, good in usability testing, experience in usability testing, experience with usability testing, familiar with usability testing, knows usability testing, work in usability testing, skilled in usability testing, expert in usability testing, proficient in usability testing, usability testing skills, know usability test, use usability test, uses usability test, good at usability test, good in usability test, experience in usability test, experience with usability test, familiar with usability test, knows usability test, work in usability test, skilled in usability test, expert in usability test, proficient in usability test, usability test skills, know user testing, use user testing, uses user testing, good at user testing, good in user testing, experience in user testing, experience with user testing, familiar with user testing, knows user testing, work in user testing, skilled in user testing, expert in user testing, proficient in user testing, user testing skills
-
-**Answer:**
-
-> Yes. **Usability Testing** is under **Design & Research** on his resume.
-
-#### Does he know journey mapping?  `item-journey-mapping`
-**Also asked as:** _is he good at journey mapping_ · _does he use journey mapping_
-
-**Keywords:** know journey mapping, use journey mapping, uses journey mapping, good at journey mapping, good in journey mapping, experience in journey mapping, experience with journey mapping, familiar with journey mapping, knows journey mapping, work in journey mapping, skilled in journey mapping, expert in journey mapping, proficient in journey mapping, journey mapping skills
-
-**Answer:**
-
-> Yes. **Journey Mapping** is under **Design & Research** on his resume.
-
-#### Does he know accessibility?  `item-accessibility-wcag`
-**Also asked as:** _is he good at accessibility_ · _does he use accessibility_
-
-**Keywords:** know accessibility, use accessibility, uses accessibility, good at accessibility, good in accessibility, experience in accessibility, experience with accessibility, familiar with accessibility, knows accessibility, work in accessibility, skilled in accessibility, expert in accessibility, proficient in accessibility, accessibility skills, know wcag, use wcag, uses wcag, good at wcag, good in wcag, experience in wcag, experience with wcag, familiar with wcag, knows wcag, work in wcag, skilled in wcag, expert in wcag, proficient in wcag, wcag skills, know a11y, use a11y, uses a11y, good at a11y, good in a11y, experience in a11y, experience with a11y, familiar with a11y, knows a11y, work in a11y, skilled in a11y, expert in a11y, proficient in a11y, a11y skills
-
-**Answer:**
-
-> Yes. **Accessibility (WCAG)** is under **Design & Research** on his resume.
-
-#### Does he know enterprise saas?  `item-enterprise-saas`
-**Also asked as:** _is he good at enterprise saas_ · _does he use enterprise saas_
-
-**Keywords:** know enterprise saas, use enterprise saas, uses enterprise saas, good at enterprise saas, good in enterprise saas, experience in enterprise saas, experience with enterprise saas, familiar with enterprise saas, knows enterprise saas, work in enterprise saas, skilled in enterprise saas, expert in enterprise saas, proficient in enterprise saas, enterprise saas skills, know saas, use saas, uses saas, good at saas, good in saas, experience in saas, experience with saas, familiar with saas, knows saas, work in saas, skilled in saas, expert in saas, proficient in saas, saas skills, know b2b saas, use b2b saas, uses b2b saas, good at b2b saas, good in b2b saas, experience in b2b saas, experience with b2b saas, familiar with b2b saas, knows b2b saas, work in b2b saas, skilled in b2b saas, expert in b2b saas, proficient in b2b saas, b2b saas skills
-
-**Answer:**
-
-> Yes. **Enterprise SaaS** is under **Design & Research** on his resume.
-
-#### Does he know product strategy?  `item-product-strategy`
-**Also asked as:** _is he good at product strategy_ · _does he use product strategy_
-
-**Keywords:** know product strategy, use product strategy, uses product strategy, good at product strategy, good in product strategy, experience in product strategy, experience with product strategy, familiar with product strategy, knows product strategy, work in product strategy, skilled in product strategy, expert in product strategy, proficient in product strategy, product strategy skills
-
-**Answer:**
-
-> Yes. **Product Strategy** is under **Strategy & Systems** on his resume.
-
-#### Does he know product discovery?  `item-product-discovery`
-**Also asked as:** _is he good at product discovery_ · _does he use product discovery_
-
-**Keywords:** know product discovery, use product discovery, uses product discovery, good at product discovery, good in product discovery, experience in product discovery, experience with product discovery, familiar with product discovery, knows product discovery, work in product discovery, skilled in product discovery, expert in product discovery, proficient in product discovery, product discovery skills
-
-**Answer:**
-
-> Yes. **Product Discovery** is under **Strategy & Systems** on his resume.
-
-#### Does he know systems thinking?  `item-systems-thinking`
-**Also asked as:** _is he good at systems thinking_ · _does he use systems thinking_
-
-**Keywords:** know systems thinking, use systems thinking, uses systems thinking, good at systems thinking, good in systems thinking, experience in systems thinking, experience with systems thinking, familiar with systems thinking, knows systems thinking, work in systems thinking, skilled in systems thinking, expert in systems thinking, proficient in systems thinking, systems thinking skills
-
-**Answer:**
-
-> Yes. **Systems Thinking** is under **Strategy & Systems** on his resume.
-
-#### Does he know user research?  `item-user-research`
-**Also asked as:** _is he good at user research_ · _does he use user research_
-
-**Keywords:** know user research, use user research, uses user research, good at user research, good in user research, experience in user research, experience with user research, familiar with user research, knows user research, work in user research, skilled in user research, expert in user research, proficient in user research, user research skills, know ux research, use ux research, uses ux research, good at ux research, good in ux research, experience in ux research, experience with ux research, familiar with ux research, knows ux research, work in ux research, skilled in ux research, expert in ux research, proficient in ux research, ux research skills
-
-**Answer:**
-
-> Yes. **User Research** is under **Strategy & Systems** on his resume.
-
-#### Does he know stakeholder management?  `item-stakeholder-management`
-**Also asked as:** _is he good at stakeholder management_ · _does he use stakeholder management_
-
-**Keywords:** know stakeholder management, use stakeholder management, uses stakeholder management, good at stakeholder management, good in stakeholder management, experience in stakeholder management, experience with stakeholder management, familiar with stakeholder management, knows stakeholder management, work in stakeholder management, skilled in stakeholder management, expert in stakeholder management, proficient in stakeholder management, stakeholder management skills
-
-**Answer:**
-
-> Yes. **Stakeholder Management** is under **Strategy & Systems** on his resume.
-
-#### Does he know design leadership?  `item-design-leadership`
-**Also asked as:** _is he good at design leadership_ · _does he use design leadership_
-
-**Keywords:** know design leadership, use design leadership, uses design leadership, good at design leadership, good in design leadership, experience in design leadership, experience with design leadership, familiar with design leadership, knows design leadership, work in design leadership, skilled in design leadership, expert in design leadership, proficient in design leadership, design leadership skills
-
-**Answer:**
-
-> Yes. **Design Leadership** is under **Strategy & Systems** on his resume.
-
-#### Does he know designops?  `item-designops`
-**Also asked as:** _is he good at designops_ · _does he use designops_
-
-**Keywords:** know designops, use designops, uses designops, good at designops, good in designops, experience in designops, experience with designops, familiar with designops, knows designops, work in designops, skilled in designops, expert in designops, proficient in designops, designops skills, know design ops, use design ops, uses design ops, good at design ops, good in design ops, experience in design ops, experience with design ops, familiar with design ops, knows design ops, work in design ops, skilled in design ops, expert in design ops, proficient in design ops, design ops skills
-
-**Answer:**
-
-> Yes. **DesignOps** is under **Strategy & Systems** on his resume.
+> Yes. **Design Systems** is under **Product design** on his resume.
 
 #### Does he know data visualization?  `item-data-visualization`
 **Also asked as:** _is he good at data visualization_ · _does he use data visualization_
@@ -480,25 +354,16 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Yes. **Data Visualization** is under **Strategy & Systems** on his resume.
+> Yes. **Data Visualization** is under **Product design** on his resume.
 
-#### Does he know ai product design?  `item-ai-product-design`
-**Also asked as:** _is he good at ai product design_ · _does he use ai product design_
+#### Does he know accessibility?  `item-accessibility-wcag`
+**Also asked as:** _is he good at accessibility_ · _does he use accessibility_
 
-**Keywords:** know ai product design, use ai product design, uses ai product design, good at ai product design, good in ai product design, experience in ai product design, experience with ai product design, familiar with ai product design, knows ai product design, work in ai product design, skilled in ai product design, expert in ai product design, proficient in ai product design, ai product design skills
-
-**Answer:**
-
-> Yes. **AI Product Design** is under **AI & Tools** on his resume.
-
-#### Does he know prompt engineering?  `item-prompt-engineering`
-**Also asked as:** _is he good at prompt engineering_ · _does he use prompt engineering_
-
-**Keywords:** know prompt engineering, use prompt engineering, uses prompt engineering, good at prompt engineering, good in prompt engineering, experience in prompt engineering, experience with prompt engineering, familiar with prompt engineering, knows prompt engineering, work in prompt engineering, skilled in prompt engineering, expert in prompt engineering, proficient in prompt engineering, prompt engineering skills, know prompting, use prompting, uses prompting, good at prompting, good in prompting, experience in prompting, experience with prompting, familiar with prompting, knows prompting, work in prompting, skilled in prompting, expert in prompting, proficient in prompting, prompting skills, know prompt design, use prompt design, uses prompt design, good at prompt design, good in prompt design, experience in prompt design, experience with prompt design, familiar with prompt design, knows prompt design, work in prompt design, skilled in prompt design, expert in prompt design, proficient in prompt design, prompt design skills
+**Keywords:** know accessibility, use accessibility, uses accessibility, good at accessibility, good in accessibility, experience in accessibility, experience with accessibility, familiar with accessibility, knows accessibility, work in accessibility, skilled in accessibility, expert in accessibility, proficient in accessibility, accessibility skills, know wcag, use wcag, uses wcag, good at wcag, good in wcag, experience in wcag, experience with wcag, familiar with wcag, knows wcag, work in wcag, skilled in wcag, expert in wcag, proficient in wcag, wcag skills, know a11y, use a11y, uses a11y, good at a11y, good in a11y, experience in a11y, experience with a11y, familiar with a11y, knows a11y, work in a11y, skilled in a11y, expert in a11y, proficient in a11y, a11y skills
 
 **Answer:**
 
-> Yes. **Prompt Engineering** is under **AI & Tools** on his resume.
+> Yes. **Accessibility (WCAG)** is under **Product design** on his resume.
 
 #### Does he know agentic ux?  `item-agentic-ux`
 **Also asked as:** _is he good at agentic ux_ · _does he use agentic ux_
@@ -507,25 +372,106 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Yes. **Agentic UX** is under **AI & Tools** on his resume.
+> Yes. **Agentic UX** is under **AI products** on his resume.
 
-#### Does he know generative prototyping?  `item-generative-prototyping`
-**Also asked as:** _is he good at generative prototyping_ · _does he use generative prototyping_
+#### Does he know ai trust?  `item-ai-trust-explainability`
+**Also asked as:** _is he good at ai trust_ · _does he use ai trust_
 
-**Keywords:** know generative prototyping, use generative prototyping, uses generative prototyping, good at generative prototyping, good in generative prototyping, experience in generative prototyping, experience with generative prototyping, familiar with generative prototyping, knows generative prototyping, work in generative prototyping, skilled in generative prototyping, expert in generative prototyping, proficient in generative prototyping, generative prototyping skills, know ai prototyping, use ai prototyping, uses ai prototyping, good at ai prototyping, good in ai prototyping, experience in ai prototyping, experience with ai prototyping, familiar with ai prototyping, knows ai prototyping, work in ai prototyping, skilled in ai prototyping, expert in ai prototyping, proficient in ai prototyping, ai prototyping skills
-
-**Answer:**
-
-> Yes. **Generative Prototyping** is under **AI & Tools** on his resume.
-
-#### Does he know claude?  `item-claude`
-**Also asked as:** _is he good at claude_ · _does he use claude_
-
-**Keywords:** claude, know claude, use claude, uses claude, good at claude, good in claude, experience in claude, experience with claude, familiar with claude, knows claude, work in claude, skilled in claude, expert in claude, proficient in claude, claude skills
+**Keywords:** know ai trust, use ai trust, uses ai trust, good at ai trust, good in ai trust, experience in ai trust, experience with ai trust, familiar with ai trust, knows ai trust, work in ai trust, skilled in ai trust, expert in ai trust, proficient in ai trust, ai trust skills, know explainability, use explainability, uses explainability, good at explainability, good in explainability, experience in explainability, experience with explainability, familiar with explainability, knows explainability, work in explainability, skilled in explainability, expert in explainability, proficient in explainability, explainability skills, know explainable ai, use explainable ai, uses explainable ai, good at explainable ai, good in explainable ai, experience in explainable ai, experience with explainable ai, familiar with explainable ai, knows explainable ai, work in explainable ai, skilled in explainable ai, expert in explainable ai, proficient in explainable ai, explainable ai skills
 
 **Answer:**
 
-> Yes. **Claude** is in his resume's **Tools** section.
+> Yes. **AI Trust & Explainability** is under **AI products** on his resume.
+
+#### Does he know human in the loop?  `item-human-in-the-loop-workflows`
+**Also asked as:** _is he good at human in the loop_ · _does he use human in the loop_
+
+**Keywords:** know human in the loop, use human in the loop, uses human in the loop, good at human in the loop, good in human in the loop, experience in human in the loop, experience with human in the loop, familiar with human in the loop, knows human in the loop, work in human in the loop, skilled in human in the loop, expert in human in the loop, proficient in human in the loop, human in the loop skills, know hitl, use hitl, uses hitl, good at hitl, good in hitl, experience in hitl, experience with hitl, familiar with hitl, knows hitl, work in hitl, skilled in hitl, expert in hitl, proficient in hitl, hitl skills
+
+**Answer:**
+
+> Yes. **Human in the Loop Workflows** is under **AI products** on his resume.
+
+#### Does he know prompt design?  `item-prompt-design`
+**Also asked as:** _is he good at prompt design_ · _does he use prompt design_
+
+**Keywords:** know prompt design, use prompt design, uses prompt design, good at prompt design, good in prompt design, experience in prompt design, experience with prompt design, familiar with prompt design, knows prompt design, work in prompt design, skilled in prompt design, expert in prompt design, proficient in prompt design, prompt design skills, know prompt engineering, use prompt engineering, uses prompt engineering, good at prompt engineering, good in prompt engineering, experience in prompt engineering, experience with prompt engineering, familiar with prompt engineering, knows prompt engineering, work in prompt engineering, skilled in prompt engineering, expert in prompt engineering, proficient in prompt engineering, prompt engineering skills, know prompting, use prompting, uses prompting, good at prompting, good in prompting, experience in prompting, experience with prompting, familiar with prompting, knows prompting, work in prompting, skilled in prompting, expert in prompting, proficient in prompting, prompting skills
+
+**Answer:**
+
+> Yes. **Prompt Design** is under **AI products** on his resume.
+
+#### Does he know ai assisted prototyping?  `item-ai-assisted-prototyping`
+**Also asked as:** _is he good at ai assisted prototyping_ · _does he use ai assisted prototyping_
+
+**Keywords:** know ai assisted prototyping, use ai assisted prototyping, uses ai assisted prototyping, good at ai assisted prototyping, good in ai assisted prototyping, experience in ai assisted prototyping, experience with ai assisted prototyping, familiar with ai assisted prototyping, knows ai assisted prototyping, work in ai assisted prototyping, skilled in ai assisted prototyping, expert in ai assisted prototyping, proficient in ai assisted prototyping, ai assisted prototyping skills, know ai prototyping, use ai prototyping, uses ai prototyping, good at ai prototyping, good in ai prototyping, experience in ai prototyping, experience with ai prototyping, familiar with ai prototyping, knows ai prototyping, work in ai prototyping, skilled in ai prototyping, expert in ai prototyping, proficient in ai prototyping, ai prototyping skills, know generative prototyping, use generative prototyping, uses generative prototyping, good at generative prototyping, good in generative prototyping, experience in generative prototyping, experience with generative prototyping, familiar with generative prototyping, knows generative prototyping, work in generative prototyping, skilled in generative prototyping, expert in generative prototyping, proficient in generative prototyping, generative prototyping skills
+
+**Answer:**
+
+> Yes. **AI Assisted Prototyping** is under **AI products** on his resume.
+
+#### Does he know product discovery?  `item-product-discovery`
+**Also asked as:** _is he good at product discovery_ · _does he use product discovery_
+
+**Keywords:** know product discovery, use product discovery, uses product discovery, good at product discovery, good in product discovery, experience in product discovery, experience with product discovery, familiar with product discovery, knows product discovery, work in product discovery, skilled in product discovery, expert in product discovery, proficient in product discovery, product discovery skills, know discovery, use discovery, uses discovery, good at discovery, good in discovery, experience in discovery, experience with discovery, familiar with discovery, knows discovery, work in discovery, skilled in discovery, expert in discovery, proficient in discovery, discovery skills
+
+**Answer:**
+
+> Yes. **Product Discovery** is under **Research & leadership** on his resume.
+
+#### Does he know user research?  `item-user-research`
+**Also asked as:** _is he good at user research_ · _does he use user research_
+
+**Keywords:** know user research, use user research, uses user research, good at user research, good in user research, experience in user research, experience with user research, familiar with user research, knows user research, work in user research, skilled in user research, expert in user research, proficient in user research, user research skills, know ux research, use ux research, uses ux research, good at ux research, good in ux research, experience in ux research, experience with ux research, familiar with ux research, knows ux research, work in ux research, skilled in ux research, expert in ux research, proficient in ux research, ux research skills
+
+**Answer:**
+
+> Yes. **User Research** is under **Research & leadership** on his resume.
+
+#### Does he know usability testing?  `item-usability-testing`
+**Also asked as:** _is he good at usability testing_ · _does he use usability testing_
+
+**Keywords:** know usability testing, use usability testing, uses usability testing, good at usability testing, good in usability testing, experience in usability testing, experience with usability testing, familiar with usability testing, knows usability testing, work in usability testing, skilled in usability testing, expert in usability testing, proficient in usability testing, usability testing skills, know usability test, use usability test, uses usability test, good at usability test, good in usability test, experience in usability test, experience with usability test, familiar with usability test, knows usability test, work in usability test, skilled in usability test, expert in usability test, proficient in usability test, usability test skills, know user testing, use user testing, uses user testing, good at user testing, good in user testing, experience in user testing, experience with user testing, familiar with user testing, knows user testing, work in user testing, skilled in user testing, expert in user testing, proficient in user testing, user testing skills
+
+**Answer:**
+
+> Yes. **Usability Testing** is under **Research & leadership** on his resume.
+
+#### Does he know stakeholder management?  `item-stakeholder-management`
+**Also asked as:** _is he good at stakeholder management_ · _does he use stakeholder management_
+
+**Keywords:** know stakeholder management, use stakeholder management, uses stakeholder management, good at stakeholder management, good in stakeholder management, experience in stakeholder management, experience with stakeholder management, familiar with stakeholder management, knows stakeholder management, work in stakeholder management, skilled in stakeholder management, expert in stakeholder management, proficient in stakeholder management, stakeholder management skills
+
+**Answer:**
+
+> Yes. **Stakeholder Management** is under **Research & leadership** on his resume.
+
+#### Does he know design critique?  `item-design-critique`
+**Also asked as:** _is he good at design critique_ · _does he use design critique_
+
+**Keywords:** know design critique, use design critique, uses design critique, good at design critique, good in design critique, experience in design critique, experience with design critique, familiar with design critique, knows design critique, work in design critique, skilled in design critique, expert in design critique, proficient in design critique, design critique skills, know critique, use critique, uses critique, good at critique, good in critique, experience in critique, experience with critique, familiar with critique, knows critique, work in critique, skilled in critique, expert in critique, proficient in critique, critique skills, know design reviews, use design reviews, uses design reviews, good at design reviews, good in design reviews, experience in design reviews, experience with design reviews, familiar with design reviews, knows design reviews, work in design reviews, skilled in design reviews, expert in design reviews, proficient in design reviews, design reviews skills
+
+**Answer:**
+
+> Yes. **Design Critique** is under **Research & leadership** on his resume.
+
+#### Does he know mentoring?  `item-mentoring`
+**Also asked as:** _is he good at mentoring_ · _does he use mentoring_
+
+**Keywords:** know mentoring, use mentoring, uses mentoring, good at mentoring, good in mentoring, experience in mentoring, experience with mentoring, familiar with mentoring, knows mentoring, work in mentoring, skilled in mentoring, expert in mentoring, proficient in mentoring, mentoring skills, know mentorship, use mentorship, uses mentorship, good at mentorship, good in mentorship, experience in mentorship, experience with mentorship, familiar with mentorship, knows mentorship, work in mentorship, skilled in mentorship, expert in mentorship, proficient in mentorship, mentorship skills
+
+**Answer:**
+
+> Yes. **Mentoring** is under **Research & leadership** on his resume.
+
+#### Does he know designops?  `item-designops`
+**Also asked as:** _is he good at designops_ · _does he use designops_
+
+**Keywords:** know designops, use designops, uses designops, good at designops, good in designops, experience in designops, experience with designops, familiar with designops, knows designops, work in designops, skilled in designops, expert in designops, proficient in designops, designops skills, know design ops, use design ops, uses design ops, good at design ops, good in design ops, experience in design ops, experience with design ops, familiar with design ops, knows design ops, work in design ops, skilled in design ops, expert in design ops, proficient in design ops, design ops skills
+
+**Answer:**
+
+> Yes. **DesignOps** is under **Research & leadership** on his resume.
 
 #### Does he know figma?  `item-figma`
 **Also asked as:** _is he good at figma_ · _does he use figma_
@@ -536,15 +482,6 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Yes. **Figma** is in his resume's **Tools** section.
 
-#### Does he know figma ai?  `item-figma-ai`
-**Also asked as:** _is he good at figma ai_ · _does he use figma ai_
-
-**Keywords:** figma ai, know figma ai, use figma ai, uses figma ai, good at figma ai, good in figma ai, experience in figma ai, experience with figma ai, familiar with figma ai, knows figma ai, work in figma ai, skilled in figma ai, expert in figma ai, proficient in figma ai, figma ai skills
-
-**Answer:**
-
-> Yes. **Figma AI** is in his resume's **Tools** section.
-
 #### Does he know figjam?  `item-figjam`
 **Also asked as:** _is he good at figjam_ · _does he use figjam_
 
@@ -553,15 +490,6 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 **Answer:**
 
 > Yes. **FigJam** is in his resume's **Tools** section.
-
-#### Does he know miro?  `item-miro`
-**Also asked as:** _is he good at miro_ · _does he use miro_
-
-**Keywords:** miro, know miro, use miro, uses miro, good at miro, good in miro, experience in miro, experience with miro, familiar with miro, knows miro, work in miro, skilled in miro, expert in miro, proficient in miro, miro skills
-
-**Answer:**
-
-> Yes. **Miro** is in his resume's **Tools** section.
 
 #### Does he know framer?  `item-framer`
 **Also asked as:** _is he good at framer_ · _does he use framer_
@@ -572,14 +500,14 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Yes. **Framer** is in his resume's **Tools** section.
 
-#### Does he know google ai studio?  `item-google-ai-studio`
-**Also asked as:** _is he good at google ai studio_ · _does he use google ai studio_
+#### Does he know miro?  `item-miro`
+**Also asked as:** _is he good at miro_ · _does he use miro_
 
-**Keywords:** google ai studio, know google ai studio, use google ai studio, uses google ai studio, good at google ai studio, good in google ai studio, experience in google ai studio, experience with google ai studio, familiar with google ai studio, knows google ai studio, work in google ai studio, skilled in google ai studio, expert in google ai studio, proficient in google ai studio, google ai studio skills, ai studio, know ai studio, use ai studio, uses ai studio, good at ai studio, good in ai studio, experience in ai studio, experience with ai studio, familiar with ai studio, knows ai studio, work in ai studio, skilled in ai studio, expert in ai studio, proficient in ai studio, ai studio skills
+**Keywords:** miro, know miro, use miro, uses miro, good at miro, good in miro, experience in miro, experience with miro, familiar with miro, knows miro, work in miro, skilled in miro, expert in miro, proficient in miro, miro skills
 
 **Answer:**
 
-> Yes. **Google AI Studio** is in his resume's **Tools** section.
+> Yes. **Miro** is in his resume's **Tools** section.
 
 #### Does he know adobe creative suite?  `item-adobe-creative-suite`
 **Also asked as:** _is he good at adobe creative suite_ · _does he use adobe creative suite_
@@ -617,6 +545,42 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Yes. **After Effects** is part of the **Adobe Creative Suite** in his tools.
 
+#### Does he know claude?  `item-claude`
+**Also asked as:** _is he good at claude_ · _does he use claude_
+
+**Keywords:** claude, know claude, use claude, uses claude, good at claude, good in claude, experience in claude, experience with claude, familiar with claude, knows claude, work in claude, skilled in claude, expert in claude, proficient in claude, claude skills
+
+**Answer:**
+
+> Yes. **Claude** is in his resume's **Tools** section.
+
+#### Does he know google ai studio?  `item-google-ai-studio`
+**Also asked as:** _is he good at google ai studio_ · _does he use google ai studio_
+
+**Keywords:** google ai studio, know google ai studio, use google ai studio, uses google ai studio, good at google ai studio, good in google ai studio, experience in google ai studio, experience with google ai studio, familiar with google ai studio, knows google ai studio, work in google ai studio, skilled in google ai studio, expert in google ai studio, proficient in google ai studio, google ai studio skills, ai studio, know ai studio, use ai studio, uses ai studio, good at ai studio, good in ai studio, experience in ai studio, experience with ai studio, familiar with ai studio, knows ai studio, work in ai studio, skilled in ai studio, expert in ai studio, proficient in ai studio, ai studio skills
+
+**Answer:**
+
+> Yes. **Google AI Studio** is in his resume's **Tools** section.
+
+#### Does he know github?  `item-github`
+**Also asked as:** _is he good at github_ · _does he use github_
+
+**Keywords:** github, know github, use github, uses github, good at github, good in github, experience in github, experience with github, familiar with github, knows github, work in github, skilled in github, expert in github, proficient in github, github skills, know git, use git, uses git, good at git, good in git, experience in git, experience with git, familiar with git, knows git, work in git, skilled in git, expert in git, proficient in git, git skills
+
+**Answer:**
+
+> Yes. **GitHub** is in his resume's **Tools** section.
+
+#### Does he know vercel?  `item-vercel`
+**Also asked as:** _is he good at vercel_ · _does he use vercel_
+
+**Keywords:** vercel, know vercel, use vercel, uses vercel, good at vercel, good in vercel, experience in vercel, experience with vercel, familiar with vercel, knows vercel, work in vercel, skilled in vercel, expert in vercel, proficient in vercel, vercel skills
+
+**Answer:**
+
+> Yes. **Vercel** is in his resume's **Tools** section.
+
 #### Does he use adobe xd?  `not-on-resume`
 **Also asked as:** _does he know webflow_
 
@@ -624,7 +588,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> That isn't listed on his resume. His tools are: Claude, Figma, Figma AI, FigJam, Miro, Framer, Google AI Studio, Adobe Creative Suite (Photoshop, Illustrator, After Effects).
+> That isn't listed on his resume. His tools are: Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, GitHub, Vercel.
 >
 > For anything else, you can ask him at **vishnuprasadkp98@gmail.com**.
 
@@ -666,13 +630,11 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu's principles come from the products he has built, and each case study ends with them.
+> Three things he has learned over five years:
 >
-> - **Enterprise Search:** trust drives adoption more than AI performance
-> - **ADEO:** important decisions benefit from deliberate interactions, not speed
-> - **Agent Workforce:** simplicity means showing each user the right level of complexity
-> - **HDFC Bank:** good records create compliance naturally
-> - **Sony:** AI should act before the problem happens
+> 1. **Trust comes from what people can see.** If the system did something, it should show it: the source behind an answer, a sync that failed, a label that says a draft was written by AI.
+> 2. **Some decisions should be slow.** A vote needs a reason. A consent needs a record. Not every screen is about saving clicks.
+> 3. **Simple doesn't mean less.** It means showing the right depth to the right person, which is why the agent builder has three modes instead of one.
 
 #### How does he do user research?  `research`
 **Also asked as:** _does he do research_ · _how does he validate designs_ · _how does he gather requirements_
@@ -732,12 +694,11 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Results from his case studies, with their sources:
+> Results from his case studies, and where each number comes from:
 >
-> - **ADEO:** committee preparation went from up to **15 working days to minutes**
-> - **Sony:** contract cycle time went from **30–45 days to 18 days** (project documentation)
-> - **HDFC Bank:** **400M+ consents** captured and **$4M** saved a year (reported by UnifyApps)
-> - **Enterprise Search & Agent Workforce:** **~$5.5M** projected annual savings (UnifyApps' published figures)
+> - **HDFC Bank:** **400M+** consent records and **3M+** messages a day (reported by UnifyApps)
+> - **Sony:** contract cycle time from **30 to 45 days down to 18**, board minutes from **2 to 3 days down to about 4 hours**, time to insight from **48 hours to 90 minutes** (project documentation)
+> - **ADEO:** a **15 working day** preparation cycle replaced by briefings ready before each session, across **1,000+** proposals a month
 
 #### What is his working style?  `working-style`
 **Also asked as:** _is he detail oriented_ · _what is he like to work with_
@@ -876,15 +837,12 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu works at lead scope: he owns design end to end on his projects, works directly with executive stakeholders, and mentors designers on his team. Design Leadership is on his resume.
+> Vishnu leads design on his projects. He owns the work from the first brief to developer handoff and works directly with PMs and client executives.
 >
-> From his resume:
->
-> - Led product design across **60+ enterprise deployments**
-> - Owned and scaled the **UnifyApps design system**
-> - Managed **3 enterprise initiatives in parallel**
-> - Established **design-to-engineering handoff and review workflows**
-> - **Mentored 6 junior designers** through critiques and growth planning
+> - Looks after the **UnifyApps design system**, reused across **60+ deployments**
+> - Ran **3 product initiatives in parallel**
+> - Set up the **design to dev handoff process** and the **WCAG 2.1 accessibility standard**
+> - **Mentors 6 designers** through critiques and reviews
 
 #### Does he mentor designers?  `mentoring`
 **Also asked as:** _how does he mentor_
@@ -1118,7 +1076,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > He has worked on **100+ use cases** across his career:
 >
-> - **60+ deployments** at UnifyApps (through ICD)
+> - **60+ deployments** with UnifyApps, through ICD
 > - **20+ client projects** at Brane Enterprises
 > - His portfolio features **five case studies**
 
@@ -1357,7 +1315,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> I'm **Nyrro**, Vishnu's creative side project, named after a beetle. 🪲 I'm inspired by beetles' natural defence mechanisms, and by the idea of a tiny creature leaving a paint-like trail as it moves: part observation, part imagination.
+> I'm **Nyrro**, Vishnu's creative side project, named after a beetle. I'm inspired by beetles' natural defence mechanisms, and by the idea of a tiny creature leaving a paint-like trail as it moves: part observation, part imagination.
 
 #### Are you an ai?  `are-you-ai`
 **Also asked as:** _are you a real person_
@@ -1426,7 +1384,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> From his resume: he led product design across 60+ deployments, managed 3 initiatives in parallel, owned the UnifyApps design system and mentored 6 junior designers. For a specific role, contact him at **vishnuprasadkp98@gmail.com**.
+> His work is already lead scope: he leads design on each engagement, looks after a design system used in **60+ deployments**, ran **3 initiatives in parallel** and **mentors 6 designers**. His title is Senior Product Designer. For a specific role, write to him at **vishnuprasadkp98@gmail.com**.
 
 #### Can he work remotely?  `remote`
 **Also asked as:** _is he open to relocation_
@@ -1480,7 +1438,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know that, sorry. 🪲 That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.
+> I don't know that, sorry. That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.
 
 #### What is his biggest weakness?  `weakness`
 **Also asked as:** _what does he need to improve_
@@ -1525,12 +1483,12 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> Yes, and every number says where it came from:
+> Yes, and each number says where it came from:
 >
-> - **Enterprise Search & Agent Workforce:** UnifyApps' published figures from a financial institution's deployment
 > - **HDFC Bank:** reported by UnifyApps
 > - **Sony:** from project documentation
 > - **ADEO:** from the case study
+> - **Enterprise Search and Agent Workforce:** these pages describe what shipped rather than numbers, because the published figures belong to a different deployment
 > - **Other client projects:** expected results, clearly marked as such
 
 #### What awards has he won?  `awards-certs`
@@ -1540,7 +1498,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't have any information about awards or certifications, sorry. 🪲 You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.
+> I don't have any information about awards or certifications, sorry. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.
 
 ### Boundaries
 
@@ -1560,7 +1518,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Answer:**
 
-> I'm Nyrro, and I only know about Vishnu and his work. 🪲 Want to see one of his case studies instead?
+> I'm Nyrro, and I only know about Vishnu and his work. Want to see one of his case studies instead?
 
 ---
 
@@ -1574,11 +1532,13 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > **Intelligent Enterprise Search Platform (UnifyApps)**
 >
+> Company knowledge was spread across dozens of apps, and search gave people files instead of answers. Vishnu designed a search experience that **answers with sources**, along with the admin and governance tools that make those answers worth trusting.
+>
 > An AI-powered search platform that connects all of a company's tools into one shared knowledge index, so people get **direct answers with sources** instead of searching system after system.
 >
-> - **Role:** Lead Product Designer, end to end from client brief to developer handoff
+> - **Role:** Senior Product Designer, design lead for the engagement, end to end from client brief to developer handoff
 > - **Platform:** Web and mobile
-> - **Timeline:** 2025 – present
+> - **Timeline:** 2025 to present
 > - **Core idea:** in enterprise AI, trust is the product
 >
 > [Read the case study →](https://vishnuprasad.space/work/enterprise-search)
@@ -1626,12 +1586,14 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Outcomes**
 
-> These are **UnifyApps' published figures** from a large financial institution's deployment; Vishnu did not measure them himself:
+> This case study describes what shipped rather than numbers, because UnifyApps' published figures come from a different deployment.
 >
-> - ~**$5.5M** projected annual cost savings
-> - **800K+** consents captured in the first two weeks
-> - **90% faster** time-to-market (two weeks vs. a typical 12–18 months)
-> - **37%** better message delivery after consolidating 27+ messaging systems
+> What shipped:
+>
+> - Connectors for apps like **Slack, Jira, GitHub and Google Drive**
+> - **Sync status and failures** that admins can always see
+> - Settings written in **plain language**, so admins don't need engineering
+> - An **agent marketplace** where every agent shows whether it's verified
 
 **How AI is used**
 
@@ -1653,7 +1615,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu was the **Lead Product Designer**, owning design end to end from client brief to developer handoff, with ICD as design partner to UnifyApps. The product team defined the roles and led the research. Timeline: 2025 – present, web and mobile.
+> Vishnu was the **Senior Product Designer, design lead for the engagement**, owning design end to end from client brief to developer handoff, with ICD as design partner to UnifyApps. The product team defined the roles and led the research. Timeline: 2025 to present, web and mobile.
 
 ### Committee Board Agentic Application (DGE / ADEO)
 
@@ -1663,13 +1625,15 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > **Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**
 >
+> Committees at ADEO review over **1,000 important proposals every month**, and getting a single proposal ready could take 15 working days. Vishnu designed a tablet app that briefs members before the session, lets them search five years of past decisions while they discuss, and records votes and minutes as they happen.
+>
 > A government platform that helps the Abu Dhabi Executive Office's committees **analyse, deliberate on, vote on and record decisions** on 1,000+ high-impact proposals a month.
 >
 > - **Client:** UnifyApps for DGE and ADEO
 > - **Partners:** Frog Design and Nagarro Design (ICD as design partner)
 > - **Platform:** Tablet-first, plus web
-> - **Timeline:** April 2025 – February 2026
-> - **Role:** Lead Product Designer
+> - **Timeline:** April 2025 to February 2026
+> - **Role:** Senior Product Designer, design lead for the engagement
 >
 > [Read the case study →](https://vishnuprasad.space/work/adeo)
 
@@ -1678,7 +1642,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 > ADEO handles **1,000+ high-impact submissions every month**, mostly Arabic PDFs and presentations. Preparation could take **up to 15 working days**. Four structural problems:
 >
 > 1. **Slow preparation:** members skimmed documents right before sessions
-> 2. **Unsearchable history:** five years of decisions (about 3,000–4,000 documents) couldn't be used during deliberation
+> 2. **Unsearchable history:** five years of decisions (about 3,000 to 4,000 documents) couldn't be used during deliberation
 > 3. **Absent members had no voice:** no way to contribute or record a position
 > 4. **Incomplete records:** minutes, resolutions and action items were scattered
 
@@ -1726,7 +1690,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 > Impact as reported in the case study:
 >
 > - **Preparation:** up to 15 working days → **minutes**, via AI-generated briefings
-> - **History:** 3,000–4,000 documents across 5 years became **queryable mid-session**
+> - **History:** 3,000 to 4,000 documents across 5 years became **queryable mid-session**
 > - **Scale:** **1,000+ proposals a month** analysed, deliberated, voted on and documented in one platform
 > - **Documentation:** minutes, action items and resolution drafts generated **live**
 
@@ -1749,7 +1713,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu was the **Lead Product Designer**, working through UnifyApps for DGE and ADEO alongside **Frog Design** and **Nagarro Design**, with ICD as design partner. April 2025 – February 2026, tablet-first with web.
+> Vishnu was the **Senior Product Designer, design lead for the engagement**, working through UnifyApps for DGE and ADEO alongside **Frog Design** and **Nagarro Design**, with ICD as design partner. April 2025 to February 2026, tablet-first with web.
 
 **Voting**
 
@@ -1769,11 +1733,13 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > **Agent Workforce Platform (UnifyApps)**
 >
+> Building an agent used to mean passing work between product managers, engineers and compliance, with no way to check quality before launch. Vishnu designed one platform with three ways to build, **Simple, Workflow and Advanced**, so each person works at the depth they need without leaving the product.
+>
 > A platform for building, governing and running AI agents, with **three ways to build: Simple, Workflow and Advanced**, all on one design system.
 >
-> - **Role:** Lead Product Designer, concept to developer handoff
+> - **Role:** Senior Product Designer, design lead for the engagement, concept to developer handoff
 > - **Platform:** Web and mobile
-> - **Timeline:** 2025 – present
+> - **Timeline:** 2025 to present
 > - **Goal:** make AI easy to adopt, govern and scale across roles
 >
 > [Read the case study →](https://vishnuprasad.space/work/ai-agent)
@@ -1820,12 +1786,14 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Outcomes**
 
-> These are **UnifyApps' published figures** from a large financial institution's deployment; Vishnu did not measure them himself:
+> This case study describes what shipped rather than numbers, because UnifyApps' published figures come from a different deployment.
 >
-> - ~**$5.5M** projected annual cost savings
-> - **800K+** consumer consents captured in two weeks
-> - **90% faster** time-to-market
-> - **37%** better message delivery after consolidating 27+ messaging systems
+> What shipped:
+>
+> - **Three building modes** on one shared design system
+> - **Guardrails and PII rules** set while configuring the agent, not added later
+> - A **trace for every decision** the agent makes
+> - A shared **library of skills** any agent can use
 
 **How AI is used**
 
@@ -1847,9 +1815,9 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu was the **Lead Product Designer**, owning the platform from concept to developer handoff, with ICD as design partner to UnifyApps. The product team defined roles and led the research. 2025 – present.
+> Vishnu was the **Senior Product Designer, design lead for the engagement**, owning the platform from concept to developer handoff, with ICD as design partner to UnifyApps. The product team defined roles and led the research. 2025 to present.
 
-### HDFC Bank — Consent & Preference Management
+### HDFC Bank: Consent & Preference Management
 
 **Recognised by:** hdfc, hdfc bank, fourth case study, 4th case study, case study 4, fourth project, consent, consent management, preference management, dpdp, dpdp act, data protection, privacy, consent platform, data privacy, consent portal
 
@@ -1857,12 +1825,14 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > **Consent at the Scale of a Nation's Bank (HDFC Bank)**
 >
+> When India's DPDP Act came in, HDFC Bank had to collect and respect consent for more than 30 million customers, and on a deadline. Vishnu led the design of the platform that made it possible, both the customer journeys and the console the operations team works in. Today it holds over **400 million consent records** and sends more than **3 million messages a day**.
+>
 > A consent and preference management platform for one of India's largest private banks, **30M+ customers**, built for India's **DPDP Act**.
 >
 > - **Client:** UnifyApps & HDFC Bank
 > - **Platform:** Web and mobile
-> - **Timeline:** March 2025 – February 2026
-> - **Role:** Lead Product Designer, working with HDFC's senior management and product team from brief to Final-for-Dev
+> - **Timeline:** March 2025 to February 2026
+> - **Role:** Senior Product Designer, design lead for the engagement, working with HDFC's senior management and product team from brief to Final-for-Dev
 >
 > [Read the case study →](https://vishnuprasad.space/work/hdfc)
 
@@ -1931,9 +1901,9 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu was the **Lead Product Designer**, working directly with HDFC Bank's senior management and product team from brief through Final-for-Dev handoff, with ICD as design partner to UnifyApps. March 2025 – February 2026. Some details are confidential.
+> Vishnu was the **Senior Product Designer, design lead for the engagement**, working directly with HDFC Bank's senior management and product team from brief through Final-for-Dev handoff, with ICD as design partner to UnifyApps. March 2025 to February 2026. Some details are confidential.
 
-### Sony Pictures Networks India — four platforms
+### Sony Pictures Networks India: four platforms
 
 **Recognised by:** sony, spni, sony pictures, sony networks, culver max, sony liv, sony case study, fifth case study, 5th case study, case study 5, fifth project, last case study, media group
 
@@ -1941,7 +1911,9 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > **Intelligence at the core of Asia's largest media group (Sony Pictures Networks India)**
 >
-> Four enterprise platforms designed end to end, May 2025 – July 2026, with UnifyApps (ICD as design partner):
+> At Sony Pictures Networks India, contracts, board minutes, sports schedules and audience data were spread across emails, spreadsheets and separate tools. Vishnu designed **four products** to bring each of them into one place. Board minutes that took two to three days now take **about four hours**, and the team gets audience insights in **90 minutes instead of 48 hours**.
+>
+> Four enterprise platforms designed end to end, May 2025 to July 2026, with UnifyApps (ICD as design partner):
 >
 > 1. **Contract Lifecycle Intelligence**
 > 2. **Corporate Secretarial Governance**
@@ -1969,7 +1941,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > - **Contracts:** AI creation, review, routing, risk and clause checks across 2,847 agreements; SAP S/4 and Adobe Sign
 > - **Governance:** minutes from live transcripts, action items, Companies Act 2013 deadlines, statutory registers; MS Teams
-> - **Sports scheduling:** one planner across TEN 1–5, TEN SD, Sony LIV and SET India, with real-time conflict detection and rights checks
+> - **Sports scheduling:** one planner across TEN 1 to 5, TEN SD, Sony LIV and SET India, with real-time conflict detection and rights checks
 > - **Social intelligence:** ~2.47M monthly mentions combined with ratings, spike detection, sentiment and weekly AI briefings
 
 **Approach**
@@ -1984,9 +1956,9 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > From **project documentation** (not independently measured):
 >
-> - **Contract cycle time:** 30–45 days → **18 days**
+> - **Contract cycle time:** 30 to 45 days → **18 days**
 > - **SLA compliance:** untracked → **68%**
-> - **Board minutes prep:** 2–3 days → **4 hours**
+> - **Board minutes prep:** 2 to 3 days → **4 hours**
 > - **Missed deadlines:** down **85%**
 > - **Schedule build:** days → **hours**
 > - **Production conflicts:** recurring → **zero**
@@ -2001,9 +1973,9 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu was the **Lead Product Designer** across all four platforms, May 2025 – July 2026, collaborating with legal, compliance, broadcast operations, content strategy and corporate governance teams. Some details are confidential.
+> Vishnu was the **Senior Product Designer, design lead for the engagement** across all four platforms, May 2025 to July 2026, collaborating with legal, compliance, broadcast operations, content strategy and corporate governance teams. Some details are confidential.
 
-### Sony — Contract Lifecycle Intelligence
+### Sony: Contract Lifecycle Intelligence
 
 **Recognised by:** contract lifecycle, clm, contract management, contracts platform, contract, contracts, sap s4, adobe sign, agreements
 
@@ -2016,11 +1988,11 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 > - Makes **2,847 active agreements** searchable in plain language
 > - Flags **delay and renewal risks** early
 > - Integrates with **SAP S/4** and **Adobe Sign**
-> - **Contract cycle time: 30–45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)
+> - **Contract cycle time: 30 to 45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)
 >
 > [Read the case study →](https://vishnuprasad.space/work/sony)
 
-### Sony — Corporate Secretarial Governance
+### Sony: Corporate Secretarial Governance
 
 **Recognised by:** corporate secretarial, secretarial, board minutes, companies act, board governance, corporate governance, minutes, statutory
 
@@ -2034,11 +2006,11 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 > - Answers governance questions and offers resolution templates
 > - Integrates with **MS Teams**
 >
-> **Board minutes prep: 2–3 days → 4 hours; missed deadlines down 85%** (per project documentation).
+> **Board minutes prep: 2 to 3 days → 4 hours; missed deadlines down 85%** (per project documentation).
 >
 > [Read the case study →](https://vishnuprasad.space/work/sony)
 
-### Sony — Sports Rights Scheduling & Broadcast Planning
+### Sony: Sports Rights Scheduling & Broadcast Planning
 
 **Recognised by:** sports scheduling, sports, broadcast, broadcast planning, scheduling, sports rights, ten channels, tournament, channel planning
 
@@ -2046,7 +2018,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > **Sports Rights Scheduling & Broadcast Planning (Sony)**
 >
-> One planner across **TEN 1–5, TEN SD, Sony LIV and SET India**:
+> One planner across **TEN 1 to 5, TEN SD, Sony LIV and SET India**:
 >
 > - **Real-time conflict detection** and channel recommendations
 > - **Tournament schedule generation** and slot availability
@@ -2057,7 +2029,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 >
 > [Read the case study →](https://vishnuprasad.space/work/sony)
 
-### Sony — Social Intelligence Command
+### Sony: Social Intelligence Command
 
 **Recognised by:** social intelligence, social listening, social media, sentiment, audience, ratings, social command, mentions
 
@@ -2079,7 +2051,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 ## Part 3 — Other client projects (only when asked)
 
-### Digital Dubai — three projects
+### Digital Dubai: three projects
 
 **Recognised by:** digital dubai, dubai digital authority, dubai digital, dda
 
@@ -2093,7 +2065,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 >
 > Ask me about any of them.
 
-### Digital Dubai — AI Supplier Onboarding & Verification
+### Digital Dubai: AI Supplier Onboarding & Verification
 
 **Recognised by:** supplier onboarding, supplier registration, supplier verification, vendor onboarding, trade license, trade licence
 
@@ -2149,7 +2121,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Digital Dubai — Supplier GPT
+### Digital Dubai: Supplier GPT
 
 **Recognised by:** supplier gpt, procurement copilot, supplier copilot
 
@@ -2202,7 +2174,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Digital Dubai — Smart Employee Copilot
+### Digital Dubai: Smart Employee Copilot
 
 **Recognised by:** employee copilot, smart employee
 
@@ -2253,7 +2225,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Niva Bupa — AI-Assisted Insurance Sales Enablement
+### Niva Bupa: AI-Assisted Insurance Sales Enablement
 
 **Recognised by:** niva bupa, niva, bupa
 
@@ -2302,7 +2274,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Mashreq — three projects
+### Mashreq: three projects
 
 **Recognised by:** mashreq, mashreq bank
 
@@ -2316,7 +2288,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 >
 > Ask me about any of them.
 
-### Mashreq — Cash AI
+### Mashreq: Cash AI
 
 **Recognised by:** cash ai, cross-border payments, swift, mt103
 
@@ -2368,7 +2340,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Mashreq — Agentic Credit Initiation
+### Mashreq: Agentic Credit Initiation
 
 **Recognised by:** agentic credit initiation, credit initiation, agentic credit
 
@@ -2415,7 +2387,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 > - Shorter proposal preparation
 > - Better-challenged assumptions on growth, capex and customer concentration
 > - Less data entry and document chasing
-> - Clearer RM–risk collaboration
+> - Clearer RM-risk collaboration
 >
 > _These are expected outcomes from the project design, not measured production results._
 
@@ -2423,7 +2395,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Mashreq — AI Incident Investigation & Service Recovery
+### Mashreq: AI Incident Investigation & Service Recovery
 
 **Recognised by:** mashreq incident, incident investigation
 
@@ -2477,7 +2449,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Jubilant Group — Enterprise Operations & Workforce Transformation
+### Jubilant Group: Enterprise Operations & Workforce Transformation
 
 **Recognised by:** jubilant, jubilant foodworks, jubilant ingrevia, jubilant group, foodworks, ingrevia
 
@@ -2528,7 +2500,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Virtusa — Unified HR Operations & Promotion Management
+### Virtusa: Unified HR Operations & Promotion Management
 
 **Recognised by:** virtusa, buddy allocation
 
@@ -2581,7 +2553,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Tekion — AI-Assisted Enterprise Workflow Platform
+### Tekion: AI-Assisted Enterprise Workflow Platform
 
 **Recognised by:** tekion, lockbox
 
@@ -2623,9 +2595,9 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > These are **proposed success targets**, not results:
 >
-> - **85–90%** automated match rate for eligible reconciliation records
-> - **30–40%** less manual reconciliation effort
-> - **20–30%** faster exception resolution
+> - **85 to 90%** automated match rate for eligible reconciliation records
+> - **30 to 40%** less manual reconciliation effort
+> - **20 to 30%** faster exception resolution
 > - Lower processing cost per record
 >
 > _These are expected outcomes from the project design, not measured production results._
@@ -2634,7 +2606,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Lowe's — Enterprise AI Workspace
+### Lowe's: Enterprise AI Workspace
 
 **Recognised by:** lowes, lowe's, lowe
 
@@ -2682,7 +2654,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### CGB Qatar — Sharek Government Service Intelligence Platform
+### CGB Qatar: Sharek Government Service Intelligence Platform
 
 **Recognised by:** cgb, qatar, sharek, civil service, government development bureau
 
@@ -2735,7 +2707,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Mphasis — Enterprise Visitor Management
+### Mphasis: Enterprise Visitor Management
 
 **Recognised by:** mphasis, visitor management, qr check in, otp check in, gate pass, visitor pass
 
@@ -2779,7 +2751,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > - Central visibility of all visits
 > - Shorter reception time (information collected before arrival)
-> - Better host–security coordination
+> - Better host-security coordination
 > - Less admin through self-registration
 > - Clearer visitor preparation
 >
@@ -2789,7 +2761,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Air Arabia — Cabin Operations & Crew Assessments
+### Air Arabia: Cabin Operations & Crew Assessments
 
 **Recognised by:** air arabia
 
@@ -2837,7 +2809,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Stowers Institute — Enterprise Knowledge with AI Agents
+### Stowers Institute: Enterprise Knowledge with AI Agents
 
 **Recognised by:** stowers, stowers institute
 
@@ -2887,7 +2859,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Digital Ajman — Ajman One
+### Digital Ajman: Ajman One
 
 **Recognised by:** ajman, digital ajman, ajman one, trade licence renewal, license renewal, licence renewal, lease renewal, business renewal
 
@@ -2914,7 +2886,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 > - **Fee and required-document** explanations
 > - **Renewal reminders** and payment guidance
 > - **Transaction records**
-> - **Tenant–landlord proposals and counteroffers**
+> - **Tenant-landlord proposals and counteroffers**
 > - **AI-assisted contract drafting** and rental term comparison
 > - **Explicit user confirmation** before every proposal and transaction
 
@@ -2940,7 +2912,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Wasl — AI-Enabled Hospitality Budgeting
+### Wasl: AI-Enabled Hospitality Budgeting
 
 **Recognised by:** wasl
 
@@ -2992,7 +2964,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Shaw Industries — Unified AI Intelligence for Enterprise Sales
+### Shaw Industries: Unified AI Intelligence for Enterprise Sales
 
 **Recognised by:** shaw, shaw industries, rfp response
 
@@ -3043,7 +3015,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Docebo — Enterprise Intelligence & AI Workflow Automation
+### Docebo: Enterprise Intelligence & AI Workflow Automation
 
 **Recognised by:** docebo
 
@@ -3097,7 +3069,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 > Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
 
-### Greif — AI Revenue Recovery & BOM Assurance
+### Greif: AI Revenue Recovery & BOM Assurance
 
 **Recognised by:** greif, grief, bom validation, revenue recovery, bom, bill of materials
 
@@ -3126,7 +3098,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 > - **Calculates recoverable value** from quantities and rates
 >
 > **BOM assurance**
-> - Checks **parent–child attributes, material grades, dimensions and components**
+> - Checks **parent-child attributes, material grades, dimensions and components**
 > - Individual and **batch validation**
 > - A **copilot** to investigate exceptions
 >
@@ -3174,13 +3146,13 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 >
 > Plus **60+ client deployments**, including HDFC Bank, Sony, DGE Abu Dhabi, Digital Dubai, Mashreq and Lowe's.
 
-### ICD — Itu Chaudhuri Design
+### ICD: Itu Chaudhuri Design
 
 **Recognised by:** icd, itu chaudhuri, itu chaudhuri design, current company, current job, current employer
 
 **Overview**
 
-> Vishnu is a **Senior Product Designer at ICD (Itu Chaudhuri Design)**, Oct 2024 – present, embedded with **UnifyApps** as its design partner.
+> Vishnu is a **Senior Product Designer at ICD (Itu Chaudhuri Design)**, Oct 2024 to present, embedded with **UnifyApps** as its design partner.
 >
 > - Leads design across **60+ enterprise deployments**
 > - Owns and scales the **UnifyApps design system**
@@ -3194,7 +3166,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Overview**
 
-> **Brane Enterprises: Senior UI/UX Designer (Oct 2023 – Sep 2024)**
+> **Brane Enterprises: Senior UI/UX Designer (Oct 2023 to Sep 2024)**
 >
 > - Led UX for **20+ client projects** across e-commerce, finance, healthcare and education
 > - Built on Brane's **proprietary low-code platform**
@@ -3208,7 +3180,7 @@ Generated from the locked build (v5.0.0). **138 topics · 35 projects/companies.
 
 **Overview**
 
-> **Kocha Technologies: Senior UI/UX Designer (Nov 2021 – Oct 2023)**
+> **Kocha Technologies: Senior UI/UX Designer (Nov 2021 to Oct 2023)**
 >
 > - Designed **Nextdecentrum / Momentable**, an **NFT marketplace**, end to end: onboarding, discovery, bidding and wallet integration, plus brand identity
 > - Turned requirements into wireframes, flows and high-fidelity UI with a distributed engineering team

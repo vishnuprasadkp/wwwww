@@ -21,7 +21,7 @@ ASPECTS = {
                 "choice", "compromise", "downside", "rationale", "design decisions", "key decisions"],
   "outcomes":  ["outcome", "outcomes", "result", "results", "impact", "metric", "metrics", "numbers", "roi", "savings",
                 "success", "kpi", "kpis", "achieved", "benefits", "benefit", "value", "improvement", "improvements",
-                "what changed", "effect", "measurable"],
+                "what changed", "effect", "measurable", "what shipped", "shipped"],  # (v6: the pages that show what shipped)
   "ai":        ["ai", "artificial intelligence", "ml", "machine learning", "llm", "genai", "gen ai", "generative",
                 "model", "models", "type of ai", "what ai", "ai used", "ai features", "ai capabilities",
                 "agentic", "intelligence used", "how is ai used", "ai role", "use ai", "uses ai", "no ai"],
@@ -152,6 +152,8 @@ for pid, aspects in REMOVE_ENTITY_ASPECTS.items():
     for a in aspects: _ents[pid]["answers"].pop(a, None)
 for (pid, a), ans in ENTITY_FIX.items(): _ents[pid]["answers"][a] = ans
 from data_v4 import RESUME_ITEMS, ITEM_ALIASES
+from data_v6 import RESUME_ITEMS, ITEM_ALIASES_ADD  # the 2026 resume
+ITEM_ALIASES = {**ITEM_ALIASES, **ITEM_ALIASES_ADD}
 import re as _re
 _specific = set()
 for section, items in RESUME_ITEMS.items():
@@ -220,6 +222,30 @@ for e in ENTITIES:
     e["weakAliases"] = [a for a in e["aliases"] if a in WEAK_ALIASES]
     e["aliases"] = [a for a in e["aliases"] if a not in WEAK_ALIASES]
 
+# v6: the 2026 resume and the updated portfolio (data_v6.py)
+from data_v6 import A6, TOOLS_ADD, CODING_ADD, ROLE, OPENING, OUTCOMES
+for k, ans in A6.items():
+    assert k in _by, f"v6 answer for unknown topic {k}"
+    _by[k]["answer"] = ans
+from data_v6 import SKILL_SECTIONS, SKILLS_RESEARCH, TOOLS_LIST
+_by["tools"]["answer"] = "The tools on his resume:\n\n" + TOOLS_LIST
+_by["not-on-resume"]["answer"] = "That isn't listed on his resume. His tools are: " + TOOLS_LIST + ".\n\nFor anything else, you can ask him at **vishnuprasadkp98@gmail.com**."
+for k, sec in SKILL_SECTIONS.items():
+    intro = _by[k]["answer"].split("\n\n")[0]
+    _by[k]["answer"] = intro + "\n\nFrom his resume:\n\n" + sec
+_by["skills-research"]["answer"] = SKILLS_RESEARCH
+_by["coding"]["answer"] = _by["coding"]["answer"].rstrip() + " " + CODING_ADD
+_ents = {e["id"]: e for e in ENTITIES}
+for pid, opening in OPENING.items():
+    ans = _ents[pid]["answers"]
+    for a in ("overview", "role"):
+        if a in ans:
+            ans[a] = ans[a].replace("the **Lead Product Designer**", "the **" + ROLE + "**").replace("**Lead Product Designer**", "**" + ROLE + "**").replace("Lead Product Designer", ROLE)
+    ov = ans["overview"]
+    head, _, rest = ov.partition("\n\n")
+    ans["overview"] = head + "\n\n" + opening + "\n\n" + rest
+for pid, o in OUTCOMES.items(): _ents[pid]["answers"]["outcomes"] = o
+
 kb = {"version": "5.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
       "aspects": ASPECTS, "aspectLabels": {"problem":"the problem","users":"the users","features":"the features","strategy":"the approach","decisions":"the decisions and trade-offs","outcomes":"the outcomes","ai":"how AI is used","learnings":"the learnings","role":"his role and timeline","voting":"voting","unknown":"that"}, "aspectBoost": {"voting": 1.5}, "aspectFollowups": ASPECT_FOLLOWUPS, "spellfix": SPELLFIX,
       "entities": ENTITIES, "intents": INTENTS, "fallback": FALLBACK, "contactEmail": "vishnuprasadkp98@gmail.com",
@@ -227,6 +253,22 @@ kb = {"version": "5.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
       "repeatAnswer": "I've already shared that above ☝️ Is there something more specific you'd like to know?",
       "exploreChips": ["Tell me about Enterprise Search", "Tell me about ADEO", "Tell me about the Agent Workforce Platform", "Tell me about HDFC Bank", "Tell me about the Sony platforms", "How does he design?", "What AI work has he done?", "Other projects", "How can I contact him?"]}
 
+# No em or en dashes anywhere Nyrro speaks: ranges read "to", a label's dash becomes a colon, joined words a hyphen,
+# anything else a comma. And no emoji.
+def _undash(x, label=False):
+    x = _re.sub(r"(\d)\s*–\s*(\d)", r"\1 to \2", x)
+    x = _re.sub(r"\s+–\s+", " to ", x)
+    x = _re.sub(r"(\w)–(\w)", r"\1-\2", x)
+    x = _re.sub(r"\s*—\s*", ": " if label else ", ", x)
+    x = x.replace("–", "-")
+    x = _re.sub("[\U0001F300-\U0001FAFF\u2600-\u27BF\uFE0F]", "", x).replace("  ", " ").replace(" ?", "?").replace(" .", ".")
+    return x
+def _clean(o, key=None):
+    if isinstance(o, str): return _undash(o, key == "label")
+    if isinstance(o, list): return [_clean(v, key) for v in o]
+    if isinstance(o, dict): return {k: _clean(v, k) for k, v in o.items()}
+    return o
+kb = _clean(kb)
 out = "../nyrro-knowledge-base.json"
 json.dump(kb, open(out, "w"), ensure_ascii=False, indent=1)
 na = sum(len(e["answers"]) for e in ENTITIES)
