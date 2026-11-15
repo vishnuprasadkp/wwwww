@@ -82,9 +82,11 @@ export default function Nav() {
 }
 
 function NavLink({
-  label, href, external, active, className = "",
-}: { label: string; href: string; external?: boolean; active?: boolean; className?: string }) {
+  label, href, external, download, active, className = "",
+}: { label: string; href: string; external?: boolean; download?: boolean; active?: boolean; className?: string }) {
   const cls = `${className} transition-colors duration-300 hover:text-pigment ${active ? "text-pigment" : ""}`;
+  // the resume: a direct download of the PDF
+  if (download) return <a href={href} download className={cls}>{label}</a>;
   return external ? (
     <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{label}</a>
   ) : (

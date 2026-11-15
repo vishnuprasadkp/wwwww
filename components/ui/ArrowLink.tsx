@@ -64,10 +64,10 @@ export function SourceLink({ href, children }: { href: string; children: React.R
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative mt-2 inline-flex w-max items-center pb-[7px] text-[17px] leading-[18px] md:text-lg text-pigment-soft after:pointer-events-none after:absolute after:inset-0 after:border-b-[1.5px] after:border-transparent after:transition-colors after:duration-200 hover:after:border-pigment-soft"
+      className="group relative mt-2 inline-flex w-max max-w-full items-center pb-[7px] text-[17px] leading-[18px] md:text-lg text-pigment-soft after:pointer-events-none after:absolute after:inset-0 after:border-b-[1.5px] after:border-transparent after:transition-colors after:duration-200 hover:after:border-pigment-soft"
     >
       <span className="flex items-center gap-3 transition-[gap] duration-200 group-hover:gap-1.5">
-        <span>{children}</span>
+        <span className="min-w-0">{children}</span>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.29" strokeLinecap="round" strokeLinejoin="round" className="mt-1" aria-hidden="true">
           <path d="M 1.27 5.77 L 10.27 5.77 M 5.77 10.27 L 10.27 5.77 L 5.77 1.27" />
         </svg>

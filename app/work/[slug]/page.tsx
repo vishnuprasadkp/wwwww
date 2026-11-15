@@ -6,6 +6,7 @@ import { getAsset } from "@/lib/assets";
 import { mdxComponents } from "@/components/mdx";
 import CaseHero from "@/components/case/CaseHero";
 import NextProjects from "@/components/case/NextProjects";
+import { site } from "@/lib/site";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -29,11 +30,12 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const { frontmatter: fm } = await load(slug);
   const image = getAsset(fm.hero).file;
+  const description = fm.description ?? fm.summary;
   return {
     title: fm.title,
-    description: fm.summary,
-    openGraph: { title: fm.title, description: fm.summary, images: [image] },
-    twitter: { card: "summary_large_image", title: fm.title, description: fm.summary, images: [image] },
+    description,
+    openGraph: { title: `${fm.title} | Vishnu Prasad`, description, url: `${site.url}/work/${slug}`, images: [image] },
+    twitter: { card: "summary_large_image", title: `${fm.title} | Vishnu Prasad`, description, images: [image] },
   };
 }
 

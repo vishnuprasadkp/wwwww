@@ -2,7 +2,8 @@ import Img from "@/components/ui/Img";
 
 /**
  * Painting ticker. Both rows travel left together as one block at 120px/s. The strip is two identical
- * copies; each carries its own 10px right gap, so the loop distance is exactly -50% (a clean seam).
+ * copies; each carries its own 10px right gap, so the loop distance is exactly -50% (a clean seam). The second copy is
+ * only there for the loop: it is hidden from screen readers and its images carry no alt text, so the gallery is read once.
  */
 export function Gallery({ rows }: { rows: string[][] }) {
   return (
@@ -14,7 +15,7 @@ export function Gallery({ rows }: { rows: string[][] }) {
               <ul key={r} className="flex gap-[9.33px]">
                 {ids.map((id) => (
                   <li key={id} className="h-[260px] shrink-0 [backface-visibility:hidden] [transform:translateZ(0)] md:h-[375px]">
-                    <Img id={id} eager sync sizes="(min-width: 768px) 400px, 260px" className="!h-full !w-auto" />
+                    <Img id={id} alt={copy === 1 ? "" : undefined} eager sync sizes="(min-width: 768px) 400px, 260px" className="!h-full !w-auto" />
                   </li>
                 ))}
               </ul>

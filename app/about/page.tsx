@@ -8,7 +8,7 @@ import { ArrowLink } from "@/components/ui/ArrowLink";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Product designer, planner, and painter, finding structure in everything.",
+  description: "Product designer, planner, and painter, always finding structure in everything.",
 };
 
 export default async function About() {
@@ -27,6 +27,7 @@ export default async function About() {
           <p className="font-serif text-[1.625rem] leading-[34px] text-pigment md:max-w-[40rem] md:text-[2rem] md:leading-[42px]">
             Let’s connect. Open to good conversations and interesting ideas.
           </p>
+          {/* TODO [me]: optional line, only once confirmed (it is public): "I'm currently open to senior and lead product design roles." */}
           <div className="md:pt-1.5">
             <ArrowLink href={site.gmail}>Get in touch</ArrowLink>
           </div>

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 
-const FILE = "/resume/Vishnu_Prasad_Resume.pdf";
+const FILE = "/Vishnu_Prasad_Resume_2026.pdf";
 const STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2, 3];
 
 /** In-site PDF viewer: crisp canvas render with zoom, print and download. */
@@ -129,7 +129,7 @@ export default function ResumeViewer() {
           </ArrowLink>
           <ArrowLink
             href={FILE}
-            download="Vishnu_Prasad_Resume.pdf"
+            download="Vishnu_Prasad_Resume_2026.pdf"
             icon={
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" />

@@ -11,6 +11,8 @@ export type CaseMeta = {
   summary: string;
   tags: string[];      // shown above the title on the case page
   cardTags: string[];  // shown on the home page card
+  cardLine?: string;   // one line under the card's tags: what it did, in numbers
+  description?: string; // the page's meta description
   client: string;
   platform: string;
   domain: string;

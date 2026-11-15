@@ -31,6 +31,7 @@ export default function CaseList({ cases }: { cases: CaseMeta[] }) {
                       {t && <Pic file={t.src} sizes="(min-width: 768px) calc(50vw - 24px), 100vw" className="h-auto w-full" />}
                       <h3 data-card-title className="mt-4 text-[17px] leading-[26px] md:text-lg md:leading-[1.5]">{c.title}</h3>
                       <p data-card-meta className="mt-1 font-mono text-sm leading-[22px] text-pigment-soft">{c.cardTags.join(" / ")}</p>
+                      {c.cardLine && <p className="font-mono text-sm leading-[22px] text-pigment-soft">{c.cardLine}</p>}
                     </Link>
                   </li>
                 );

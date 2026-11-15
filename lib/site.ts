@@ -1,5 +1,5 @@
 export const site = {
-  name: "vishnuprasad.design",
+  name: "vishnuprasad.space",
   url: "https://vishnuprasad.space",
   description:
     "Hi, I'm Vishnu, a Product Designer with over 5 years of experience. I design experiences for the complex systems that run real work.",
@@ -11,8 +11,10 @@ export const site = {
   oldPortfolio: "https://byvishnudesign.framer.website/",
 };
 
-export const nav = [
+export const resumePdf = "/Vishnu_Prasad_Resume_2026.pdf";
+
+export const nav: { label: string; href: string; external?: boolean; download?: boolean }[] = [
   { label: "Cases", href: "/#cases" },
   { label: "About", href: "/about" },
-  { label: "Resume", href: "/resume" },
+  { label: "Resume (PDF)", href: "/Vishnu_Prasad_Resume_2026.pdf", download: true },
 ];
