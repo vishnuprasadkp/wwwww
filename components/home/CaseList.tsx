@@ -18,15 +18,16 @@ export default function CaseList({ cases }: { cases: CaseMeta[] }) {
   return (
     <section className="pt-[120px] md:pt-[160px] lg:pt-[200px]">
       <h2 id="cases" className="border-b border-rule px-5 pb-5 pt-[21px] font-serif text-[1.625rem] leading-[34px] md:pb-[23px] md:pt-8 md:px-8 md:text-4xl md:leading-[46px]">Cases</h2>
-      {/* the cases two to a row, with a line across the page between the rows (one to a row, and a line between each, on a phone) */}
-      <ul className="mt-8">
+      {/* the cases two to a row, with a line across the page between the rows (one to a row on a phone, with a line right across
+          the screen between each, and the same 20px from each line to the picture below it as from the screen's sides) */}
+      <ul className="mt-5 md:mt-8">
         {rows(cases).map((row, r) => (
-          <li key={r} className={r ? "border-t border-rule pt-8" : ""}>
+          <li key={r} className={r ? "border-t border-rule pt-5 md:pt-8" : ""}>
             <ul className="grid items-start gap-x-4 px-5 md:grid-cols-2 md:px-8">
               {row.map((c, i) => {
                 const t = THUMBS[c.slug];
                 return (
-                  <li key={c.slug} data-card className={`pb-[60px] ${i ? "max-md:border-t max-md:border-rule max-md:pt-8" : ""}`}>
+                  <li key={c.slug} data-card className={`pb-[60px] ${i ? "max-md:-mx-5 max-md:border-t max-md:border-rule max-md:px-5 max-md:pt-5" : ""}`}>
                     <Link href={`/work/${c.slug}`} data-cursor="view" className="group block">
                       {t && <Pic file={t.src} sizes="(min-width: 768px) calc(50vw - 24px), 100vw" className="h-auto w-full" />}
                       <h3 data-card-title className="mt-4 text-[17px] leading-[26px] md:text-lg md:leading-[1.5]">{c.title}</h3>
