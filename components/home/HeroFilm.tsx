@@ -1108,6 +1108,10 @@ void main(){
       via: [] as number[][], // out of sight, on its way round the frame to where its next line begins
       boost: 1, // out of sight it flies faster, so it is never gone for long
       since: 0,
+      turnIn: 0.26, // how far it is turned your way, side on (each pass a little different), and how it leans
+      lean: 0,
+      turnInGoal: 0.26,
+      leanGoal: 0,
       wav: 0, // its sway either side of its line, and the sway's length and phase
       wl: 2,
       wph: 0,
@@ -1170,7 +1174,7 @@ void main(){
       camR.setFromMatrixColumn(camera.matrixWorld, 0);
       camU.setFromMatrixColumn(camera.matrixWorld, 1);
       fq.c.copy(camera.position).sub(p).normalize(); // towards you
-      fq.z.copy(camR).multiplyScalar(Math.cos(th)).addScaledVector(camU, Math.sin(th)).addScaledVector(fq.c, 0.26).normalize();
+      fq.z.copy(camR).multiplyScalar(Math.cos(th)).addScaledVector(camU, Math.sin(th)).addScaledVector(fq.c, path.turnIn).normalize();
       fq.x.copy(fq.c).addScaledVector(fq.z, -fq.z.dot(fq.c)).normalize().multiplyScalar(fq.flip);
       fq.y.crossVectors(fq.z, fq.x);
       if (fq.y.dot(camU) < -0.2) {
@@ -1181,7 +1185,7 @@ void main(){
       }
       fq.m.makeBasis(fq.x, fq.y, fq.z);
       out.setFromRotationMatrix(fq.m);
-      out.multiply(fq.l.setFromEuler(fq.e.set(FLY_PITCH - 0.22 * Math.sin(th) + nod, 0, roll)));
+      out.multiply(fq.l.setFromEuler(fq.e.set(FLY_PITCH - 0.22 * Math.sin(th) + nod, 0, roll + path.lean)));
       if (path.topK > 0.001) {
         // some passes it flies seen from above instead: its back to you, wings spread, its head the way it is going
         fq.z.copy(camR).multiplyScalar(Math.cos(th)).addScaledVector(camU, Math.sin(th)).normalize();
@@ -1310,7 +1314,7 @@ void main(){
         const hiddenAt = (sx: number, sy: number) => {
           const fx = (sx - CX) / W;
           const fy = (sy - CY) / H;
-          return Math.abs(fx) > 1 + r.rx + 0.35 || fy > 1 + r.down + 0.4 || fy < -1 - r.up - 0.4; // (room to swing round unseen)
+          return Math.abs(fx) > 1 + r.rx + 0.3 || fy > 1 + r.down + 0.35 || fy < -1 - r.up - 0.35; // (room to swing round unseen)
         };
         let L = 0;
         while (L < 12 * H && !hiddenAt(ex - dx * L, ey - dy * L)) L += 0.05 * H;
@@ -1321,9 +1325,9 @@ void main(){
         const fyS = (SY - CY) / H;
         const dSide = Math.abs(fxS) > 1 + r.rx ? Math.sign(fxS) : 0;
         const dV = fyS > 1 + r.down ? 1 : fyS < -1 - r.up ? -1 : 0;
-        const mx = 1 + r.rx + 0.7;
-        const yU = 1 + r.down + 0.7;
-        const yD = 1 + r.up + 0.7;
+        const mx = 1 + r.rx + 0.45;
+        const yU = 1 + r.down + 0.45;
+        const yD = 1 + r.up + 0.45;
         const at = (fx: number, fy: number) => [CX + fx * W, CY + fy * H];
         const via: number[][] = [];
         if (qSide && dSide && qSide !== dSide) {
@@ -1340,6 +1344,10 @@ void main(){
         path.goalTh = Math.atan2(dy, dx);
         path.bow0 = kind === "vert" ? 0 : rnd(-0.03, 0.03);
         path.top = Math.random() < 0.3; // now and then, seen from above
+        // side on, but never quite the same: turned more or less your way, leaning a little to show more of its back or
+        // of its underside
+        path.turnInGoal = rnd(0.08, 0.6);
+        path.leanGoal = rnd(-0.3, 0.3);
         path.mode = "turn";
         path.peek = false;
         return;
@@ -1467,10 +1475,17 @@ void main(){
       }
       if (P.mode === "out") goal = P.th; // flying straight on out there for a while
       // in sight it turns only gently; out of sight it may swing round quicker, so it is never gone for long
-      if (hid) P.topK += ((P.top ? 1 : 0) - P.topK) * Math.min(1, dt * 6);
-      const maxW = hid ? 6 : 0.5;
+      if (hid) {
+        P.topK += ((P.top ? 1 : 0) - P.topK) * Math.min(1, dt * 6);
+        P.turnIn += (P.turnInGoal - P.turnIn) * Math.min(1, dt * 4);
+        P.lean += (P.leanGoal - P.lean) * Math.min(1, dt * 4);
+      }
+      // out of sight it may swing round quickly, but less and less so as it nears the frame: it is only ever turning
+      // gently by the time any of it shows
+      const clear0 = Math.max(Math.abs(r.x) - 1 - r.rx, r.y - 1 - r.down, -1 - r.up - r.y);
+      const maxW = hid ? 0.4 + 5.6 * clamp(clear0 / 0.5, 0, 1) : 0.5;
       const acc = hid ? 16 : 0.8;
-      const wGoal = clamp(wrapA(goal - P.th) * (hid ? 3 : 1.2), -maxW, maxW);
+      const wGoal = clamp(wrapA(goal - P.th) * (hid ? 6 : 1.2), -maxW, maxW);
       P.w += clamp(wGoal - P.w, -acc * dt, acc * dt);
       P.th += P.w * dt;
       // how far clear of the frame it is (its whole outline): out there it speeds up, and slows to its own pace as it
@@ -1478,9 +1493,9 @@ void main(){
       const clear = Math.max(Math.abs(r.x) - 1 - r.rx, r.y - 1 - r.down, -1 - r.up - r.y);
       // (swinging round out there it all but hovers, turning on the spot, so it never swings back into view as it turns)
       const turning = P.mode === "turn" && !P.via.length;
-      P.boost += ((turning ? 0.15 : clear > 0 ? 1 + 5 * clamp(clear / 0.45, 0, 1) : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 7 : 3));
+      P.boost += ((turning ? 0.15 : clear > 0 ? 1 + 8 * clamp(clear / 0.4, 0, 1) : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 7 : clear > 0 ? 6 : 3));
       // coming back in, it has slowed to its own pace by the time any of it shows: never rushing in from the edge
-      if (P.mode === "back" || P.mode === "turn") P.boost = Math.min(P.boost, 1 + 5 * clamp(clear / 0.9, 0, 1));
+      if (P.mode === "back" || P.mode === "turn") P.boost = Math.min(P.boost, 1 + 8 * clamp(clear / 0.9, 0, 1));
       P.sx += Math.cos(P.th) * SPEED * P.boost * kx * dt;
       P.sy += Math.sin(P.th) * SPEED * P.boost * ky * dt;
       P.d = P.d0 * depthK(t);
@@ -1506,8 +1521,8 @@ void main(){
       } else if (P.mode === "pass" && hid2 && outward && s > 0.2) {
         // through the frame and out past the far edge: gone; it flies on a while out there, or swings round at once
         P.mode = "out";
-        P.outUntil = t + rnd(0, 0.2);
-      } else if (P.mode === "out" && t > P.outUntil && (Math.abs(r2.x) > 1 + r2.rx + 0.2 || r2.y > 1 + r2.down + 0.3 || r2.y < -1 - r2.up - 0.3)) {
+        P.outUntil = t;
+      } else if (P.mode === "out" && t > P.outUntil && (Math.abs(r2.x) > 1 + r2.rx + 0.08 || r2.y > 1 + r2.down + 0.1 || r2.y < -1 - r2.up - 0.1)) {
         // well clear of the frame (so not even a wing tip shows as it swings round): its next pass
         P.mode = "back";
         P.since = t;
