@@ -1070,6 +1070,7 @@ void main(){
     const PATH_FULL = { yLo: -0.8, yHi: 0.75, look: [40, 65] };
     let PATH = full ? PATH_FULL : PATH_BOX;
     const TAU = Math.PI * 2;
+    const FLY_PITCH = 0.3;
     // the frame it is seen through, on the canvas (-1..1): the hero's box within the whole screen, or all of it
     const FULL_FRAME = { x0: -1, x1: 1, y0: -1, y1: 1 };
     const view = () => {
@@ -1151,6 +1152,28 @@ void main(){
     // through a pass its heading hardly changes, so neither does the way it faces
     const yawFor = (th: number, p: THREE.Vector3) => Math.atan2(camera.position.x - p.x, camera.position.z - p.z) + (Math.PI / 2 - 0.25) * clamp(Math.cos(th) * 1.6, -1, 1);
     const climbFor = (th: number) => clamp(-Math.sin(th) * SPEED * 1.8, -0.4, 0.6);
+    /* how it is turned in flight, whichever way it goes on screen (across, up, down or on a slant): always side on to you,
+       in profile, its head the way it is going and turned a little your way (as it always was flying across), its back
+       up (or, going up or down, to whichever side it was on). Never face on, never tail on. Then its usual tilt and its
+       bank into its curves, about its own axes */
+    const fq = { flip: 1, z: new THREE.Vector3(), x: new THREE.Vector3(), y: new THREE.Vector3(), c: new THREE.Vector3(), m: new THREE.Matrix4(), l: new THREE.Quaternion(), e: new THREE.Euler() };
+    const flyQ = (th: number, p: THREE.Vector3, roll: number, nod: number, out: THREE.Quaternion) => {
+      camR.setFromMatrixColumn(camera.matrixWorld, 0);
+      camU.setFromMatrixColumn(camera.matrixWorld, 1);
+      fq.c.copy(camera.position).sub(p).normalize(); // towards you
+      fq.z.copy(camR).multiplyScalar(Math.cos(th)).addScaledVector(camU, Math.sin(th)).addScaledVector(fq.c, 0.26).normalize();
+      fq.x.copy(fq.c).addScaledVector(fq.z, -fq.z.dot(fq.c)).normalize().multiplyScalar(fq.flip);
+      fq.y.crossVectors(fq.z, fq.x);
+      if (fq.y.dot(camU) < -0.2) {
+        // (its back kept up: it shows you its other side instead)
+        fq.flip = -fq.flip;
+        fq.x.negate();
+        fq.y.negate();
+      }
+      fq.m.makeBasis(fq.x, fq.y, fq.z);
+      out.setFromRotationMatrix(fq.m);
+      return out.multiply(fq.l.setFromEuler(fq.e.set(FLY_PITCH + nod, 0, roll)));
+    };
     // its velocity in the world, for a heading on screen
     const velFor = (th: number, out: THREE.Vector3) => {
       camR.setFromMatrixColumn(camera.matrixWorld, 0);
@@ -1477,7 +1500,7 @@ void main(){
       fly.roll += (rollGoal - fly.roll) * Math.min(1, dt * 1.2);
       fly.climb += (climbFor(P.th) - fly.climb) * Math.min(1, dt * 1.2);
       b.root.position.copy(fly.p);
-      b.root.quaternion.copy(qFromEuler(0.3 + fly.climb + 0.04 * Math.sin(t * 0.5), fly.yaw, fly.roll));
+      flyQ(P.th, fly.p, fly.roll, 0.04 * Math.sin(t * 0.5), b.root.quaternion);
       // on its way in to a side, lined up and still out of sight: it comes to the edge and peeps in at you
       if (P.peek && P.mode === "back" && hid2 && Math.abs(r2.x) > 1 && Math.abs(wrapA(goal - P.th)) < 0.5 && Math.cos(P.th) * Math.sign(r2.x) < -0.4) peepIn(t, b, Math.sign(r2.x));
     };
@@ -1615,7 +1638,7 @@ void main(){
       fs.yaw = th0; // (the heading it leaves on)
       fly.climb = climbFor(th0);
       fly.roll = 0;
-      fs.toQ.copy(qFromEuler(0.3 + fly.climb + 0.04 * Math.sin((t + fs.dur) * 0.5), yawFor(th0, fs.toP), 0));
+      flyQ(th0, fs.toP, 0, 0.04 * Math.sin((t + fs.dur) * 0.5), fs.toQ);
     };
 
     let baseScale = 0;
@@ -1676,7 +1699,7 @@ void main(){
           fly.climb = climbFor(path.th);
           fly.roll = 0;
           b.root.position.copy(fly.p);
-          b.root.quaternion.copy(qFromEuler(0.3 + fly.climb, fly.yaw, 0));
+          flyQ(path.th, fly.p, 0, 0, b.root.quaternion);
         }
         // the frame opened out or closed while it was peeping in at an edge: that edge has moved, so it flies off
         // with the film open (and its sound on) it speaks: as it comes into view, when it peeps in at you, and now and then
