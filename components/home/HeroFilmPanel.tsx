@@ -216,13 +216,14 @@ export default function HeroFilmPanel({ height }: { height: string }) {
             window.history.back();
           }}
           tabIndex={state === "open" ? 0 : -1}
-          className="absolute left-5 top-5 z-10 flex items-center gap-2 font-mono text-[15px] leading-[19px] text-white/80 hover:text-white md:left-8 md:top-8"
-          style={{ opacity: state === "open" ? 1 : 0, transform: state === "open" ? "none" : "translateY(-6px)", pointerEvents: state === "open" ? "auto" : "none", transition: "opacity 0.6s ease 0.3s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s" }}
+          // the header's Back: the arrow and the word draw together as you point at it
+          className="absolute left-5 top-5 z-10 flex w-min items-center gap-[10px] px-0 font-mono text-[15px] leading-[19px] text-white/80 hover:gap-1 hover:px-[3px] hover:text-white md:left-8 md:top-8"
+          style={{ opacity: state === "open" ? 1 : 0, transform: state === "open" ? "none" : "translateY(-6px)", pointerEvents: state === "open" ? "auto" : "none", transition: "opacity 0.6s ease 0.3s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, gap 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), padding 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), color 0.3s ease" }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M19 12H5M11 6l-6 6 6 6" />
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M 14.25 9 L 3.75 9 M 9 14.25 L 3.75 9 L 9 3.75" />
           </svg>
-          Back
+          <span>Back</span>
         </button>
         <SoundToggle shown={state === "open"} />
         <NyrroStory shown={state === "open"} heading="h2" />
