@@ -209,11 +209,19 @@
 
     function freshChips(candidates, ctx, currentKey, max = 4) {
       const out = [], seen = new Set([currentKey]);
-      for (const c of candidates.concat(EXPLORE)) {
+      // after the answer's own suggestions, a varied mix picked at random each time: questions about him (his approach,
+      // experience, skills, principles, life outside work) as well as his projects, with no more than two projects
+      const pool = EXPLORE.slice();
+      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+      let projects = candidates.filter(c => /^Tell me about /i.test(c)).length;
+      for (const c of candidates.concat(pool)) {
         if (out.length >= max) break;
+        const own = candidates.includes(c);
+        if (!own && /^Tell me about /i.test(c) && projects >= 2) continue;
         const k = keyOf(route(c, ctx));
         if (k === "fallback" || shown.has(k) || seen.has(k)) continue;
         seen.add(k); out.push(c);
+        if (!own && /^Tell me about /i.test(c)) projects++;
       }
       return out;
     }

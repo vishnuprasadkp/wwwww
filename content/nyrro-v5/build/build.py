@@ -255,7 +255,8 @@ kb = {"version": "5.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
       "entities": ENTITIES, "intents": INTENTS, "fallback": FALLBACK, "contactEmail": "vishnuprasadkp98@gmail.com",
       "whichProjectAnswer": "Which project would you like to know about? Here are his five case studies:",
       "repeatAnswer": "I've already shared that above ☝️ Is there something more specific you'd like to know?",
-      "exploreChips": ["Tell me about Enterprise Search", "Tell me about ADEO", "Tell me about the Agent Workforce Platform", "Tell me about HDFC Bank", "Tell me about the Sony platforms", "How does he design?", "What AI work has he done?", "Other projects", "How can I contact him?"]}
+      "exploreChips": ["Tell me about Enterprise Search", "Tell me about ADEO", "Tell me about the Agent Workforce Platform", "Tell me about HDFC Bank", "Tell me about the Sony platforms", "How does he design?", "What AI work has he done?", "Other projects", "How can I contact him?",
+                       "What makes his approach unique?", "How many years of experience does he have?", "What are his design principles?", "What are his core skills?", "What tools does he use?", "Does he lead teams?", "What did he study?", "What does he do outside work?", "Can he code?", "Where is he based?", "Why should we hire him?", "What kind of problems does he solve best?", "What is his career history?"]}
 
 # No em or en dashes anywhere Nyrro speaks: ranges read "to", a label's dash becomes a colon, joined words a hyphen,
 # anything else a comma. And no emoji.
