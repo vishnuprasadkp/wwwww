@@ -136,3 +136,70 @@ SKILL_SECTIONS = {
 }
 SKILLS_RESEARCH = "Research comes before screens in Vishnu's process.\n\nFrom his resume: **discovery, user research and usability testing.**"
 TOOLS_LIST = "Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, GitHub, Vercel"
+
+# General questions get general answers: from his resume, his About page and the reflections across his work, with no
+# single project as the example (a question about a project gets that project's answer).
+A6.update({
+"experience-years": """**5 years** of product design, on enterprise and AI products for banks, governments and media companies.
+
+- **ICD (Itu Chaudhuri Design):** Oct 2024 to Present, Senior Product Designer, design lead for UnifyApps
+- **Brane Enterprises:** Oct 2023 to Sep 2024, Senior UI/UX Designer
+- **Kocha Technologies:** Nov 2021 to Oct 2023, Senior UI/UX Designer""",
+
+"unique-approach": """Vishnu understands the system behind a product before he designs its screens, a habit from studying **planning and architecture at NIT Bhopal**.
+
+- **Systems first:** he maps the people, dependencies, goals and where things break before anything goes on a screen
+- **Trust by design:** in AI products he makes clear what the system did, so people can check it and step in
+- **The right depth for each person:** simple doesn't mean less; each user sees the detail they need
+- **Built to scale:** reusable patterns and a design system used across **60+ deployments**
+- **Designs and builds:** he also ships front-ends himself with GitHub and Vercel""",
+
+"design-process": """Vishnu's process is **research first**: before designing any screens, he maps the people, dependencies, goals and where things break.
+
+1. **Understand the system:** discovery and research with the people who use and run the product
+2. **Define the structure:** product structure, flows and the decisions that matter, before visual detail
+3. **Design and review:** iterate with PMs, engineers and client stakeholders, and test with users
+4. **Systemise:** reusable patterns and documented components, so the product stays consistent
+5. **Hand off and ship:** a clear design to dev handoff, through to launch
+
+He owns the work **end to end**, from the first brief to developer handoff.""",
+
+"research": """Research comes first in Vishnu's process: before designing, he maps the people, dependencies, goals and where things break.
+
+From his resume: **discovery, user research and usability testing**. On client projects the product team often leads the research, and Vishnu turns its findings into design decisions, validating them in review cycles with stakeholders.""",
+
+"strengths": """Vishnu is strongest at **making complex, high-stakes systems usable**.
+
+- Taking products **from discovery to launch**, end to end
+- **Agentic and AI products** that people can understand and trust
+- **Systems with real consequences**, like consent, governance and decisions that need a record
+- **Design systems**, including one reused across **60+ deployments**
+- Working directly with **PMs, engineers and client executives**""",
+
+"why-hire": """Vishnu brings **five years** of designing **enterprise and AI products** for banks, governments and media companies, from the first brief to developer handoff.
+
+- **Design lead** on each engagement at ICD, working with PMs and client executives
+- Looks after a **design system used in 60+ deployments**
+- Products at real scale, like **HDFC Bank's consent platform for 30M+ customers**
+- **Mentors 6 designers** and set the **design to dev handoff** and **WCAG 2.1** standards
+- Also **builds front-ends** himself with GitHub and Vercel
+
+Contact: **vishnuprasadkp98@gmail.com**""",
+
+"working-style": """Vishnu works in **iterative review cycles** with PMs, engineers and client executives, and owns design end to end.
+
+- Ran **3 product initiatives in parallel**
+- Set up the **design to dev handoff process**, so what gets built matches what was designed
+- **Mentors 6 designers** through critiques and reviews""",
+
+"simplicity": """For Vishnu, simple doesn't mean less. It means **showing the right depth to the right person**: complex information is organised, not removed, and each user sees the level of detail they need.""",
+
+"best-problems": """Vishnu works best on **complex, high-stakes systems that run real work**: agentic products, search, consent and governance, and decision-making tools, taken from discovery to launch.""",
+})
+
+# more ways of asking for his experience
+EXTRA6 = {
+"research": ["approach to research", "research approach", "how does he do research", "research process"],
+"experience-years": ["overall experience", "his experience", "work experience", "total years", "experience overall", "how experienced",
+                     "total experience", "experience in years", "professional experience"],
+}

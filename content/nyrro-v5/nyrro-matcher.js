@@ -183,9 +183,12 @@
       if (ents[0] && (!topI || ents[0].score + (aspect.score ? 0.8 : 0) > topI.score)) return asEntity(ents[0].e, ents[0].score);
       // 3. Follow-up about the project being discussed ("what was the impact?").
       const refersBack = / (was|were|did|it|this|that|its|there) /.test(text) || contentTokens(text).length <= 2;
-      if (ctxEntity && aspect.score && (!topI || topI.score < 2.2 || refersBack)) return { ...asEntity(ctxEntity, aspect.score), followUp: true };
-      // 3b. Project-style question but no project named yet ("what was the problem?").
       const aboutHim = / (he|his|him|vishnu) /.test(text);
+      // a general question about him ("what are his design principles?") stays general even while a project is being
+      // discussed, unless it points back at the project ("what was his role there?")
+      const general = aboutHim && topI && topI.score >= 1.2 && !/ (was|were|did|it|this|that|its|there|project|platform) /.test(text);
+      if (ctxEntity && aspect.score && !general && (!topI || topI.score < 2.2 || refersBack)) return { ...asEntity(ctxEntity, aspect.score), followUp: true };
+      // 3b. Project-style question but no project named yet ("what was the problem?").
       if (!ctxEntity && !aboutHim && ["problem", "users", "outcomes", "features", "decisions", "learnings", "ai"].includes(aspect.id)
           && (!topI || topI.score < 1.2) && refersBack) return { type: "which-project", score: aspect.score };
       // 4. General question (needs real confidence, otherwise say "I don't know").

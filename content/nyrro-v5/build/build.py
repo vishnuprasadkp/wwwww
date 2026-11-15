@@ -223,7 +223,8 @@ for e in ENTITIES:
     e["aliases"] = [a for a in e["aliases"] if a not in WEAK_ALIASES]
 
 # v6: the 2026 resume and the updated portfolio (data_v6.py)
-from data_v6 import A6, TOOLS_ADD, CODING_ADD, ROLE, OPENING, OUTCOMES
+from data_v6 import A6, TOOLS_ADD, CODING_ADD, ROLE, OPENING, OUTCOMES, EXTRA6
+for k, kws in EXTRA6.items(): _by[k]["keywords"] += [x for x in kws if x not in _by[k]["keywords"]]
 for k, ans in A6.items():
     assert k in _by, f"v6 answer for unknown topic {k}"
     _by[k]["answer"] = ans

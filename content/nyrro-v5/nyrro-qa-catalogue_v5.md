@@ -73,15 +73,15 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 #### How many years of experience does he have?  `experience-years`
 **Also asked as:** _how experienced is vishnu_ · _what is his work experience_ · _how long has he been designing_
 
-**Keywords:** years of experience, how many years, experienced, how long, been a designer, been designing, since when, experience, how experienced, yoe, work experience, how long has he, years, career length, total experience, experience kitna, kitna experience, kitne saal, kitne years, how much experience, experience level
+**Keywords:** years of experience, how many years, experienced, how long, been a designer, been designing, since when, experience, how experienced, yoe, work experience, how long has he, years, career length, total experience, experience kitna, kitna experience, kitne saal, kitne years, how much experience, experience level, overall experience, his experience, total years, experience overall, experience in years, professional experience
 
 **Answer:**
 
-> **5 years.**
+> **5 years** of product design, on enterprise and AI products for banks, governments and media companies.
 >
-> - **ICD (Itu Chaudhuri Design):** Oct 2024 to Present, design lead for UnifyApps
-> - **Brane Enterprises:** Oct 2023 to Sep 2024
-> - **Kocha Technologies:** Nov 2021 to Oct 2023
+> - **ICD (Itu Chaudhuri Design):** Oct 2024 to Present, Senior Product Designer, design lead for UnifyApps
+> - **Brane Enterprises:** Oct 2023 to Sep 2024, Senior UI/UX Designer
+> - **Kocha Technologies:** Nov 2021 to Oct 2023, Senior UI/UX Designer
 
 #### What is his title?  `title-seniority`
 **Also asked as:** _is he a lead designer_ · _what level is he_ · _why do case studies say lead_ · _is he senior or lead_ · _what's his designation_
@@ -297,7 +297,13 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> From his resume summary: he takes **complex, high-stakes systems from discovery to launch**, working with product, engineering and executive stakeholders. He **builds design systems that shorten delivery time** and has **shipped products used by millions**.
+> Vishnu is strongest at **making complex, high-stakes systems usable**.
+>
+> - Taking products **from discovery to launch**, end to end
+> - **Agentic and AI products** that people can understand and trust
+> - **Systems with real consequences**, like consent, governance and decisions that need a record
+> - **Design systems**, including one reused across **60+ deployments**
+> - Working directly with **PMs, engineers and client executives**
 
 #### Does he do prototyping?  `prototyping`
 **Also asked as:** _can he prototype_ · _does he do wireframes_
@@ -598,13 +604,15 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu's process is research-first. Before designing any screens, he maps the people, dependencies, goals and failure points, a habit from studying Planning & Architecture, where he learned to understand systems before changing them. He owns projects end to end, from discovery to launch, and invests in clear flows, reusable patterns and documented components.
+> Vishnu's process is **research first**: before designing any screens, he maps the people, dependencies, goals and where things break.
 >
-> In his case studies:
+> 1. **Understand the system:** discovery and research with the people who use and run the product
+> 2. **Define the structure:** product structure, flows and the decisions that matter, before visual detail
+> 3. **Design and review:** iterate with PMs, engineers and client stakeholders, and test with users
+> 4. **Systemise:** reusable patterns and documented components, so the product stays consistent
+> 5. **Hand off and ship:** a clear design to dev handoff, through to launch
 >
-> - **Enterprise Search:** three user roles (employees, administrators, compliance teams) shaped one copilot model: Ask → Configure → Govern
-> - **ADEO:** committee work was structured as Analyse → Deliberate → Decide & Record
-> - **Agent Workforce:** Configure → Orchestrate → Tune, with three build modes for different users
+> He owns the work **end to end**, from the first brief to developer handoff.
 
 #### What makes vishnu's design approach unique?  `unique-approach`
 **Also asked as:** _how is he different from other designers_ · _what sets him apart_
@@ -613,12 +621,13 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu treats design as a system problem. He doesn't see a product as a collection of screens; he works out how the people, dependencies and decisions connect first.
+> Vishnu understands the system behind a product before he designs its screens, a habit from studying **planning and architecture at NIT Bhopal**.
 >
-> In his case studies:
->
-> - **ADEO:** voting deliberately requires a rationale, because important decisions benefit from deliberate interactions, not speed
-> - **Enterprise Search:** sync failures and unverified agents are shown openly, to build trust
+> - **Systems first:** he maps the people, dependencies, goals and where things break before anything goes on a screen
+> - **Trust by design:** in AI products he makes clear what the system did, so people can check it and step in
+> - **The right depth for each person:** simple doesn't mean less; each user sees the detail they need
+> - **Built to scale:** reusable patterns and a design system used across **60+ deployments**
+> - **Designs and builds:** he also ships front-ends himself with GitHub and Vercel
 
 #### What are his design principles?  `principles`
 **Also asked as:** _what is his design philosophy_ · _what does he believe about design_
@@ -636,14 +645,13 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 #### How does he do user research?  `research`
 **Also asked as:** _does he do research_ · _how does he validate designs_ · _how does he gather requirements_
 
-**Keywords:** research, user research, discovery, interviews, personas, validate, validation, user testing, insights, requirements, does he do research, research process, how does he research, gather requirements
+**Keywords:** research, user research, discovery, interviews, personas, validate, validation, user testing, insights, requirements, does he do research, research process, how does he research, gather requirements, approach to research, research approach, how does he do research
 
 **Answer:**
 
-> Research shapes Vishnu's design decisions, and User Research, Usability Testing and Journey Mapping are on his resume.
+> Research comes first in Vishnu's process: before designing, he maps the people, dependencies, goals and where things break.
 >
-> - **UnifyApps projects:** the product team defined the roles and led the research; their findings shaped the design decisions
-> - **ADEO:** research was continuous, with requirements gathered from the client, multiple design iterations, and validation at each major decision
+> From his resume: **discovery, user research and usability testing**. On client projects the product team often leads the research, and Vishnu turns its findings into design decisions, validating them in review cycles with stakeholders.
 
 #### How does he handle trade-offs?  `tradeoffs`
 **Also asked as:** _give an example of a hard design decision_ · _what compromises did he make_
@@ -666,10 +674,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> For Vishnu, simplicity in complex products means showing each user the right level of complexity, not removing features.
->
-> - **Agent Workforce Platform:** Simple, Workflow and Advanced modes for different users
-> - **HDFC Bank:** complex compliance information was organised, not removed
+> For Vishnu, simple doesn't mean less. It means **showing the right depth to the right person**: complex information is organised, not removed, and each user sees the level of detail they need.
 
 #### How does he work with stakeholders?  `stakeholders`
 **Also asked as:** _how does he manage executives_ · _how does he align different teams_ · _how does he handle competing stakeholder needs_
@@ -704,9 +709,11 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu works in iterative review cycles with PMs and senior stakeholders.
+> Vishnu works in **iterative review cycles** with PMs, engineers and client executives, and owns design end to end.
 >
-> From his resume: he **established design-to-engineering handoff and review workflows** that reduced rework, and **managed 3 enterprise initiatives in parallel**.
+> - Ran **3 product initiatives in parallel**
+> - Set up the **design to dev handoff process**, so what gets built matches what was designed
+> - **Mentors 6 designers** through critiques and reviews
 
 ### AI
 
@@ -960,13 +967,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu works best on complex, high-stakes systems that run real work. His focus areas are **agentic systems, search, automation and decision-making tools**, and he takes them from discovery to launch.
->
-> - **Search:** Enterprise Search
-> - **Agentic systems:** Agent Workforce Platform
-> - **Decision-making tools:** ADEO
-> - **Compliance & data:** HDFC Bank
-> - **Automation across teams:** the Sony platforms
+> Vishnu works best on **complex, high-stakes systems that run real work**: agentic products, search, consent and governance, and decision-making tools, taken from discovery to launch.
 
 #### Which project is he proudest of?  `proudest`
 **Also asked as:** _what is his best work_
@@ -1363,15 +1364,13 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu has designed high-stakes products for banks, governments and global enterprises, working directly with product, engineering and executive stakeholders.
+> Vishnu brings **five years** of designing **enterprise and AI products** for banks, governments and media companies, from the first brief to developer handoff.
 >
-> From his resume:
->
-> - **5+ years** in enterprise SaaS, AI and data-heavy platforms
-> - Led product design across **60+ enterprise deployments** (HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority, DGE Abu Dhabi)
-> - Owned and scaled the **UnifyApps design system**
-> - Designed for **HDFC Bank's 30M+ customers** under India's DPDP Act
-> - **Mentored 6 junior designers**
+> - **Design lead** on each engagement at ICD, working with PMs and client executives
+> - Looks after a **design system used in 60+ deployments**
+> - Products at real scale, like **HDFC Bank's consent platform for 30M+ customers**
+> - **Mentors 6 designers** and set the **design to dev handoff** and **WCAG 2.1** standards
+> - Also **builds front-ends** himself with GitHub and Vercel
 >
 > Contact: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**
 

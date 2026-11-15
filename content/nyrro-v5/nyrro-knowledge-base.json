@@ -1585,7 +1585,13 @@
     "kitne saal",
     "kitne years",
     "how much experience",
-    "experience level"
+    "experience level",
+    "overall experience",
+    "his experience",
+    "total years",
+    "experience overall",
+    "experience in years",
+    "professional experience"
    ],
    "questions": [
     "how many years of experience does he have",
@@ -1593,7 +1599,7 @@
     "what is his work experience",
     "how long has he been designing"
    ],
-   "answer": "**5 years.**\n\n- **ICD (Itu Chaudhuri Design):** Oct 2024 to Present, design lead for UnifyApps\n- **Brane Enterprises:** Oct 2023 to Sep 2024\n- **Kocha Technologies:** Nov 2021 to Oct 2023",
+   "answer": "**5 years** of product design, on enterprise and AI products for banks, governments and media companies.\n\n- **ICD (Itu Chaudhuri Design):** Oct 2024 to Present, Senior Product Designer, design lead for UnifyApps\n- **Brane Enterprises:** Oct 2023 to Sep 2024, Senior UI/UX Designer\n- **Kocha Technologies:** Nov 2021 to Oct 2023, Senior UI/UX Designer",
    "followups": [
     "What did he do at each company?",
     "What is his title?"
@@ -2091,7 +2097,7 @@
     "how does he approach a new project",
     "how does he solve problems"
    ],
-   "answer": "Vishnu's process is research-first. Before designing any screens, he maps the people, dependencies, goals and failure points, a habit from studying Planning & Architecture, where he learned to understand systems before changing them. He owns projects end to end, from discovery to launch, and invests in clear flows, reusable patterns and documented components.\n\nIn his case studies:\n\n- **Enterprise Search:** three user roles (employees, administrators, compliance teams) shaped one copilot model: Ask → Configure → Govern\n- **ADEO:** committee work was structured as Analyse → Deliberate → Decide & Record\n- **Agent Workforce:** Configure → Orchestrate → Tune, with three build modes for different users",
+   "answer": "Vishnu's process is **research first**: before designing any screens, he maps the people, dependencies, goals and where things break.\n\n1. **Understand the system:** discovery and research with the people who use and run the product\n2. **Define the structure:** product structure, flows and the decisions that matter, before visual detail\n3. **Design and review:** iterate with PMs, engineers and client stakeholders, and test with users\n4. **Systemise:** reusable patterns and documented components, so the product stays consistent\n5. **Hand off and ship:** a clear design to dev handoff, through to launch\n\nHe owns the work **end to end**, from the first brief to developer handoff.",
    "followups": [
     "What makes his approach unique?",
     "Tell me about ADEO"
@@ -2122,7 +2128,7 @@
     "how is he different from other designers",
     "what sets him apart"
    ],
-   "answer": "Vishnu treats design as a system problem. He doesn't see a product as a collection of screens; he works out how the people, dependencies and decisions connect first.\n\nIn his case studies:\n\n- **ADEO:** voting deliberately requires a rationale, because important decisions benefit from deliberate interactions, not speed\n- **Enterprise Search:** sync failures and unverified agents are shown openly, to build trust",
+   "answer": "Vishnu understands the system behind a product before he designs its screens, a habit from studying **planning and architecture at NIT Bhopal**.\n\n- **Systems first:** he maps the people, dependencies, goals and where things break before anything goes on a screen\n- **Trust by design:** in AI products he makes clear what the system did, so people can check it and step in\n- **The right depth for each person:** simple doesn't mean less; each user sees the detail they need\n- **Built to scale:** reusable patterns and a design system used across **60+ deployments**\n- **Designs and builds:** he also ships front-ends himself with GitHub and Vercel",
    "followups": [
     "Tell me about ADEO",
     "What are his design principles?"
@@ -2173,7 +2179,10 @@
     "does he do research",
     "research process",
     "how does he research",
-    "gather requirements"
+    "gather requirements",
+    "approach to research",
+    "research approach",
+    "how does he do research"
    ],
    "questions": [
     "how does he do user research",
@@ -2181,7 +2190,7 @@
     "how does he validate designs",
     "how does he gather requirements"
    ],
-   "answer": "Research shapes Vishnu's design decisions, and User Research, Usability Testing and Journey Mapping are on his resume.\n\n- **UnifyApps projects:** the product team defined the roles and led the research; their findings shaped the design decisions\n- **ADEO:** research was continuous, with requirements gathered from the client, multiple design iterations, and validation at each major decision",
+   "answer": "Research comes first in Vishnu's process: before designing, he maps the people, dependencies, goals and where things break.\n\nFrom his resume: **discovery, user research and usability testing**. On client projects the product team often leads the research, and Vishnu turns its findings into design decisions, validating them in review cycles with stakeholders.",
    "followups": [
     "What are his research skills?",
     "Tell me about ADEO"
@@ -2234,7 +2243,7 @@
     "how does he simplify complex products",
     "how does he handle complexity"
    ],
-   "answer": "For Vishnu, simplicity in complex products means showing each user the right level of complexity, not removing features.\n\n- **Agent Workforce Platform:** Simple, Workflow and Advanced modes for different users\n- **HDFC Bank:** complex compliance information was organised, not removed",
+   "answer": "For Vishnu, simple doesn't mean less. It means **showing the right depth to the right person**: complex information is organised, not removed, and each user sees the level of detail they need.",
    "followups": [
     "Tell me about the Agent Workforce Platform"
    ],
@@ -2927,7 +2936,7 @@
     "what kinds of problems does he solve best",
     "what is his sweet spot"
    ],
-   "answer": "Vishnu works best on complex, high-stakes systems that run real work. His focus areas are **agentic systems, search, automation and decision-making tools**, and he takes them from discovery to launch.\n\n- **Search:** Enterprise Search\n- **Agentic systems:** Agent Workforce Platform\n- **Decision-making tools:** ADEO\n- **Compliance & data:** HDFC Bank\n- **Automation across teams:** the Sony platforms",
+   "answer": "Vishnu works best on **complex, high-stakes systems that run real work**: agentic products, search, consent and governance, and decision-making tools, taken from discovery to launch.",
    "followups": [
     "Tell me about Enterprise Search",
     "Tell me about ADEO"
@@ -3763,7 +3772,7 @@
     "what value would he bring",
     "is he a good fit for our team"
    ],
-   "answer": "Vishnu has designed high-stakes products for banks, governments and global enterprises, working directly with product, engineering and executive stakeholders.\n\nFrom his resume:\n\n- **5+ years** in enterprise SaaS, AI and data-heavy platforms\n- Led product design across **60+ enterprise deployments** (HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority, DGE Abu Dhabi)\n- Owned and scaled the **UnifyApps design system**\n- Designed for **HDFC Bank's 30M+ customers** under India's DPDP Act\n- **Mentored 6 junior designers**\n\nContact: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**",
+   "answer": "Vishnu brings **five years** of designing **enterprise and AI products** for banks, governments and media companies, from the first brief to developer handoff.\n\n- **Design lead** on each engagement at ICD, working with PMs and client executives\n- Looks after a **design system used in 60+ deployments**\n- Products at real scale, like **HDFC Bank's consent platform for 30M+ customers**\n- **Mentors 6 designers** and set the **design to dev handoff** and **WCAG 2.1** standards\n- Also **builds front-ends** himself with GitHub and Vercel\n\nContact: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**",
    "followups": [
     "How can I contact him?"
    ],
@@ -3968,7 +3977,7 @@
     "is he detail oriented",
     "what is he like to work with"
    ],
-   "answer": "Vishnu works in iterative review cycles with PMs and senior stakeholders.\n\nFrom his resume: he **established design-to-engineering handoff and review workflows** that reduced rework, and **managed 3 enterprise initiatives in parallel**.",
+   "answer": "Vishnu works in **iterative review cycles** with PMs, engineers and client executives, and owns design end to end.\n\n- Ran **3 product initiatives in parallel**\n- Set up the **design to dev handoff process**, so what gets built matches what was designed\n- **Mentors 6 designers** through critiques and reviews",
    "followups": [
     "How does he work with engineers?",
     "How can I contact him?"
@@ -4347,7 +4356,7 @@
     "what is he good at",
     "what is his biggest strength"
    ],
-   "answer": "From his resume summary: he takes **complex, high-stakes systems from discovery to launch**, working with product, engineering and executive stakeholders. He **builds design systems that shorten delivery time** and has **shipped products used by millions**.",
+   "answer": "Vishnu is strongest at **making complex, high-stakes systems usable**.\n\n- Taking products **from discovery to launch**, end to end\n- **Agentic and AI products** that people can understand and trust\n- **Systems with real consequences**, like consent, governance and decisions that need a record\n- **Design systems**, including one reused across **60+ deployments**\n- Working directly with **PMs, engineers and client executives**",
    "followups": [
     "What are his skills?",
     "What has he worked on?"
