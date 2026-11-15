@@ -1104,6 +1104,8 @@ void main(){
       via: [] as number[][], // out of sight, on its way round the frame to where its next line begins
       boost: 1, // out of sight it flies faster, so it is never gone for long
       since: 0,
+      top: false, // this pass seen from above
+      topK: 0, // how far it is turned to be seen from above (it turns only out of sight)
       lift: 0, // how far above the point it flies through its body is drawn, flying level (in frame heights)
     };
     const wrapA = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
@@ -1156,7 +1158,7 @@ void main(){
        in profile, its head the way it is going and turned a little your way (as it always was flying across), its back
        up (or, going up or down, to whichever side it was on). Never face on, never tail on. Then its usual tilt and its
        bank into its curves, about its own axes */
-    const fq = { flip: 1, z: new THREE.Vector3(), x: new THREE.Vector3(), y: new THREE.Vector3(), c: new THREE.Vector3(), m: new THREE.Matrix4(), l: new THREE.Quaternion(), e: new THREE.Euler() };
+    const fq = { flip: 1, t: new THREE.Quaternion(), z: new THREE.Vector3(), x: new THREE.Vector3(), y: new THREE.Vector3(), c: new THREE.Vector3(), m: new THREE.Matrix4(), l: new THREE.Quaternion(), e: new THREE.Euler() };
     const flyQ = (th: number, p: THREE.Vector3, roll: number, nod: number, out: THREE.Quaternion) => {
       camR.setFromMatrixColumn(camera.matrixWorld, 0);
       camU.setFromMatrixColumn(camera.matrixWorld, 1);
@@ -1172,7 +1174,17 @@ void main(){
       }
       fq.m.makeBasis(fq.x, fq.y, fq.z);
       out.setFromRotationMatrix(fq.m);
-      return out.multiply(fq.l.setFromEuler(fq.e.set(FLY_PITCH + nod, 0, roll)));
+      out.multiply(fq.l.setFromEuler(fq.e.set(FLY_PITCH + nod, 0, roll)));
+      if (path.topK > 0.001) {
+        // some passes it flies seen from above instead: its back to you, wings spread, its head the way it is going
+        fq.z.copy(camR).multiplyScalar(Math.cos(th)).addScaledVector(camU, Math.sin(th)).normalize();
+        fq.y.copy(fq.c).addScaledVector(fq.z, -fq.z.dot(fq.c)).normalize();
+        fq.x.crossVectors(fq.y, fq.z);
+        fq.m.makeBasis(fq.x, fq.y, fq.z);
+        fq.t.setFromRotationMatrix(fq.m).multiply(fq.l.setFromEuler(fq.e.set(0.08 + nod, 0, roll)));
+        out.slerp(fq.t, path.topK * path.topK * (3 - 2 * path.topK));
+      }
+      return out;
     };
     // its velocity in the world, for a heading on screen
     const velFor = (th: number, out: THREE.Vector3) => {
@@ -1232,6 +1244,7 @@ void main(){
         // out of sight it swings round to face the side, then comes in to the edge
         path.goalTh = side > 0 ? Math.PI : 0;
         path.aim = null;
+        path.top = false;
         path.bow0 = 0;
         path.mode = "turn";
         return;
@@ -1319,6 +1332,7 @@ void main(){
         path.aim = [xx, xy]; // it makes for where it goes out
         path.goalTh = Math.atan2(dy, dx);
         path.bow0 = kind === "vert" ? 0 : rnd(-0.03, 0.03);
+        path.top = Math.random() < 0.3; // now and then, seen from above
         path.mode = "turn";
         path.peek = false;
         return;
@@ -1437,6 +1451,7 @@ void main(){
       }
       if (P.mode === "out") goal = P.th; // flying straight on out there for a while
       // in sight it turns only gently; out of sight it may swing round quicker, so it is never gone for long
+      if (hid) P.topK += ((P.top ? 1 : 0) - P.topK) * Math.min(1, dt * 2.5);
       const maxW = hid ? 6 : 0.5;
       const acc = hid ? 16 : 0.8;
       const wGoal = clamp(wrapA(goal - P.th) * (hid ? 3 : 1.2), -maxW, maxW);
@@ -1506,6 +1521,12 @@ void main(){
     };
     const wp = new THREE.Vector3();
     const eyeTmp = new THREE.Vector3();
+    const hdTmp = new THREE.Vector3();
+    const hdZ = new THREE.Vector3(0, 0, 1);
+    const hdQ = new THREE.Quaternion();
+    const hdQ2 = new THREE.Quaternion();
+    const hdQ3 = new THREE.Quaternion();
+    const hdE = new THREE.Euler();
     const emitAt = new THREE.Vector3();
     let emitCarry = 0;
     let bodyCarry = 0;
@@ -1598,7 +1619,7 @@ void main(){
         const S = b.root.scale.x;
         const headAt = new THREE.Vector3();
         const inset = (h: THREE.Vector3) => Fr.hw - Math.abs(h.x - Fr.cx);
-        const want = 0.13 * Math.min(1, Fr.hw * 1.6); // its whole head comes in past the edge (never half of it); its body stays outside // the frame is wide and short: a little more room top and bottom
+        const want = 0.19 * Math.min(1, Fr.hw * 1.6); // its whole head comes in past the edge (never half of it); its body stays outside // the frame is wide and short: a little more room top and bottom
         for (let it = 0; it < 24; it++) {
           headAt.set(0, STAND * S, 0.62 * BODY * S).applyQuaternion(fs.toQ).add(fs.toP).project(camera);
           const err = want - inset(headAt);
@@ -1824,6 +1845,20 @@ void main(){
       b.mouth.position.y = -0.06 - 0.018 * tk.mouth;
       b.head.rotation.x += -0.12 * tk.on + 0.06 * tk.mouth;
       b.head.rotation.y += 0.05 * tk.on * Math.sin(k * 9);
+      // peeping in at you, it turns its face right round to you, so its eyes meet yours (as far as its neck lets it)
+      if (fs.peek > 0.01) {
+        b.body.updateWorldMatrix(true, false);
+        hdTmp.copy(camera.position);
+        b.body.worldToLocal(hdTmp).sub(b.head.position).normalize();
+        hdQ.setFromUnitVectors(hdZ, hdTmp);
+        const ang = 2 * Math.acos(clamp(hdQ.w, -1, 1));
+        const reachK = ang > 1.35 ? 1.35 / ang : 1;
+        hdQ2.identity().slerp(hdQ, reachK);
+        // (its little nod as it speaks, on top)
+        hdQ3.setFromEuler(hdE.set(-0.1 * tk.on + 0.06 * tk.mouth, 0.04 * Math.sin(k * 0.7), 0));
+        hdQ2.multiply(hdQ3);
+        b.head.quaternion.slerp(hdQ2, smooth(0, 1, fs.peek) * 0.95);
+      }
       // the antennae feel the air all the time: a slow searching sway, quicker while it walks, swept back in flight
       const airborne = lift;
       b.antennae.forEach((a, i) => {
