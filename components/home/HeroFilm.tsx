@@ -1558,6 +1558,7 @@ void main(){
       peek: 0,
       lastPerch: -1,
       perchSide: 1,
+      look: 0, // how far its face is turned to you
       heading: false,
     };
     const qTmp = new THREE.Quaternion();
@@ -1652,7 +1653,7 @@ void main(){
       const liftT = path.lift > 0 ? path.lift : clamp((vC.y - vB.y) / Fv.hh, 0, 1.2);
       const slope = Math.atan2((rnd(-0.85, -0.35) - rp.y - liftT) * Fv.hh, Math.max(0.05, Math.abs(ux) * Fv.hw * camera.aspect));
       const th0 = dir > 0 ? clamp(slope, -0.6, 0.6) + rnd(-0.08, 0.08) : Math.PI - clamp(slope, -0.6, 0.6) + rnd(-0.08, 0.08);
-      fs.dur = 3;
+      fs.dur = 4.4; // unhurried: it opens its wings, lifts away and turns into its flight all in one easy movement
       fs.v0.set(0, 0, 0);
       velFor(th0, fs.v1);
       fs.toP.copy(fs.fromP).addScaledVector(fs.v1, fs.dur * 0.5); // an even gathering of speed
@@ -1771,7 +1772,7 @@ void main(){
             .addScaledVector(fs.toP, -2 * u3 + 3 * u2)
             .addScaledVector(fs.v1, (u3 - u2) * fs.dur);
           b.root.position.y += Math.sin(Math.PI * u) * fs.arc;
-          qTmp.slerpQuaternions(fs.fromQ, fs.toQ, smooth(fs.mode === "land" ? 0.15 : 0, fs.mode === "land" ? 0.85 : 0.7, u));
+          qTmp.slerpQuaternions(fs.fromQ, fs.toQ, smooth(fs.mode === "land" ? 0.15 : 0.06, fs.mode === "land" ? 0.85 : 0.94, u));
           b.root.quaternion.copy(qTmp);
           // landing: the wings fold as it touches down; taking off: they open before it rises
           // (coming to hang in front of you, or leaving from there, it stays on the wing)
@@ -1829,6 +1830,8 @@ void main(){
         walkAmt = walking ? 1 - smooth(fs.until - 0.6, fs.until, t) : 0;
         gait = fs.gait;
         fs.peek += ((fs.mode === "perch" ? 1 : 0) - fs.peek) * Math.min(1, dt * 1.5);
+        // its face turns to you slowly once it has settled, and slowly away again as it readies to go
+        fs.look += ((fs.mode === "perch" ? 1 : 0) - fs.look) * Math.min(1, dt * 0.9);
         lookIn = fs.peek;
       }
       b.root.visible = k > T_WALK0 - 0.1 && !(fly.on && fs.mode === "fly" && fly.hidden);
@@ -1846,7 +1849,7 @@ void main(){
       b.head.rotation.x += -0.12 * tk.on + 0.06 * tk.mouth;
       b.head.rotation.y += 0.05 * tk.on * Math.sin(k * 9);
       // peeping in at you, it turns its face right round to you, so its eyes meet yours (as far as its neck lets it)
-      if (fs.peek > 0.01) {
+      if (fs.look > 0.01) {
         b.body.updateWorldMatrix(true, false);
         hdTmp.copy(camera.position);
         b.body.worldToLocal(hdTmp).sub(b.head.position).normalize();
@@ -1857,7 +1860,7 @@ void main(){
         // (its little nod as it speaks, on top)
         hdQ3.setFromEuler(hdE.set(-0.1 * tk.on + 0.06 * tk.mouth, 0.04 * Math.sin(k * 0.7), 0));
         hdQ2.multiply(hdQ3);
-        b.head.quaternion.slerp(hdQ2, smooth(0, 1, fs.peek) * 0.95);
+        b.head.quaternion.slerp(hdQ2, smooth(0, 1, fs.look) * 0.95);
       }
       // the antennae feel the air all the time: a slow searching sway, quicker while it walks, swept back in flight
       const airborne = lift;
