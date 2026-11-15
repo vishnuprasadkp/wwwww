@@ -97,8 +97,8 @@ function pageFor(match: NyrroReply["match"]): { path: string; sections: string[]
     if (!path) return null; // other client work has no page of its own
     // Sony's features are its four platforms: the first of them
     if (match.id === "sony" && match.aspect === "features") return { path, sections: ["sony-clm"] };
-    // Enterprise Search and the Agent Workforce Platform show what shipped in place of outcomes
-    if (match.aspect === "outcomes" && (match.id === "enterprise-search" || match.id === "agent-workforce")) return { path, sections: ["what-shipped"] };
+    // Enterprise Search and the Agent Workforce Platform have no outcomes section: what shipped is told in their design strategy
+    if (match.aspect === "outcomes" && (match.id === "enterprise-search" || match.id === "agent-workforce")) return { path, sections: ["design-strategy"] };
     return { path, sections: (match.aspect && ASPECT_SECTION[match.aspect]) || [] };
   }
   if (match.type !== "intent") return null;

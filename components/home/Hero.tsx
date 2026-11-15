@@ -20,14 +20,15 @@ export default function Hero() {
         <h1 className="text-[17px] leading-[26px]">I&apos;m Vishnu, a Product Designer.</h1>
       </div>
       <div className="grid gap-y-8 border-t border-rule px-5 pb-8 pt-8 md:grid-cols-2 md:gap-x-8 md:px-8">
-        <div>
+        {/* the line and its intro at the top; View work at the foot, level with the bottom of the film */}
+        <div className="flex flex-col">
           <p className="max-w-[560px] font-serif text-[1.75rem] leading-[38px] md:text-[2rem] md:leading-[44px]">
             I design experiences for the complex systems that run real work.
           </p>
           <p className="mt-4 max-w-[560px] text-[17px] leading-[26px] text-pigment">
             For the last five years I&apos;ve designed products for banks, governments and media companies, taking them from the first brief to something people use every day.
           </p>
-          <div className="mt-5 flex flex-wrap gap-x-10 gap-y-1">
+          <div className="mt-5 flex flex-wrap gap-x-10 gap-y-1 md:mt-auto md:pt-5">
             <ViewWork />
           </div>
         </div>
