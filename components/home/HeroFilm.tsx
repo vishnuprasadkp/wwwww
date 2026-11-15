@@ -819,8 +819,8 @@ export default function HeroFilm({ palette, place = "foot", from, full = false, 
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
     const D_K = boxPx
-      ? 2.5 * 0.56 * clamp(Math.max(200, boxPx.h) / Math.max(300, boxPx.w) / 0.62, 1, 1.4) * (Math.max(200, hb0.height) / Math.max(200, boxPx.h)) // seen through the box: small enough that the whole of it, its spread wings and all, fits the box (it grows into the large beetle as the box opens out)
-      : (full ? 1.95 : 1) * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
+      ? 0.56 * clamp(Math.max(200, boxPx.h) / Math.max(300, boxPx.w) / 0.62, 1, 1.4) * (Math.max(200, hb0.height) / Math.max(200, boxPx.h)) // seen through the box: as large as in a film the box's size
+      : (full ? 1.45 : 1) * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -1194,7 +1194,7 @@ void main(){
     };
     // as the hero's window opens out to the whole screen the beetle grows, just where it is, step by step with it, until it
     // is the large beetle of the full-screen film (and smaller again as it closes): the size it is drawn at, divided by this
-    const D_FULL = 1.95 * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4);
+    const D_FULL = 1.45 * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4);
     const zoomNow = () => {
       const f = frameRef?.current;
       if (!f || f.hh0 === undefined) return 1;
@@ -1277,7 +1277,7 @@ void main(){
         let X: [number, number];
         if (kind === "lo" || kind === "mid" || kind === "hi") {
           const sd = qSide || Math.sign(u) || coin();
-          const h = kind === "lo" ? rnd(-0.6, -0.38) : kind === "mid" ? rnd(-0.15, 0.15) : rnd(0.42, 0.62); // (its whole outline in the frame)
+          const h = kind === "lo" ? rnd(-0.82, -0.5) : kind === "mid" ? rnd(-0.2, 0.2) : rnd(0.5, 0.8);
           E = [sd, h];
           X = [-sd, clamp(h + rnd(-0.18, 0.18), -0.88, 0.85)];
         } else if (kind === "diag") {
@@ -1303,7 +1303,7 @@ void main(){
         const hiddenAt = (sx: number, sy: number) => {
           const fx = (sx - CX) / W;
           const fy = (sy - CY) / H;
-          return Math.abs(fx) > 1 + r.rx + 0.25 || fy > 1 + r.down + 0.3 || fy < -1 - r.up - 0.3;
+          return Math.abs(fx) > 1 + r.rx + 0.35 || fy > 1 + r.down + 0.4 || fy < -1 - r.up - 0.4; // (room to swing round unseen)
         };
         let L = 0;
         while (L < 12 * H && !hiddenAt(ex - dx * L, ey - dy * L)) L += 0.05 * H;
@@ -1314,9 +1314,9 @@ void main(){
         const fyS = (SY - CY) / H;
         const dSide = Math.abs(fxS) > 1 + r.rx ? Math.sign(fxS) : 0;
         const dV = fyS > 1 + r.down ? 1 : fyS < -1 - r.up ? -1 : 0;
-        const mx = 1 + r.rx + 0.35;
-        const yU = 1 + r.down + 0.45;
-        const yD = 1 + r.up + 0.45;
+        const mx = 1 + r.rx + 0.7;
+        const yU = 1 + r.down + 0.7;
+        const yD = 1 + r.up + 0.7;
         const at = (fx: number, fy: number) => [CX + fx * W, CY + fy * H];
         const via: number[][] = [];
         if (qSide && dSide && qSide !== dSide) {
@@ -1383,6 +1383,7 @@ void main(){
       path.peek = false;
       path.via = [];
       path.since = t;
+      path.boost = 1; // (at its own pace, as it took off)
     };
     // to the edge it is beyond, to peep in at you
     const peepIn = (t: number, b: NonNullable<typeof beetle>, side: number) => {
@@ -1447,7 +1448,9 @@ void main(){
         // round the frame, out of sight, to where its line begins
         const [vx, vy] = P.via[0];
         goal = Math.atan2(vy - Y, vx - X);
-        if (Math.hypot(vx - X, vy - Y) < 0.45 * F.hh) P.via.shift();
+        // (reached: near enough, for how fast it is going and how tightly it can turn, so it never circles a point)
+        const vNow = SPEED * P.boost * Math.max(kx * camera.aspect, ky);
+        if (Math.hypot(vx - X, vy - Y) < Math.max(0.45 * F.hh, (2.4 * vNow) / 6)) P.via.shift();
       }
       if (P.mode === "out") goal = P.th; // flying straight on out there for a while
       // in sight it turns only gently; out of sight it may swing round quicker, so it is never gone for long
@@ -1462,7 +1465,9 @@ void main(){
       const clear = Math.max(Math.abs(r.x) - 1 - r.rx, r.y - 1 - r.down, -1 - r.up - r.y);
       // (swinging round out there it all but hovers, turning on the spot, so it never swings back into view as it turns)
       const turning = P.mode === "turn" && !P.via.length;
-      P.boost += ((turning ? 0.15 : clear > 0 ? 1 + 3 * clamp(clear / 0.45, 0, 1) : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 7 : 3));
+      P.boost += ((turning ? 0.15 : clear > 0 ? 1 + 5 * clamp(clear / 0.45, 0, 1) : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 7 : 3));
+      // coming back in, it has slowed to its own pace by the time any of it shows: never rushing in from the edge
+      if (P.mode === "back" || P.mode === "turn") P.boost = Math.min(P.boost, 1 + 5 * clamp(clear / 0.9, 0, 1));
       P.sx += Math.cos(P.th) * SPEED * P.boost * kx * dt;
       P.sy += Math.sin(P.th) * SPEED * P.boost * ky * dt;
       P.d = P.d0 * depthK(t);
@@ -1620,7 +1625,7 @@ void main(){
         const S = b.root.scale.x;
         const headAt = new THREE.Vector3();
         const inset = (h: THREE.Vector3) => Fr.hw - Math.abs(h.x - Fr.cx);
-        const want = 0.19 * Math.min(1, Fr.hw * 1.6); // its whole head comes in past the edge (never half of it); its body stays outside // the frame is wide and short: a little more room top and bottom
+        const want = 0.1 * Math.min(1, Fr.hw * 1.6); // its whole head comes in past the edge (never half of it); its body stays outside // the frame is wide and short: a little more room top and bottom
         for (let it = 0; it < 24; it++) {
           headAt.set(0, STAND * S, 0.62 * BODY * S).applyQuaternion(fs.toQ).add(fs.toP).project(camera);
           const err = want - inset(headAt);
@@ -1887,9 +1892,11 @@ void main(){
         const up = Math.max(0, Math.cos(g)) * st;
         // flying: the legs hang and paddle softly in the air, each a little out of time with the next
         const paddle = Math.sin(k * 1.6 + L.row * 1.1 + (L.side > 0 ? 0 : 0.6)) * airborne;
-        L.root.rotation.y = L.yawBase + sd * (0.45 * swing + 0.18 * paddle);
-        L.hip.rotation.z = 0.35 + 0.42 * up - 0.4 * airborne + 0.12 * paddle;
-        L.knee.rotation.z = -1.85 - 0.3 * up + 0.35 * airborne + 0.15 * paddle;
+        // peeping in at you, its legs are drawn back and folded in against it, out of the frame, so only its head comes in
+        const tuck = smooth(0, 1, fs.peek);
+        L.root.rotation.y = L.yawBase + sd * (0.45 * swing + 0.18 * paddle) - sd * 0.55 * tuck;
+        L.hip.rotation.z = 0.35 + 0.42 * up - 0.4 * airborne + 0.12 * paddle + 0.7 * tuck;
+        L.knee.rotation.z = -1.85 - 0.3 * up + 0.35 * airborne + 0.15 * paddle - 0.5 * tuck;
       }
       // wing cases lift and part; wings unfold from under them and beat, slowly
       b.cases.forEach((c, i) => {
