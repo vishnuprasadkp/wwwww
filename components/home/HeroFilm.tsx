@@ -1070,7 +1070,11 @@ void main(){
     const PATH_FULL = { yLo: -0.8, yHi: 0.75, look: [40, 65] };
     let PATH = full ? PATH_FULL : PATH_BOX;
     const TAU = Math.PI * 2;
-    const FLY_PITCH = 0.3;
+    // in flight its head is held up (as a flying beetle's is, body slanting up, wings above), higher still as it climbs and
+    // nearly level as it comes down; and it lifts and dips its head a little now and then, never the same twice
+    const FLY_PITCH = -0.3;
+    const nodPh = [rnd(0, TAU), rnd(0, TAU)];
+    const nodAt = (t: number) => 0.1 * Math.sin(t * 0.31 + nodPh[0]) + 0.05 * Math.sin(t * 0.83 + nodPh[1]);
     // the frame it is seen through, on the canvas (-1..1): the hero's box within the whole screen, or all of it
     const FULL_FRAME = { x0: -1, x1: 1, y0: -1, y1: 1 };
     const view = () => {
@@ -1104,6 +1108,9 @@ void main(){
       via: [] as number[][], // out of sight, on its way round the frame to where its next line begins
       boost: 1, // out of sight it flies faster, so it is never gone for long
       since: 0,
+      wav: 0, // its sway either side of its line, and the sway's length and phase
+      wl: 2,
+      wph: 0,
       top: false, // this pass seen from above
       topK: 0, // how far it is turned to be seen from above (it turns only out of sight)
       lift: 0, // how far above the point it flies through its body is drawn, flying level (in frame heights)
@@ -1174,7 +1181,7 @@ void main(){
       }
       fq.m.makeBasis(fq.x, fq.y, fq.z);
       out.setFromRotationMatrix(fq.m);
-      out.multiply(fq.l.setFromEuler(fq.e.set(FLY_PITCH + nod, 0, roll)));
+      out.multiply(fq.l.setFromEuler(fq.e.set(FLY_PITCH - 0.22 * Math.sin(th) + nod, 0, roll)));
       if (path.topK > 0.001) {
         // some passes it flies seen from above instead: its back to you, wings spread, its head the way it is going
         fq.z.copy(camR).multiplyScalar(Math.cos(th)).addScaledVector(camU, Math.sin(th)).normalize();
@@ -1407,6 +1414,9 @@ void main(){
       const len = Math.max(0.5 * F.hh, Math.min(fx, fy));
       setLine(X2, path.sy, X2 + dx * len, path.sy + dy * len, Math.abs(dy) > 0.75 ? 0 : bend);
       path.stage = 0;
+      path.wav = path.peek ? 0 : rnd(0.05, 0.1);
+      path.wl = rnd(1.9, 2.8);
+      path.wph = rnd(0, TAU);
     };
     let humTick = 0;
     const kindBag: string[] = [];
@@ -1438,8 +1448,11 @@ void main(){
       // out of sight on its way in, it makes first for its line well back from the frame, then on along it
       const sa = P.mode === "back" ? Math.max(s, P.stage) + look : s + look;
       const bow = P.bend * F.hh * Math.sin(Math.PI * clamp(sa / Math.max(0.01, P.len), 0, 1)) * 2;
-      const ax = P.x0 + P.lx * sa - P.ly * bow;
-      const ay = P.y0 + P.ly * sa + P.lx * bow;
+      // and a soft, slow sway either side of its line, as a real flight has: never ruler-straight, never the same twice
+      // (it grows in from where the line begins, out of sight, so it never jerks)
+      const wv = P.wav * F.hh * Math.sin((sa / Math.max(0.05, P.wl * F.hh)) * TAU + P.wph) * clamp(sa / (0.6 * F.hh), 0, 1);
+      const ax = P.x0 + P.lx * sa - P.ly * (bow + wv);
+      const ay = P.y0 + P.ly * sa + P.lx * (bow + wv);
       let goal = Math.atan2(ay - Y, ax - X);
       // swinging round, it keeps its eye on the point it is making for, so its line goes right through it
       if (P.mode === "turn" && !P.via.length && P.aim) P.goalTh = Math.atan2(P.aim[1] - Y, P.aim[0] - X);
@@ -1520,7 +1533,7 @@ void main(){
       fly.roll += (rollGoal - fly.roll) * Math.min(1, dt * 1.2);
       fly.climb += (climbFor(P.th) - fly.climb) * Math.min(1, dt * 1.2);
       b.root.position.copy(fly.p);
-      flyQ(P.th, fly.p, fly.roll, 0.04 * Math.sin(t * 0.5), b.root.quaternion);
+      flyQ(P.th, fly.p, fly.roll, nodAt(t), b.root.quaternion);
       // on its way in to a side, lined up and still out of sight: it comes to the edge and peeps in at you
       if (P.peek && P.mode === "back" && hid2 && Math.abs(r2.x) > 1 && Math.abs(wrapA(goal - P.th)) < 0.5 && Math.cos(P.th) * Math.sign(r2.x) < -0.4) peepIn(t, b, Math.sign(r2.x));
     };
@@ -1665,7 +1678,7 @@ void main(){
       fs.yaw = th0; // (the heading it leaves on)
       fly.climb = climbFor(th0);
       fly.roll = 0;
-      flyQ(th0, fs.toP, 0, 0.04 * Math.sin((t + fs.dur) * 0.5), fs.toQ);
+      flyQ(th0, fs.toP, 0, nodAt(t + fs.dur), fs.toQ);
     };
 
     let baseScale = 0;
@@ -1726,7 +1739,7 @@ void main(){
           fly.climb = climbFor(path.th);
           fly.roll = 0;
           b.root.position.copy(fly.p);
-          flyQ(path.th, fly.p, 0, 0, b.root.quaternion);
+          flyQ(path.th, fly.p, 0, nodAt(t), b.root.quaternion);
         }
         // the frame opened out or closed while it was peeping in at an edge: that edge has moved, so it flies off
         // with the film open (and its sound on) it speaks: as it comes into view, when it peeps in at you, and now and then
