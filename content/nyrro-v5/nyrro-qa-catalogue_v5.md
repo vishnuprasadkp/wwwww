@@ -1485,7 +1485,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - **HDFC Bank:** reported by UnifyApps
 > - **Sony:** from project documentation
 > - **ADEO:** from the case study
-> - **Enterprise Search and Agent Workforce:** these pages describe what shipped rather than numbers, because the published figures belong to a different deployment
+> - **Enterprise Search and Agent Workforce:** no outcome numbers, because the published figures belong to a different deployment
 > - **Other client projects:** expected results, clearly marked as such
 
 #### What awards has he won?  `awards-certs`
@@ -1579,9 +1579,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Outcomes**
 
-> This case study describes what shipped rather than numbers, because UnifyApps' published figures come from a different deployment.
->
-> What shipped:
+> UnifyApps' published figures come from a different deployment, so this case study doesn't quote outcome numbers. What shipped:
 >
 > - Connectors for apps like **Slack, Jira, GitHub and Google Drive**
 > - **Sync status and failures** that admins can always see
@@ -1771,9 +1769,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Outcomes**
 
-> This case study describes what shipped rather than numbers, because UnifyApps' published figures come from a different deployment.
->
-> What shipped:
+> UnifyApps' published figures come from a different deployment, so this case study doesn't quote outcome numbers. What shipped:
 >
 > - **Three building modes** on one shared design system
 > - **Guardrails and PII rules** set while configuring the agent, not added later

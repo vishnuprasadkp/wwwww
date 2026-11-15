@@ -58,7 +58,7 @@ Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, Git
 - **HDFC Bank:** reported by UnifyApps
 - **Sony:** from project documentation
 - **ADEO:** from the case study
-- **Enterprise Search and Agent Workforce:** these pages describe what shipped rather than numbers, because the published figures belong to a different deployment
+- **Enterprise Search and Agent Workforce:** no outcome numbers, because the published figures belong to a different deployment
 - **Other client projects:** expected results, clearly marked as such""",
 
 "project-count": """He has worked on **100+ use cases** across his career:
@@ -88,17 +88,13 @@ OPENING = {
 "enterprise-search": "Company knowledge was spread across dozens of apps, and search gave people files instead of answers. Vishnu designed a search experience that **answers with sources**, along with the admin and governance tools that make those answers worth trusting.",
 }
 OUTCOMES = {
-"enterprise-search": """This case study describes what shipped rather than numbers, because UnifyApps' published figures come from a different deployment.
-
-What shipped:
+"enterprise-search": """UnifyApps' published figures come from a different deployment, so this case study doesn't quote outcome numbers. What shipped:
 
 - Connectors for apps like **Slack, Jira, GitHub and Google Drive**
 - **Sync status and failures** that admins can always see
 - Settings written in **plain language**, so admins don't need engineering
 - An **agent marketplace** where every agent shows whether it's verified""",
-"agent-workforce": """This case study describes what shipped rather than numbers, because UnifyApps' published figures come from a different deployment.
-
-What shipped:
+"agent-workforce": """UnifyApps' published figures come from a different deployment, so this case study doesn't quote outcome numbers. What shipped:
 
 - **Three building modes** on one shared design system
 - **Guardrails and PII rules** set while configuring the agent, not added later
