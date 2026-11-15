@@ -31,11 +31,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { frontmatter: fm } = await load(slug);
   const image = getAsset(fm.hero).file;
   const description = fm.description ?? fm.summary;
+  // (a heading's closing full stop is left off in the page title: "… media group | Vishnu Prasad", not "group. |")
+  const title = fm.title.replace(/[.\s]+$/, "");
   return {
-    title: fm.title,
+    title,
     description,
-    openGraph: { title: `${fm.title} | Vishnu Prasad`, description, url: `${site.url}/work/${slug}`, images: [image] },
-    twitter: { card: "summary_large_image", title: `${fm.title} | Vishnu Prasad`, description, images: [image] },
+    openGraph: { title: `${title} | Vishnu Prasad`, description, url: `${site.url}/work/${slug}`, images: [image] },
+    twitter: { card: "summary_large_image", title: `${title} | Vishnu Prasad`, description, images: [image] },
   };
 }
 
