@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import HeroFilm from "./HeroFilm";
 import HeroInk from "./HeroInk";
 import NyrroStory from "./NyrroStory";
 import SoundToggle from "./SoundToggle";
 import { ambience } from "@/lib/ambience";
+import { fullScreenHeight } from "@/lib/screen";
 import { HERO_INK } from "@/lib/painting";
 
 /**
@@ -17,6 +18,7 @@ export default function NyrroFilm() {
   // the hero's film, opened out: the wash's shapes at the size they have in the hero's box on this screen, and the
   // beetle at the size it comes to there once the film fills the screen
   const [hero, setHero] = useState<{ w: number; h: number; ink: number } | null>(null);
+  const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const W = document.documentElement.clientWidth;
     const H = window.innerHeight;
@@ -29,6 +31,14 @@ export default function NyrroFilm() {
     const before = html.style.overflow;
     html.style.overflow = "hidden";
     window.__lenis?.stop();
+    // the film reaches the very foot of the screen (on a phone the page is drawn under the browser's bars)
+    const fit = () => {
+      if (box.current) box.current.style.height = `${fullScreenHeight()}px`;
+    };
+    fit();
+    html.classList.add("film-full");
+    window.addEventListener("resize", fit);
+    window.visualViewport?.addEventListener("resize", fit);
     // its sound: at once if you came here by a click, otherwise from your first touch or key
     const a = ambience();
     a.start();
@@ -36,13 +46,16 @@ export default function NyrroFilm() {
     return () => {
       off();
       a.stop();
+      html.classList.remove("film-full");
+      window.removeEventListener("resize", fit);
+      window.visualViewport?.removeEventListener("resize", fit);
       html.style.overflow = before;
       window.__lenis?.start();
     };
   }, []);
 
   return (
-    <div className="fixed left-0 right-0 top-0 z-[60] h-[100lvh] overflow-hidden" style={{ background: "#3e3e3e" }}>{/* (the full screen, a phone's browser bar hidden or not) */}
+    <div ref={box} className="fixed left-0 right-0 top-0 z-[60] h-[100lvh] overflow-hidden" style={{ background: "#3e3e3e" }}>{/* (the full screen, a phone's browser bar hidden or not) */}
       {hero && (
         <>
           <HeroInk palette={HERO_INK} spread={false} speed={3} grain={1} fixedScale={hero.ink} />

@@ -271,3 +271,8 @@ html[data-motion] main :where(img) { opacity: 0; }
   100% { transform: scaleY(0.45); }
 }
 @media (prefers-reduced-motion: reduce) { .nyrro-bar { animation: none !important; } }
+
+/* while the film fills the screen, the page behind it is the film's own colour, so nothing light can show at a phone's
+   edges (under its browser bars) */
+html.film-full, html.film-full body { background-color: #3e3e3e; }
+html.film-full .paper-bg { display: none; }

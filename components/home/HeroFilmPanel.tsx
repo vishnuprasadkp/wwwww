@@ -7,6 +7,7 @@ import NyrroStory from "./NyrroStory";
 import SoundToggle from "./SoundToggle";
 import { ambience } from "@/lib/ambience";
 import { HERO_INK } from "@/lib/painting";
+import { fullScreenHeight } from "@/lib/screen";
 
 const OPEN_MS = 820;
 // slow away, sweeping through the middle, slow to settle
@@ -29,18 +30,6 @@ const block = (e: Event) => {
  * Nyrro's story rises in at the foot. Back (the button, the browser's back, or Escape): the story sinks away and the
  * window closes down onto the box again.
  */
-// the screen's full height (with a phone's browser bar hidden): a probe 100lvh tall, read when needed
-let probe: HTMLDivElement | null = null;
-function screenHeight() {
-  if (typeof document === "undefined") return 0;
-  if (!probe) {
-    probe = document.createElement("div");
-    probe.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:100vh;height:100lvh;pointer-events:none;visibility:hidden";
-    document.body.appendChild(probe);
-  }
-  return probe.getBoundingClientRect().height;
-}
-
 export default function HeroFilmPanel({ height }: { height: string }) {
   const slot = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -59,7 +48,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
     const el = slot.current!;
     const r = el.getBoundingClientRect();
     const W = document.documentElement.clientWidth;
-    const H = Math.max(window.innerHeight, screenHeight());
+    const H = fullScreenHeight();
     return { W, H, box: { left: r.left + window.scrollX, top: r.top + window.scrollY, width: r.width, height: r.height } as Rect };
   };
 
@@ -89,7 +78,10 @@ export default function HeroFilmPanel({ height }: { height: string }) {
     const round = Math.sin(Math.PI * p) * 18; // its corners soften as it opens, and square up again at the edges of the screen
     st.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px round ${round}px)`;
     frameRef.current = { x0: (left / W) * 2 - 1, x1: 1 - (right / W) * 2, y1: 1 - (top / H) * 2, y0: (bottom / H) * 2 - 1, hh0: box.height / H };
-    if (dim.current) dim.current.style.opacity = String(p);
+    if (dim.current) {
+      dim.current.style.opacity = String(p);
+      dim.current.style.height = `${H}px`;
+    }
   }, []);
 
   // measured once it is on the page: the film is made for this screen, and drawn as large as in a film the box's size
