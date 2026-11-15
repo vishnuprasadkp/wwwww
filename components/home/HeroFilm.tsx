@@ -1108,6 +1108,8 @@ void main(){
       via: [] as number[][], // out of sight, on its way round the frame to where its next line begins
       boost: 1, // out of sight it flies faster, so it is never gone for long
       since: 0,
+      hoverPlan: false,
+      hoverUntil: 0,
       turnIn: 0.26, // how far it is turned your way, side on (each pass a little different), and how it leans
       lean: 0,
       turnInGoal: 0.26,
@@ -1271,9 +1273,9 @@ void main(){
         const H = F.hh;
         const CX = F.cx * A;
         const CY = F.cy;
-        if (!kindBag.length) kindBag.push(...["lo", "lo", "mid", "hi", "diag", "diag", "diag", "vert", "vert"].sort(() => Math.random() - 0.5));
+        if (!kindBag.length) kindBag.push(...["lo", "lo", "mid", "hi", "diag", "diag", "diag", "vert", "vert", "arc", "arc", "arc"].sort(() => Math.random() - 0.5));
         let kind = kindBag.pop()!;
-        if (t > path.nextLook && (kind === "vert" || kind === "diag")) kind = "lo"; // time to come and look: out by a side
+        if (t > path.nextLook && (kind === "vert" || kind === "diag" || kind === "arc")) kind = "lo"; // time to come and look: out by a side
         // its body is drawn well above the point it flies through (in the hero's short box, over half the way to the top):
         // each line is planned for its body, then lowered by that much
         beetle!.body.getWorldPosition(pB);
@@ -1291,6 +1293,16 @@ void main(){
           const h = kind === "lo" ? rnd(-0.82, -0.5) : kind === "mid" ? rnd(-0.2, 0.2) : rnd(0.5, 0.8);
           E = [sd, h];
           X = [-sd, clamp(h + rnd(-0.18, 0.18), -0.88, 0.85)];
+        } else if (kind === "arc") {
+          // a long, gentle curve: in by one side and out by the top or the foot (or the other way round), bowing out
+          // through the frame, as a beetle banks round on the air
+          const sd = qSide || Math.sign(u) || coin();
+          const vy = qV || coin();
+          const sideIn = qV ? false : qSide ? true : Math.random() < 0.5;
+          const a: [number, number] = [sd, rnd(-0.6, 0.5)];
+          const c: [number, number] = [-sd * rnd(0.1, 0.65), vy];
+          E = sideIn ? a : c;
+          X = sideIn ? c : a;
         } else if (kind === "diag") {
           const cx = qSide || Math.sign(u) || coin();
           const cy = qV || coin();
@@ -1343,6 +1355,16 @@ void main(){
         path.aim = [xx, xy]; // it makes for where it goes out
         path.goalTh = Math.atan2(dy, dx);
         path.bow0 = kind === "vert" ? 0 : rnd(-0.03, 0.03);
+        if (kind === "arc") {
+          // bowed out towards the middle of the frame
+          const nx = -dy;
+          const ny = dx;
+          const mxp = (ex + xx) / 2;
+          const myp = (ey + xy) / 2;
+          path.bow0 = Math.sign(nx * (CX - mxp) + ny * (CY - lift0 * H - myp) || 1) * rnd(0.11, 0.19);
+        }
+        // now and then it stops a moment in the air on its way through, hanging there, wings beating, then goes on
+        path.hoverPlan = Math.random() < 0.45;
         path.top = Math.random() < 0.3; // now and then, seen from above
         // side on, but never quite the same: turned more or less your way, leaning a little to show more of its back or
         // of its underside
@@ -1493,7 +1515,11 @@ void main(){
       const clear = Math.max(Math.abs(r.x) - 1 - r.rx, r.y - 1 - r.down, -1 - r.up - r.y);
       // (swinging round out there it all but hovers, turning on the spot, so it never swings back into view as it turns)
       const turning = P.mode === "turn" && !P.via.length;
-      P.boost += ((turning ? 0.15 : clear > 0 ? 1 + 8 * clamp(clear / 0.4, 0, 1) : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 7 : clear > 0 ? 6 : 3));
+      if (P.mode === "pass" && P.hoverPlan && Math.abs(r.x) < 0.6 && Math.abs(r.y) < 0.75) {
+        P.hoverPlan = false;
+        P.hoverUntil = t + rnd(1.4, 2.6);
+      }
+      P.boost += ((turning ? 0.15 : clear > 0 ? 1 + 8 * clamp(clear / 0.4, 0, 1) : t < P.hoverUntil ? 0.18 : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 7 : clear > 0 ? 6 : 1.6));
       // coming back in, it has slowed to its own pace by the time any of it shows: never rushing in from the edge
       if (P.mode === "back" || P.mode === "turn") P.boost = Math.min(P.boost, 1 + 8 * clamp(clear / 0.9, 0, 1));
       P.sx += Math.cos(P.th) * SPEED * P.boost * kx * dt;
