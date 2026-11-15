@@ -1535,8 +1535,8 @@ void main(){
       // out of sight it may swing round quickly, but less and less so as it nears the frame: it is only ever turning
       // gently by the time any of it shows
       const clear0 = Math.max(Math.abs(r.x) - 1 - r.rx, r.y - 1 - r.down, -1 - r.up - r.y);
-      const maxW = hid ? 0.4 + 5.6 * clamp(clear0 / 0.5, 0, 1) : 0.5;
-      const acc = hid ? 16 : 0.8;
+      const maxW = hid ? 0.4 + 7.6 * clamp(clear0 / 0.5, 0, 1) : 0.5;
+      const acc = hid ? 26 : 0.8;
       const wGoal = clamp(wrapA(goal - P.th) * (hid ? 6 : 1.2), -maxW, maxW);
       P.w += clamp(wGoal - P.w, -acc * dt, acc * dt);
       P.th += P.w * dt;
@@ -1549,7 +1549,9 @@ void main(){
         P.hoverPlan = false;
         P.hoverUntil = t + rnd(1.4, 2.6);
       }
-      P.boost += ((turning ? 0.15 : clear > 0 ? 1 + 8 * clamp(clear / 0.4, 0, 1) : t < P.hoverUntil ? 0.18 : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 7 : clear > 0 ? 6 : 1.6));
+      // (leaving, once its body is past the edge, it picks up speed and darts away, so it is not long going)
+      const leaving = P.mode === "pass" && (r.x * Math.cos(P.th) > 0 || r.y * Math.sin(P.th) > 0) ? clamp(Math.max(Math.abs(r.x), Math.abs(r.y)) - 1, 0, 0.6) / 0.6 : 0;
+      P.boost += ((turning ? 0.45 : clear > 0 ? 1 + 8 * clamp(clear / 0.4, 0, 1) : t < P.hoverUntil ? 0.18 : leaving > 0 ? 1 + 1.6 * leaving * leaving : 1 - 0.4 * Math.exp(-(r.x * r.x + r.y * r.y) / 0.25)) - P.boost) * Math.min(1, dt * (turning ? 9 : clear > 0 ? 8 : 1.6));
       // coming back in, it has slowed to its own pace by the time any of it shows: never rushing in from the edge
       if (P.mode === "back" || P.mode === "turn") P.boost = Math.min(P.boost, 1 + 8 * clamp(clear / 0.9, 0, 1));
       P.sx += Math.cos(P.th) * SPEED * P.boost * kx * dt;
