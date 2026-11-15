@@ -1220,7 +1220,7 @@ void main(){
         const deg = Math.PI / 180;
         const k = Math.random();
         // (when it is time to come and look at you, nearly level, so it goes out by a side, where it can peep back in)
-        const want = (t > path.nextLook ? rnd(4, 14) : k < 0.4 ? rnd(62, 85) : k < 0.8 ? rnd(28, 55) : rnd(5, 16)) * deg;
+        const want = (t > path.nextLook ? rnd(4, 14) : k < 0.25 ? rnd(62, 85) : k < 0.6 ? rnd(20, 40) : rnd(4, 14)) * deg;
         path.via = [];
         if (want > 50 * deg && side && !vert) {
           // to come down (or up) through the frame from beside it: out of sight it goes round the corner, above the frame
@@ -1238,27 +1238,33 @@ void main(){
         }
         // often right through the middle of the frame, where you see all of it; as often anywhere else in it
         const mid = Math.random() < 0.45;
-        const band = Math.random(); // how high in the frame it goes this time
+        // how high in the frame it goes this time: drawn from a shuffled deck (four low, two middle, two high: passing
+        // through, it crosses the middle anyway), so over any few passes it is low half the time and middle and high about a
+        // quarter each, in an order never the same
+        if (!bandBag.length) bandBag.push(...[0.3, 0.3, 0.3, 0.3, 0.7, 0.7, 0.9, 0.9].sort(() => Math.random() - 0.5));
+        const band = bandBag.pop()!;
+        // (its body low down half the time, across the middle a quarter, high up a quarter)
+        const bandY = (b: number) => (b < 0.62 ? rnd(-0.85, -0.5) : b < 0.8 ? rnd(-0.2, 0.2) : rnd(0.55, 0.85));
         // the point it flies through is at its feet: its body is drawn well above that (in the hero's short box, over half
         // the way to the top), so the line is aimed that much lower, for its body to go where it is meant to
         beetle!.body.getWorldPosition(pB);
         pB.project(camera);
         pA.copy(fly.p).project(camera);
-        const lift0 = Math.max(clamp((pB.y - pA.y) / F.hh, 0, 1.2), path.lift); // (as high as it is drawn flying level)
+        const lift0 = path.lift > 0 ? path.lift : clamp((pB.y - pA.y) / F.hh, 0, 1.2); // (as high as it is drawn flying level)
         if (vert || (!side && !vert)) {
           // from above or below the frame (or after swinging round onto the next): straight to a point picked first, low as
           // often as not, so its height is never just left to where it happens to be
           const tx = CX + W * (mid ? rnd(-0.25, 0.25) : rnd(-0.65, 0.65));
-          const ty = CY + H * ((mid ? rnd(-0.3, 0.15) : band < 0.55 ? rnd(-0.85, -0.35) : band < 0.85 ? rnd(-0.35, 0.25) : rnd(0.25, 0.65)) - lift0);
+          const ty = CY + H * (bandY(band) - lift0);
           path.aim = [tx, ty];
           path.goalTh = Math.atan2(ty - QY, tx - QX);
           path.bow0 = 0;
-          if (vert && Math.random() < 0.55) {
+          if (vert && Math.random() < 0.75) {
             // or, so it is not always up and down: out of sight it goes round the corner to beside the frame, and comes
             // in across it, on the level or a gentle slant, at that height
             const sd = Math.abs(u) > 0.2 ? Math.sign(u) : Math.random() < 0.5 ? -1 : 1;
             const SX = CX + sd * (1 + r.rx + 0.3) * W;
-            const a = rnd(0, 22) * deg * (Math.random() < 0.5 ? 1 : -1);
+            const a = rnd(0, 12) * deg * (Math.random() < 0.5 ? 1 : -1);
             const SY = clamp(ty + Math.tan(a) * Math.abs(SX - tx), CY - (1 + r.up) * H, CY + (1 + r.down) * H);
             path.via = [
               [SX, CY + vert * (1 + (vert > 0 ? r.down : r.up) + 0.4) * H],
@@ -1274,10 +1280,10 @@ void main(){
           // across or on a slant, from beside the frame: the height it goes through is picked first (low as often as not),
           // and out of sight, beside the frame, it moves up or down to where that line begins
           const tx = CX + W * (mid ? rnd(-0.25, 0.25) : rnd(-0.6, 0.6));
-          const ty = CY + H * ((mid ? rnd(-0.3, 0.15) : band < 0.55 ? rnd(-0.85, -0.35) : band < 0.85 ? rnd(-0.35, 0.25) : rnd(0.25, 0.65)) - lift0);
+          const ty = CY + H * (bandY(band) - lift0);
           const SX = CX + side * (1 + r.rx + 0.3) * W;
           const sgn = Math.random() < 0.5 ? 1 : -1;
-          const SY = clamp(ty + sgn * Math.abs(SX - tx) * Math.tan(want), CY - (1 + r.up) * H, CY + (1 + r.down) * H);
+          const SY = clamp(ty + sgn * Math.abs(SX - tx) * Math.tan(band < 0.62 || band >= 0.8 ? Math.min(want, 14 * deg) : want), CY - (1 + r.up) * H, CY + (1 + r.down) * H);
           path.via = [[SX, SY]];
           path.aim = [tx, ty];
           path.goalTh = Math.atan2(ty - SY, tx - SX);
@@ -1292,7 +1298,7 @@ void main(){
           const tx = CX + W * (mid ? rnd(-0.25, 0.25) : rnd(-0.75, 0.75));
           // low down as often as not (its raised wings carry its outline well above the point it flies through, so a
           // line through the middle already looks high), else across the middle, sometimes high
-          const ty = CY + H * ((mid ? rnd(-0.3, 0.15) : band < 0.55 ? rnd(-0.85, -0.35) : band < 0.85 ? rnd(-0.35, 0.25) : rnd(0.25, 0.65)) - lift0);
+          const ty = CY + H * (bandY(band) - lift0);
           const dx = tx - QX;
           const dy = ty - QY;
           const l = Math.hypot(dx, dy);
@@ -1387,6 +1393,7 @@ void main(){
       path.stage = 0;
     };
     let humTick = 0;
+    const bandBag: number[] = [];
     let liftTick = 0;
     // its little voice: when each syllable it sings starts and how long it lasts
     const talk = { syl: [] as [number, number][], t0: -1, len: 0, last: -99, queued: -1, seen: false, perched: false };
@@ -1620,8 +1627,8 @@ void main(){
       vC.project(camera);
       vB.copy(fs.fromP).project(camera);
       // (its body is drawn above its feet, by as much as flying level: aim its body low to middling)
-      const liftT = Math.max(clamp((vC.y - vB.y) / Fv.hh, 0, 1.2), path.lift);
-      const slope = Math.atan2((rnd(-0.55, 0.05) - rp.y - liftT) * Fv.hh, Math.max(0.05, Math.abs(ux) * Fv.hw * camera.aspect));
+      const liftT = path.lift > 0 ? path.lift : clamp((vC.y - vB.y) / Fv.hh, 0, 1.2);
+      const slope = Math.atan2((rnd(-0.85, -0.35) - rp.y - liftT) * Fv.hh, Math.max(0.05, Math.abs(ux) * Fv.hw * camera.aspect));
       const th0 = dir > 0 ? clamp(slope, -0.6, 0.6) + rnd(-0.08, 0.08) : Math.PI - clamp(slope, -0.6, 0.6) + rnd(-0.08, 0.08);
       fs.dur = 3;
       fs.v0.set(0, 0, 0);

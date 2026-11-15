@@ -250,7 +250,7 @@ class Ambience {
     dark.type = "lowpass";
     dark.frequency.value = 3200;
     const wet = ctx.createGain();
-    wet.gain.value = 0.28;
+    wet.gain.value = 0.24;
     wet.connect(verb).connect(dark).connect(master);
     this.wet = wet;
 
@@ -276,7 +276,7 @@ class Ambience {
   private schedule() {
     const m = this.mood;
     // the chords
-    const padLevel = m === "air" ? 0.022 : m === "night" ? 0.02 : m === "musicbox" ? 0.008 : 0.014; // only just there
+    const padLevel = m === "air" ? 0.014 : m === "night" ? 0.012 : m === "musicbox" ? 0.005 : 0.0085; // only just there
     const padOct = m === "night" ? -12 : 0;
     const chord = () => {
       this.playChord(CHORDS[this.chordIx % CHORDS.length].map((s) => s + padOct), padLevel, m === "night" ? 700 : 1100);
@@ -285,9 +285,9 @@ class Ambience {
     };
     chord();
     // the notes
-    if (m === "garden") this.later(() => this.melody("kalimba", scale(0, 16), [2, 5], 0.038), 2);
-    if (m === "musicbox") this.later(() => this.melody("box", scale(7, 26), [1.2, 2.8], 0.03), 1.2);
-    if (m === "night") this.later(() => this.melody("bell", scale(-5, 9), [6, 12], 0.026), 4);
+    if (m === "garden") this.later(() => this.melody("kalimba", scale(0, 16), [2.6, 6], 0.026), 2);
+    if (m === "musicbox") this.later(() => this.melody("box", scale(7, 26), [1.5, 3.4], 0.02), 1.2);
+    if (m === "night") this.later(() => this.melody("bell", scale(-5, 9), [7, 14], 0.018), 4);
     // the beetles
     this.later(() => this.beetles(), rnd(2, 4));
     // far-off life
@@ -406,7 +406,7 @@ class Ambience {
     const ctx = this.ctx!;
     const n = 2 + Math.floor(Math.random() * 3);
     const f = rnd(3800, 5200);
-    const o2 = this.out(pan, 0.45, 0.02);
+    const o2 = this.out(pan, 0.45, 0.014);
     for (let i = 0; i < n; i++) {
       const t = ctx.currentTime + 0.03 + i * rnd(0.09, 0.13);
       const o = ctx.createOscillator();
@@ -425,7 +425,7 @@ class Ambience {
   // a bird far off: a short, soft call, now and then
   private bird() {
     const ctx = this.ctx!;
-    const o2 = this.out(rnd(-0.8, 0.8), 0.7, rnd(0.006, 0.01));
+    const o2 = this.out(rnd(-0.8, 0.8), 0.7, rnd(0.004, 0.007));
     const base = rnd(2400, 3400);
     const n = 2 + Math.floor(Math.random() * 3);
     let t = ctx.currentTime + 0.05;
