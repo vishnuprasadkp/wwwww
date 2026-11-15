@@ -42,7 +42,7 @@ export default function NyrroFilm() {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[60] overflow-hidden" style={{ background: "#3e3e3e" }}>
+    <div className="fixed left-0 right-0 top-0 z-[60] h-[100lvh] overflow-hidden" style={{ background: "#3e3e3e" }}>{/* (the full screen, a phone's browser bar hidden or not) */}
       {hero && (
         <>
           <HeroInk palette={HERO_INK} spread={false} speed={3} grain={1} fixedScale={hero.ink} />

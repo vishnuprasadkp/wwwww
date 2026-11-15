@@ -29,6 +29,18 @@ const block = (e: Event) => {
  * Nyrro's story rises in at the foot. Back (the button, the browser's back, or Escape): the story sinks away and the
  * window closes down onto the box again.
  */
+// the screen's full height (with a phone's browser bar hidden): a probe 100lvh tall, read when needed
+let probe: HTMLDivElement | null = null;
+function screenHeight() {
+  if (typeof document === "undefined") return 0;
+  if (!probe) {
+    probe = document.createElement("div");
+    probe.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:100vh;height:100lvh;pointer-events:none;visibility:hidden";
+    document.body.appendChild(probe);
+  }
+  return probe.getBoundingClientRect().height;
+}
+
 export default function HeroFilmPanel({ height }: { height: string }) {
   const slot = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -41,12 +53,13 @@ export default function HeroFilmPanel({ height }: { height: string }) {
   const prog = useRef(0); // 0: the box; 1: the whole screen
   const anim = useRef(0);
 
-  // the box, and the screen, in the page
+  // the box, and the screen, in the page. The screen's height is its tallest (a phone's browser bar hidden), so the
+  // opened film always reaches the foot of the screen
   const measure = () => {
     const el = slot.current!;
     const r = el.getBoundingClientRect();
     const W = document.documentElement.clientWidth;
-    const H = window.innerHeight;
+    const H = Math.max(window.innerHeight, screenHeight());
     return { W, H, box: { left: r.left + window.scrollX, top: r.top + window.scrollY, width: r.width, height: r.height } as Rect };
   };
 
@@ -55,9 +68,12 @@ export default function HeroFilmPanel({ height }: { height: string }) {
     const st = stage.current;
     const el = slot.current;
     if (!st || !el) return;
-    const { W, H, box } = measure();
+    const m = measure();
+    const { W, box } = m;
     const p = ease(prog.current);
     const fixed = stateRef.current !== "closed";
+    // closed, the film reaches at least the foot of the box (on a phone the box sits below the first screen)
+    const H = fixed ? m.H : Math.max(m.H, box.top + box.height);
     st.style.position = fixed ? "fixed" : "absolute";
     // closed, it sits at the top of the page, which scrolls with it; open, at the top of the screen (the page is at its top)
     st.style.left = fixed ? "0px" : `${-box.left}px`;
@@ -88,9 +104,11 @@ export default function HeroFilmPanel({ height }: { height: string }) {
     const ro = new ResizeObserver(() => apply());
     if (slot.current) ro.observe(slot.current);
     window.addEventListener("resize", apply);
+    window.visualViewport?.addEventListener("resize", apply);
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", apply);
+      window.visualViewport?.removeEventListener("resize", apply);
     };
   }, [apply]);
 
@@ -196,7 +214,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
       style={{ height, background: "#3e3e3e" }}
     >
       {/* the page darkens to the film's colour behind it as it opens */}
-      <div ref={dim} aria-hidden="true" className="pointer-events-none fixed inset-0 z-[69]" style={{ background: "#3e3e3e", opacity: 0, display: state === "closed" ? "none" : "block" }} />
+      <div ref={dim} aria-hidden="true" className="pointer-events-none fixed left-0 right-0 top-0 z-[69] h-[100lvh]" style={{ background: "#3e3e3e", opacity: 0, display: state === "closed" ? "none" : "block" }} />
       <div ref={stage} className="overflow-hidden" style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", background: "#3e3e3e" }} onClick={(e) => e.stopPropagation()}>
         {size && (
           <>
