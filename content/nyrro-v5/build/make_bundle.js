@@ -44,7 +44,7 @@ const out = `/*! Nyrro ${kb.version} — Vishnu Prasad K P's portfolio assistant
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function inline(s) {
     return esc(s)
-      .replace(/\\[([^\\]]+)\\]\\((https?:[^)\\s]+)\\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/\\[([^\\]]+)\\]\\(((?:https?:|tel:)[^)\\s]+)\\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
       .replace(/\\*\\*([^*]+)\\*\\*/g, "<strong>$1</strong>")
       .replace(/(^|[^*\\w])_([^_]+)_(?=$|[^\\w])/g, "$1<em>$2</em>")
       .replace(/(^|[^*])\\*([^*\\s][^*]*)\\*/g, "$1<em>$2</em>");

@@ -272,6 +272,22 @@ def _clean(o, key=None):
     if isinstance(o, dict): return {k: _clean(v, k) for k, v in o.items()}
     return o
 kb = _clean(kb)
+# The left of the screen already shows the case study an answer is about, so answers carry no "Read the case study" link.
+# Contact details are links: the email opens a message to him, the phone number calls, LinkedIn opens his profile.
+GMAIL = "https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com"
+LINKEDIN = "https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/"
+def _contact(x):
+    x = _re.sub(r"\n*\[Read the case study[^\]]*\]\([^)]*\)\s*", "\n", x).rstrip()
+    x = _re.sub(r"(?<!\[)vishnuprasadkp98@gmail\.com(?!\])", "[vishnuprasadkp98@gmail.com](" + GMAIL + ")", x)
+    x = x.replace("message him on LinkedIn", "message him on [LinkedIn](" + LINKEDIN + ")")
+    return x
+for _e in kb["entities"]:
+    _e["answers"] = {k: _contact(v) for k, v in _e["answers"].items()}
+for _i in kb["intents"]:
+    _i["answer"] = _contact(_i["answer"])
+kb["fallback"]["answer"] = _contact(kb["fallback"]["answer"])
+_ci = next(i for i in kb["intents"] if i["id"] == "contact")
+_ci["answer"] = _ci["answer"].replace("\n\n- **LinkedIn:**", "\n\n- **Phone:** [+91 96569 76712](tel:+919656976712)\n- **LinkedIn:**", 1)
 out = "../nyrro-knowledge-base.json"
 json.dump(kb, open(out, "w"), ensure_ascii=False, indent=1)
 na = sum(len(e["answers"]) for e in ENTITIES)

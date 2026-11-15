@@ -405,7 +405,7 @@
     "first project"
    ],
    "answers": {
-    "overview": "**Intelligent Enterprise Search Platform (UnifyApps)**\n\nCompany knowledge was spread across dozens of apps, and search gave people files instead of answers. Vishnu designed a search experience that **answers with sources**, along with the admin and governance tools that make those answers worth trusting.\n\n- **Role:** Senior Product Designer, design lead for the engagement, end to end from client brief to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 to present\n- **Core idea:** in enterprise AI, trust is the product\n\n[Read the case study →](https://vishnuprasad.space/work/enterprise-search)",
+    "overview": "**Intelligent Enterprise Search Platform (UnifyApps)**\n\nCompany knowledge was spread across dozens of apps, and search gave people files instead of answers. Vishnu designed a search experience that **answers with sources**, along with the admin and governance tools that make those answers worth trusting.\n\n- **Role:** Senior Product Designer, design lead for the engagement, end to end from client brief to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 to present\n- **Core idea:** in enterprise AI, trust is the product",
     "problem": "Organisations had the information they needed, but it was scattered across documents, chat tools and business apps. Five problems stood out:\n\n1. Search returned **files, not answers**\n2. Knowledge sat in **disconnected systems** with no single place to manage it\n3. Results **ignored who was asking** and their role\n4. Teams **couldn't customise** the experience without engineering\n5. Users **couldn't see how their data was handled**, which hurt trust",
     "users": "The platform serves three roles, each with a different need:\n\n- **Employees** want clear, trustworthy answers with sources\n- **Administrators** want to manage integrations, permissions and settings without engineering help\n- **Compliance teams** want to see what data the platform can access, how it's used, and audit it\n\nThe product team defined these roles and led the research; their findings shaped every design decision.",
     "features": "Five core capabilities, each solving one of the five problems:\n\n- **Connect Applications:** Slack, Jira, GitHub, Google Drive and more in one knowledge base, with clear connection statuses\n- **Manage Connections:** admins see what's syncing, choose what's included and see failures\n- **Personalised Results:** direct, role-aware answers with sources instead of file lists\n- **Customise Enterprise Search:** branding, wording, enabled tools and AI model through plain-language settings\n- **Agent Marketplace:** ready-made agents for finance, legal, sales and operations, each showing what it does and whether it's verified",
@@ -447,7 +447,7 @@
     "second project"
    ],
    "answers": {
-    "overview": "**Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**\n\nCommittees at ADEO review over **1,000 important proposals every month**, and getting a single proposal ready could take 15 working days. Vishnu designed a tablet app that briefs members before the session, lets them search five years of past decisions while they discuss, and records votes and minutes as they happen.\n\n- **Client:** UnifyApps for DGE and ADEO\n- **Partners:** Frog Design and Nagarro Design (ICD as design partner)\n- **Platform:** Tablet-first, plus web\n- **Timeline:** April 2025 to February 2026\n- **Role:** Senior Product Designer, design lead for the engagement\n\n[Read the case study →](https://vishnuprasad.space/work/adeo)",
+    "overview": "**Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**\n\nCommittees at ADEO review over **1,000 important proposals every month**, and getting a single proposal ready could take 15 working days. Vishnu designed a tablet app that briefs members before the session, lets them search five years of past decisions while they discuss, and records votes and minutes as they happen.\n\n- **Client:** UnifyApps for DGE and ADEO\n- **Partners:** Frog Design and Nagarro Design (ICD as design partner)\n- **Platform:** Tablet-first, plus web\n- **Timeline:** April 2025 to February 2026\n- **Role:** Senior Product Designer, design lead for the engagement",
     "problem": "ADEO handles **1,000+ high-impact submissions every month**, mostly Arabic PDFs and presentations. Preparation could take **up to 15 working days**. Four structural problems:\n\n1. **Slow preparation:** members skimmed documents right before sessions\n2. **Unsearchable history:** five years of decisions (about 3,000 to 4,000 documents) couldn't be used during deliberation\n3. **Absent members had no voice:** no way to contribute or record a position\n4. **Incomplete records:** minutes, resolutions and action items were scattered",
     "users": "Three user types:\n\n- **Committee members:** about **15 minutes per topic**, so they need structured briefings\n- **Secretaries:** own the long preparation and documentation around each session\n- **Observers and admins:** need visibility without the ability to act\n\nResearch was continuous: requirements came directly from the client and departments, validated at each major decision.",
     "features": "The core flow is **Analyse → Deliberate → Decide & Record**:\n\n- **Session agenda:** members see only their committees, active session on top, proposals split into *For Information* and *Decision Making*\n- **AI analysis and briefing:** a summary, strategic alignment score, ROI estimate, feasibility rating and risk assessment for every proposal, shown before the document\n- **AI assistant:** searches the five-year archive from inside the session\n- **Voting and async participation:** five outcomes, each requiring a rationale; absent members can vote and give feedback\n- **Live documentation:** minutes, action items and resolution drafts generated during the session",
@@ -497,7 +497,7 @@
     "third project"
    ],
    "answers": {
-    "overview": "**Agent Workforce Platform (UnifyApps)**\n\nBuilding an agent used to mean passing work between product managers, engineers and compliance, with no way to check quality before launch. Vishnu designed one platform with three ways to build, **Simple, Workflow and Advanced**, so each person works at the depth they need without leaving the product.\n\n- **Role:** Senior Product Designer, design lead for the engagement, concept to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 to present\n- **Goal:** make AI easy to adopt, govern and scale across roles\n\n[Read the case study →](https://vishnuprasad.space/work/ai-agent)",
+    "overview": "**Agent Workforce Platform (UnifyApps)**\n\nBuilding an agent used to mean passing work between product managers, engineers and compliance, with no way to check quality before launch. Vishnu designed one platform with three ways to build, **Simple, Workflow and Advanced**, so each person works at the depth they need without leaving the product.\n\n- **Role:** Senior Product Designer, design lead for the engagement, concept to developer handoff\n- **Platform:** Web and mobile\n- **Timeline:** 2025 to present\n- **Goal:** make AI easy to adopt, govern and scale across roles",
     "problem": "Getting from an idea to a working agent took too many disconnected steps:\n\n1. **Product managers** couldn't configure or launch agents without engineering\n2. **Workflow logic** lived in separate documents that drifted out of sync with the product\n3. **Compliance and security checks** came after development, causing rework\n4. **Knowledge** was scattered, so quality and freshness were hard to manage\n5. **No way to evaluate** an agent before deployment",
     "users": "Three roles:\n\n- **Product managers:** define use cases and behaviour; need to act without engineering\n- **Engineers:** need precise control over prompts, models and testing, in a focused workspace\n- **Compliance reviewers:** need visibility, audit history and security controls before approval",
     "features": "- **Simple Agent:** plain-language setup of role, goal and knowledge, with no model selection or prompt engineering\n- **Workflow Agent:** a visual canvas of triggers, conditions and actions, with execution traces non-engineers can verify\n- **Advanced Agent:** full control over models, retrieval, guardrails and evaluations, with each decision isolated and testable\n- **Guardrails & Observability:** guardrails and PII rules set during configuration; every interaction traced\n- **Reusable Skills:** a shared library (web search, file analysis, compliance checks, API actions) any agent can call",
@@ -528,7 +528,7 @@
     "fourth project"
    ],
    "answers": {
-    "overview": "**Consent at the Scale of a Nation's Bank (HDFC Bank)**\n\nWhen India's DPDP Act came in, HDFC Bank had to collect and respect consent for more than 30 million customers, and on a deadline. Vishnu led the design of the platform that made it possible, both the customer journeys and the console the operations team works in. Today it holds over **400 million consent records** and sends more than **3 million messages a day**.\n\n- **Client:** UnifyApps & HDFC Bank\n- **Platform:** Web and mobile\n- **Timeline:** March 2025 to February 2026\n- **Role:** Senior Product Designer, design lead for the engagement, working with HDFC's senior management and product team from brief to Final-for-Dev\n\n[Read the case study →](https://vishnuprasad.space/work/hdfc)",
+    "overview": "**Consent at the Scale of a Nation's Bank (HDFC Bank)**\n\nWhen India's DPDP Act came in, HDFC Bank had to collect and respect consent for more than 30 million customers, and on a deadline. Vishnu led the design of the platform that made it possible, both the customer journeys and the console the operations team works in. Today it holds over **400 million consent records** and sends more than **3 million messages a day**.\n\n- **Client:** UnifyApps & HDFC Bank\n- **Platform:** Web and mobile\n- **Timeline:** March 2025 to February 2026\n- **Role:** Senior Product Designer, design lead for the engagement, working with HDFC's senior management and product team from brief to Final-for-Dev",
     "problem": "India's DPDP Act set a deadline the bank **couldn't move**.\n\n- Customers needed to **see** what the bank holds, **control** what they agreed to, and **withdraw consent** any time\n- Operations needed every purpose **configured, versioned and auditable**\n- Consent was *collected everywhere and governed nowhere*: scattered across legacy systems, reconciled by hand, hard to act on in real time",
     "users": "Two sides of one system:\n\n- **Customers:** see, control and withdraw consent\n- **Bank operators and the Data Privacy Office:** configure purposes, version them, monitor violations and audit\n\nBoth sides were designed together on **one shared consent record**.",
     "features": "- **Customer consent portal**\n- **Operator console** on the same consent record\n- **AI that infers preferences**\n- **AI that simplifies legal disclosures** into plain language\n- **Real-time monitoring** of consent violations\n- **Instant enforcement** of consent decisions across connected systems",
@@ -572,7 +572,7 @@
     "last case study"
    ],
    "answers": {
-    "overview": "**Intelligence at the core of Asia's largest media group (Sony Pictures Networks India)**\n\nAt Sony Pictures Networks India, contracts, board minutes, sports schedules and audience data were spread across emails, spreadsheets and separate tools. Vishnu designed **four products** to bring each of them into one place. Board minutes that took two to three days now take **about four hours**, and the team gets audience insights in **90 minutes instead of 48 hours**.\n\nFour enterprise platforms designed end to end, May 2025 to July 2026, with UnifyApps (ICD as design partner):\n\n1. **Contract Lifecycle Intelligence**\n2. **Corporate Secretarial Governance**\n3. **Sports Rights Scheduling & Broadcast Planning**\n4. **Social Intelligence Command**\n\nAsk me about any of them.\n\n[Read the case study →](https://vishnuprasad.space/work/sony)",
+    "overview": "**Intelligence at the core of Asia's largest media group (Sony Pictures Networks India)**\n\nAt Sony Pictures Networks India, contracts, board minutes, sports schedules and audience data were spread across emails, spreadsheets and separate tools. Vishnu designed **four products** to bring each of them into one place. Board minutes that took two to three days now take **about four hours**, and the team gets audience insights in **90 minutes instead of 48 hours**.\n\nFour enterprise platforms designed end to end, May 2025 to July 2026, with UnifyApps (ICD as design partner):\n\n1. **Contract Lifecycle Intelligence**\n2. **Corporate Secretarial Governance**\n3. **Sports Rights Scheduling & Broadcast Planning**\n4. **Social Intelligence Command**\n\nAsk me about any of them.",
     "problem": "Each area ran on manual or fragmented processes:\n\n- **Contracts** lived in emails, spreadsheets and offline approvals\n- **Board minutes** took days; statutory deadlines lived in spreadsheets\n- **Scheduling conflicts** surfaced only after channels reached production\n- **Audience signals** sat across vendor tools, so teams reacted late",
     "users": "Vishnu worked with **legal, compliance, broadcast operations, content strategy and corporate governance** teams, the people who use each of the four platforms.",
     "features": "- **Contracts:** AI creation, review, routing, risk and clause checks across 2,847 agreements; SAP S/4 and Adobe Sign\n- **Governance:** minutes from live transcripts, action items, Companies Act 2013 deadlines, statutory registers; MS Teams\n- **Sports scheduling:** one planner across TEN 1 to 5, TEN SD, Sony LIV and SET India, with real-time conflict detection and rights checks\n- **Social intelligence:** ~2.47M monthly mentions combined with ratings, spike detection, sentiment and weekly AI briefings",
@@ -594,7 +594,7 @@
     "contract lifecycle"
    ],
    "answers": {
-    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30 to 45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30 to 45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)"
    },
    "caseStudy": true,
    "name": "Sony's contract platform",
@@ -618,7 +618,7 @@
     "secretarial"
    ],
    "answers": {
-    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2 to 3 days → 4 hours; missed deadlines down 85%** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2 to 3 days → 4 hours; missed deadlines down 85%** (per project documentation)."
    },
    "caseStudy": true,
    "name": "Sony's governance platform",
@@ -639,7 +639,7 @@
     "sports scheduling"
    ],
    "answers": {
-    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1 to 5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1 to 5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation)."
    },
    "caseStudy": true,
    "name": "Sony's sports scheduling platform",
@@ -660,7 +660,7 @@
    "label": "Sony: Social Intelligence Command",
    "aliases": [],
    "answers": {
-    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation).\n\n[Read the case study →](https://vishnuprasad.space/work/sony)"
+    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation)."
    },
    "caseStudy": true,
    "name": "Sony's social intelligence platform",
@@ -708,7 +708,7 @@
     "features": "- Email verification and document upload (trade licence, tax certificate, bank letter, company profile)\n- **Review of AI-extracted** company and banking information\n- **Cross-document inconsistency** detection\n- **Duplicate-profile flags** with confidence scores\n- **Product and service recommendations** from trade-licence activities\n- Manual entry, corrections, support enquiries and **trackable human-review requests**",
     "ai": "- **Intelligent document processing** for registration documents\n- **Extraction** of company, licence, tax and banking data\n- **Entity matching** and confidence-based duplicate detection\n- **Cross-document inconsistency** detection\n- **Contextual recommendations** for product and service classification",
     "outcomes": "- Better supplier data quality through cross-document and duplicate checks\n- Less data entry through AI extraction\n- Faster classification through trade-licence-based recommendations\n- Human review reserved for flagged exceptions\n- Better visibility through reference IDs, status tracking and support paths\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "onboarding",
@@ -739,7 +739,7 @@
     "features": "- **Tender discovery** with fee-based filtering and supplier-relevant matching\n- **Order and shipment line-item tracking**\n- **Invoice creation** and payment-status checks\n- **Analytical charts** and downloadable records\n- **Business classification** and registration lookups\n- **Operational summaries:** delayed shipments, upcoming deliveries, invoice-ready orders, closing tenders\n- **AI-assisted tender submission** with confirmation messages",
     "ai": "- **Conversational AI** for natural-language procurement questions\n- **AI retrieval** of supplier and transaction records\n- **Analytical AI** for summaries and charts\n- **Recommendation AI** for tender matching\n- **Agentic AI** for assisted tender submission",
     "outcomes": "- Visibility across **six domains**: tenders, orders, shipments, invoices, payments, supplier profiles\n- Less effort retrieving information\n- Better prioritisation of closing tenders and delayed shipments\n- Less admin through assisted invoicing and submission\n- More self-service and less reliance on support teams\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "procurement",
@@ -768,7 +768,7 @@
     "features": "- **Leave, certificate and remote-work** requests\n- **Request-status tracking** and FAQs\n- **Pending invoices, receipt-matching results, budget exceptions** and payroll insights\n- **Document-source references** on answers\n- Downloadable reports, reusable prompts and **response feedback**",
     "ai": "- **Conversational AI** for employee questions and requests\n- **Generative AI** for explanations and summaries\n- **Document-grounded answers** with source references\n- **Analytical AI** for payroll, compensation and budget questions\n- **Workflow-oriented AI** for starting and following up requests",
     "outcomes": "- Broader self-service across leave, certificate and remote-work requests\n- Less time finding guidance and checking status\n- Earlier visibility of pending invoices, matching failures and budget overruns\n- Less repetitive admin\n- More transparent help through references and feedback\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "employee assistant",
@@ -801,7 +801,7 @@
     "features": "- **Premium calculation** and **plan comparison**\n- **Coverage and rider customisation**\n- **Quote management** and sharing via **WhatsApp and SMS**\n- **AI-assisted message refinement** for customer communication\n- **Lead tracking**, customer activity history, **application-stage visibility**\n- Campaign tracking and sales performance",
     "ai": "- **In the design:** generative AI to draft and refine customer messages (tone and clarity)\n- **Proposed extensions (not shipped):** plan and rider recommendations, lead prioritisation by conversion propensity, automated follow-up reminders",
     "outcomes": "- Better quote-to-application conversion through timely follow-up\n- Faster quote preparation\n- Clearer pipeline visibility\n- Less repetitive admin through reusable customer data and AI messaging\n- Clearer customer decisions through comparable, shareable quotes\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "insurance project",
@@ -850,7 +850,7 @@
     "features": "- **Transaction summaries** and inward-transfer enquiries\n- **Initiated and returned payment** tracking\n- **SWIFT MT103 confirmation** retrieval and **bank statements**\n- Currencies, beneficiaries, FX rates, references and **approval history**\n- **Excel exports** and downloadable confirmations\n- **Source references** behind responses",
     "ai": "- **Conversational AI** and natural language understanding\n- **Generative transaction summaries**\n- **Retrieval-augmented answers** with sources\n- **Task-oriented AI** for guided banking requests\n\n_Capability-level classification; the underlying implementation isn't documented._",
     "outcomes": "- One place for transaction status, references and approval history\n- Less time retrieving confirmations and statements\n- Faster investigation of delayed, returned and cancelled payments\n- Less manual reporting through exports and self-service\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "cash management",
@@ -881,7 +881,7 @@
     "features": "The assistant works in steps:\n\n1. **Classifies documents** and extracts client and shareholder data\n2. **Flags missing or expired** records (KYC)\n3. Supports **financial spreading, projections and credit ratios**\n4. Assesses **concentration exposure** and **stress-tests repayment**\n5. Generates **clarification questions** for the Relationship Manager\n\nWith source-linked extraction, confidence indicators, pending-document tracking and **human review checkpoints**.",
     "ai": "- **Agentic AI** for the multi-step workflow\n- **Document AI** for classification and extraction\n- **Generative AI** for credit summaries and review questions\n- **Financial analytical AI** for spreading and projections\n- **Risk assessment AI** for assumption review and scenario analysis",
     "outcomes": "- Earlier identification of repayment risk. **Illustrative example from the design:** a 20% revenue shock drops DSCR to **1.12x**, below the **1.25x** covenant\n- Shorter proposal preparation\n- Better-challenged assumptions on growth, capex and customer concentration\n- Less data entry and document chasing\n- Clearer RM-risk collaboration\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "credit",
@@ -913,7 +913,7 @@
     "features": "- **SRE and search agents** correlate alerts by timing and service dependencies\n- **Root-cause findings** with confidence indicators\n- **Investigation timelines** and causal-chain analysis\n- **Executive summaries** and business impact\n- **SLA tracking**, resolver coordination and escalation\n- **Remediation tracking** and historical pattern analysis",
     "ai": "- **Agentic AI** for coordinated investigation\n- **Alert correlation AI**\n- **Causal reasoning AI** for root cause and dependencies\n- **Generative AI** for investigation and executive summaries\n- **Pattern recognition** for recurring incidents",
     "outcomes": "**Illustrative figures shown in the design**:\n\n- First response at **8 min** vs. a 15-min SLA target\n- Customer notification at **22 min** vs. a 30-min target\n- **5 improvement tasks** tracked (2 done, 3 in progress)\n- **12 similar vendor API failures** found over 6 months, guiding prevention\n- Clearer impact visibility (e.g., delayed cashback and loyalty-point transfers)\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "incident",
@@ -952,7 +952,7 @@
     "features": "- **Role-based workflows** and employee self-service\n- **Document processing** and **identity verification**\n- **Multi-level approvals** and **master-data governance**\n- **Operational analytics**\n- AI-assisted **document extraction, product master mapping, order validation, face-based identity verification** and **demand forecasting**",
     "ai": "- **Intelligent document processing**\n- **AI extraction and classification**\n- **Entity and master-data matching**\n- **Computer vision** for identity verification\n- **Predictive analytics** and demand forecasting",
     "outcomes": "- Clear ownership, approval history and request tracking\n- Fewer processing delays through structured submissions and routing\n- Better visibility into financial discrepancies, inventory variance, compliance and asset status\n- Less manual data handling\n- Better employee experience\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "dominos"
@@ -975,7 +975,7 @@
     "features": "- **Configurable promotion cycles** with eligibility and **affordability criteria**\n- **Tier-based quotas**\n- **Multi-level nominations and approvals** with reviewer comments\n- Employee data uploads and supporting documents\n- **Bulk HR partner reassignment** and **buddy availability tracking**\n- Scheduled reminders and **audit trails**",
     "ai": "These are **proposed AI opportunities**, not shipped features:\n\n- Predicting promotion stages at risk of delay\n- Recommending buddy assignments\n- Summarising nomination comments\n- Extracting information from supporting documents\n- Flagging unusual nomination patterns",
     "outcomes": "- More consistent promotion policy through central eligibility and affordability rules\n- Less admin through bulk uploads, reassignment and reminders\n- Stronger budget oversight through quotas and affordability limits\n- Clearer ownership, review status and follow-ups\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "promotion",
@@ -1004,7 +1004,7 @@
     "features": "- **App and form configuration** and reusable business capabilities\n- **Operational reporting**\n- **Conversational copilot**\n- **Reconciliation:** bank records, open invoices, lockbox files and statements matched; discrepancies surfaced; exceptions routed\n- **Record-level evidence, approval controls and audit trails**",
     "ai": "- **Generative and conversational copilot**\n- **NLP** for business questions\n- **Intelligent document processing** (OCR) for financial documents\n- **Evidence-backed decision support** for operational review\n\n_Functional categories; underlying models aren't specified._",
     "outcomes": "These are **proposed success targets**, not results:\n\n- **85 to 90%** automated match rate for eligible reconciliation records\n- **30 to 40%** less manual reconciliation effort\n- **20 to 30%** faster exception resolution\n- Lower processing cost per record\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "dealership",
@@ -1034,7 +1034,7 @@
     "features": "- **Conversational assistance** with company knowledge search, web research and file analysis\n- **Specialised agents:** spreadsheet help, presentation generation, document creation, document comparison\n- **Project spaces:** conversations, reference documents, shared instructions and team discussions in one place",
     "ai": "- **Conversational AI**\n- **Generative AI** for documents and presentations\n- **Retrieval-augmented** company knowledge\n- **Document AI** for analysis and comparison\n- **Task-specific agents**",
     "outcomes": "- Faster access to source-supported company information\n- Less time drafting documents, decks and spreadsheet answers\n- Better knowledge reuse through shared project context\n- Fewer interruptions from switching tools\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "ai workspace",
@@ -1063,7 +1063,7 @@
     "features": "- Feedback consolidated from **service centres, call centres, social media, surveys, CRM and chatbots**\n- **AI summaries** and **sentiment analysis**\n- **Entity benchmarking** and service-level diagnostics\n- **SLA monitoring** and interaction funnels\n- **Anomaly detection** and actionable recommendations",
     "ai": "- **Natural language processing**\n- **Sentiment analysis**\n- **Generative summarisation**\n- **Predictive analytics**\n- **Anomaly and trend detection**",
     "outcomes": "Target outcomes:\n\n- ~**8%** higher first-call resolution\n- ~**10%** fewer SLA breaches\n- ~**22%** better automated verification approval rates\n- ~**26%** faster processing for selected workflows\n- ~**14%** fewer critical service incidents\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "service intelligence",
@@ -1087,7 +1087,7 @@
     "features": "- **Individual and event invitations**\n- **QR self-registration**, email verification and ID collection\n- **Digital visitor passes**\n- **OTP check-in** verification by security\n- Tracking of **pending, ongoing and completed** visits\n- **Activity timelines** from invitation to submission",
     "ai": "AI capabilities are **not established** in the available project content. Possible future extensions listed:\n\n- Intelligent document processing for visitor ID details\n- Computer vision for ID quality checks\n- NLP for classifying visit purposes\n- Anomaly detection for unusual visit patterns\n- Predictive analytics for visitor volumes",
     "outcomes": "- Central visibility of all visits\n- Shorter reception time (information collected before arrival)\n- Better host-security coordination\n- Less admin through self-registration\n- Clearer visitor preparation\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "visitor",
@@ -1118,7 +1118,7 @@
     "features": "- **Familiarisation and check-flight assessments**\n- **Standardised evaluation codes** (S / US / NA / NO)\n- **Mandatory remarks** on exceptions\n- **Resumable drafts** and submission review\n- **Medical incident reports:** patient details, observations, treatment, outcomes\n- A **conversational assistant concept** for flight-status queries in team chats",
     "ai": "The project shows a **conversational assistant concept** for flight-status queries within team conversations. The underlying AI architecture is not specified.",
     "outcomes": "- More consistent records through standardised codes\n- Less re-entry through saved, resumable drafts\n- Review-ready submissions through required remarks\n- Less documentation overhead\n- Continuity during connectivity drops\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "airline",
@@ -1152,7 +1152,7 @@
     "features": "- **Research, enterprise search and email assistants**\n- **Citation-backed answers** (RAG) from research resources\n- **Source inspection** and task-progress visibility\n- **Suggested follow-up actions**\n- **Searchable history**, filterable by agent or project space\n- **Microsoft Outlook** integration",
     "ai": "- **Generative AI** and **RAG** for citation-backed answers\n- **Conversational AI**\n- **AI-powered enterprise search**\n- **Agentic AI** for multi-step tasks",
     "outcomes": "- More traceable research through citations\n- Less time searching and revisiting conversations\n- Faster research summaries and communications\n- Less context switching through Outlook\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "research institute",
@@ -1181,7 +1181,7 @@
     "features": "- **Natural-language service discovery**\n- **Fee and required-document** explanations\n- **Renewal reminders** and payment guidance\n- **Transaction records**\n- **Tenant-landlord proposals and counteroffers**\n- **AI-assisted contract drafting** and rental term comparison\n- **Explicit user confirmation** before every proposal and transaction",
     "ai": "- **Conversational AI** for service enquiries\n- **Generative AI** for explanations and contract drafts\n- **NLU** for requests and proposed terms\n- **Decision support** for rental comparisons\n- **Agentic AI** for guided, **user-approved** multi-step journeys",
     "outcomes": "- **Licence, lease and payment** connected in one guided journey\n- Faster service discovery and renewal preparation\n- Fewer missed renewals by highlighting expiring licences and lease dependencies\n- Less routine support workload\n- Clearer fees, actions and contract terms\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "government services",
@@ -1211,7 +1211,7 @@
     "features": "- **Annual budget initiation**\n- **P&L and CAPEX submissions** with multi-year comparisons\n- **Version tracking** and collaborative review\n- **Staged approvals** up to the Board, with **final-version locking**\n- **AI validation, revision summaries** and an **insights copilot**\n- **Consolidated reporting** and a planned **SAP integration**",
     "ai": "- **Generative AI** for revision summaries and financial narratives\n- **Conversational insights copilot**\n- **AI-assisted validation** of submissions\n- **Comparative analysis** across versions and periods\n- **Decision support** for reviewers and leadership",
     "outcomes": "- One consolidated view of property P&L and CAPEX\n- Less manual review through AI revision summaries\n- Better capital allocation (revenue, GOP, margins, investment requests)\n- Less consolidation and reconciliation work\n- Traceable approvals\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "hospitality",
@@ -1243,7 +1243,7 @@
     "features": "- **Account intelligence:** company research, decision-makers, project opportunities, competitive signals\n- **Market summaries:** sector trends, regulation, supply chain\n- **Call and business plan analysis:** sentiment, recurring issues, execution gaps, coaching, SMART goal evaluation\n- **RFP management:** evidence-linked answers, confidence indicators, departmental assignment, human review, approval and export\n- **Conversational assistant** for follow-ups",
     "ai": "- **Generative AI** for research summaries and RFP drafting\n- **NLP** for call and business plan analysis\n- **RAG** for evidence-linked answers\n- **Sentiment and topic extraction**\n- **AI-assisted evaluation** of plan quality and coaching",
     "outcomes": "- Better opportunity prioritisation\n- Less research and call-review time\n- Stronger execution and targeted coaching\n- Less repetitive RFP effort through evidence-linked drafting and expert review\n- Easier information discovery\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "sales intelligence",
@@ -1273,7 +1273,7 @@
     "features": "- **Enterprise search** with source-cited answers and **people discovery**\n- **Call transcript analysis** for buyer requirements and themes\n- **Lost-deal analysis** for root causes and patterns\n- **Voice of Customer:** NPS, sentiment, account-level feedback\n- **Market and competitive research**\n- **Sales handoff:** Salesforce, Outreach and Gong combined into qualification summaries\n- **Cloud operations:** incidents, RCA, backlogs, SLAs\n- Concepts for **acquisition-fit evaluation** and due diligence",
     "ai": "- **Generative AI** for summaries, handoff documents and recommendations\n- **NLP** for requirements, objections and themes\n- **Sentiment analysis**\n- **Semantic search with citations**\n- **Topic clustering and classification**",
     "outcomes": "- Stronger decision support across customer, account and operational data\n- Less research and preparation effort\n- Better revenue and retention actions through visibility into objections and loss drivers\n- Less coordination overhead\n- Faster access to information\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "deal loss",
@@ -1307,7 +1307,7 @@
     "features": "**Revenue recovery**\n- Reads order and operation text to **detect services**\n- Matches them to a **configurable service catalogue**\n- **Calculates recoverable value** from quantities and rates\n\n**BOM assurance**\n- Checks **parent-child attributes, material grades, dimensions and components**\n- Individual and **batch validation**\n- A **copilot** to investigate exceptions\n\nConfidence scores, evidence, **plant-level approvals** and **audit logs** throughout.",
     "ai": "- **Agentic AI** for guided analysis and exception review\n- **NLP** for detecting services in operational text\n- **AI classification** and catalogue matching\n- **Conversational AI** for BOM investigation\n- **Hybrid AI + rules** for explainable validation",
     "outcomes": "**Illustrative project figures** (not verified production results):\n\n- **624** detected services worth ~**$591K** in potential value\n- **615** pending reviews worth ~**$590K** in potential recovery\n- **1,630** manufactured items validated across **four plants**\n- Less manual checking; more transparent reviews\n\n_These are expected outcomes from the project design, not measured production results._",
-    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com."
+    "role": "Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)."
    },
    "contextAliases": [
     "revenue leakage",
@@ -1478,7 +1478,7 @@
     "bye",
     "see you later"
    ],
-   "answer": "Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**. ",
+   "answer": "Thanks for stopping by! If you'd like to talk to Vishnu, he's at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -2956,7 +2956,7 @@
     "which project is he proudest of",
     "what is his best work"
    ],
-   "answer": "I don't know which project he's proudest of. You can ask him at **vishnuprasadkp98@gmail.com**. His portfolio features five case studies.",
+   "answer": "I don't know which project he's proudest of. You can ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**. His portfolio features five case studies.",
    "followups": [
     "What has he worked on?"
    ],
@@ -2979,7 +2979,7 @@
     "what is the most complex project he worked on",
     "what was his hardest project"
    ],
-   "answer": "I don't know which he considers most complex. You can ask him at **vishnuprasadkp98@gmail.com**. By scope, the **Sony** case study covers four platforms; **HDFC Bank** serves 30M+ customers; **ADEO** handles 1,000+ proposals a month.",
+   "answer": "I don't know which he considers most complex. You can ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**. By scope, the **Sony** case study covers four platforms; **HDFC Bank** serves 30M+ customers; **ADEO** handles 1,000+ proposals a month.",
    "followups": [
     "Tell me about Sony",
     "Tell me about HDFC Bank"
@@ -3027,7 +3027,7 @@
     "how does he adapt to different domains",
     "how does he learn a new domain"
    ],
-   "answer": "I don't know the details of how he approaches a new industry. You can ask him at **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know the details of how he approaches a new industry. You can ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -3625,7 +3625,7 @@
     "are you an ai",
     "are you a real person"
    ],
-   "answer": "I'm a small assistant built on Vishnu's portfolio, case studies and project work. For anything I can't answer, Vishnu is one email away: **vishnuprasadkp98@gmail.com**.",
+   "answer": "I'm a small assistant built on Vishnu's portfolio, case studies and project work. For anything I can't answer, Vishnu is one email away: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -3663,7 +3663,7 @@
     "how do i reach him",
     "is he on linkedin"
    ],
-   "answer": "The best way to reach Vishnu is **email: vishnuprasadkp98@gmail.com**\n\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)",
+   "answer": "The best way to reach Vishnu is **email: [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**\n\n- **Phone:** [+91 96569 76712](tel:+919656976712)\n- **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)\n- **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)",
    "followups": [],
    "priority": false
   },
@@ -3720,7 +3720,7 @@
     "can we work with him",
     "does he do freelance"
    ],
-   "answer": "Vishnu is always open to conversations. Email him at **vishnuprasadkp98@gmail.com** or message him on LinkedIn.",
+   "answer": "Vishnu is always open to conversations. Email him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)** or message him on [LinkedIn](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/).",
    "followups": [
     "Why should we hire him?"
    ],
@@ -3763,7 +3763,7 @@
     "what value would he bring",
     "is he a good fit for our team"
    ],
-   "answer": "Vishnu has designed high-stakes products for banks, governments and global enterprises, working directly with product, engineering and executive stakeholders.\n\nFrom his resume:\n\n- **5+ years** in enterprise SaaS, AI and data-heavy platforms\n- Led product design across **60+ enterprise deployments** (HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority, DGE Abu Dhabi)\n- Owned and scaled the **UnifyApps design system**\n- Designed for **HDFC Bank's 30M+ customers** under India's DPDP Act\n- **Mentored 6 junior designers**\n\nContact: **vishnuprasadkp98@gmail.com**",
+   "answer": "Vishnu has designed high-stakes products for banks, governments and global enterprises, working directly with product, engineering and executive stakeholders.\n\nFrom his resume:\n\n- **5+ years** in enterprise SaaS, AI and data-heavy platforms\n- Led product design across **60+ enterprise deployments** (HDFC Bank, Sony Networks, Jubilant FoodWorks, Dubai Development Authority, DGE Abu Dhabi)\n- Owned and scaled the **UnifyApps design system**\n- Designed for **HDFC Bank's 30M+ customers** under India's DPDP Act\n- **Mentored 6 junior designers**\n\nContact: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**",
    "followups": [
     "How can I contact him?"
    ],
@@ -3794,7 +3794,7 @@
     "is he a fit for a lead designer role",
     "is he ready for a lead position"
    ],
-   "answer": "His work is already lead scope: he leads design on each engagement, looks after a design system used in **60+ deployments**, ran **3 initiatives in parallel** and **mentors 6 designers**. His title is Senior Product Designer. For a specific role, write to him at **vishnuprasadkp98@gmail.com**.",
+   "answer": "His work is already lead scope: he leads design on each engagement, looks after a design system used in **60+ deployments**, ran **3 initiatives in parallel** and **mentors 6 designers**. His title is Senior Product Designer. For a specific role, write to him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [
     "How can I contact him?"
    ],
@@ -3819,7 +3819,7 @@
     "can he work remotely",
     "is he open to relocation"
    ],
-   "answer": "I don't know his preferences on location or remote work. Please ask him at **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know his preferences on location or remote work. Please ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -3870,7 +3870,7 @@
     "what is his phone number",
     "why is he leaving his job"
    ],
-   "answer": "That's best discussed with Vishnu directly. You can reach him at **vishnuprasadkp98@gmail.com**.",
+   "answer": "That's best discussed with Vishnu directly. You can reach him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": true
   },
@@ -3901,7 +3901,7 @@
     "can i see more screens",
     "why are details hidden"
    ],
-   "answer": "Many of his projects are confidential, so detailed files aren't public. The case studies show what can be shared. For more, contact him at **vishnuprasadkp98@gmail.com**.",
+   "answer": "Many of his projects are confidential, so detailed files aren't public. The case studies show what can be shared. For more, contact him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -3998,7 +3998,7 @@
     "where does he see himself in 5 years",
     "what are his career goals"
    ],
-   "answer": "I don't know that, sorry. That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know that, sorry. That's a great question to ask Vishnu himself: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [
     "How can I contact him?"
    ],
@@ -4021,7 +4021,7 @@
     "what is his biggest weakness",
     "what does he need to improve"
    ],
-   "answer": "I don't know that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know that. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -4044,7 +4044,7 @@
     "what would he do differently",
     "what mistakes has he made"
    ],
-   "answer": "I don't know about that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know about that. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -4066,7 +4066,7 @@
     "how does he handle disagreement with stakeholders",
     "how does he deal with difficult clients"
    ],
-   "answer": "I don't know about that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know about that. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -4375,7 +4375,7 @@
     "what awards has he won",
     "does he have certifications"
    ],
-   "answer": "I don't have any information about awards or certifications, sorry. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't have any information about awards or certifications, sorry. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -4399,7 +4399,7 @@
     "why did he become a designer",
     "how did he get into design"
    ],
-   "answer": "I don't know his personal story. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.",
+   "answer": "I don't know his personal story. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [],
    "priority": false
   },
@@ -5947,7 +5947,7 @@
     "does he use adobe xd",
     "does he know webflow"
    ],
-   "answer": "That isn't listed on his resume. His tools are: Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, GitHub, Vercel.\n\nFor anything else, you can ask him at **vishnuprasadkp98@gmail.com**.",
+   "answer": "That isn't listed on his resume. His tools are: Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, GitHub, Vercel.\n\nFor anything else, you can ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.",
    "followups": [
     "What are his skills?"
    ],
@@ -5955,7 +5955,7 @@
   }
  ],
  "fallback": {
-  "answer": "I don't know about that, sorry. You can get in touch with Vishnu directly at **vishnuprasadkp98@gmail.com**, and he'll be happy to help.",
+  "answer": "I don't know about that, sorry. You can get in touch with Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**, and he'll be happy to help.",
   "followups": [
    "What has he worked on?",
    "How does he design?",

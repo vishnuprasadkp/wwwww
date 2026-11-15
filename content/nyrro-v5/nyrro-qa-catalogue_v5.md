@@ -9,7 +9,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 - **General questions open with how Vishnu approaches the topic** (from his resume, About page and own words), then examples from the case studies.
 - **The 5 case studies come first.** Other client work appears only when a visitor names the client, asks for "other projects", or asks about a field the case studies don't cover.
 - **No repeated answers.** Suggestions never point to something already answered.
-- **Honest when it doesn't know:** _"I don't know about that, sorry. You can get in touch with Vishnu directly at vishnuprasadkp98@gmail.com, and he'll be happy to help."_
+- **Honest when it doesn't know:** _"I don't know about that, sorry. You can get in touch with Vishnu directly at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com), and he'll be happy to help."_
 
 ---
 
@@ -44,7 +44,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Thanks for stopping by! If you'd like to talk to Vishnu, he's at **vishnuprasadkp98@gmail.com**. 
+> Thanks for stopping by! If you'd like to talk to Vishnu, he's at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 ### About Vishnu
 
@@ -158,7 +158,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know his personal story. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.
+> I don't know his personal story. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 ### Skills & tools
 
@@ -587,7 +587,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 > That isn't listed on his resume. His tools are: Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, GitHub, Vercel.
 >
-> For anything else, you can ask him at **vishnuprasadkp98@gmail.com**.
+> For anything else, you can ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 ### How he works
 
@@ -975,7 +975,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know which project he's proudest of. You can ask him at **vishnuprasadkp98@gmail.com**. His portfolio features five case studies.
+> I don't know which project he's proudest of. You can ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**. His portfolio features five case studies.
 
 #### What is the most complex project he worked on?  `most-complex`
 **Also asked as:** _what was his hardest project_
@@ -984,7 +984,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know which he considers most complex. You can ask him at **vishnuprasadkp98@gmail.com**. By scope, the **Sony** case study covers four platforms; **HDFC Bank** serves 30M+ customers; **ADEO** handles 1,000+ proposals a month.
+> I don't know which he considers most complex. You can ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**. By scope, the **Sony** case study covers four platforms; **HDFC Bank** serves 30M+ customers; **ADEO** handles 1,000+ proposals a month.
 
 #### What is common across his work?  `common-thread`
 **Also asked as:** _what connects all his projects_
@@ -1002,7 +1002,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know the details of how he approaches a new industry. You can ask him at **vishnuprasadkp98@gmail.com**.
+> I don't know the details of how he approaches a new industry. You can ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### What other projects has he done?  `other-projects`
 **Also asked as:** _show me more projects_ · _what else has he worked on_ · _any other clients_
@@ -1321,7 +1321,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I'm a small assistant built on Vishnu's portfolio, case studies and project work. For anything I can't answer, Vishnu is one email away: **vishnuprasadkp98@gmail.com**.
+> I'm a small assistant built on Vishnu's portfolio, case studies and project work. For anything I can't answer, Vishnu is one email away: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 ### Hiring, contact & links
 
@@ -1332,8 +1332,9 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> The best way to reach Vishnu is **email: vishnuprasadkp98@gmail.com**
+> The best way to reach Vishnu is **email: [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**
 >
+> - **Phone:** [+91 96569 76712](tel:+919656976712)
 > - **LinkedIn:** [linkedin.com/in/vishnu-prasad-k-p-225949134](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/)
 > - **Resume:** [vishnuprasad.space/resume](https://vishnuprasad.space/resume)
 
@@ -1353,7 +1354,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu is always open to conversations. Email him at **vishnuprasadkp98@gmail.com** or message him on LinkedIn.
+> Vishnu is always open to conversations. Email him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)** or message him on [LinkedIn](https://www.linkedin.com/in/vishnu-prasad-k-p-225949134/).
 
 #### Why should we hire vishnu?  `why-hire`
 **Also asked as:** _what value would he bring_ · _is he a good fit for our team_
@@ -1372,7 +1373,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - Designed for **HDFC Bank's 30M+ customers** under India's DPDP Act
 > - **Mentored 6 junior designers**
 >
-> Contact: **vishnuprasadkp98@gmail.com**
+> Contact: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**
 
 #### Is he a fit for a lead designer role?  `lead-fit`
 **Also asked as:** _is he ready for a lead position_
@@ -1381,7 +1382,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> His work is already lead scope: he leads design on each engagement, looks after a design system used in **60+ deployments**, ran **3 initiatives in parallel** and **mentors 6 designers**. His title is Senior Product Designer. For a specific role, write to him at **vishnuprasadkp98@gmail.com**.
+> His work is already lead scope: he leads design on each engagement, looks after a design system used in **60+ deployments**, ran **3 initiatives in parallel** and **mentors 6 designers**. His title is Senior Product Designer. For a specific role, write to him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### Can he work remotely?  `remote`
 **Also asked as:** _is he open to relocation_
@@ -1390,7 +1391,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know his preferences on location or remote work. Please ask him at **vishnuprasadkp98@gmail.com**.
+> I don't know his preferences on location or remote work. Please ask him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### What is his salary expectation?  `sensitive`
 **Also asked as:** _what is his notice period_ · _what is his phone number_ · _why is he leaving his job_
@@ -1399,7 +1400,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> That's best discussed with Vishnu directly. You can reach him at **vishnuprasadkp98@gmail.com**.
+> That's best discussed with Vishnu directly. You can reach him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### Can i see the figma files?  `figma-files`
 **Also asked as:** _can i see more screens_ · _why are details hidden_
@@ -1408,7 +1409,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Many of his projects are confidential, so detailed files aren't public. The case studies show what can be shared. For more, contact him at **vishnuprasadkp98@gmail.com**.
+> Many of his projects are confidential, so detailed files aren't public. The case studies show what can be shared. For more, contact him at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### Give me his links?  `links`
 **Also asked as:** _what is his behance_ · _portfolio link_
@@ -1435,7 +1436,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know that, sorry. That's a great question to ask Vishnu himself: **vishnuprasadkp98@gmail.com**.
+> I don't know that, sorry. That's a great question to ask Vishnu himself: **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### What is his biggest weakness?  `weakness`
 **Also asked as:** _what does he need to improve_
@@ -1444,7 +1445,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.
+> I don't know that. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### Tell me about a failure?  `failure`
 **Also asked as:** _what would he do differently_ · _what mistakes has he made_
@@ -1453,7 +1454,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know about that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.
+> I don't know about that. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### How does he handle disagreement with stakeholders?  `conflict`
 **Also asked as:** _how does he deal with difficult clients_
@@ -1462,7 +1463,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't know about that. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.
+> I don't know about that. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 #### Did he design these projects alone?  `solo-or-team`
 **Also asked as:** _what was his individual contribution_
@@ -1495,7 +1496,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> I don't have any information about awards or certifications, sorry. You can ask Vishnu directly at **vishnuprasadkp98@gmail.com**.
+> I don't have any information about awards or certifications, sorry. You can ask Vishnu directly at **[vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com)**.
 
 ### Boundaries
 
@@ -1535,8 +1536,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - **Platform:** Web and mobile
 > - **Timeline:** 2025 to present
 > - **Core idea:** in enterprise AI, trust is the product
->
-> [Read the case study →](https://vishnuprasad.space/work/enterprise-search)
 
 **Problem**
 
@@ -1627,8 +1626,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - **Platform:** Tablet-first, plus web
 > - **Timeline:** April 2025 to February 2026
 > - **Role:** Senior Product Designer, design lead for the engagement
->
-> [Read the case study →](https://vishnuprasad.space/work/adeo)
 
 **Problem**
 
@@ -1732,8 +1729,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - **Platform:** Web and mobile
 > - **Timeline:** 2025 to present
 > - **Goal:** make AI easy to adopt, govern and scale across roles
->
-> [Read the case study →](https://vishnuprasad.space/work/ai-agent)
 
 **Problem**
 
@@ -1822,8 +1817,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - **Platform:** Web and mobile
 > - **Timeline:** March 2025 to February 2026
 > - **Role:** Senior Product Designer, design lead for the engagement, working with HDFC's senior management and product team from brief to Final-for-Dev
->
-> [Read the case study →](https://vishnuprasad.space/work/hdfc)
 
 **Problem**
 
@@ -1910,8 +1903,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > 4. **Social Intelligence Command**
 >
 > Ask me about any of them.
->
-> [Read the case study →](https://vishnuprasad.space/work/sony)
 
 **Problem**
 
@@ -1978,8 +1969,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - Flags **delay and renewal risks** early
 > - Integrates with **SAP S/4** and **Adobe Sign**
 > - **Contract cycle time: 30 to 45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)
->
-> [Read the case study →](https://vishnuprasad.space/work/sony)
 
 ### Sony: Corporate Secretarial Governance
 
@@ -1996,8 +1985,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - Integrates with **MS Teams**
 >
 > **Board minutes prep: 2 to 3 days → 4 hours; missed deadlines down 85%** (per project documentation).
->
-> [Read the case study →](https://vishnuprasad.space/work/sony)
 
 ### Sony: Sports Rights Scheduling & Broadcast Planning
 
@@ -2015,8 +2002,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - A copilot connected to the contract platform checks every event against its **signed rights agreement**
 >
 > **Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation).
->
-> [Read the case study →](https://vishnuprasad.space/work/sony)
 
 ### Sony: Social Intelligence Command
 
@@ -2033,8 +2018,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - An **AI agent** prepares weekly Slack briefings and answers questions conversationally
 >
 > **Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation).
->
-> [Read the case study →](https://vishnuprasad.space/work/sony)
 
 ---
 
@@ -2108,7 +2091,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Digital Dubai: Supplier GPT
 
@@ -2161,7 +2144,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Digital Dubai: Smart Employee Copilot
 
@@ -2212,7 +2195,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Niva Bupa: AI-Assisted Insurance Sales Enablement
 
@@ -2261,7 +2244,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Mashreq: three projects
 
@@ -2327,7 +2310,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Mashreq: Agentic Credit Initiation
 
@@ -2382,7 +2365,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Mashreq: AI Incident Investigation & Service Recovery
 
@@ -2436,7 +2419,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Jubilant Group: Enterprise Operations & Workforce Transformation
 
@@ -2487,7 +2470,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Virtusa: Unified HR Operations & Promotion Management
 
@@ -2540,7 +2523,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Tekion: AI-Assisted Enterprise Workflow Platform
 
@@ -2593,7 +2576,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Lowe's: Enterprise AI Workspace
 
@@ -2641,7 +2624,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### CGB Qatar: Sharek Government Service Intelligence Platform
 
@@ -2694,7 +2677,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Mphasis: Enterprise Visitor Management
 
@@ -2748,7 +2731,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Air Arabia: Cabin Operations & Crew Assessments
 
@@ -2796,7 +2779,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Stowers Institute: Enterprise Knowledge with AI Agents
 
@@ -2846,7 +2829,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Digital Ajman: Ajman One
 
@@ -2899,7 +2882,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Wasl: AI-Enabled Hospitality Budgeting
 
@@ -2951,7 +2934,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Shaw Industries: Unified AI Intelligence for Enterprise Sales
 
@@ -3002,7 +2985,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Docebo: Enterprise Intelligence & AI Workflow Automation
 
@@ -3056,7 +3039,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ### Greif: AI Revenue Recovery & BOM Assurance
 
@@ -3114,7 +3097,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **His role**
 
-> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at vishnuprasadkp98@gmail.com.
+> Vishnu designed this through **ICD as design partner to UnifyApps**. Detailed timelines and team information for this project aren't public. For more, email him at [vishnuprasadkp98@gmail.com](https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=vishnuprasadkp98@gmail.com).
 
 ---
 
