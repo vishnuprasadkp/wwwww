@@ -16,5 +16,5 @@ export const resumePdf = "/Vishnu_Prasad_Resume_2026.pdf";
 export const nav: { label: string; href: string; external?: boolean; download?: boolean }[] = [
   { label: "Cases", href: "/#cases" },
   { label: "About", href: "/about" },
-  { label: "Resume (PDF)", href: "/Vishnu_Prasad_Resume_2026.pdf", download: true },
+  { label: "Resume", href: "/resume" },
 ];

@@ -1,6 +1,6 @@
 import Hero from "@/components/home/Hero";
 import CaseList from "@/components/home/CaseList";
-import { Scale, WorkOn, Learned } from "@/components/home/HomeSections";
+import { WorkOn } from "@/components/home/HomeSections";
 import { getAllCases } from "@/lib/cases";
 
 export default async function Home() {
@@ -8,10 +8,8 @@ export default async function Home() {
   return (
     <>
       <Hero />
-      <Scale />
       <WorkOn />
       <CaseList cases={cases} />
-      <Learned />
     </>
   );
 }
