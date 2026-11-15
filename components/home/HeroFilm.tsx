@@ -1278,7 +1278,7 @@ void main(){
         // screen it ranges everywhere: up and down, corner to corner, high and low
         const small = !full && !wideRef.current;
         const bag = small ? boxBag : kindBag;
-        if (!bag.length) bag.push(...(small ? ["lo", "lo", "lo", "mid", "mid", "slant", "slant", "lowarc", "lowarc", "hi"] : ["lo", "lo", "mid", "hi", "diag", "diag", "diag", "vert", "vert", "arc", "arc", "arc"]).sort(() => Math.random() - 0.5));
+        if (!bag.length) bag.push(...(small ? ["lo", "lo", "mid", "mid", "slant", "slant", "slant", "lowarc", "hi"] : ["lo", "lo", "mid", "hi", "diag", "diag", "diag", "vert", "vert", "arc", "arc", "arc"]).sort(() => Math.random() - 0.5));
         let kind = bag.pop()!;
         if (t > path.nextLook && (kind === "vert" || kind === "diag" || kind === "arc")) kind = "lo"; // time to come and look: out by a side
         // its body is drawn well above the point it flies through (in the hero's short box, over half the way to the top):
@@ -1296,14 +1296,15 @@ void main(){
         if (kind === "slant" || kind === "lowarc") {
           // (small box) in low at one side and out a little higher at the other, or the other way round; or a low arc
           const sd = qSide || Math.sign(u) || coin();
-          const a = rnd(-0.72, -0.48);
-          const b = kind === "slant" ? rnd(-0.3, 0.05) : rnd(-0.65, -0.4);
+          // (corner to corner across the box: in low at one side, out high at the other, or down the other way)
+          const a = kind === "slant" ? rnd(-0.55, -0.35) : rnd(-0.4, -0.2);
+          const b = kind === "slant" ? rnd(0.2, 0.42) : rnd(-0.3, -0.1);
           const up = Math.random() < 0.5;
           E = [sd, up ? a : b];
           X = [-sd, up ? b : a];
         } else if (kind === "lo" || kind === "mid" || kind === "hi") {
           const sd = qSide || Math.sign(u) || coin();
-          const h = small ? (kind === "lo" ? rnd(-0.72, -0.48) : kind === "mid" ? rnd(-0.45, -0.1) : rnd(0, 0.3)) : kind === "lo" ? rnd(-0.82, -0.5) : kind === "mid" ? rnd(-0.2, 0.2) : rnd(0.5, 0.8);
+          const h = small ? (kind === "lo" ? rnd(-0.42, -0.25) : kind === "mid" ? rnd(-0.15, 0.12) : rnd(0.15, 0.35)) : kind === "lo" ? rnd(-0.82, -0.5) : kind === "mid" ? rnd(-0.2, 0.2) : rnd(0.5, 0.8);
           E = [sd, h];
           X = [-sd, clamp(h + rnd(-0.18, 0.18), -0.88, 0.85)];
         } else if (kind === "arc") {
@@ -1499,8 +1500,18 @@ void main(){
       // and a soft, slow sway either side of its line, as a real flight has: never ruler-straight, never the same twice
       // (it grows in from where the line begins, out of sight, so it never jerks)
       const wv = P.wav * F.hh * Math.sin((sa / Math.max(0.05, P.wl * F.hh)) * TAU + P.wph) * clamp(sa / (0.6 * F.hh), 0, 1);
-      const ax = P.x0 + P.lx * sa - P.ly * (bow + wv);
-      const ay = P.y0 + P.ly * sa + P.lx * (bow + wv);
+      let ax = P.x0 + P.lx * sa - P.ly * (bow + wv);
+      let ay = P.y0 + P.ly * sa + P.lx * (bow + wv);
+      // in the hero's small box, if its body drifts too low or too high to be seen well, it eases back towards the middle
+      // (a soft pull on where it is making for, so it curves gently back, never jerks)
+      if (!full && !wideRef.current && P.mode === "pass") {
+        b.body.getWorldPosition(vA);
+        vA.project(camera);
+        const by = (vA.y - F.cy) / F.hh;
+        const off = by < -0.4 ? -0.4 - by : by > 0.45 ? 0.45 - by : 0;
+        ay += clamp(off, -0.8, 0.8) * F.hh * 0.6;
+        void ax;
+      }
       let goal = Math.atan2(ay - Y, ax - X);
       // swinging round, it keeps its eye on the point it is making for, so its line goes right through it
       if (P.mode === "turn" && !P.via.length && P.aim) P.goalTh = Math.atan2(P.aim[1] - Y, P.aim[0] - X);
@@ -1728,7 +1739,7 @@ void main(){
       vB.copy(fs.fromP).project(camera);
       // (its body is drawn above its feet, by as much as flying level: aim its body low to middling)
       const liftT = path.lift > 0 ? path.lift : clamp((vC.y - vB.y) / Fv.hh, 0, 1.2);
-      const slope = Math.atan2((rnd(-0.85, -0.35) - rp.y - liftT) * Fv.hh, Math.max(0.05, Math.abs(ux) * Fv.hw * camera.aspect));
+      const slope = Math.atan2(((!full && !wideRef.current ? rnd(-0.3, 0.1) : rnd(-0.85, -0.35)) - rp.y - liftT) * Fv.hh, Math.max(0.05, Math.abs(ux) * Fv.hw * camera.aspect));
       const th0 = dir > 0 ? clamp(slope, -0.6, 0.6) + rnd(-0.08, 0.08) : Math.PI - clamp(slope, -0.6, 0.6) + rnd(-0.08, 0.08);
       fs.dur = 4.4; // unhurried: it opens its wings, lifts away and turns into its flight all in one easy movement
       fs.v0.set(0, 0, 0);
