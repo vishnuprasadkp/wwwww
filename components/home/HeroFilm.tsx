@@ -1273,8 +1273,13 @@ void main(){
         const H = F.hh;
         const CX = F.cx * A;
         const CY = F.cy;
-        if (!kindBag.length) kindBag.push(...["lo", "lo", "mid", "hi", "diag", "diag", "diag", "vert", "vert", "arc", "arc", "arc"].sort(() => Math.random() - 0.5));
-        let kind = kindBag.pop()!;
+        // in the hero's small box it keeps low, where all of it shows (the box is short and it is large): across low and
+        // through the middle, gentle slants and low arcs, only now and then a little higher; opened out to the whole
+        // screen it ranges everywhere: up and down, corner to corner, high and low
+        const small = !full && !wideRef.current;
+        const bag = small ? boxBag : kindBag;
+        if (!bag.length) bag.push(...(small ? ["lo", "lo", "lo", "mid", "mid", "slant", "slant", "lowarc", "lowarc", "hi"] : ["lo", "lo", "mid", "hi", "diag", "diag", "diag", "vert", "vert", "arc", "arc", "arc"]).sort(() => Math.random() - 0.5));
+        let kind = bag.pop()!;
         if (t > path.nextLook && (kind === "vert" || kind === "diag" || kind === "arc")) kind = "lo"; // time to come and look: out by a side
         // its body is drawn well above the point it flies through (in the hero's short box, over half the way to the top):
         // each line is planned for its body, then lowered by that much
@@ -1288,9 +1293,17 @@ void main(){
         const coin = () => (Math.random() < 0.5 ? -1 : 1);
         let E: [number, number];
         let X: [number, number];
-        if (kind === "lo" || kind === "mid" || kind === "hi") {
+        if (kind === "slant" || kind === "lowarc") {
+          // (small box) in low at one side and out a little higher at the other, or the other way round; or a low arc
           const sd = qSide || Math.sign(u) || coin();
-          const h = kind === "lo" ? rnd(-0.82, -0.5) : kind === "mid" ? rnd(-0.2, 0.2) : rnd(0.5, 0.8);
+          const a = rnd(-0.72, -0.48);
+          const b = kind === "slant" ? rnd(-0.3, 0.05) : rnd(-0.65, -0.4);
+          const up = Math.random() < 0.5;
+          E = [sd, up ? a : b];
+          X = [-sd, up ? b : a];
+        } else if (kind === "lo" || kind === "mid" || kind === "hi") {
+          const sd = qSide || Math.sign(u) || coin();
+          const h = small ? (kind === "lo" ? rnd(-0.72, -0.48) : kind === "mid" ? rnd(-0.45, -0.1) : rnd(0, 0.3)) : kind === "lo" ? rnd(-0.82, -0.5) : kind === "mid" ? rnd(-0.2, 0.2) : rnd(0.5, 0.8);
           E = [sd, h];
           X = [-sd, clamp(h + rnd(-0.18, 0.18), -0.88, 0.85)];
         } else if (kind === "arc") {
@@ -1355,6 +1368,10 @@ void main(){
         path.aim = [xx, xy]; // it makes for where it goes out
         path.goalTh = Math.atan2(dy, dx);
         path.bow0 = kind === "vert" ? 0 : rnd(-0.03, 0.03);
+        if (kind === "lowarc") {
+          // (small box) bowing up a little into the box, then down again
+          path.bow0 = (dx > 0 ? 1 : -1) * rnd(0.08, 0.14);
+        }
         if (kind === "arc") {
           // bowed out towards the middle of the frame
           const nx = -dy;
@@ -1450,6 +1467,7 @@ void main(){
     };
     let humTick = 0;
     const kindBag: string[] = [];
+    const boxBag: string[] = [];
     let liftTick = 0;
     // its little voice: when each syllable it sings starts and how long it lasts
     const talk = { syl: [] as [number, number][], t0: -1, len: 0, last: -99, queued: -1, seen: false, perched: false };
