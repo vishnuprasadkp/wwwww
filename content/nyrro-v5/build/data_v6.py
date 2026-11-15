@@ -17,12 +17,9 @@ His work covers **agentic products**, **search**, **consent and governance**, an
 - **Brane Enterprises:** Oct 2023 to Sep 2024
 - **Kocha Technologies:** Nov 2021 to Oct 2023""",
 
-"career-history": """1. **Senior Product Designer, ICD (Itu Chaudhuri Design)**, Oct 2024 to Present
-   Design lead for UnifyApps, ICD's major client, and its customers across India, the UAE and the US. Projects include HDFC Bank's consent platform, Sony Pictures Networks India, DGE Abu Dhabi, an AI search platform and an agent builder.
-2. **Senior UI/UX Designer, Brane Enterprises**, Oct 2023 to Sep 2024
-   Led UX for 20+ client products in finance, healthcare, e-commerce and education, built on Brane's low-code platform.
-3. **Senior UI/UX Designer, Kocha Technologies**, Nov 2021 to Oct 2023
-   Designed an NFT marketplace end to end, from onboarding to bidding and wallet.""",
+"career-history": """1. **Senior Product Designer, ICD (Itu Chaudhuri Design)**, Oct 2024 to Present: design lead for UnifyApps, ICD's major client, and its customers across India, the UAE and the US. Projects include HDFC Bank's consent platform, Sony Pictures Networks India, DGE Abu Dhabi, an AI search platform and an agent builder.
+2. **Senior UI/UX Designer, Brane Enterprises**, Oct 2023 to Sep 2024: led UX for 20+ client products in finance, healthcare, e-commerce and education, built on Brane's low-code platform.
+3. **Senior UI/UX Designer, Kocha Technologies**, Nov 2021 to Oct 2023: designed an NFT marketplace end to end, from onboarding to bidding and wallet.""",
 
 "education": """**Bachelor of Planning & Architecture**, NIT Bhopal, Madhya Pradesh, India (2017 to 2021)""",
 

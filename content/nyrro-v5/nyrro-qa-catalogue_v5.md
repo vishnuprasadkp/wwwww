@@ -99,12 +99,9 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> 1. **Senior Product Designer, ICD (Itu Chaudhuri Design)**, Oct 2024 to Present
->   Design lead for UnifyApps, ICD's major client, and its customers across India, the UAE and the US. Projects include HDFC Bank's consent platform, Sony Pictures Networks India, DGE Abu Dhabi, an AI search platform and an agent builder.
-> 2. **Senior UI/UX Designer, Brane Enterprises**, Oct 2023 to Sep 2024
->   Led UX for 20+ client products in finance, healthcare, e-commerce and education, built on Brane's low-code platform.
-> 3. **Senior UI/UX Designer, Kocha Technologies**, Nov 2021 to Oct 2023
->   Designed an NFT marketplace end to end, from onboarding to bidding and wallet.
+> 1. **Senior Product Designer, ICD (Itu Chaudhuri Design)**, Oct 2024 to Present: design lead for UnifyApps, ICD's major client, and its customers across India, the UAE and the US. Projects include HDFC Bank's consent platform, Sony Pictures Networks India, DGE Abu Dhabi, an AI search platform and an agent builder.
+> 2. **Senior UI/UX Designer, Brane Enterprises**, Oct 2023 to Sep 2024: led UX for 20+ client products in finance, healthcare, e-commerce and education, built on Brane's low-code platform.
+> 3. **Senior UI/UX Designer, Kocha Technologies**, Nov 2021 to Oct 2023: designed an NFT marketplace end to end, from onboarding to bidding and wallet.
 
 #### Where did he study?  `education`
 **Also asked as:** _what is his degree_ · _what is his educational background_ · _did he go to design school_
@@ -1534,8 +1531,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 >
 > Company knowledge was spread across dozens of apps, and search gave people files instead of answers. Vishnu designed a search experience that **answers with sources**, along with the admin and governance tools that make those answers worth trusting.
 >
-> An AI-powered search platform that connects all of a company's tools into one shared knowledge index, so people get **direct answers with sources** instead of searching system after system.
->
 > - **Role:** Senior Product Designer, design lead for the engagement, end to end from client brief to developer handoff
 > - **Platform:** Web and mobile
 > - **Timeline:** 2025 to present
@@ -1626,8 +1621,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > **Committee Board Agentic Application (DGE / ADEO, Abu Dhabi)**
 >
 > Committees at ADEO review over **1,000 important proposals every month**, and getting a single proposal ready could take 15 working days. Vishnu designed a tablet app that briefs members before the session, lets them search five years of past decisions while they discuss, and records votes and minutes as they happen.
->
-> A government platform that helps the Abu Dhabi Executive Office's committees **analyse, deliberate on, vote on and record decisions** on 1,000+ high-impact proposals a month.
 >
 > - **Client:** UnifyApps for DGE and ADEO
 > - **Partners:** Frog Design and Nagarro Design (ICD as design partner)
@@ -1735,8 +1728,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 >
 > Building an agent used to mean passing work between product managers, engineers and compliance, with no way to check quality before launch. Vishnu designed one platform with three ways to build, **Simple, Workflow and Advanced**, so each person works at the depth they need without leaving the product.
 >
-> A platform for building, governing and running AI agents, with **three ways to build: Simple, Workflow and Advanced**, all on one design system.
->
 > - **Role:** Senior Product Designer, design lead for the engagement, concept to developer handoff
 > - **Platform:** Web and mobile
 > - **Timeline:** 2025 to present
@@ -1826,8 +1817,6 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > **Consent at the Scale of a Nation's Bank (HDFC Bank)**
 >
 > When India's DPDP Act came in, HDFC Bank had to collect and respect consent for more than 30 million customers, and on a deadline. Vishnu led the design of the platform that made it possible, both the customer journeys and the console the operations team works in. Today it holds over **400 million consent records** and sends more than **3 million messages a day**.
->
-> A consent and preference management platform for one of India's largest private banks, **30M+ customers**, built for India's **DPDP Act**.
 >
 > - **Client:** UnifyApps & HDFC Bank
 > - **Platform:** Web and mobile

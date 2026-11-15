@@ -241,9 +241,12 @@ for pid, opening in OPENING.items():
     for a in ("overview", "role"):
         if a in ans:
             ans[a] = ans[a].replace("the **Lead Product Designer**", "the **" + ROLE + "**").replace("**Lead Product Designer**", "**" + ROLE + "**").replace("Lead Product Designer", ROLE)
-    ov = ans["overview"]
-    head, _, rest = ov.partition("\n\n")
-    ans["overview"] = head + "\n\n" + opening + "\n\n" + rest
+    # the opening paragraph takes the place of the old one-line description (one description, then the facts, as before);
+    # Sony keeps its line that leads into its four platforms
+    parts = ans["overview"].split("\n\n")
+    if pid == "sony": parts.insert(1, opening)
+    else: parts[1] = opening
+    ans["overview"] = "\n\n".join(parts)
 for pid, o in OUTCOMES.items(): _ents[pid]["answers"]["outcomes"] = o
 
 kb = {"version": "5.0.0", "assistant": "Nyrro", "owner": "Vishnu Prasad K P",
