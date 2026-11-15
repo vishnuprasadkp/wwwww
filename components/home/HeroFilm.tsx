@@ -819,8 +819,8 @@ export default function HeroFilm({ palette, place = "foot", from, full = false, 
     // still in a box that is nearly as tall as it is wide, so it is the same size against the box's width everywhere
     const hb0 = host.getBoundingClientRect();
     const D_K = boxPx
-      ? 0.56 * clamp(Math.max(200, boxPx.h) / Math.max(300, boxPx.w) / 0.62, 1, 1.4) * (Math.max(200, hb0.height) / Math.max(200, boxPx.h)) // seen through the box: as large as in a film the box's size
-      : (full ? 1.45 : 1) * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
+      ? 2.5 * 0.56 * clamp(Math.max(200, boxPx.h) / Math.max(300, boxPx.w) / 0.62, 1, 1.4) * (Math.max(200, hb0.height) / Math.max(200, boxPx.h)) // seen through the box: small enough that the whole of it, its spread wings and all, fits the box (it grows into the large beetle as the box opens out)
+      : (full ? 1.95 : 1) * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4); // a large beetle, close to you // one beetle everywhere: the same beetle, framed and flying as at the foot
     const CLAY = palette ?? GREY; // the painting's own colours: its smoke and the paint the beetle leaves take them
     const box = host.getBoundingClientRect();
     const PW = Math.max(300, Math.round(box.width));
@@ -1194,7 +1194,7 @@ void main(){
     };
     // as the hero's window opens out to the whole screen the beetle grows, just where it is, step by step with it, until it
     // is the large beetle of the full-screen film (and smaller again as it closes): the size it is drawn at, divided by this
-    const D_FULL = 1.45 * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4);
+    const D_FULL = 1.95 * 0.56 * clamp(Math.max(200, hb0.height) / Math.max(300, hb0.width) / 0.62, 1, 1.4);
     const zoomNow = () => {
       const f = frameRef?.current;
       if (!f || f.hh0 === undefined) return 1;
@@ -1277,7 +1277,7 @@ void main(){
         let X: [number, number];
         if (kind === "lo" || kind === "mid" || kind === "hi") {
           const sd = qSide || Math.sign(u) || coin();
-          const h = kind === "lo" ? rnd(-0.82, -0.5) : kind === "mid" ? rnd(-0.2, 0.2) : rnd(0.5, 0.8);
+          const h = kind === "lo" ? rnd(-0.6, -0.38) : kind === "mid" ? rnd(-0.15, 0.15) : rnd(0.42, 0.62); // (its whole outline in the frame)
           E = [sd, h];
           X = [-sd, clamp(h + rnd(-0.18, 0.18), -0.88, 0.85)];
         } else if (kind === "diag") {
@@ -1451,7 +1451,7 @@ void main(){
       }
       if (P.mode === "out") goal = P.th; // flying straight on out there for a while
       // in sight it turns only gently; out of sight it may swing round quicker, so it is never gone for long
-      if (hid) P.topK += ((P.top ? 1 : 0) - P.topK) * Math.min(1, dt * 2.5);
+      if (hid) P.topK += ((P.top ? 1 : 0) - P.topK) * Math.min(1, dt * 6);
       const maxW = hid ? 6 : 0.5;
       const acc = hid ? 16 : 0.8;
       const wGoal = clamp(wrapA(goal - P.th) * (hid ? 3 : 1.2), -maxW, maxW);
@@ -1575,7 +1575,7 @@ void main(){
       vA.set(nx, ny, 0.5).unproject(camera).sub(camera.position).normalize();
       return out.copy(camera.position).addScaledVector(vA, d / vA.dot(fwd));
     };
-    const SPEED = 0.55;
+    const SPEED = 0.47; // unhurried
     const planLanding = (t: number, b: NonNullable<typeof beetle>) => {
       fs.v0.copy(fly.v); // it arrives still moving as it was, and slows smoothly to a stop
       fs.v1.set(0, 0, 0);
