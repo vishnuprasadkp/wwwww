@@ -534,7 +534,7 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
   }
 
   // the head, its big glossy eyes, pale spots and the mouth
-  const pupils: THREE.Mesh[] = [];
+  const pupils: THREE.Object3D[] = [];
   const head = new THREE.Group();
   head.position.set(0, 0.0, 0.58);
   body.add(head);
@@ -547,9 +547,18 @@ export function buildBeetle(wingTex: THREE.Texture, wingDots: THREE.BufferGeomet
   for (const s of [1, -1]) {
     const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 24, 16), black);
     eye.position.set(s * 0.12, 0.02, 0.05);
-    // its eyes, drawn like the rest: the eye a ring of ink, the pupil a small ring of ink on it, turning to look at you
-    const pupil = new THREE.Mesh(new THREE.RingGeometry(0.0175, 0.0215, 32), new THREE.MeshBasicMaterial({ color: lin(...inkC), side: THREE.DoubleSide, transparent: true, opacity: 0.85 })); // a fine ring, as fine as the body's lines
-    pupil.position.set(0, 0, 0.07);
+    // its eyes, drawn in 3D with the same pen as the body: the round eye, and on it, turned to you, the rounded lens of
+    // its iris standing a little proud of the eye (its outline a circle on the eye, in the same fine line), with the
+    // pupil a dot of solid ink at its crown
+    const pupil = new THREE.Group();
+    const iris = new THREE.Mesh(new THREE.SphereGeometry(0.035, 24, 16), black);
+    iris.position.set(0, 0, 0.07);
+    pupil.add(iris);
+    const dotMat = sketchMaterial(sk, { weight: 1.1 });
+    dotMat.uniforms.solid.value = 1;
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.012, 16, 12), dotMat);
+    dot.position.set(0, 0, 0.097);
+    pupil.add(dot);
     eye.add(pupil);
     pupils.push(pupil);
     head.add(eye);
@@ -1204,123 +1213,92 @@ void main(){
         path.mode = "turn";
         return;
       }
-      /* a line from where it is (out of sight) through a point in the frame picked at random, and on out of the far side:
-         at a slope picked at random too, steeply up or down most often, else on a slant, sometimes nearly level. Gone out
-         of the foot it comes back up; gone out of a side it comes back on a slant, up or down, and leaves by the top or the
-         foot; so its path weaves every way over the frame, never the same twice. Being on its line already where it is,
-         it never has to swing round in view to join it */
+      /* its next pass, drawn from a shuffled deck, so every few passes it has flown each kind and never in the same order:
+         straight across (twice low, once through the middle, once high), corner to corner on the diagonal (three times),
+         and straight up or down (twice). Each pass is a line through the frame from where it comes in to where it goes
+         out; out of sight it goes round the frame to where that line begins (well clear of the frame), swings round onto
+         it, and comes straight in along it, so it never turns where you can see it */
       {
         const A = camera.aspect;
         const W = F.hw * A;
         const H = F.hh;
         const CX = F.cx * A;
         const CY = F.cy;
-        let QX = path.sx * A;
-        let QY = path.sy;
-        const deg = Math.PI / 180;
-        const k = Math.random();
-        // (when it is time to come and look at you, nearly level, so it goes out by a side, where it can peep back in)
-        const want = (t > path.nextLook ? rnd(4, 14) : k < 0.25 ? rnd(62, 85) : k < 0.6 ? rnd(20, 40) : rnd(4, 14)) * deg;
-        path.via = [];
-        if (want > 50 * deg && side && !vert) {
-          // to come down (or up) through the frame from beside it: out of sight it goes round the corner, above the frame
-          // (or below it), and sets off from there
-          const vs = Math.random() < 0.4 ? 1 : -1; // (more often from below)
-          const cy = vs * (1 + (vs > 0 ? r.down : r.up) + 0.4);
-          const cx = side * (1 + r.rx + 0.3);
-          const sx = side * rnd(0.1, 0.8);
-          path.via = [
-            [CX + cx * W, CY + cy * H],
-            [CX + sx * W, CY + cy * H],
-          ];
-          QX = CX + sx * W;
-          QY = CY + cy * H;
-        }
-        // often right through the middle of the frame, where you see all of it; as often anywhere else in it
-        const mid = Math.random() < 0.45;
-        // how high in the frame it goes this time: drawn from a shuffled deck (four low, two middle, two high: passing
-        // through, it crosses the middle anyway), so over any few passes it is low half the time and middle and high about a
-        // quarter each, in an order never the same
-        if (!bandBag.length) bandBag.push(...[0.3, 0.3, 0.3, 0.3, 0.7, 0.7, 0.9, 0.9].sort(() => Math.random() - 0.5));
-        const band = bandBag.pop()!;
-        // (its body low down half the time, across the middle a quarter, high up a quarter)
-        const bandY = (b: number) => (b < 0.62 ? rnd(-0.85, -0.5) : b < 0.8 ? rnd(-0.2, 0.2) : rnd(0.55, 0.85));
-        // the point it flies through is at its feet: its body is drawn well above that (in the hero's short box, over half
-        // the way to the top), so the line is aimed that much lower, for its body to go where it is meant to
+        if (!kindBag.length) kindBag.push(...["lo", "lo", "mid", "hi", "diag", "diag", "diag", "vert", "vert"].sort(() => Math.random() - 0.5));
+        let kind = kindBag.pop()!;
+        if (t > path.nextLook && (kind === "vert" || kind === "diag")) kind = "lo"; // time to come and look: out by a side
+        // its body is drawn well above the point it flies through (in the hero's short box, over half the way to the top):
+        // each line is planned for its body, then lowered by that much
         beetle!.body.getWorldPosition(pB);
         pB.project(camera);
         pA.copy(fly.p).project(camera);
-        const lift0 = path.lift > 0 ? path.lift : clamp((pB.y - pA.y) / F.hh, 0, 1.2); // (as high as it is drawn flying level)
-        if (vert || (!side && !vert)) {
-          // from above or below the frame (or after swinging round onto the next): straight to a point picked first, low as
-          // often as not, so its height is never just left to where it happens to be
-          const tx = CX + W * (mid ? rnd(-0.25, 0.25) : rnd(-0.65, 0.65));
-          const ty = CY + H * (bandY(band) - lift0);
-          path.aim = [tx, ty];
-          path.goalTh = Math.atan2(ty - QY, tx - QX);
-          path.bow0 = 0;
-          if (vert && Math.random() < 0.75) {
-            // or, so it is not always up and down: out of sight it goes round the corner to beside the frame, and comes
-            // in across it, on the level or a gentle slant, at that height
-            const sd = Math.abs(u) > 0.2 ? Math.sign(u) : Math.random() < 0.5 ? -1 : 1;
-            const SX = CX + sd * (1 + r.rx + 0.3) * W;
-            const a = rnd(0, 12) * deg * (Math.random() < 0.5 ? 1 : -1);
-            const SY = clamp(ty + Math.tan(a) * Math.abs(SX - tx), CY - (1 + r.up) * H, CY + (1 + r.down) * H);
-            path.via = [
-              [SX, CY + vert * (1 + (vert > 0 ? r.down : r.up) + 0.4) * H],
-              [SX, SY],
-            ];
-            path.goalTh = Math.atan2(ty - SY, tx - SX);
-          }
-          path.mode = "turn";
-          path.peek = false;
-          return;
+        const lift0 = path.lift > 0 ? path.lift : clamp((pB.y - pA.y) / F.hh, 0, 1.2);
+        // where it comes in and goes out, for its body, in the frame (-1..1)
+        const qSide = Math.abs(u) > 1 + r.rx ? Math.sign(u) : 0;
+        const qV = v > 1 + r.down ? 1 : v < -1 - r.up ? -1 : 0;
+        const coin = () => (Math.random() < 0.5 ? -1 : 1);
+        let E: [number, number];
+        let X: [number, number];
+        if (kind === "lo" || kind === "mid" || kind === "hi") {
+          const sd = qSide || Math.sign(u) || coin();
+          const h = kind === "lo" ? rnd(-0.82, -0.5) : kind === "mid" ? rnd(-0.2, 0.2) : rnd(0.5, 0.8);
+          E = [sd, h];
+          X = [-sd, clamp(h + rnd(-0.18, 0.18), -0.88, 0.85)];
+        } else if (kind === "diag") {
+          const cx = qSide || Math.sign(u) || coin();
+          const cy = qV || coin();
+          // in near one corner (by its top or bottom, or its side), out near the opposite one
+          E = Math.random() < 0.5 ? [cx * rnd(0.55, 0.9), cy] : [cx, cy * rnd(0.55, 0.85)];
+          X = Math.random() < 0.5 ? [-cx * rnd(0.55, 0.9), -cy] : [-cx, -cy * rnd(0.55, 0.85)];
+        } else {
+          const vs = qV || coin();
+          const x0 = clamp(Math.abs(u) < 1.2 ? u : Math.sign(u) * rnd(0.3, 0.7), -0.7, 0.7);
+          E = [x0, vs];
+          X = [clamp(x0 + rnd(-0.35, 0.35), -0.8, 0.8), -vs];
         }
-        if (want <= 50 * deg && side && !vert) {
-          // across or on a slant, from beside the frame: the height it goes through is picked first (low as often as not),
-          // and out of sight, beside the frame, it moves up or down to where that line begins
-          const tx = CX + W * (mid ? rnd(-0.25, 0.25) : rnd(-0.6, 0.6));
-          const ty = CY + H * (bandY(band) - lift0);
-          const SX = CX + side * (1 + r.rx + 0.3) * W;
-          const sgn = Math.random() < 0.5 ? 1 : -1;
-          const SY = clamp(ty + sgn * Math.abs(SX - tx) * Math.tan(band < 0.62 || band >= 0.8 ? Math.min(want, 14 * deg) : want), CY - (1 + r.up) * H, CY + (1 + r.down) * H);
-          path.via = [[SX, SY]];
-          path.aim = [tx, ty];
-          path.goalTh = Math.atan2(ty - SY, tx - SX);
-          path.bow0 = rnd(-0.04, 0.04);
-          path.mode = "turn";
-          path.peek = false;
-          return;
-        }
-        let best: number[] | null = null;
-        let err = Infinity;
-        for (let i = 0; i < 80; i++) {
-          const tx = CX + W * (mid ? rnd(-0.25, 0.25) : rnd(-0.75, 0.75));
-          // low down as often as not (its raised wings carry its outline well above the point it flies through, so a
-          // line through the middle already looks high), else across the middle, sometimes high
-          const ty = CY + H * (bandY(band) - lift0);
-          const dx = tx - QX;
-          const dy = ty - QY;
-          const l = Math.hypot(dx, dy);
-          if (l < 1e-3) continue;
-          const e = Math.abs(Math.atan2(Math.abs(dy), Math.abs(dx)) - want);
-          if (e < err) {
-            err = e;
-            best = [tx, ty, dx / l, dy / l, l];
-          }
-        }
-        if (best) {
-          const [tx, ty, dx, dy] = best;
-          path.aim = [tx, ty]; // the point in the frame it makes for
-          const steep = Math.atan2(Math.abs(dy), Math.abs(dx)) > 50 * deg;
-          // out of sight it swings round onto this heading (going round the frame first, if it must), and only then sets
-          // off, straight in along it
-          path.goalTh = Math.atan2(dy, dx);
-          path.bow0 = steep ? 0 : rnd(-0.05, 0.05);
-          path.mode = "turn";
-          path.peek = false;
-          return;
-        }
+        // on the screen, for the point it flies through (lowered by its lift)
+        const toS = (p: [number, number]) => [CX + p[0] * W, CY + (p[1] - lift0) * H] as [number, number];
+        const [ex, ey] = toS(E);
+        const [xx, xy] = toS(X);
+        const dl = Math.hypot(xx - ex, xy - ey) || 1;
+        const dx = (xx - ex) / dl;
+        const dy = (xy - ey) / dl;
+        // back along the line from where it comes in, until it is well out of sight: where it sets off from
+        const hiddenAt = (sx: number, sy: number) => {
+          const fx = (sx - CX) / W;
+          const fy = (sy - CY) / H;
+          return Math.abs(fx) > 1 + r.rx + 0.25 || fy > 1 + r.down + 0.3 || fy < -1 - r.up - 0.3;
+        };
+        let L = 0;
+        while (L < 12 * H && !hiddenAt(ex - dx * L, ey - dy * L)) L += 0.05 * H;
+        const SX = ex - dx * L;
+        const SY = ey - dy * L;
+        // out of sight, round the frame to there: past a corner (or two) if it is on another side of the frame
+        const fxS = (SX - CX) / W;
+        const fyS = (SY - CY) / H;
+        const dSide = Math.abs(fxS) > 1 + r.rx ? Math.sign(fxS) : 0;
+        const dV = fyS > 1 + r.down ? 1 : fyS < -1 - r.up ? -1 : 0;
+        const mx = 1 + r.rx + 0.35;
+        const yU = 1 + r.down + 0.45;
+        const yD = 1 + r.up + 0.45;
+        const at = (fx: number, fy: number) => [CX + fx * W, CY + fy * H];
+        const via: number[][] = [];
+        if (qSide && dSide && qSide !== dSide) {
+          const c = Math.random() < 0.5 ? yU : -yD;
+          via.push(at(qSide * mx, c), at(dSide * mx, c));
+        } else if (qV && dV && qV !== dV) {
+          const c = (Math.sign(u) || coin()) * mx;
+          via.push(at(c, qV > 0 ? yU : -yD), at(c, dV > 0 ? yU : -yD));
+        } else if (qSide && !dSide && dV) via.push(at(qSide * mx, dV > 0 ? yU : -yD));
+        else if (qV && !dV && dSide) via.push(at(dSide * mx, qV > 0 ? yU : -yD));
+        via.push([SX, SY]);
+        path.via = via;
+        path.aim = [xx, xy]; // it makes for where it goes out
+        path.goalTh = Math.atan2(dy, dx);
+        path.bow0 = kind === "vert" ? 0 : rnd(-0.03, 0.03);
+        path.mode = "turn";
+        path.peek = false;
+        return;
       }
       const roll = Math.random();
       let from: [number, number];
@@ -1393,7 +1371,7 @@ void main(){
       path.stage = 0;
     };
     let humTick = 0;
-    const bandBag: number[] = [];
+    const kindBag: string[] = [];
     let liftTick = 0;
     // its little voice: when each syllable it sings starts and how long it lasts
     const talk = { syl: [] as [number, number][], t0: -1, len: 0, last: -99, queued: -1, seen: false, perched: false };
@@ -1914,8 +1892,9 @@ void main(){
         eye.updateWorldMatrix(true, false);
         eyeTmp.copy(camera.position);
         eye.worldToLocal(eyeTmp);
-        pu.position.copy(eyeTmp.normalize().multiplyScalar(0.079));
-        pu.lookAt(camera.position); // a small ring drawn on the eye, turned square to you
+        void eyeTmp;
+        pu.position.set(0, 0, 0);
+        pu.lookAt(camera.position); // its iris and pupil turned to you
       }
       // the soft shade below it: it follows it across the floor, spreads and fades as it rises
       const hgt = Math.max(0, wp.y - FLOOR);
