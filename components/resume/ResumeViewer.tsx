@@ -69,7 +69,7 @@ export default function ResumeViewer() {
         canvas.height = Math.floor(vp.height);
         canvas.style.width = `${cssW}px`;
         canvas.style.height = `${(cssW / base.width) * base.height}px`;
-        canvas.className = "block bg-white shadow-[0_0_0_1px_#bcbcbc]";
+        canvas.className = "block bg-white shadow-[0_0_0_1px_#83685f]";
         if (!canvas.parentElement) host.appendChild(canvas);
         const ctx = canvas.getContext("2d");
         if (ctx) await page.render({ canvasContext: ctx, viewport: vp, canvas }).promise;
@@ -100,7 +100,7 @@ export default function ResumeViewer() {
   };
 
   const btn =
-    "flex h-9 items-center gap-2 px-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-colors hover:text-[#C44419] disabled:pointer-events-none disabled:opacity-30";
+    "flex h-9 items-center gap-2 px-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-colors hover:text-brand disabled:pointer-events-none disabled:opacity-30";
 
   return (
     <>
@@ -146,7 +146,7 @@ export default function ResumeViewer() {
         {!ready && !failed && <p className="py-24 text-center font-mono text-[15px] text-pigment-soft">Loading resume…</p>}
         {failed && (
           <p className="py-24 text-center font-mono text-[15px] text-pigment-soft">
-            Couldn&apos;t display the resume here. <a href={FILE} className="underline underline-offset-4 hover:text-[#C44419]">Open the PDF</a>
+            Couldn&apos;t display the resume here. <a href={FILE} className="underline underline-offset-4 hover:text-brand">Open the PDF</a>
           </p>
         )}
       </div>

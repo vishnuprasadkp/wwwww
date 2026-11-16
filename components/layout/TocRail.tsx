@@ -102,7 +102,7 @@ export default function TocRail() {
                     aria-hidden
                     className={`block shrink-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] h-[2px] w-4 ${here ? "bg-pigment" : "bg-pigment/25"} group-hover:h-[2px] group-hover:w-0 group-hover:opacity-0 group-focus-within:h-[2px] group-focus-within:w-0 group-focus-within:opacity-0`}
                   />
-                  <span className={`flex h-0 w-0 items-baseline gap-2.5 overflow-hidden whitespace-nowrap opacity-0 transition-[width,height,opacity,margin,color] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:h-[22px] group-hover:w-[256px] ${open} group-focus-within:h-[22px] group-focus-within:w-[256px] ${on ? "text-[#C44419]" : "text-pigment hover:text-[#C44419]"}`}>
+                  <span className={`flex h-0 w-0 items-baseline gap-2.5 overflow-hidden whitespace-nowrap opacity-0 transition-[width,height,opacity,margin,color] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:h-[22px] group-hover:w-[256px] ${open} group-focus-within:h-[22px] group-focus-within:w-[256px] ${on ? "text-[#C44419]" : "text-pigment hover:text-brand"}`}>
                     <span className="shrink-0 font-mono text-[12px] text-pigment-soft">{String(n).padStart(2, "0")}</span>
                     <span className="truncate text-[15px] leading-[22px]">{it.title}</span>
                   </span>
@@ -120,7 +120,7 @@ export default function TocRail() {
                 }}
                 aria-current={on ? "location" : undefined}
                 tabIndex={-1}
-                className={`flex w-[256px] items-center gap-2 py-[3px] pl-[26px] text-[15px] leading-[22px] transition-colors ${on ? "text-[#C44419]" : "text-pigment-soft hover:text-pigment"}`}
+                className={`flex w-[256px] items-center gap-2 py-[3px] pl-[26px] text-[15px] leading-[22px] transition-colors ${on ? "text-brand" : "text-pigment-soft hover:text-brand"}`}
               >
                 <span aria-hidden className="shrink-0">↳</span>
                 <span className="block min-w-0 flex-1 truncate">{it.title}</span>

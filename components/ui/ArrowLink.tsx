@@ -24,7 +24,7 @@ export function ArrowLink({
 }) {
   // With an icon (Print, Download) the box never changes size on hover, so neighbouring buttons stay put:
   // the text and icon just slide 1px towards each other, and the underline draws.
-  const cls = `group relative inline-flex h-[30px] w-max items-center ${icon ? "px-1" : "px-0 transition-[padding] duration-200 hover:px-1"} font-mono text-[15px] leading-[25px] text-pigment after:pointer-events-none after:absolute after:inset-0 after:border-b-2 after:border-transparent after:transition-colors after:duration-200 hover:after:border-pigment ${className}`;
+  const cls = `group relative inline-flex h-[30px] w-max items-center ${icon ? "px-1" : "px-0 transition-[padding] duration-200 hover:px-1"} font-mono text-[15px] leading-[25px] text-pigment after:pointer-events-none after:absolute after:inset-0 after:border-b-2 after:border-transparent after:transition-colors after:duration-200 hover:text-brand hover:after:border-brand ${className}`;
   const inner = (
     <span className={`flex items-center ${icon ? "gap-2" : "gap-[17px] transition-[gap] duration-200 group-hover:gap-2"}`}>
       <span className={icon ? "transition-transform duration-200 group-hover:translate-x-[1px]" : undefined}>{children}</span>
@@ -64,7 +64,7 @@ export function SourceLink({ href, children }: { href: string; children: React.R
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative mt-2 inline-flex w-max max-w-full items-center pb-[7px] text-[17px] leading-[18px] md:text-lg text-pigment-soft after:pointer-events-none after:absolute after:inset-0 after:border-b-[1.5px] after:border-transparent after:transition-colors after:duration-200 hover:after:border-pigment-soft"
+      className="group relative mt-2 inline-flex w-max max-w-full items-center pb-[7px] text-[17px] leading-[18px] md:text-lg text-pigment-soft after:pointer-events-none after:absolute after:inset-0 after:border-b-[1.5px] after:border-transparent after:transition-colors after:duration-200 hover:text-brand hover:after:border-brand"
     >
       <span className="flex items-center gap-3 transition-[gap] duration-200 group-hover:gap-1.5">
         <span className="min-w-0">{children}</span>

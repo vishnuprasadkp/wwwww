@@ -2,23 +2,29 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const CLICKABLE = "a, button, [role='button'], [role='link'], [data-cursor='view'], label, select, summary";
+
 /**
- * The pointer: a dot (and, over a project or the film, the eye), above everything. It is drawn white and inverts what is
- * under it, so it is dark over the light page and light over the dark films, changing as it crosses from one to the other.
- * The system's own pointer (the arrow, the hand) is never shown. Over a project (`data-cursor="view"`) it
- * shrinks to 8px and an eye appears around it. Mouse/trackpad only.
+ * The pointer. Over the page: a small dot, drawn white and inverting what is under it, so it is dark over the light page
+ * and light over the dark films. Over anything you can press (links, buttons, the projects, the film): a Figma-style
+ * arrow in place of the dot, its tip exactly at the pointer. The system's own pointer is never shown. Mouse/trackpad only.
  */
 export default function Cursor() {
-  const box = useRef<HTMLDivElement>(null);
+  const dot = useRef<HTMLDivElement>(null);
+  const arrow = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
-  const [view, setView] = useState(false);
+  const [press, setPress] = useState(false);
 
   useEffect(() => {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     const move = (e: PointerEvent) => {
-      if (box.current) box.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+      const t = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      if (dot.current) dot.current.style.transform = `${t} translate(-50%, -50%)`;
+      if (arrow.current) arrow.current.style.transform = t;
       setShown(true);
-      setView(!!(e.target as Element | null)?.closest?.("[data-cursor='view']"));
+      const el = e.target as Element | null;
+      // (text fields keep the dot)
+      setPress(!!el?.closest?.(CLICKABLE) && !el?.closest?.("input, textarea, [contenteditable='true']"));
     };
     const leave = () => setShown(false);
     window.addEventListener("pointermove", move, { passive: true });
@@ -29,27 +35,35 @@ export default function Cursor() {
     };
   }, []);
 
-  const ease = "transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]";
+  const only = "pointer-events-none fixed left-0 top-0 z-[200] hidden [@media(hover:hover)_and_(pointer:fine)]:block";
   return (
-    <div
-      ref={box}
-      aria-hidden
-      className="pointer-events-none fixed left-0 top-0 z-[200] hidden h-[70px] w-[70px] mix-blend-difference [@media(hover:hover)_and_(pointer:fine)]:block"
-      style={{ opacity: shown ? 1 : 0, transition: "opacity 0.3s", willChange: "transform" }}
-    >
-      <span
-        className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white ${ease} ${view ? "h-2 w-2" : "h-3 w-3"}`}
-      />
-      <svg
-        viewBox="0 0 36 26"
-        className={`absolute left-1/2 top-1/2 h-[26px] w-9 -translate-x-1/2 -translate-y-1/2 ${ease} ${view ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}
-      >
-        <path
-          fillRule="evenodd"
-          d="M 17.796 0 C 22.271 0 25.935 2.064 28.668 4.444 C 31.398 6.822 33.275 9.578 34.215 11.133 C 34.414 11.462 34.645 11.822 34.76 12.345 C 34.846 12.739 34.846 13.261 34.76 13.655 C 34.645 14.178 34.414 14.538 34.215 14.867 C 33.275 16.422 31.398 19.178 28.668 21.556 C 25.935 23.936 22.271 26 17.796 26 C 13.321 26 9.659 23.936 6.926 21.556 C 4.196 19.178 2.32 16.422 1.379 14.867 C 1.18 14.538 0.947 14.178 0.833 13.655 C 0.746 13.261 0.746 12.739 0.833 12.345 C 0.947 11.822 1.18 11.462 1.379 11.133 C 2.32 9.578 4.196 6.822 6.926 4.444 C 9.659 2.064 13.321 0 17.796 0 Z M 18.02 6.71 C 14.568 6.71 11.769 9.526 11.769 13 C 11.769 16.474 14.568 19.29 18.02 19.29 C 21.47 19.29 24.269 16.474 24.269 13 C 24.269 9.526 21.47 6.71 18.02 6.71 Z"
-          fill="#fff"
+    <>
+      {/* the dot: white, inverting what is under it */}
+      <div ref={dot} aria-hidden className={`${only} h-3 w-3 mix-blend-difference`} style={{ opacity: shown && !press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
+        <span
+          className="block h-3 w-3 rounded-full bg-white transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
+          style={{ transform: press ? "scale(0.3)" : "scale(1)" }}
         />
-      </svg>
-    </div>
+      </div>
+      {/* the arrow, Figma's pointer: a pale, bevelled arrowhead with a soft shadow, its tip at the pointer */}
+      <div ref={arrow} aria-hidden className={only} style={{ opacity: shown && press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          className="transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
+          style={{ transform: `translate(-3px, -2px) ${press ? "scale(1)" : "scale(0.6)"}`, transformOrigin: "3px 2px", filter: "drop-shadow(0 1.5px 2px rgba(0,0,0,0.35))" }}
+        >
+          <defs>
+            <linearGradient id="cursor-face" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#ffffff" />
+              <stop offset="1" stopColor="#dfe2e8" />
+            </linearGradient>
+          </defs>
+          <path d="M3 2 L21 10.6 L12.6 12.6 L9.2 21 Z" fill="url(#cursor-face)" stroke="#a9adb5" strokeWidth="1.1" strokeLinejoin="round" />
+          <path d="M4.4 4.3 L18 10.8 L11.8 12.1" fill="none" stroke="#ffffff" strokeWidth="0.8" strokeLinejoin="round" opacity="0.9" />
+        </svg>
+      </div>
+    </>
   );
 }

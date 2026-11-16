@@ -136,7 +136,7 @@ TOOLS_LIST = "Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google 
 # General questions get general answers: from his resume, his About page and the reflections across his work, with no
 # single project as the example (a question about a project gets that project's answer).
 A6.update({
-"experience-years": """**5 years** of product design, on enterprise and AI products for banks, governments and media companies.
+"experience-years": """**5 years** of product design, on enterprise and AI products across finance, government, media, insurance and more.
 
 - **ICD (Itu Chaudhuri Design):** Oct 2024 to Present, Senior Product Designer, design lead for UnifyApps
 - **Brane Enterprises:** Oct 2023 to Sep 2024, Senior UI/UX Designer
@@ -172,7 +172,7 @@ From his resume: **discovery, user research and usability testing**. On client p
 - **Design systems**, including one reused across **60+ deployments**
 - Working directly with **PMs, engineers and client executives**""",
 
-"why-hire": """Vishnu brings **five years** of designing **enterprise and AI products** for banks, governments and media companies, from the first brief to developer handoff.
+"why-hire": """Vishnu brings **five years** of designing **enterprise and AI products** across finance, government, media, insurance and more, from the first brief to developer handoff.
 
 - **Design lead** on each engagement at ICD, working with PMs and client executives
 - Looks after a **design system used in 60+ deployments**

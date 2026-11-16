@@ -6,7 +6,6 @@ export function ContactLinks() {
     { label: "Email", href: site.gmail } as { label: string; href: string; download?: string },
     { label: "LinkedIn", href: site.linkedin },
     { label: "Resume", href: "/resume" },
-    { label: "Portfolio 2023", href: site.oldPortfolio },
   ];
   return (
     <ul className="flex flex-wrap gap-x-10 gap-y-1">

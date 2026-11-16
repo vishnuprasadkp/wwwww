@@ -230,7 +230,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
           }}
           tabIndex={state === "open" ? 0 : -1}
           // the header's Back: the arrow and the word draw together as you point at it
-          className="absolute left-5 top-5 z-10 flex w-min items-center gap-[10px] px-0 font-mono text-[15px] leading-[19px] text-white/80 hover:gap-1 hover:px-[3px] hover:text-white md:left-8 md:top-8"
+          className="absolute left-5 top-5 z-10 flex w-min items-center gap-[10px] px-0 font-mono text-[15px] leading-[19px] text-white/80 hover:gap-1 hover:px-[3px] hover:text-brand md:left-8 md:top-8"
           style={{ opacity: state === "open" ? 1 : 0, transform: state === "open" ? "none" : "translateY(-6px)", pointerEvents: state === "open" ? "auto" : "none", transition: "opacity 0.6s ease 0.3s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, gap 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), padding 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), color 0.3s ease" }}
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

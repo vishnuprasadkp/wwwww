@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="flex flex-col justify-between gap-1 border-t border-rule px-5 pb-[27px] pt-[26px] font-mono text-[15px] leading-[24px] text-pigment-soft sm:flex-row md:px-8">
         <p className="hidden md:block">
           Let’s Connect{" "}
-          <a href={site.gmail} target="_blank" rel="noopener noreferrer" className="break-all hover:text-pigment">
+          <a href={site.gmail} target="_blank" rel="noopener noreferrer" className="break-all hover:text-brand">
             {site.email}
           </a>
         </p>

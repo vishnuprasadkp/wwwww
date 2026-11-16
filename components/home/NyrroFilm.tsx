@@ -66,7 +66,7 @@ export default function NyrroFilm() {
       )}
 
       {/* the header's Back: the arrow and the word draw together as you point at it */}
-      <Link href="/" className="absolute left-5 top-5 z-10 flex w-min items-center gap-[10px] px-0 font-mono text-[15px] leading-[19px] text-white/80 transition-[gap,padding,color] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:gap-1 hover:px-[3px] hover:text-white md:left-8 md:top-8">
+      <Link href="/" className="absolute left-5 top-5 z-10 flex w-min items-center gap-[10px] px-0 font-mono text-[15px] leading-[19px] text-white/80 transition-[gap,padding,color] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:gap-1 hover:px-[3px] hover:text-brand md:left-8 md:top-8">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M 14.25 9 L 3.75 9 M 9 14.25 L 3.75 9 L 9 3.75" />
         </svg>

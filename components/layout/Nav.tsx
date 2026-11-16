@@ -26,7 +26,7 @@ export default function Nav() {
         className="relative grid h-[57px] grid-cols-2 border-b border-rule pt-[3px] items-center gap-4 px-5 font-mono text-[15px] leading-[19px] text-pigment-soft md:px-8"
       >
         {isHome ? (
-          <Link href="/" aria-label="Home" className="justify-self-start transition-colors duration-300 hover:text-pigment">
+          <Link href="/" aria-label="Home" className="justify-self-start transition-colors duration-300 hover:text-brand">
             {/* the "vp." signature, in the header's own colour */}
             <svg width="30" height="30" viewBox={LOGO_VIEWBOX} fill="currentColor" stroke="currentColor" strokeWidth={LOGO_WEIGHT} strokeLinejoin="round" aria-hidden="true" className="block overflow-visible">
               <path d={LOGO_D} />
@@ -36,7 +36,7 @@ export default function Nav() {
           <Link
             href="/"
             aria-label="Back to home"
-            className="flex w-min items-center gap-[10px] justify-self-start px-0 transition-[gap,padding,color] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:gap-1 hover:px-[3px] hover:text-pigment"
+            className="flex w-min items-center gap-[10px] justify-self-start px-0 transition-[gap,padding,color] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:gap-1 hover:px-[3px] hover:text-brand"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M 14.25 9 L 3.75 9 M 9 14.25 L 3.75 9 L 9 3.75" />
@@ -84,7 +84,7 @@ export default function Nav() {
 function NavLink({
   label, href, external, download, active, className = "",
 }: { label: string; href: string; external?: boolean; download?: boolean; active?: boolean; className?: string }) {
-  const cls = `${className} transition-colors duration-300 hover:text-pigment ${active ? "text-pigment" : ""}`;
+  const cls = `${className} transition-colors duration-300 hover:text-brand ${active ? "text-pigment" : ""}`;
   // the resume: a direct download of the PDF
   if (download) return <a href={href} download className={cls}>{label}</a>;
   return external ? (

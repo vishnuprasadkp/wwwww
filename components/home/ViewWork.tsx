@@ -2,7 +2,7 @@
 
 import { ArrowLink } from "@/components/ui/ArrowLink";
 
-/** "View work": glides down to the cases (smoothly, not a jump). */
+/** "See selected work": glides down to the cases (smoothly, not a jump). */
 export default function ViewWork() {
   return (
     <ArrowLink
@@ -14,7 +14,7 @@ export default function ViewWork() {
         else to.scrollIntoView({ behavior: "smooth", block: "start" });
       }}
     >
-      View work
+      See selected work
     </ArrowLink>
   );
 }

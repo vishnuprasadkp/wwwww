@@ -77,7 +77,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> **5 years** of product design, on enterprise and AI products for banks, governments and media companies.
+> **5 years** of product design, on enterprise and AI products across finance, government, media, insurance and more.
 >
 > - **ICD (Itu Chaudhuri Design):** Oct 2024 to Present, Senior Product Designer, design lead for UnifyApps
 > - **Brane Enterprises:** Oct 2023 to Sep 2024, Senior UI/UX Designer
@@ -1364,7 +1364,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu brings **five years** of designing **enterprise and AI products** for banks, governments and media companies, from the first brief to developer handoff.
+> Vishnu brings **five years** of designing **enterprise and AI products** across finance, government, media, insurance and more, from the first brief to developer handoff.
 >
 > - **Design lead** on each engagement at ICD, working with PMs and client executives
 > - Looks after a **design system used in 60+ deployments**

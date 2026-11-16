@@ -283,7 +283,7 @@ export function NivviButton({ className = "" }: { className?: string }) {
       onBlur={() => window.dispatchEvent(new CustomEvent("nyrro-hint", { detail: false }))}
       aria-label={open ? "Close Nyrro" : "Ask Nyrro"}
       aria-expanded={open}
-      className={`flex items-center gap-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-[#C44419] ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
+      className={`flex items-center gap-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-brand ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
       <MothIcon size={24} />
       <span className="nivvi-label">Nyrro</span>
@@ -315,11 +315,11 @@ function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
           const [, label, href] = link;
           const external = /^https?:/.test(href);
           return external ? (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-pigment-soft">
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-brand">
               {label}
             </a>
           ) : (
-            <Link key={i} href={href} onClick={onNavigate} className="underline underline-offset-4 hover:text-pigment-soft">
+            <Link key={i} href={href} onClick={onNavigate} className="underline underline-offset-4 hover:text-brand">
               {label}
             </Link>
           );
@@ -730,10 +730,10 @@ function NivviPanel() {
           Nyrro
         </span>
         <span className="flex items-center gap-4 text-pigment-soft">
-          <button type="button" onClick={reset} aria-label="Start over" className="transition-colors hover:text-pigment">
+          <button type="button" onClick={reset} aria-label="Start over" className="transition-colors hover:text-brand">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5" /><path d="M3.5 3.5v5h5" /></svg>
           </button>
-          <button type="button" onClick={close} aria-label="Close" className="transition-colors hover:text-pigment">
+          <button type="button" onClick={close} aria-label="Close" className="transition-colors hover:text-brand">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M5 5l14 14M19 5L5 19" /></svg>
           </button>
         </span>
@@ -752,7 +752,7 @@ function NivviPanel() {
             <ul className="mt-6 space-y-3">
               {page.prompts.slice(0, 3).map((p) => (
                 <li key={p}>
-                  <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[15px] leading-[22px] text-pigment-soft transition-colors hover:text-[#C44419]">
+                  <button type="button" onClick={() => send(p)} className="flex items-start gap-2 text-left text-[15px] leading-[22px] text-pigment-soft transition-colors hover:text-brand">
                     <span aria-hidden>↳</span>
                     {p}
                   </button>
@@ -801,7 +801,7 @@ function NivviPanel() {
                         type="button"
                         onClick={() => speak(i, m.content)}
                         aria-label={speaking === i ? "Stop reading" : "Read aloud"}
-                        className="grid h-7 w-7 place-items-center transition-colors hover:text-[#C44419]"
+                        className="grid h-7 w-7 place-items-center transition-colors hover:text-brand"
                       >
                         {speaking === i ? (
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="0.5" /><rect x="14" y="5" width="4" height="14" rx="0.5" /></svg>
@@ -810,7 +810,7 @@ function NivviPanel() {
                         )}
                       </button>
                       {i === messages.length - 1 && (
-                        <button type="button" onClick={regenerate} aria-label="Regenerate answer" className="grid h-7 w-7 place-items-center transition-colors hover:text-[#C44419]">
+                        <button type="button" onClick={regenerate} aria-label="Regenerate answer" className="grid h-7 w-7 place-items-center transition-colors hover:text-brand">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9" /><path d="M20 4v5h-5" /></svg>
                         </button>
                       )}
@@ -821,7 +821,7 @@ function NivviPanel() {
                       <ul className="space-y-3">
                         {m.next.map((n) => (
                           <li key={n}>
-                            <button type="button" onClick={() => send(n)} className="flex items-start gap-2 text-left text-[15px] leading-[20px] text-pigment-soft transition-colors hover:text-[#C44419]">
+                            <button type="button" onClick={() => send(n)} className="flex items-start gap-2 text-left text-[15px] leading-[20px] text-pigment-soft transition-colors hover:text-brand">
                               <span aria-hidden>↳</span>
                               {n}
                             </button>
@@ -851,7 +851,7 @@ function NivviPanel() {
               {draft || <span className="text-pigment-soft/80">Listening…</span>}
             </p>
             <div className="mt-3 flex items-center gap-1">
-              <button type="button" onClick={() => stopRecording("cancel")} aria-label="Cancel recording" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]">
+              <button type="button" onClick={() => stopRecording("cancel")} aria-label="Cancel recording" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-brand">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
               </button>
               <div className="flex h-10 min-w-0 flex-1 items-center justify-end gap-[3px] overflow-hidden px-1" aria-hidden="true">
@@ -866,10 +866,10 @@ function NivviPanel() {
               <span className="mr-1 shrink-0 font-mono text-xs tabular-nums text-pigment-soft" aria-live="off">
                 {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
               </span>
-              <button type="button" onClick={() => stopRecording("keep")} aria-label="Stop recording" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]">
+              <button type="button" onClick={() => stopRecording("keep")} aria-label="Stop recording" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-brand">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
               </button>
-              <button type="button" onClick={() => stopRecording("send")} aria-label="Send" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]">
+              <button type="button" onClick={() => stopRecording("send")} aria-label="Send" className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-brand">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 10l-5 5 5 5" /><path d="M20 4v7a4 4 0 0 1-4 4H4" /></svg>
               </button>
             </div>
@@ -897,7 +897,7 @@ function NivviPanel() {
               type="button"
               onClick={() => toggleMic()}
               aria-label="Speak to Nyrro"
-              className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419]"
+              className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-brand"
             >
               <MicIcon listening={false} />
             </button>
@@ -906,7 +906,7 @@ function NivviPanel() {
             type="submit"
             disabled={!draft.trim() || busy}
             aria-label="Send"
-            className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-[#C44419] disabled:text-pigment/30 disabled:hover:text-pigment/30"
+            className="grid h-9 w-9 shrink-0 place-items-center text-pigment transition-colors hover:text-brand disabled:text-pigment/30 disabled:hover:text-pigment/30"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 10l-5 5 5 5" /><path d="M20 4v7a4 4 0 0 1-4 4H4" /></svg>
           </button>
