@@ -36,7 +36,7 @@ export default function NyrroFilm() {
       if (box.current) box.current.style.height = `${fullScreenHeight()}px`;
     };
     fit();
-    html.classList.add("film-full");
+    html.classList.add("film-open");
     window.addEventListener("resize", fit);
     window.visualViewport?.addEventListener("resize", fit);
     // its sound: at once if you came here by a click, otherwise from your first touch or key
@@ -46,7 +46,7 @@ export default function NyrroFilm() {
     return () => {
       off();
       a.stop();
-      html.classList.remove("film-full");
+      html.classList.remove("film-open");
       window.removeEventListener("resize", fit);
       window.visualViewport?.removeEventListener("resize", fit);
       html.style.overflow = before;

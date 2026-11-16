@@ -139,6 +139,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
       run(1, () => {
         stateRef.current = "open";
         setState("open");
+        document.documentElement.classList.add("film-open"); // the film now covers the screen: the page behind may go dark
       });
     };
     // from the top of the page (where the film is), so it opens from just where you see it
@@ -152,6 +153,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
     stateRef.current = "closing";
     ambience().stop();
     setState("closing");
+    document.documentElement.classList.remove("film-open"); // the page is itself again before the window closes onto it
     // the story sinks away first, then the window closes down onto the box
     window.setTimeout(
       () =>
@@ -178,6 +180,7 @@ export default function HeroFilmPanel({ height }: { height: string }) {
       window.removeEventListener("popstate", onPop);
       window.removeEventListener("keydown", onKey);
       cancelAnimationFrame(anim.current);
+      document.documentElement.classList.remove("film-open");
       if (stateRef.current !== "closed") {
         lock(false);
         ambience().stop();
