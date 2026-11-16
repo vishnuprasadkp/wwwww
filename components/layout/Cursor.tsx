@@ -8,7 +8,7 @@ const CLICKABLE = "[data-cursor='view']";
 /**
  * The pointer. Over the page: a small dot, drawn white and inverting what is under it, so it is dark over the light page
  * and light over the dark films. Over the projects' cards and the hero film: a Figma-style
- * arrow in place of the dot (flat and solid, the eye's size, inverting like the dot), its tip exactly at the pointer. The system's own pointer is never shown. Mouse/trackpad only.
+ * arrow in place of the dot (flat, the site's near-black with a white outline and a soft shadow), its tip exactly at the pointer. The system's own pointer is never shown. Mouse/trackpad only.
  */
 export default function Cursor() {
   const dot = useRef<HTMLDivElement>(null);
@@ -46,17 +46,18 @@ export default function Cursor() {
           style={{ transform: press ? "scale(0.3)" : "scale(1)" }}
         />
       </div>
-      {/* the arrow: one flat, solid shape at the eye's size, white and inverting what is under it like the dot (dark over
-          the page, light over the films); its tip at the pointer */}
-      <div ref={arrow} aria-hidden className={`${only} mix-blend-difference`} style={{ opacity: shown && press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
+      {/* the arrow: the site's near-black, a white outline round it and a soft shadow under it, so it reads on the light
+          page and on the dark films alike; its tip at the pointer */}
+      <div ref={arrow} aria-hidden className={only} style={{ opacity: shown && press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
         <svg
           width="28"
           height="28"
           viewBox="0 0 26 26"
+          overflow="visible"
           className="transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
-          style={{ transform: `translate(-2px, -2px) ${press ? "scale(1)" : "scale(0.6)"}`, transformOrigin: "2px 2px" }}
+          style={{ transform: `translate(-2px, -2px) ${press ? "scale(1)" : "scale(0.6)"}`, transformOrigin: "2px 2px", filter: "drop-shadow(0 1.5px 2.5px rgb(57 54 54 / 0.28))" }}
         >
-          <path d="M2 2 L24 11.6 L13.9 14.1 L10.3 24.4 Z" fill="#fff" stroke="#fff" strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M2 2 L24 11.6 L13.9 14.1 L10.3 24.4 Z" fill="#393636" stroke="#fff" strokeWidth="4" strokeLinejoin="round" paintOrder="stroke" />
         </svg>
       </div>
     </>
