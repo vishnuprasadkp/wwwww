@@ -4,12 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 // the arrow is for the projects' cards and the hero film only; everywhere else, links and buttons included, the dot
 const CLICKABLE = "[data-cursor='view']";
-// over links and buttons the dot turns white (outlined in black)
-const LINK = "a, button, [role='button'], [role='link'], label, summary, select";
 
 /**
- * The pointer. Over the page: a small dot, black outlined in white (white outlined in black over links and buttons), so
- * it reads over the light page and the dark films alike. Over the projects' cards and the hero film: a Figma-style
+ * The pointer. Over the page: a small plain black dot, links and buttons included. Over the projects' cards and the hero film: a Figma-style
  * arrow in place of the dot (flat, the site's near-black with a white outline and a soft shadow), its tip exactly at the pointer. The system's own pointer is never shown. Mouse/trackpad only.
  */
 export default function Cursor() {
@@ -17,7 +14,6 @@ export default function Cursor() {
   const arrow = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
   const [press, setPress] = useState(false);
-  const [link, setLink] = useState(false);
 
   useEffect(() => {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
@@ -29,7 +25,6 @@ export default function Cursor() {
       const el = e.target as Element | null;
       // (text fields keep the dot)
       setPress(!!el?.closest?.(CLICKABLE));
-      setLink(!!el?.closest?.(LINK));
     };
     const leave = () => setShown(false);
     window.addEventListener("pointermove", move, { passive: true });
@@ -43,15 +38,11 @@ export default function Cursor() {
   const only = "pointer-events-none fixed left-0 top-0 z-[200] hidden [@media(hover:hover)_and_(pointer:fine)]:block";
   return (
     <>
-      {/* the dot: black outlined in white; over links and buttons, white outlined in black. Only ever black and white */}
+      {/* the dot: plain black, everywhere */}
       <div ref={dot} aria-hidden className={`${only} h-3 w-3`} style={{ opacity: shown && !press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
         <span
-          className="block h-3 w-3 rounded-full transition-[transform,background-color,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
-          style={{
-            transform: press ? "scale(0.3)" : "scale(1)",
-            background: link ? "#fff" : "#393636",
-            boxShadow: `0 0 0 1.5px ${link ? "#393636" : "#fff"}`,
-          }}
+          className="block h-3 w-3 rounded-full bg-[#393636] transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
+          style={{ transform: press ? "scale(0.3)" : "scale(1)" }}
         />
       </div>
       {/* the arrow: the site's near-black, a white outline round it and a soft shadow under it, so it reads on the light
