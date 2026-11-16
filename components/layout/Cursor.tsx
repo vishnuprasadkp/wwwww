@@ -17,10 +17,42 @@ export default function Cursor() {
 
   useEffect(() => {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    const move = (e: PointerEvent) => {
-      const t = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+    // the dot and the arrow glide after the pointer (a short, smooth catch-up) rather than jumping with it
+    const to = { x: 0, y: 0 };
+    const at = { x: 0, y: 0 };
+    let raf = 0;
+    let last = 0;
+    let started = false;
+    const place = () => {
+      const t = `translate3d(${at.x}px, ${at.y}px, 0)`;
       if (dot.current) dot.current.style.transform = `${t} translate(-50%, -50%)`;
       if (arrow.current) arrow.current.style.transform = t;
+    };
+    const tick = (now: number) => {
+      const dt = Math.min(64, now - (last || now));
+      last = now;
+      const k = 1 - Math.exp(-dt / 45); // ~45ms to close most of the gap, whatever the frame rate
+      at.x += (to.x - at.x) * k;
+      at.y += (to.y - at.y) * k;
+      place();
+      if (Math.abs(to.x - at.x) > 0.1 || Math.abs(to.y - at.y) > 0.1) raf = requestAnimationFrame(tick);
+      else {
+        at.x = to.x;
+        at.y = to.y;
+        place();
+        raf = 0;
+        last = 0;
+      }
+    };
+    const move = (e: PointerEvent) => {
+      to.x = e.clientX;
+      to.y = e.clientY;
+      if (!started) {
+        started = true;
+        at.x = to.x;
+        at.y = to.y;
+        place();
+      } else if (!raf) raf = requestAnimationFrame(tick);
       setShown(true);
       const el = e.target as Element | null;
       // (text fields keep the dot)
@@ -31,6 +63,7 @@ export default function Cursor() {
     document.documentElement.addEventListener("mouseleave", leave);
     return () => {
       window.removeEventListener("pointermove", move);
+      cancelAnimationFrame(raf);
       document.documentElement.removeEventListener("mouseleave", leave);
     };
   }, []);
@@ -39,9 +72,9 @@ export default function Cursor() {
   return (
     <>
       {/* the dot: plain black, everywhere */}
-      <div ref={dot} aria-hidden className={`${only} h-3 w-3`} style={{ opacity: shown && !press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
+      <div ref={dot} aria-hidden className={`${only} h-[9px] w-[9px]`} style={{ opacity: shown && !press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
         <span
-          className="block h-3 w-3 rounded-full bg-[#393636] transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
+          className="block h-[9px] w-[9px] rounded-full bg-[#393636] transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
           style={{ transform: press ? "scale(0.3)" : "scale(1)" }}
         />
       </div>
