@@ -150,15 +150,13 @@ A6.update({
 - **Built to scale:** reusable patterns and a design system used across **60+ deployments**
 - **Designs and builds:** he also ships front-ends himself with GitHub and Vercel""",
 
-"design-process": """Vishnu's process is **research first**: before designing any screens, he maps the people, dependencies, goals and where things break.
+"design-process": """A building needs solid ground before it goes up, and for Vishnu a product needs a **real understanding of the work behind it**. This is how he gets there:
 
-1. **Understand the system:** discovery and research with the people who use and run the product
-2. **Define the structure:** product structure, flows and the decisions that matter, before visual detail
-3. **Design and review:** iterate with PMs, engineers and client stakeholders, and test with users
-4. **Systemise:** reusable patterns and documented components, so the product stays consistent
-5. **Hand off and ship:** a clear design to dev handoff, through to launch
-
-He owns the work **end to end**, from the first brief to developer handoff.""",
+1. **Start with the system:** before anything goes on a screen, he maps the people, the dependencies, the goals and the places where things break
+2. **Bring everyone in early:** he works with product managers, engineers, compliance and business teams from the first brief, so decisions hold up in review and in code
+3. **Clarity before screens:** he defines the product structure and core workflows first, then designs the details on top of them
+4. **Build systems, not one-off screens:** clear flows, reusable patterns and documented components keep a product consistent from idea to launch, and as it grows
+5. **Keep people in control:** when AI is involved, he makes its work visible and easy to check, so people can trust what it does""",
 
 "research": """Research comes first in Vishnu's process: before designing, he maps the people, dependencies, goals and where things break.
 
@@ -187,6 +185,10 @@ Contact: **vishnuprasadkp98@gmail.com**""",
 - Ran **3 product initiatives in parallel**
 - Set up the **design to dev handoff process**, so what gets built matches what was designed
 - **Mentors 6 designers** through critiques and reviews""",
+
+"architecture-link": """He studied architecture and planning at NIT Bhopal, where he learned to **understand a system before trying to change it**. He still works that way: he doesn't see a product as a collection of screens. He starts with the people, the business goals and the technical limits, and designs the **structure that connects them**.""",
+
+"summary-oneline": """A product designer with five years of designing **enterprise SaaS and AI products** that make complex work feel simple.""",
 
 "simplicity": """For Vishnu, simple doesn't mean less. It means **showing the right depth to the right person**: complex information is organised, not removed, and each user sees the level of detail they need.""",
 

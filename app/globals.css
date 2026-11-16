@@ -278,3 +278,7 @@ html[data-motion] main :where(img) { opacity: 0; }
 /* (only once the film covers the whole screen, never while it opens or closes, when the page must stay as it is) */
 html.film-open, html.film-open body { background-color: #3e3e3e; }
 html.film-open .paper-bg { display: none; }
+
+/* the header's Nyrro: pointed at, the beetle turns orange with its name */
+.nyrro-btn svg [fill="#83685f"] { transition: fill 0.3s; }
+.nyrro-btn:hover svg [fill="#83685f"], .nyrro-btn:focus-visible svg [fill="#83685f"] { fill: var(--color-brand); }

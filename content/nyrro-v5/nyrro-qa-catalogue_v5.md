@@ -68,7 +68,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> A product designer with 5+ years of experience who designs experiences for the complex systems that run real work.
+> A product designer with five years of designing **enterprise SaaS and AI products** that make complex work feel simple.
 
 #### How many years of experience does he have?  `experience-years`
 **Also asked as:** _how experienced is vishnu_ · _what is his work experience_ · _how long has he been designing_
@@ -119,7 +119,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> He studied Planning & Architecture at NIT Bhopal, where he learned to **understand systems before changing them**. That thinking still shapes his work: he doesn't see a product as a collection of screens.
+> He studied architecture and planning at NIT Bhopal, where he learned to **understand a system before trying to change it**. He still works that way: he doesn't see a product as a collection of screens. He starts with the people, the business goals and the technical limits, and designs the **structure that connects them**.
 
 #### What languages does he speak?  `languages`
 **Also asked as:** _does he speak hindi_
@@ -604,15 +604,13 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu's process is **research first**: before designing any screens, he maps the people, dependencies, goals and where things break.
+> A building needs solid ground before it goes up, and for Vishnu a product needs a **real understanding of the work behind it**. This is how he gets there:
 >
-> 1. **Understand the system:** discovery and research with the people who use and run the product
-> 2. **Define the structure:** product structure, flows and the decisions that matter, before visual detail
-> 3. **Design and review:** iterate with PMs, engineers and client stakeholders, and test with users
-> 4. **Systemise:** reusable patterns and documented components, so the product stays consistent
-> 5. **Hand off and ship:** a clear design to dev handoff, through to launch
->
-> He owns the work **end to end**, from the first brief to developer handoff.
+> 1. **Start with the system:** before anything goes on a screen, he maps the people, the dependencies, the goals and the places where things break
+> 2. **Bring everyone in early:** he works with product managers, engineers, compliance and business teams from the first brief, so decisions hold up in review and in code
+> 3. **Clarity before screens:** he defines the product structure and core workflows first, then designs the details on top of them
+> 4. **Build systems, not one-off screens:** clear flows, reusable patterns and documented components keep a product consistent from idea to launch, and as it grows
+> 5. **Keep people in control:** when AI is involved, he makes its work visible and easy to check, so people can trust what it does
 
 #### What makes vishnu's design approach unique?  `unique-approach`
 **Also asked as:** _how is he different from other designers_ · _what sets him apart_

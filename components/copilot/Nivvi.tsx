@@ -283,7 +283,7 @@ export function NivviButton({ className = "" }: { className?: string }) {
       onBlur={() => window.dispatchEvent(new CustomEvent("nyrro-hint", { detail: false }))}
       aria-label={open ? "Close Nyrro" : "Ask Nyrro"}
       aria-expanded={open}
-      className={`flex items-center gap-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-brand ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
+      className={`nyrro-btn flex items-center gap-2 font-mono text-[15px] leading-[19px] text-pigment-soft transition-[color,opacity] duration-300 hover:text-brand ${open ? "pointer-events-none invisible opacity-0" : "visible opacity-100 delay-150"} ${className}`}
     >
       <MothIcon size={24} />
       <span className="nivvi-label">Nyrro</span>

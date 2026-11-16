@@ -1557,7 +1557,7 @@
     "give me a quick summary",
     "sum him up in a sentence"
    ],
-   "answer": "A product designer with 5+ years of experience who designs experiences for the complex systems that run real work.",
+   "answer": "A product designer with five years of designing **enterprise SaaS and AI products** that make complex work feel simple.",
    "followups": [],
    "priority": false
   },
@@ -1746,7 +1746,7 @@
     "why did he move from architecture to product design",
     "what does design like a building mean"
    ],
-   "answer": "He studied Planning & Architecture at NIT Bhopal, where he learned to **understand systems before changing them**. That thinking still shapes his work: he doesn't see a product as a collection of screens.",
+   "answer": "He studied architecture and planning at NIT Bhopal, where he learned to **understand a system before trying to change it**. He still works that way: he doesn't see a product as a collection of screens. He starts with the people, the business goals and the technical limits, and designs the **structure that connects them**.",
    "followups": [
     "How does he design?"
    ],
@@ -2097,7 +2097,7 @@
     "how does he approach a new project",
     "how does he solve problems"
    ],
-   "answer": "Vishnu's process is **research first**: before designing any screens, he maps the people, dependencies, goals and where things break.\n\n1. **Understand the system:** discovery and research with the people who use and run the product\n2. **Define the structure:** product structure, flows and the decisions that matter, before visual detail\n3. **Design and review:** iterate with PMs, engineers and client stakeholders, and test with users\n4. **Systemise:** reusable patterns and documented components, so the product stays consistent\n5. **Hand off and ship:** a clear design to dev handoff, through to launch\n\nHe owns the work **end to end**, from the first brief to developer handoff.",
+   "answer": "A building needs solid ground before it goes up, and for Vishnu a product needs a **real understanding of the work behind it**. This is how he gets there:\n\n1. **Start with the system:** before anything goes on a screen, he maps the people, the dependencies, the goals and the places where things break\n2. **Bring everyone in early:** he works with product managers, engineers, compliance and business teams from the first brief, so decisions hold up in review and in code\n3. **Clarity before screens:** he defines the product structure and core workflows first, then designs the details on top of them\n4. **Build systems, not one-off screens:** clear flows, reusable patterns and documented components keep a product consistent from idea to launch, and as it grows\n5. **Keep people in control:** when AI is involved, he makes its work visible and easy to check, so people can trust what it does",
    "followups": [
     "What makes his approach unique?",
     "Tell me about ADEO"

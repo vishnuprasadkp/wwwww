@@ -26,7 +26,7 @@ export default function Hero() {
             I design experiences for the complex systems that run real work.
           </p>
           <p className="mt-4 max-w-[560px] text-[17px] leading-[26px] text-pigment">
-            For five years I&apos;ve designed enterprise and AI products across finance, government, media, insurance and more, taking each one from the first brief to something people rely on every day.
+            Five years of designing enterprise SaaS and AI products that make complex work feel simple.
           </p>
           <div className="mt-5 flex flex-wrap gap-x-10 gap-y-1 md:mt-auto md:pt-5">
             <ViewWork />
