@@ -6,7 +6,7 @@ import { ArrowLink } from "@/components/ui/ArrowLink";
 const FILE = "/Vishnu_Prasad_Resume_2026.pdf";
 const STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2, 3];
 
-/** In-site PDF viewer: crisp canvas render with zoom, print and download. */
+/** In-site PDF viewer: crisp canvas render, its text selectable and its links clickable, with zoom, print and download. */
 export default function ResumeViewer() {
   const stage = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
@@ -48,13 +48,16 @@ export default function ResumeViewer() {
     return () => ro.disconnect();
   }, []);
 
-  // (Re)render every page whenever the zoom or width changes.
+  // (Re)render every page whenever the zoom or width changes: the page drawn crisp on a canvas, its text laid over it
+  // (invisible, but selectable and copyable) and its links over that (clickable)
   useEffect(() => {
     const d = doc.current;
     const host = holder.current;
     if (!ready || !d || !host || !width) return;
     let dead = false;
+    let task: { cancel: () => void } | null = null;
     (async () => {
+      const pdfjs = await import("pdfjs-dist");
       const dpr = Math.min(window.devicePixelRatio || 1, 3);
       const fitWidth = Math.min(width - 40, 860);
       for (let n = 1; n <= d.numPages; n++) {
@@ -63,20 +66,75 @@ export default function ResumeViewer() {
         const base = page.getViewport({ scale: 1 });
         const cssW = fitWidth * zoom;
         const scale = cssW / base.width;
+        const cssH = scale * base.height;
         const vp = page.getViewport({ scale: scale * dpr });
+        const view = page.getViewport({ scale });
         const canvas = pages[n - 1];
+        let sheet = canvas.parentElement as HTMLDivElement | null;
+        if (!sheet) {
+          sheet = document.createElement("div");
+          sheet.className = "resume-sheet relative bg-white shadow-[0_0_0_1px_#b5a7a2]";
+          sheet.appendChild(canvas);
+          host.appendChild(sheet);
+        }
+        sheet.style.width = `${cssW}px`;
+        sheet.style.height = `${cssH}px`;
+        sheet.style.setProperty("--scale-factor", String(scale));
         canvas.width = Math.floor(vp.width);
         canvas.height = Math.floor(vp.height);
         canvas.style.width = `${cssW}px`;
-        canvas.style.height = `${(cssW / base.width) * base.height}px`;
-        canvas.className = "block bg-white shadow-[0_0_0_1px_#b5a7a2]";
-        if (!canvas.parentElement) host.appendChild(canvas);
+        canvas.style.height = `${cssH}px`;
+        canvas.className = "block";
         const ctx = canvas.getContext("2d");
-        if (ctx) await page.render({ canvasContext: ctx, viewport: vp, canvas }).promise;
+        // drawn while the text and links are laid over it
+        const job = ctx ? page.render({ canvasContext: ctx, viewport: vp, canvas }) : null;
+        task = job;
+        const drawn = job ? job.promise : Promise.resolve();
+
+        // the text, for selecting and copying
+        sheet.querySelector(".textLayer")?.remove();
+        const text = document.createElement("div");
+        text.className = "textLayer";
+        sheet.appendChild(text);
+        await new pdfjs.TextLayer({ textContentSource: await page.getTextContent(), container: text, viewport: view }).render();
+        if (dead) return;
+        // (while a selection is dragged, this stretches over the page so it runs smoothly between the lines)
+        const end = document.createElement("div");
+        end.className = "endOfContent";
+        text.appendChild(end);
+        text.addEventListener("pointerdown", () => {
+          text.classList.add("selecting");
+          window.addEventListener("pointerup", () => text.classList.remove("selecting"), { once: true });
+        });
+
+        // the links, for clicking
+        sheet.querySelector(".resume-links")?.remove();
+        const links = document.createElement("div");
+        links.className = "resume-links pointer-events-none absolute inset-0";
+        for (const a of await page.getAnnotations()) {
+          const url: string | undefined = a.subtype === "Link" ? a.url || a.unsafeUrl : undefined;
+          if (!url) continue;
+          const [ax, ay] = view.convertToViewportPoint(a.rect[0], a.rect[1]);
+          const [bx, by] = view.convertToViewportPoint(a.rect[2], a.rect[3]);
+          const [x1, y1, x2, y2] = [Math.min(ax, bx), Math.min(ay, by), Math.max(ax, bx), Math.max(ay, by)];
+          const el = document.createElement("a");
+          el.href = url;
+          if (!url.startsWith("mailto:") && !url.startsWith("tel:")) {
+            el.target = "_blank";
+            el.rel = "noopener noreferrer";
+          }
+          el.setAttribute("aria-label", url.replace(/^mailto:|^tel:/, ""));
+          el.className = "pointer-events-auto absolute";
+          el.style.cssText = `left:${x1}px;top:${y1}px;width:${x2 - x1}px;height:${y2 - y1}px`;
+          links.appendChild(el);
+        }
+        sheet.appendChild(links);
+        await drawn;
       }
-    })();
+    })().catch(() => {});
     return () => {
       dead = true;
+      task?.cancel(); // (a new zoom draws the same canvas afresh)
     };
   }, [ready, zoom, width, pages]);
 

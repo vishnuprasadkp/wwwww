@@ -282,3 +282,53 @@ html.film-open .paper-bg { display: none; }
 /* the header's Nyrro: pointed at, the beetle turns orange with its name */
 .nyrro-btn svg [fill="#83685f"] { transition: fill 0.3s; }
 .nyrro-btn:hover svg [fill="#83685f"], .nyrro-btn:focus-visible svg [fill="#83685f"] { fill: var(--color-brand); }
+
+/* the resume preview: each page's text laid invisibly over its picture, for selecting and copying (pdf.js's text layer) */
+.resume-sheet {
+  --user-unit: 1;
+  --total-scale-factor: calc(var(--scale-factor) * var(--user-unit));
+  --scale-round-x: 1px;
+  --scale-round-y: 1px;
+}
+.resume-sheet .textLayer {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  line-height: 1;
+  text-align: initial;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  z-index: 0;
+  --min-font-size: 1;
+  --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+  --min-font-size-inv: calc(1 / var(--min-font-size));
+}
+.resume-sheet .textLayer :is(span, br) {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  transform-origin: 0% 0%;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.resume-sheet .textLayer > :not(.markedContent),
+.resume-sheet .textLayer .markedContent span:not(.markedContent) {
+  z-index: 1;
+  --font-height: 0;
+  font-size: calc(var(--text-scale-factor) * var(--font-height));
+  --scale-x: 1;
+  --rotate: 0deg;
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+.resume-sheet .textLayer .markedContent { display: contents; }
+.resume-sheet .textLayer ::selection { background: rgb(196 68 25 / 0.25); color: transparent; }
+.resume-sheet .textLayer .endOfContent {
+  display: block;
+  position: absolute;
+  inset: 100% 0 0;
+  z-index: 0;
+  user-select: none;
+}
+.resume-sheet .textLayer.selecting .endOfContent { top: 0; }
