@@ -7,7 +7,7 @@ const CLICKABLE = "a, button, [role='button'], [role='link'], [data-cursor='view
 /**
  * The pointer. Over the page: a small dot, drawn white and inverting what is under it, so it is dark over the light page
  * and light over the dark films. Over anything you can press (links, buttons, the projects, the film): a Figma-style
- * arrow in place of the dot, its tip exactly at the pointer. The system's own pointer is never shown. Mouse/trackpad only.
+ * arrow in place of the dot (flat and solid, the eye's size, inverting like the dot), its tip exactly at the pointer. The system's own pointer is never shown. Mouse/trackpad only.
  */
 export default function Cursor() {
   const dot = useRef<HTMLDivElement>(null);
@@ -45,23 +45,17 @@ export default function Cursor() {
           style={{ transform: press ? "scale(0.3)" : "scale(1)" }}
         />
       </div>
-      {/* the arrow, Figma's pointer: a pale, bevelled arrowhead with a soft shadow, its tip at the pointer */}
-      <div ref={arrow} aria-hidden className={only} style={{ opacity: shown && press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
+      {/* the arrow: one flat, solid shape at the eye's size, white and inverting what is under it like the dot (dark over
+          the page, light over the films); its tip at the pointer */}
+      <div ref={arrow} aria-hidden className={`${only} mix-blend-difference`} style={{ opacity: shown && press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
         <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
+          width="26"
+          height="26"
+          viewBox="0 0 26 26"
           className="transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
-          style={{ transform: `translate(-3px, -2px) ${press ? "scale(1)" : "scale(0.6)"}`, transformOrigin: "3px 2px", filter: "drop-shadow(0 1.5px 2px rgba(0,0,0,0.35))" }}
+          style={{ transform: `translate(-2px, -2px) ${press ? "scale(1)" : "scale(0.6)"}`, transformOrigin: "2px 2px" }}
         >
-          <defs>
-            <linearGradient id="cursor-face" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#ffffff" />
-              <stop offset="1" stopColor="#dfe2e8" />
-            </linearGradient>
-          </defs>
-          <path d="M3 2 L21 10.6 L12.6 12.6 L9.2 21 Z" fill="url(#cursor-face)" stroke="#a9adb5" strokeWidth="1.1" strokeLinejoin="round" />
-          <path d="M4.4 4.3 L18 10.8 L11.8 12.1" fill="none" stroke="#ffffff" strokeWidth="0.8" strokeLinejoin="round" opacity="0.9" />
+          <path d="M2 2 L24 11.6 L13.9 14.1 L10.3 24.4 Z" fill="#fff" stroke="#fff" strokeWidth="1.6" strokeLinejoin="round" />
         </svg>
       </div>
     </>

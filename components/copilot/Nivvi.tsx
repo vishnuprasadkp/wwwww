@@ -333,13 +333,37 @@ function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
 
 /* ------------------------------------------------------------------ intro */
 
-/** Hello that appears under the header trigger on every fresh load, until it is closed or used. */
+/** Hello under the header's Nyrro, the first time you point at it (only once). */
 function NivviIntro() {
   const { open } = useNivvi();
-  // shown only while the pointer (or the keyboard) is on the Nyrro button in the header; the button says when
+  // shown while the pointer (or the keyboard) is on the Nyrro button in the header, and only the first time: once it has
+  // been seen it is remembered and does not come back
   const [hint, setHint] = useState(false);
   useEffect(() => {
-    const on = (e: Event) => setHint(!!(e as CustomEvent<boolean>).detail);
+    const KEY = "nyrro-hello-seen";
+    let seen = false;
+    try {
+      seen = window.localStorage.getItem(KEY) === "1";
+    } catch {
+      /* no storage: shown once per visit */
+    }
+    let showing = false;
+    const on = (e: Event) => {
+      const want = !!(e as CustomEvent<boolean>).detail;
+      if (want && !seen) {
+        showing = true;
+        setHint(true);
+      } else if (!want && showing) {
+        showing = false;
+        seen = true;
+        setHint(false);
+        try {
+          window.localStorage.setItem(KEY, "1");
+        } catch {
+          /* remembered for this visit only */
+        }
+      }
+    };
     window.addEventListener("nyrro-hint", on);
     return () => window.removeEventListener("nyrro-hint", on);
   }, []);
