@@ -50,8 +50,8 @@ export default function Cursor() {
           the page, light over the films); its tip at the pointer */}
       <div ref={arrow} aria-hidden className={`${only} mix-blend-difference`} style={{ opacity: shown && press ? 1 : 0, transition: "opacity 0.18s", willChange: "transform" }}>
         <svg
-          width="26"
-          height="26"
+          width="28"
+          height="28"
           viewBox="0 0 26 26"
           className="transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
           style={{ transform: `translate(-2px, -2px) ${press ? "scale(1)" : "scale(0.6)"}`, transformOrigin: "2px 2px" }}
