@@ -89,7 +89,7 @@ export default function Cursor() {
           className="transition-transform duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]"
           style={{ transform: `translate(-2px, -2px) ${press ? "scale(1)" : "scale(0.6)"}`, transformOrigin: "2px 2px", filter: "drop-shadow(0 1.5px 2.5px rgb(57 54 54 / 0.28))" }}
         >
-          <path d="M2 2 L24 11.6 L13.9 14.1 L10.3 24.4 Z" fill="#393636" stroke="#fff" strokeWidth="5" strokeLinejoin="round" paintOrder="stroke" />
+          <path d="M2 2 L24 11.6 L13.9 14.1 L10.3 24.4 Z" fill="#393636" stroke="#fff" strokeWidth="3" strokeLinejoin="round" paintOrder="stroke" />
         </svg>
       </div>
     </>
