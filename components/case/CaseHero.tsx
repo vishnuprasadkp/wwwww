@@ -31,7 +31,7 @@ export default function CaseHero({ meta }: { meta: CaseMeta }) {
 
       <dl className="mt-8 grid px-5 md:-mb-[43px] md:pl-8 md:pr-0 grid-cols-2 gap-y-8 md:grid-cols-4">
         {[...rows, ...brief].map(([k, v]) => (
-          <div key={k} className="pr-4">
+          <div key={k} className="pr-6 md:pr-12">
             <dt className="font-mono text-[15px] leading-[24px] text-pigment-soft">{k}</dt>
             <dd className="mt-1 whitespace-pre-line text-[15px] leading-[24px]">{v}</dd>
           </div>
