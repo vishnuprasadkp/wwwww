@@ -68,7 +68,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> A product designer with five years of designing **enterprise SaaS and AI products** that make complex work feel simple.
+> A product designer with five years designing **AI and enterprise products** that make complex work feel simple.
 
 #### How many years of experience does he have?  `experience-years`
 **Also asked as:** _how experienced is vishnu_ · _what is his work experience_ · _how long has he been designing_
@@ -697,7 +697,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > Results from his case studies, and where each number comes from:
 >
 > - **HDFC Bank:** **400M+** consent records and **3M+** messages a day (reported by UnifyApps)
-> - **Sony:** contract cycle time from **30 to 45 days down to 18**, board minutes from **2 to 3 days down to about 4 hours**, time to insight from **48 hours to 90 minutes** (project documentation)
+> - **Sony:** contract cycle time from **30 to 45 days down to 18**, board minutes from **2 to 3 days down to about 4 hours**, time to insight from **48 hours to 90 minutes** (reported by UnifyApps)
 > - **ADEO:** a **15 working day** preparation cycle replaced by briefings ready before each session, across **1,000+** proposals a month
 
 #### What is his working style?  `working-style`
@@ -1481,7 +1481,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > Yes, and each number says where it came from:
 >
 > - **HDFC Bank:** reported by UnifyApps
-> - **Sony:** from project documentation
+> - **Sony:** reported by UnifyApps
 > - **ADEO:** from the case study
 > - **Enterprise Search and Agent Workforce:** no outcome numbers, because the published figures belong to a different deployment
 > - **Other client projects:** expected results, clearly marked as such
@@ -1927,7 +1927,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Outcomes**
 
-> From **project documentation** (not independently measured):
+> As **reported by UnifyApps**:
 >
 > - **Contract cycle time:** 30 to 45 days → **18 days**
 > - **SLA compliance:** untracked → **68%**
@@ -1961,7 +1961,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - Makes **2,847 active agreements** searchable in plain language
 > - Flags **delay and renewal risks** early
 > - Integrates with **SAP S/4** and **Adobe Sign**
-> - **Contract cycle time: 30 to 45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)
+> - **Contract cycle time: 30 to 45 days → 18 days**; SLA compliance untracked → 68% (reported by UnifyApps)
 
 ### Sony: Corporate Secretarial Governance
 
@@ -1977,7 +1977,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - Answers governance questions and offers resolution templates
 > - Integrates with **MS Teams**
 >
-> **Board minutes prep: 2 to 3 days → 4 hours; missed deadlines down 85%** (per project documentation).
+> **Board minutes prep: 2 to 3 days → 4 hours; missed deadlines down 85%** (reported by UnifyApps).
 
 ### Sony: Sports Rights Scheduling & Broadcast Planning
 
@@ -1994,7 +1994,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - **Rights window tracking**
 > - A copilot connected to the contract platform checks every event against its **signed rights agreement**
 >
-> **Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation).
+> **Production conflicts: recurring → zero; schedule build: days → hours** (reported by UnifyApps).
 
 ### Sony: Social Intelligence Command
 
@@ -2010,7 +2010,7 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 > - **Talent and character popularity** ranked across 40+ shows
 > - An **AI agent** prepares weekly Slack briefings and answers questions conversationally
 >
-> **Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation).
+> **Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (reported by UnifyApps).
 
 ---
 

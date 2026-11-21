@@ -73,7 +73,7 @@ O("stakeholders",
   followups=["How does he work with engineers?", "Tell me about HDFC Bank"])
 
 O("success-metrics",
-  "Results from his case studies, each attributed to its source:\n\n- **ADEO:** committee preparation went from up to 15 working days to **minutes**\n- **Sony:** contract cycle time went from 30–45 days to **18 days** (project documentation)\n- **HDFC Bank:** **400M+** consents captured and **$4M** saved a year (reported by UnifyApps)\n- **Enterprise Search & Agent Workforce:** **~$5.5M** in projected savings (UnifyApps' published figures)",
+  "Results from his case studies, each attributed to its source:\n\n- **ADEO:** committee preparation went from up to 15 working days to **minutes**\n- **Sony:** contract cycle time went from 30–45 days to **18 days** (reported by UnifyApps)\n- **HDFC Bank:** **400M+** consents captured and **$4M** saved a year (reported by UnifyApps)\n- **Enterprise Search & Agent Workforce:** **~$5.5M** in projected savings (UnifyApps' published figures)",
   followups=["Are these numbers real?", "Tell me about Sony"])
 
 O("ai-experience",

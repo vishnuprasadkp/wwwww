@@ -50,13 +50,13 @@ Figma, FigJam, Framer, Miro, Adobe Creative Suite, Claude, Google AI Studio, Git
 "success-metrics": """Results from his case studies, and where each number comes from:
 
 - **HDFC Bank:** **400M+** consent records and **3M+** messages a day (reported by UnifyApps)
-- **Sony:** contract cycle time from **30 to 45 days down to 18**, board minutes from **2 to 3 days down to about 4 hours**, time to insight from **48 hours to 90 minutes** (project documentation)
+- **Sony:** contract cycle time from **30 to 45 days down to 18**, board minutes from **2 to 3 days down to about 4 hours**, time to insight from **48 hours to 90 minutes** (reported by UnifyApps)
 - **ADEO:** a **15 working day** preparation cycle replaced by briefings ready before each session, across **1,000+** proposals a month""",
 
 "outcomes-real": """Yes, and each number says where it came from:
 
 - **HDFC Bank:** reported by UnifyApps
-- **Sony:** from project documentation
+- **Sony:** reported by UnifyApps
 - **ADEO:** from the case study
 - **Enterprise Search and Agent Workforce:** no outcome numbers, because the published figures belong to a different deployment
 - **Other client projects:** expected results, clearly marked as such""",
@@ -188,7 +188,7 @@ Contact: **vishnuprasadkp98@gmail.com**""",
 
 "architecture-link": """He studied architecture and planning at NIT Bhopal, where he learned to **understand a system before trying to change it**. He still works that way: he doesn't see a product as a collection of screens. He starts with the people, the business goals and the technical limits, and designs the **structure that connects them**.""",
 
-"summary-oneline": """A product designer with five years of designing **enterprise SaaS and AI products** that make complex work feel simple.""",
+"summary-oneline": """A product designer with five years designing **AI and enterprise products** that make complex work feel simple.""",
 
 "simplicity": """For Vishnu, simple doesn't mean less. It means **showing the right depth to the right person**: complex information is organised, not removed, and each user sees the level of detail they need.""",
 

@@ -128,6 +128,41 @@ export default function ResumeViewer() {
           el.style.cssText = `left:${x1}px;top:${y1}px;width:${x2 - x1}px;height:${y2 - y1}px`;
           links.appendChild(el);
         }
+        // an email address or phone number in the text that the PDF itself does not link: linked here (mail, WhatsApp)
+        const box = sheet.getBoundingClientRect();
+        const linked = [...links.children].map((l) => {
+          const st = (l as HTMLElement).style;
+          const [x, y, w, h] = [st.left, st.top, st.width, st.height].map(parseFloat);
+          return { left: box.left + x, top: box.top + y, right: box.left + x + w, bottom: box.top + y + h };
+        });
+        const FIND: [RegExp, (m: string) => string][] = [
+          [/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, (m) => `mailto:${m}`],
+          [/\+?\d[\d ]{9,15}\d/g, (m) => `https://wa.me/${m.replace(/\D/g, "").replace(/^(?!91)(\d{10})$/, "91$1")}`],
+        ];
+        for (const span of text.querySelectorAll("span")) {
+          const node = span.firstChild;
+          if (!node || node.nodeType !== Node.TEXT_NODE) continue;
+          for (const [re, href] of FIND) {
+            for (const m of (node.textContent ?? "").matchAll(re)) {
+              const range = document.createRange();
+              range.setStart(node, m.index!);
+              range.setEnd(node, m.index! + m[0].length);
+              const r = range.getBoundingClientRect();
+              if (!r.width || linked.some((l) => r.left < l.right && r.right > l.left && r.top < l.bottom && r.bottom > l.top)) continue;
+              const url = href(m[0]);
+              const el = document.createElement("a");
+              el.href = url;
+              if (url.startsWith("http")) {
+                el.target = "_blank";
+                el.rel = "noopener noreferrer";
+              }
+              el.setAttribute("aria-label", m[0]);
+              el.className = "pointer-events-auto absolute";
+              el.style.cssText = `left:${r.left - box.left}px;top:${r.top - box.top}px;width:${r.width}px;height:${r.height}px`;
+              links.appendChild(el);
+            }
+          }
+        }
         sheet.appendChild(links);
         await drawn;
       }

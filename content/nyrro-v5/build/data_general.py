@@ -159,7 +159,7 @@ I("stakeholders", "process",
 I("success-metrics", "process",
   ["measure success", "success metrics", "kpi", "kpis", "how does he measure", "impact of design", "roi of design", "business impact", "outcomes", "results", "metrics"],
   ["how does he measure success", "what impact has his work had", "what results has he delivered"],
-  "He ties design to **operational outcomes** (time saved, errors avoided, work made traceable) and is strict about honest attribution:\n\n- **ADEO:** prep from up to 15 working days → minutes\n- **Sony:** contract cycle 30–45 → 18 days; board minutes 2–3 days → 4 hours (project documentation)\n- **HDFC:** 400M+ consents, $4M yearly savings (reported by UnifyApps)\n- **Search / Agent Workforce:** ~$5.5M projected savings (UnifyApps' published figures)\n\nFor other client projects, outcomes are **expected or target** figures and are always presented that way.")
+  "He ties design to **operational outcomes** (time saved, errors avoided, work made traceable) and is strict about honest attribution:\n\n- **ADEO:** prep from up to 15 working days → minutes\n- **Sony:** contract cycle 30–45 → 18 days; board minutes 2–3 days → 4 hours (reported by UnifyApps)\n- **HDFC:** 400M+ consents, $4M yearly savings (reported by UnifyApps)\n- **Search / Agent Workforce:** ~$5.5M projected savings (UnifyApps' published figures)\n\nFor other client projects, outcomes are **expected or target** figures and are always presented that way.")
 
 # ───────────── AI ─────────────
 I("ai-experience", "ai",
@@ -512,7 +512,7 @@ I("solo-or-team", "interview",
 I("outcomes-real", "interview",
   ["are the numbers real", "real results", "verified", "fake", "made up", "credible", "trust the numbers", "where do numbers come from", "attribution", "metrics verified", "numbers verified", "results verified", "these metrics", "these numbers", "genuine"],
   ["are the outcomes real", "where do these numbers come from"],
-  "Yes, and they're labelled honestly:\n\n- **Enterprise Search & Agent Workforce:** UnifyApps' published figures from a financial institution's deployment\n- **HDFC:** reported by UnifyApps\n- **Sony:** from project documentation\n- **ADEO:** as reported in the case study\n- **Other client projects:** expected or target outcomes, always presented as such")
+  "Yes, and they're labelled honestly:\n\n- **Enterprise Search & Agent Workforce:** UnifyApps' published figures from a financial institution's deployment\n- **HDFC:** reported by UnifyApps\n- **Sony:** reported by UnifyApps\n- **ADEO:** as reported in the case study\n- **Other client projects:** expected or target outcomes, always presented as such")
 
 # ───────────── FALLBACK / OFF-TOPIC ─────────────
 I("off-topic", "boundaries",

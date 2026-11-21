@@ -18,6 +18,9 @@ export type CaseMeta = {
   domain: string;
   timeline: string;
   role: string;
+  problem?: string;    // the three-line summary at the top of the case: the problem, what I did, the result
+  did?: string;
+  result?: string;
   hero: string;        // asset ids from content/assets.json
   closing: string;
 };

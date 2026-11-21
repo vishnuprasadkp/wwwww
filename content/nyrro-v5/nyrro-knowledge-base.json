@@ -577,7 +577,7 @@
     "users": "Vishnu worked with **legal, compliance, broadcast operations, content strategy and corporate governance** teams, the people who use each of the four platforms.",
     "features": "- **Contracts:** AI creation, review, routing, risk and clause checks across 2,847 agreements; SAP S/4 and Adobe Sign\n- **Governance:** minutes from live transcripts, action items, Companies Act 2013 deadlines, statutory registers; MS Teams\n- **Sports scheduling:** one planner across TEN 1 to 5, TEN SD, Sony LIV and SET India, with real-time conflict detection and rights checks\n- **Social intelligence:** ~2.47M monthly mentions combined with ratings, spike detection, sentiment and weekly AI briefings",
     "strategy": "Reflections from the case study:\n\n- **Trust comes from visibility:** people trust AI more when they can see how it reached a result\n- **AI should act before the problem happens**, e.g. flagging risk before review\n- **Configuration is part of the product:** rules, approvals and thresholds shape how well AI works",
-    "outcomes": "From **project documentation** (not independently measured):\n\n- **Contract cycle time:** 30 to 45 days → **18 days**\n- **SLA compliance:** untracked → **68%**\n- **Board minutes prep:** 2 to 3 days → **4 hours**\n- **Missed deadlines:** down **85%**\n- **Schedule build:** days → **hours**\n- **Production conflicts:** recurring → **zero**\n- **Time-to-insight:** 48 hours → **90 minutes**\n- **Spike response:** 6 hours → **22 minutes**",
+    "outcomes": "As **reported by UnifyApps**:\n\n- **Contract cycle time:** 30 to 45 days → **18 days**\n- **SLA compliance:** untracked → **68%**\n- **Board minutes prep:** 2 to 3 days → **4 hours**\n- **Missed deadlines:** down **85%**\n- **Schedule build:** days → **hours**\n- **Production conflicts:** recurring → **zero**\n- **Time-to-insight:** 48 hours → **90 minutes**\n- **Spike response:** 6 hours → **22 minutes**",
     "learnings": "- **Trust comes from visibility**\n- **AI should act before the problem happens**\n- **Configuration is part of the product**",
     "role": "Vishnu was the **Senior Product Designer, design lead for the engagement** across all four platforms, May 2025 to July 2026, collaborating with legal, compliance, broadcast operations, content strategy and corporate governance teams. Some details are confidential."
    },
@@ -594,7 +594,7 @@
     "contract lifecycle"
    ],
    "answers": {
-    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30 to 45 days → 18 days**; SLA compliance untracked → 68% (per project documentation)"
+    "overview": "**Contract Lifecycle Intelligence (Sony)**\n\nAn AI contract platform covering **creation, review, routing, risk identification and clause checks**.\n\n- Makes **2,847 active agreements** searchable in plain language\n- Flags **delay and renewal risks** early\n- Integrates with **SAP S/4** and **Adobe Sign**\n- **Contract cycle time: 30 to 45 days → 18 days**; SLA compliance untracked → 68% (reported by UnifyApps)"
    },
    "caseStudy": true,
    "name": "Sony's contract platform",
@@ -618,7 +618,7 @@
     "secretarial"
    ],
    "answers": {
-    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2 to 3 days → 4 hours; missed deadlines down 85%** (per project documentation)."
+    "overview": "**Corporate Secretarial Governance (Sony)**\n\n- Generates **minutes from live transcripts** with speaker names\n- Extracts **action items**\n- Tracks **Companies Act 2013** deadlines and manages statutory registers\n- Answers governance questions and offers resolution templates\n- Integrates with **MS Teams**\n\n**Board minutes prep: 2 to 3 days → 4 hours; missed deadlines down 85%** (reported by UnifyApps)."
    },
    "caseStudy": true,
    "name": "Sony's governance platform",
@@ -639,7 +639,7 @@
     "sports scheduling"
    ],
    "answers": {
-    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1 to 5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (per project documentation)."
+    "overview": "**Sports Rights Scheduling & Broadcast Planning (Sony)**\n\nOne planner across **TEN 1 to 5, TEN SD, Sony LIV and SET India**:\n\n- **Real-time conflict detection** and channel recommendations\n- **Tournament schedule generation** and slot availability\n- **Rights window tracking**\n- A copilot connected to the contract platform checks every event against its **signed rights agreement**\n\n**Production conflicts: recurring → zero; schedule build: days → hours** (reported by UnifyApps)."
    },
    "caseStudy": true,
    "name": "Sony's sports scheduling platform",
@@ -660,7 +660,7 @@
    "label": "Sony: Social Intelligence Command",
    "aliases": [],
    "answers": {
-    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (per project documentation)."
+    "overview": "**Social Intelligence Command (Sony)**\n\nCombines about **2.47M monthly social mentions** (X, Instagram, YouTube) with **broadcast ratings**:\n\n- **Spike detection** and sentiment and theme classification\n- **Talent and character popularity** ranked across 40+ shows\n- An **AI agent** prepares weekly Slack briefings and answers questions conversationally\n\n**Time-to-insight: 48 hours → 90 minutes; spike response: 6 hours → 22 minutes** (reported by UnifyApps)."
    },
    "caseStudy": true,
    "name": "Sony's social intelligence platform",
@@ -1557,7 +1557,7 @@
     "give me a quick summary",
     "sum him up in a sentence"
    ],
-   "answer": "A product designer with five years of designing **enterprise SaaS and AI products** that make complex work feel simple.",
+   "answer": "A product designer with five years designing **AI and enterprise products** that make complex work feel simple.",
    "followups": [],
    "priority": false
   },
@@ -2329,7 +2329,7 @@
     "what has he achieved",
     "what are his achievements"
    ],
-   "answer": "Results from his case studies, and where each number comes from:\n\n- **HDFC Bank:** **400M+** consent records and **3M+** messages a day (reported by UnifyApps)\n- **Sony:** contract cycle time from **30 to 45 days down to 18**, board minutes from **2 to 3 days down to about 4 hours**, time to insight from **48 hours to 90 minutes** (project documentation)\n- **ADEO:** a **15 working day** preparation cycle replaced by briefings ready before each session, across **1,000+** proposals a month",
+   "answer": "Results from his case studies, and where each number comes from:\n\n- **HDFC Bank:** **400M+** consent records and **3M+** messages a day (reported by UnifyApps)\n- **Sony:** contract cycle time from **30 to 45 days down to 18**, board minutes from **2 to 3 days down to about 4 hours**, time to insight from **48 hours to 90 minutes** (reported by UnifyApps)\n- **ADEO:** a **15 working day** preparation cycle replaced by briefings ready before each session, across **1,000+** proposals a month",
    "followups": [
     "Are these numbers real?",
     "Tell me about Sony"
@@ -4136,7 +4136,7 @@
     "are the outcomes real",
     "where do these numbers come from"
    ],
-   "answer": "Yes, and each number says where it came from:\n\n- **HDFC Bank:** reported by UnifyApps\n- **Sony:** from project documentation\n- **ADEO:** from the case study\n- **Enterprise Search and Agent Workforce:** no outcome numbers, because the published figures belong to a different deployment\n- **Other client projects:** expected results, clearly marked as such",
+   "answer": "Yes, and each number says where it came from:\n\n- **HDFC Bank:** reported by UnifyApps\n- **Sony:** reported by UnifyApps\n- **ADEO:** from the case study\n- **Enterprise Search and Agent Workforce:** no outcome numbers, because the published figures belong to a different deployment\n- **Other client projects:** expected results, clearly marked as such",
    "followups": [],
    "priority": false
   },

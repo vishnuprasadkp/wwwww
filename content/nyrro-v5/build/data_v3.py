@@ -183,7 +183,7 @@ V("stakeholders",
   followups=["How does he work with engineers?", "Tell me about HDFC Bank"])
 
 V("success-metrics",
-  "Results from his case studies, with their sources:\n\n- **ADEO:** committee preparation went from up to **15 working days to minutes**\n- **Sony:** contract cycle time went from **30–45 days to 18 days** (project documentation)\n- **HDFC Bank:** **400M+ consents** captured and **$4M** saved a year (reported by UnifyApps)\n- **Enterprise Search & Agent Workforce:** **~$5.5M** projected annual savings (UnifyApps' published figures)",
+  "Results from his case studies, with their sources:\n\n- **ADEO:** committee preparation went from up to **15 working days to minutes**\n- **Sony:** contract cycle time went from **30–45 days to 18 days** (reported by UnifyApps)\n- **HDFC Bank:** **400M+ consents** captured and **$4M** saved a year (reported by UnifyApps)\n- **Enterprise Search & Agent Workforce:** **~$5.5M** projected annual savings (UnifyApps' published figures)",
   keywords=["achievements", "achievement", "achieved", "accomplishments", "results", "impact", "what has he achieved", "measure success",
             "success metrics", "metrics", "kpis", "kpi", "business impact", "track record", "numbers"],
   questions=["what has he achieved", "what are his achievements", "what impact has his work had"],
@@ -331,7 +331,7 @@ V("solo-or-team",
   followups=["What was his role?"])
 
 V("outcomes-real",
-  "Yes, and every number says where it came from:\n\n- **Enterprise Search & Agent Workforce:** UnifyApps' published figures from a financial institution's deployment\n- **HDFC Bank:** reported by UnifyApps\n- **Sony:** from project documentation\n- **ADEO:** from the case study\n- **Other client projects:** expected results, clearly marked as such")
+  "Yes, and every number says where it came from:\n\n- **Enterprise Search & Agent Workforce:** UnifyApps' published figures from a financial institution's deployment\n- **HDFC Bank:** reported by UnifyApps\n- **Sony:** reported by UnifyApps\n- **ADEO:** from the case study\n- **Other client projects:** expected results, clearly marked as such")
 
 V("weakness",
   f"I don't know that, sorry. That's a question for Vishnu himself: **{EMAIL}**. His case studies are open about trade-offs, though, and each one names what its decisions cost.")
