@@ -142,13 +142,13 @@ A6.update({
 - **Brane Enterprises:** Oct 2023 to Sep 2024, Senior UI/UX Designer
 - **Kocha Technologies:** Nov 2021 to Oct 2023, Senior UI/UX Designer""",
 
-"unique-approach": """Vishnu understands the system behind a product before he designs its screens, a habit from studying **planning and architecture at NIT Bhopal**.
+"unique-approach": """Vishnu understands the system behind a product before he designs its screens.
 
 - **Systems first:** he maps the people, dependencies, goals and where things break before anything goes on a screen
 - **Trust by design:** in AI products he makes clear what the system did, so people can check it and step in
 - **The right depth for each person:** simple doesn't mean less; each user sees the detail they need
-- **Built to scale:** reusable patterns and a design system used across **60+ deployments**
-- **Designs and builds:** he also ships front-ends himself with GitHub and Vercel""",
+- **Built to grow:** clear flows and reusable patterns keep a product consistent as it grows
+- **Designs and builds:** he also builds what he designs""",
 
 "design-process": """A building needs solid ground before it goes up, and for Vishnu a product needs a **real understanding of the work behind it**. This is how he gets there:
 

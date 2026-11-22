@@ -2137,7 +2137,7 @@
     "how is he different from other designers",
     "what sets him apart"
    ],
-   "answer": "Vishnu understands the system behind a product before he designs its screens, a habit from studying **planning and architecture at NIT Bhopal**.\n\n- **Systems first:** he maps the people, dependencies, goals and where things break before anything goes on a screen\n- **Trust by design:** in AI products he makes clear what the system did, so people can check it and step in\n- **The right depth for each person:** simple doesn't mean less; each user sees the detail they need\n- **Built to scale:** reusable patterns and a design system used across **60+ deployments**\n- **Designs and builds:** he also ships front-ends himself with GitHub and Vercel",
+   "answer": "Vishnu understands the system behind a product before he designs its screens.\n\n- **Systems first:** he maps the people, dependencies, goals and where things break before anything goes on a screen\n- **Trust by design:** in AI products he makes clear what the system did, so people can check it and step in\n- **The right depth for each person:** simple doesn't mean less; each user sees the detail they need\n- **Built to grow:** clear flows and reusable patterns keep a product consistent as it grows\n- **Designs and builds:** he also builds what he designs",
    "followups": [
     "Tell me about ADEO",
     "What are his design principles?"

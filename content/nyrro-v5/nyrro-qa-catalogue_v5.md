@@ -619,13 +619,13 @@ Generated from the locked build (v5.0.0). **134 topics · 35 projects/companies.
 
 **Answer:**
 
-> Vishnu understands the system behind a product before he designs its screens, a habit from studying **planning and architecture at NIT Bhopal**.
+> Vishnu understands the system behind a product before he designs its screens.
 >
 > - **Systems first:** he maps the people, dependencies, goals and where things break before anything goes on a screen
 > - **Trust by design:** in AI products he makes clear what the system did, so people can check it and step in
 > - **The right depth for each person:** simple doesn't mean less; each user sees the detail they need
-> - **Built to scale:** reusable patterns and a design system used across **60+ deployments**
-> - **Designs and builds:** he also ships front-ends himself with GitHub and Vercel
+> - **Built to grow:** clear flows and reusable patterns keep a product consistent as it grows
+> - **Designs and builds:** he also builds what he designs
 
 #### What are his design principles?  `principles`
 **Also asked as:** _what is his design philosophy_ · _what does he believe about design_
