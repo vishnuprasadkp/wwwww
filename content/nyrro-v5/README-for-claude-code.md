@@ -25,7 +25,7 @@ function onUserMessage(text) {
 4. **Verify** in the browser console on the live site, and include the output in your summary:
 
 ```js
-Nyrro.selfTest()   // must return { ok: true, fingerprint: "0f0e73fd43118b42", ... }
+Nyrro.selfTest()   // must return { ok: true, fingerprint: "9247ac29ad624309", ... }
 ```
 
 If `ok` is false, the site is serving modified answers. Fix the integration, not the bundle.
@@ -57,7 +57,19 @@ Edit `build/data_v5.py` (general answers; **source-only**: resume, About page, c
 ```bash
 cd build
 python3 build.py && node make_bundle.js && python3 make_catalogue.py
-node test.js && node test_blind.js && node test_blind2.js && node test_v2.js && node test_phrasing.js && node test_relevance.js && node test_source_only.js
+node test.js && node test_blind.js && node test_blind2.js && node test_v2.js && node test_phrasing.js && node test_relevance.js && node test_source_only.js && node test_v7.js
 ```
 
 All tests must pass. Rebuilding prints a new fingerprint; update it in this README.
+
+## v7: understanding questions phrased differently (still no AI API)
+
+Everything runs in the browser, from the bundle. Nothing is sent anywhere.
+
+- **Synonym dictionary** (`build/data_v7.py`, `CONCEPTS`): each concept lists the ways visitors phrase one idea ("autonomous systems", "intelligent workflows", "automate business processes") and points to where it lives: a topic (`intent`), a project (`entity`), words to look for in the existing answers (`terms`), or `fallback` for things Nyrro has no information on. To teach Nyrro a new phrasing, add it to a concept's `patterns`, rebuild and run the tests.
+- **Typo repair**: a word Nyrro doesn't know is replaced by the one word in its own vocabulary that is a single slip away (two for long words); swapped letters count as one slip ("agnetic" → "agentic"). Words that appear anywhere in its answers are never changed.
+- **Follow-ups**: after a general answer ("Tell me about his AI experience"), "Which project shows that?" or "Show me an example" lists the case studies behind it, with links. Topics that name no project borrow them from a related topic (`TOPIC_LINKS`).
+- **Comparisons**: "Compare Enterprise Search and Agent Workforce", "ADEO vs HDFC" put two projects side by side, using only their own overviews.
+- **Composed answers** (comparisons, examples, "where does low-code show up") are put together at answer time from existing answer text only, never new facts.
+
+`build/test_v7.js` holds 47 conversations covering rewording, synonyms, typos, follow-ups, comparisons and honest misses.

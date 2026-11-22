@@ -12,7 +12,8 @@ const createNyrro = require("../nyrro-matcher.js");
 const GOLD_Q = ["hi", "What are his core skills?", "What tools does he use?", "Who is Vishnu?", "How many years of experience?",
   "What has he worked on?", "How does he design?", "What makes his approach unique?", "What AI work has he done?",
   "Tell me about Enterprise Search", "Tell me about ADEO", "Tell me about the Agent Workforce Platform", "Tell me about HDFC Bank",
-  "Tell me about the Sony platforms", "How can I contact him?", "What is his salary?", "did he work at google", "what are his strengths"];
+  "Tell me about the Sony platforms", "How can I contact him?", "What is his salary?", "did he work at google", "what are his strengths",
+  "Compare Enterprise Search and Agent Workforce", "low code platforms?", "Has he designed intelligent workflows?"];
 const sha = s => crypto.createHash("sha256").update(s).digest("hex").slice(0, 12);
 const gold = GOLD_Q.map(q => { const n = createNyrro(kb); return [q, sha(n.ask(q).answer)]; });
 
@@ -44,6 +45,7 @@ const out = `/*! Nyrro ${kb.version} — Vishnu Prasad K P's portfolio assistant
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function inline(s) {
     return esc(s)
+      .replace(/\\[([^\\]]+)\\]\\((\\/work\\/[a-z0-9-]+)\\)/g, '<a href="$2">$1</a>')
       .replace(/\\[([^\\]]+)\\]\\(((?:https?:|tel:)[^)\\s]+)\\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
       .replace(/\\*\\*([^*]+)\\*\\*/g, "<strong>$1</strong>")
       .replace(/(^|[^*\\w])_([^_]+)_(?=$|[^\\w])/g, "$1<em>$2</em>")

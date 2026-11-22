@@ -290,6 +290,12 @@ for _i in kb["intents"]:
 kb["fallback"]["answer"] = _contact(kb["fallback"]["answer"])
 _ci = next(i for i in kb["intents"] if i["id"] == "contact")
 _ci["answer"] = _ci["answer"].replace("\n\n- **LinkedIn:**", "\n\n- **Phone:** [+91 96569 76712](tel:+919656976712)\n- **LinkedIn:**", 1)
+# v7: the synonym dictionary, and each case study's page
+from data_v7 import CONCEPTS, CASE_URLS, TOPIC_LINKS
+kb["concepts"] = CONCEPTS
+kb["topicLinks"] = TOPIC_LINKS
+for _e in kb["entities"]:
+    if _e["id"] in CASE_URLS: _e["url"] = CASE_URLS[_e["id"]]
 out = "../nyrro-knowledge-base.json"
 json.dump(kb, open(out, "w"), ensure_ascii=False, indent=1)
 na = sum(len(e["answers"]) for e in ENTITIES)

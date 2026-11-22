@@ -429,7 +429,8 @@
     "connectors",
     "connector management",
     "search"
-   ]
+   ],
+   "url": "/work/enterprise-search"
   },
   {
    "id": "adeo",
@@ -471,7 +472,8 @@
     "committee intelligence",
     "deliberation",
     "voting"
-   ]
+   ],
+   "url": "/work/adeo"
   },
   {
    "id": "agent-workforce",
@@ -514,7 +516,8 @@
     "agent builder",
     "agents platform",
     "multi agent"
-   ]
+   ],
+   "url": "/work/ai-agent"
   },
   {
    "id": "hdfc",
@@ -552,7 +555,8 @@
     "consent platform",
     "data privacy",
     "consent portal"
-   ]
+   ],
+   "url": "/work/hdfc"
   },
   {
    "id": "sony",
@@ -585,7 +589,8 @@
    "name": "the Sony platforms",
    "weakAliases": [
     "media group"
-   ]
+   ],
+   "url": "/work/sony"
   },
   {
    "id": "sony-clm",
@@ -608,7 +613,8 @@
     "sap s4",
     "adobe sign",
     "agreements"
-   ]
+   ],
+   "url": "/work/sony"
   },
   {
    "id": "sony-governance",
@@ -630,7 +636,8 @@
     "corporate governance",
     "minutes",
     "statutory"
-   ]
+   ],
+   "url": "/work/sony"
   },
   {
    "id": "sony-sports",
@@ -653,7 +660,8 @@
     "ten channels",
     "tournament",
     "channel planning"
-   ]
+   ],
+   "url": "/work/sony"
   },
   {
    "id": "sony-social",
@@ -674,7 +682,8 @@
     "ratings",
     "social command",
     "mentions"
-   ]
+   ],
+   "url": "/work/sony"
   },
   {
    "id": "digital-dubai",
@@ -5997,5 +6006,225 @@
   "Why should we hire him?",
   "What kind of problems does he solve best?",
   "What is his career history?"
- ]
+ ],
+ "concepts": [
+  {
+   "id": "agents",
+   "label": "AI agents and agentic workflows",
+   "intent": "agentic",
+   "patterns": [
+    "autonomous",
+    "autonomous system",
+    "autonomous agent",
+    "intelligent workflow",
+    "intelligent automation",
+    "smart workflow",
+    "agent workflow",
+    "agentic workflow",
+    "automate",
+    "automates",
+    "automated",
+    "automating",
+    "automation",
+    "business process",
+    "process automation",
+    "workflow automation",
+    "ai workflow",
+    "ai workflows",
+    "ai agent",
+    "ai agents",
+    "digital worker",
+    "digital workers",
+    "bots that",
+    "agent based"
+   ]
+  },
+  {
+   "id": "search",
+   "label": "enterprise search",
+   "entity": "enterprise-search",
+   "patterns": [
+    "find information",
+    "finding information",
+    "find answer",
+    "finding answer",
+    "company knowledge",
+    "across company tools",
+    "across tools",
+    "across apps",
+    "workplace search",
+    "internal search",
+    "search across",
+    "knowledge discovery",
+    "search experience",
+    "search product",
+    "search platform",
+    "ai search"
+   ]
+  },
+  {
+   "id": "enterprise-ux",
+   "label": "enterprise UX",
+   "intent": "best-problems",
+   "patterns": [
+    "enterprise ux",
+    "enterprise design",
+    "enterprise software",
+    "enterprise product",
+    "enterprise app",
+    "enterprise application",
+    "b2b",
+    "b2b product",
+    "b2b software",
+    "complex software",
+    "complex product",
+    "complex system",
+    "business software",
+    "business application",
+    "internal tool",
+    "internal tools",
+    "complex workflow",
+    "complex workflows",
+    "enterprise grade"
+   ]
+  },
+  {
+   "id": "low-code",
+   "label": "low-code and no-code platforms",
+   "terms": [
+    "low code",
+    "low-code",
+    "lowcode",
+    "no code",
+    "no-code"
+   ],
+   "patterns": [
+    "low code",
+    "lowcode",
+    "no code",
+    "nocode",
+    "low code platform",
+    "no code platform",
+    "visual builder",
+    "drag and drop",
+    "citizen developer",
+    "builder tool",
+    "app builder"
+   ]
+  },
+  {
+   "id": "strategy",
+   "label": "product strategy",
+   "intent": "skills-strategy",
+   "patterns": [
+    "product strategy",
+    "product thinking",
+    "business goal",
+    "business goals",
+    "roadmap",
+    "product vision"
+   ]
+  },
+  {
+   "id": "research",
+   "label": "research and discovery",
+   "intent": "research",
+   "patterns": [
+    "discovery",
+    "user interview",
+    "user interviews",
+    "field research",
+    "understand user",
+    "understand the user",
+    "user need",
+    "user needs"
+   ]
+  },
+  {
+   "id": "intro",
+   "label": "who Vishnu is",
+   "intent": "who-is-vishnu",
+   "patterns": [
+    "introduce vishnu",
+    "yourself vishnu",
+    "introduce him",
+    "professional background",
+    "his profile",
+    "about his profile",
+    "overview of vishnu",
+    "summary of vishnu",
+    "elevator pitch"
+   ]
+  },
+  {
+   "id": "projects",
+   "label": "his projects",
+   "intent": "projects-list",
+   "weak": true,
+   "patterns": [
+    "what projects",
+    "which projects",
+    "project has he",
+    "project did he",
+    "has he done",
+    "he has done",
+    "did he do",
+    "list of project",
+    "his project",
+    "what has he designed",
+    "what did he design",
+    "body of work",
+    "past work"
+   ]
+  },
+  {
+   "id": "personal",
+   "label": "personal details",
+   "fallback": true,
+   "patterns": [
+    "favourite",
+    "favorite",
+    "girlfriend",
+    "boyfriend",
+    "wife",
+    "religion",
+    "caste",
+    "politics",
+    "political",
+    "his age",
+    "how old",
+    "birthday",
+    "zodiac",
+    "favourite food",
+    "favorite food"
+   ]
+  }
+ ],
+ "topicLinks": {
+  "skills-ai": "ai-experience",
+  "ai-designer": "ai-experience",
+  "when-not-ai": "ai-experience",
+  "item-agentic-ux": "agentic",
+  "other-agentic": "agentic",
+  "item-ai-trust-explainability": "ai-trust",
+  "item-human-in-the-loop-workflows": "human-in-loop",
+  "item-prompt-design": "ai-patterns",
+  "item-design-systems": "design-system",
+  "item-user-research": "research",
+  "item-product-discovery": "research",
+  "skills-research": "research",
+  "item-stakeholder-management": "stakeholders",
+  "skills-strategy": "stakeholders",
+  "item-mentoring": "mentoring",
+  "item-data-visualization": "dashboards",
+  "best-problems": "most-complex",
+  "strengths": "most-complex",
+  "proudest": "most-complex",
+  "skills-design": "design-process",
+  "item-product-design": "design-process",
+  "item-information-architecture": "design-process",
+  "item-interaction-design": "design-process",
+  "unique-approach": "design-process",
+  "principles": "design-process"
+ }
 }
