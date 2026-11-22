@@ -257,15 +257,6 @@ export function NivviProvider({ children }: { children: React.ReactNode }) {
 
 /* ------------------------------------------------------------------ bits */
 
-/** The orange AI sparkle. It takes the moth's place in the panel header once the moth has flown off. */
-function Star({ size = 17 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="#e4572e" aria-hidden="true" className="nivvi-mark-star">
-      <path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" />
-    </svg>
-  );
-}
-
 /** Header trigger: the moth + "Nyrro" in the nav's mono style. */
 export function NivviButton({ className = "" }: { className?: string }) {
   const { open, toggle } = useNivvi();
@@ -749,7 +740,6 @@ function NivviPanel() {
         <span className="flex items-center gap-2">
           <span className="nivvi-mark relative grid">
             <MothIcon size={24} className="nivvi-mark-moth" />
-            <Star />
           </span>
           Nyrro
         </span>
